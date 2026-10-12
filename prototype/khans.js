@@ -15,7 +15,11 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
    figure drawn in code stands in for it, so every screen works before the art does. */
 const READY = new Set([          // girl move frames, without the "girl-" prefix
   'm1-legL','m1-legR','m1-headR','m1-headL','m1-headD','m1-headU','m1-armU','m1-armF','m1-armS','m1-armD',
-  'm1-hitHead','m1-hitHand','m1-hitKnee','m1-hitFoot','m1-hitAll','m1-squat','m1-nose','m2-stick','m2-stickBook','m2-stickKick']);
+  'm1-hitHead','m1-hitHand','m1-hitKnee','m1-hitFoot','m1-hitAll','m1-squat','m1-nose','m2-stick','m2-stickBook','m2-stickKick',
+  'm2-standOk', 'm2-standBad', 'm2-sitOk', 'm2-sitBad', 'm2-bagOk', 'm2-bagBad', 'm2-writeOk', 'm2-writeBad', 'm3-walkA', 'm3-walkB',
+  'm3-runA', 'm3-runB', 'm3-roo-a', 'm3-roo-b', 'm3-frog-a', 'm3-frog-b', 'm3-hen-a', 'm3-hen-b', 'm3-gorilla-a', 'm3-gorilla-b',
+  'm3-cat-a', 'm3-cat-b', 'm3-snake-a', 'm3-snake-b', 'm4-circle-a', 'm4-circle-b', 'm4-toe-a', 'm4-toe-b', 'm4-hug-a', 'm4-hug-b',
+  'm4-lunge-a', 'm4-lunge-b', 'm4-plank-a', 'm4-plank-b', 'm4-crab-a', 'm4-crab-b', 'm4-spin-a', 'm4-spin-b', 'm4-feetStack', 'm4-feetUp']);
 const READY_BOY = new Set([]);    // the same for the boy
 const READY_ART = new Set([]);    // story-mom, story-aunt, story-rabbit, story-frog, story-uncle, animal-*, yuzi-1-careful …
 
