@@ -511,6 +511,7 @@ html.camfull-on body{overflow:hidden}
 .lv{display:inline-block;font-family:var(--f-body);font-size:12px;font-weight:800;background:var(--saffron);color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:0 8px;vertical-align:middle;white-space:nowrap}
 .who{margin-top:10px;text-align:center}.who > b{display:block;font-size:14px;margin-bottom:4px}
 .free-note{display:block;margin-top:6px;font-size:12.5px;font-weight:700;line-height:1.7;color:var(--ink-soft)}
+.seenrow{display:flex;gap:10px;justify-content:center;margin-top:8px}
 .chal{display:block;margin-top:8px;font-size:14px;font-weight:700;line-height:1.8}
 .team{background:#fff;border:var(--bw) solid var(--ink);border-radius:20px;padding:10px 10px 8px;margin:0 0 12px;text-align:center}
 .team > b{display:block;font-size:15px;margin-bottom:6px}
@@ -844,6 +845,12 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
               <button id="tap" aria-live="polite"><span id="tapNum">۰</span><small id="tapUnit">از ۵ کیسه</small></button>
             </div>
             <div class="hint" id="hint">هر بار یکی را انجام دادی، دکمه را بزن</div>
+          </div>
+          <div class="feel" id="seen5" hidden>
+            <img src="img/yuzi-1-wait.webp" alt="" style="width:110px;height:110px;object-fit:contain">
+            <h3>بزرگترت دید؟</h3>
+            <p>این بار با دکمه شمرده شد، نه با دوربین؛ بزرگترت تأیید کند که واقعاً روی یک پا انجامش دادی.</p>
+            <div style="display:flex;gap:10px"><button class="cta gold" id="seen5Yes">بله، دیدم</button><button class="ghost" id="seen5No">هنوز نه</button></div>
           </div>
           <div class="feel" id="feel" hidden>
             <h3>این بازی چطور بود؟</h3>
@@ -1474,7 +1481,7 @@ function renderChoose(){
     return `<button class="choice" data-move="${i}"><img src="${fig(`m5-${i+1}a`)}" alt=""><span><b>${['کیسه‌ها در سبد','لمسِ دایره‌های رنگی','چیدنِ لیوان‌ها'][i]}</b><small>${m.t}</small></span>${did>=0?`<em class="did" style="font-style:normal">روزِ ${['اول','دوم','سوم'][did]} بازی کردی</em>`:''}</button>`; }).join('');
   $$('#choices .choice').forEach(b=> b.addEventListener('click', ()=>{ chosen = +b.dataset.move; sfx('click'); go('ex'); }));
 }
-function startExercise(){ mi = chosen; count = 0; CAM.dot = null; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
+function startExercise(){ mi = chosen; count = 0; exTapped = false; exTapAt = 0; $('#seen5').hidden = true; CAM.dot = null; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
 function renderMove(){
   const m = MOVES[mi];
   $('#exTitle').innerHTML = `بازیِ امروز<small>تعادل، روزِ ${['اول','دوم','سوم'][doneDays()]}، کتاب، ص ۳۴</small>`;
@@ -1499,15 +1506,18 @@ function addRep(byCam){
   count++; renderCount(); sfx('tap', count);
   const b = $('#tap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   try{ navigator.vibrate && navigator.vibrate(12); }catch(e){}
-  if(count>=m.goal){ CAM.dot = null; setTimeout(()=>sfx('done'), 120); setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450); }
+  if(count>=m.goal){ CAM.dot = null; setTimeout(()=>sfx('done'), 120);
+    setTimeout(()=>{ if(exTapped){ $('#seen5').hidden = false; $('#seen5Yes').focus(); } else { $('#feel').hidden = false; $('#feel button').focus(); } }, 450); }
 }
 $('#tap').addEventListener('click', ()=>{
-  // with the camera on, a tap only counts if Yuzi saw one leg in the last moment
-  if(CAM.exOn && CAM.stream && MOVES[mi].prop !== 'dots' && performance.now() - (CAM.lastOneLeg||0) > 1500){
-    sfx('miss'); $('#hint').textContent = 'یوزی ندید! اول روی یک پا بایست، بعد بزن.'; return; }
-  if(CAM.exOn && CAM.stream){ state.cam.oneLegReps++; save(); }
+  // with the camera on, Yuzi counts each bag, dot and cup itself; a tap would let a child score standing still
+  if(CAM.exOn && CAM.stream){ sfx('miss'); $('#hint').textContent = 'یوزی خودش می‌شمارد؛ فقط حرکت کن!'; return; }
+  { const now = performance.now(); if(now - (exTapAt||0) < 1200){ sfx('miss'); $('#hint').textContent = 'آرام‌تر! هر بار که یکی را واقعاً انجام دادی، دکمه را بزن.'; return; } exTapAt = now; exTapped = true; }
   addRep();
 });
+let exTapAt = 0, exTapped = false;
+$('#seen5Yes').addEventListener('click', ()=>{ $('#seen5').hidden = true; sfx('star'); $('#feel').hidden = false; $('#feel button').focus(); });
+$('#seen5No').addEventListener('click', ()=>{ $('#seen5').hidden = true; count = Math.max(0, MOVES[mi].goal - 1); renderCount(); $('#hint').textContent = 'یک بارِ دیگر انجام بده تا بزرگترت ببیند'; });
 let feelings = [];
 function nextMove(){ CAM.dot = null; finishDay(); }   // one game a day (book p.34)
 $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{

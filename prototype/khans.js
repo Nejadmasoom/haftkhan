@@ -346,9 +346,11 @@ function resetBase(){ for(const k in BASE) delete BASE[k]; }
 function updateBase(b, now){
   if(b.feet){ const fy = Math.max(b.aL.y, b.aR.y);
     BASE.floorHist = (BASE.floorHist || []).filter(x => now - x[0] < 1500); BASE.floorHist.push([now, fy]);
-    BASE.floor = Math.max(...BASE.floorHist.map(x=>x[1])); }
+    /* the floor is where the feet usually are (70th percentile), not the lowest point they ever reached:
+       with a shaky camera the lowest point sits one whole shake below, and every shake upward became a jump */
+    const ys = BASE.floorHist.map(x=>x[1]).sort((a,b)=>a-b); BASE.floor = ys[Math.min(ys.length-1, Math.floor(ys.length*.7))]; }
 }
-const airborne = b => b.feet && BASE.floor && Math.max(b.aL.y, b.aR.y) < BASE.floor - .07*b.leg;
+const airborne = b => b.feet && BASE.floor && Math.max(b.aL.y, b.aR.y) < BASE.floor - .12*b.leg;
 function headAng(b){ const em = mid(b.earL, b.earR), ed = Math.max(1, dist(b.earL, b.earR)); return {yaw:(b.nose.x-em.x)/ed, pitch:(b.nose.y-em.y)/ed}; }
 function headRel(b){
   const a = headAng(b);
@@ -407,25 +409,26 @@ function detector(det){
   if(det === 'hug') return runner(PRED.stand, PRED.hug, 250);
   if(det === 'lunge') return runner(b => PRED.stand(b) && !PRED.lunge(b), PRED.lunge, 250);
   if(det === 'run' || det === 'walk'){
-    const thr = det === 'run' ? .13 : .05;
+    const thr = det === 'run' ? .13 : .07;
     return {last:null, step(b){ if(!b.feet || !BASE.floor) return false;
       const lL = (BASE.floor - b.aL.y)/b.leg, lR = (BASE.floor - b.aR.y)/b.leg;
-      const side = lL > thr && lL > lR + .04 ? 'L' : lR > thr && lR > lL + .04 ? 'R' : null;
+      const side = lL > thr && lL > lR + .06 ? 'L' : lR > thr && lR > lL + .06 ? 'R' : null;
       if(side && side !== this.last){ this.last = side; return true; } return false; } };
   }
+  /* tiptoe: the toes stay on the floor while the shoulders rise, so measure shoulders against toes —
+     a shaking camera moves both together and cancels out */
   if(det === 'toe') return {flat:null, up:false, t0:0, step(b, now){
-      if(!b.feet || !BASE.floor) return false;
-      const ankUp = (BASE.floor - Math.max(b.aL.y, b.aR.y))/b.leg;
-      // the resting height follows the child only while they are flat, so a slow rise is not absorbed into it
-      if(this.flat === null) this.flat = b.sh.y; else if(!this.up && ankUp < .03 && (this.flat - b.sh.y)/b.leg < .02) this.flat = this.flat*.92 + b.sh.y*.08;
-      const rise = (this.flat - b.sh.y)/b.leg;
-      if(!this.up && rise > .045 && ankUp < .1){ if(!this.t0) this.t0 = now; if(now - this.t0 > 200){ this.up = true; this.t0 = 0; return true; } }
+      if(!b.feet) return false;
+      const h = Math.max(b.tL.y, b.tR.y) - b.sh.y;      // pixels; the leg itself shortens when the heel lifts
+      if(this.flat === null) this.flat = h; else if(!this.up && (h - this.flat)/b.leg < .02) this.flat = this.flat*.92 + h*.08;
+      const rise = (h - this.flat)/b.leg;
+      if(!this.up && rise > .045){ if(!this.t0) this.t0 = now; if(now - this.t0 > 200){ this.up = true; this.t0 = 0; return true; } }
       else if(this.up && rise < .02){ this.up = false; this.t0 = 0; }
       else if(!this.up) this.t0 = 0;
       return false; } };
   if(det === 'circle') return {m:null, low:false, step(b){
       if(!PRED.armsOut(b)) return false;
-      const y = (b.wL.y + b.wR.y)/2; this.m = this.m === null ? y : this.m*.93 + y*.07;
+      const y = (b.wL.y + b.wR.y)/2 - b.sh.y; this.m = this.m === null ? y : this.m*.93 + y*.07;
       if(y > this.m + .1*b.sw) this.low = true;
       else if(this.low && y < this.m - .1*b.sw){ this.low = false; return true; }
       return false; } };
@@ -560,7 +563,7 @@ function startGame(){
   startOne();
 }
 function startOne(){
-  const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.det = g.det ? detector(g.det) : null; resetBase();
+  const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.vel = null; X.velT = 0; X.tapped = false; X.lastTap = 0; X.det = g.det ? detector(g.det) : null; resetBase();
   const best = bestOf(X.who, g.id), bestT = best && best.t;
   $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازیِ آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
   instr(g);
@@ -603,8 +606,14 @@ function renderCount(){
   $('#gxHint').textContent = X.count >= g.goal ? 'تمام شد!' : X.camOn && g.kind !== 'manual' ? (g.kind==='balloon' ? 'با بدنت به بادکنک بزن تا نیفتد' : 'حرکت کن؛ یوزی می‌شمارد')
     : X.count === 0 ? 'هر بار یکی را انجام دادی، دکمه را بزن' : `${fa(g.goal - X.count)} تای دیگر`;
 }
+/* Counting by tap is the fallback when there is no camera, and it must not be a way to win standing still:
+   a tap faster than the move can physically be done is refused, and a tapped game ends with a grown-up's ok. */
+const TAP_GAP = {jump:.45, frog:.9, squat:.8, hen:.45, drum:.3, run:.25, walk:.3, freeMove:.6, toe:.6};
 function addRep(byCam){
   const g = curGame(); if(X.count >= g.goal) return;
+  if(!byCam){ const now = performance.now(), gap = (g.kind === 'balloon' ? .45 : g.kind === 'manual' ? .8 : TAP_GAP[g.det] || .5)*1000;
+    if(now - (X.lastTap || 0) < gap){ sfx('miss'); $('#gxHint').textContent = 'آرام‌تر! هر بار که حرکت را واقعاً انجام دادی، دکمه را بزن.'; return; }
+    X.lastTap = now; X.tapped = true; }
   if(byCam) bumpCam(G.n, g.kind==='balloon' ? 'balloon' : g.det);
   if(X.count === 0) X.t0 = performance.now();
   X.count++; renderCount(); sfx('tap', X.count); vib(12);
@@ -621,7 +630,7 @@ function timeRun(){
 }
 function gameDone(){
   const g = curGame(); timeRun();
-  if(g.kind === 'manual'){ $('#gxSeenText').textContent = `${whoName()} «${g.name}» را ${fa(g.goal)} ${g.unit} انجام داد. یوزی این حرکت را با دوربین نمی‌بیند؛ بزرگترت تأیید کند.`; $('#gxSeen').hidden = false; $('#gxSeenYes').focus(); return; }
+  if(g.kind === 'manual' || X.tapped){ $('#gxSeenText').textContent = `${whoName()} «${g.name}» را ${fa(g.goal)} ${g.unit} انجام داد. ${g.kind === 'manual' ? 'یوزی این حرکت را با دوربین نمی‌بیند' : 'این بار با دکمه شمرده شد، نه با دوربین'}؛ بزرگترت تأیید کند.`; $('#gxSeen').hidden = false; $('#gxSeenYes').focus(); return; }
   nextOrFeel();
 }
 function nextOrFeel(){
@@ -725,17 +734,32 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
   const cols = [C.anar, '#3b82c4'];
   while(X.balls.length < (g.balls||1)){ const k = X.balls.length;
     X.balls.push({x: b.sh.x + (k ? .9 : -.9)*b.sw, y: Math.max(T*.6, b.nose.y - T*1.1), vx:0, vy:0, r:T*.32, col:cols[k], hit:0}); }
-  const pts = [];
-  if(g.parts.includes('head')) pts.push([b.nose, .7*b.sw]);
-  if(g.parts.includes('hand')) [b.wL, b.wR, b.iL, b.iR].forEach(p => pts.push([p, .28*b.sw]));
-  if(g.parts.includes('knee')) [b.kL, b.kR].forEach(p => pts.push([p, .35*b.sw]));
-  if(g.parts.includes('foot')) [b.aL, b.aR, b.tL, b.tR].forEach(p => pts.push([p, .3*b.sw]));
+  /* A hit is a strike: the body part has to be moving, fast, toward the balloon. A balloon that just lands
+     on a still head or hand slides off and falls — otherwise a child who stands still "wins". Speeds are in
+     shoulder-widths per second and smoothed, so the camera's own jitter never looks like a strike. */
+  const pts = [], add = (keys, pr) => keys.forEach(k => pts.push([b[k], pr, k]));
+  if(g.parts.includes('head')) add(['nose'], .7*b.sw);
+  if(g.parts.includes('hand')) add(['wL','wR','iL','iR'], .28*b.sw);
+  if(g.parts.includes('knee')) add(['kL','kR'], .35*b.sw);
+  if(g.parts.includes('foot')) add(['aL','aR','tL','tR'], .3*b.sw);
+  const V = X.vel = X.vel || {};
+  const vdt = Math.max(.008, (now - (X.velT || now))/1000); X.velT = now;     // real frame time; slow phones too
+  pts.forEach(([p, , k]) => { const o = V[k], s = vdt;
+    const vx = o ? (p.x - o.x)/s : 0, vy = o ? (p.y - o.y)/s : 0;
+    V[k] = {x:p.x, y:p.y, vx: o ? o.vx*.5 + vx*.5 : 0, vy: o ? o.vy*.5 + vy*.5 : 0}; });
   X.balls.forEach(o => {
     o.r = T*.32*Math.max(.7, 1 - .04*((g.lv||1) - 1)); o.vy = Math.min(o.vy + .9*T*dt*(g.grav||1), .65*T*(g.grav||1)); o.vx *= .985; o.x += o.vx*dt; o.y += o.vy*dt;
     if(o.x < o.r){ o.x = o.r; o.vx = Math.abs(o.vx); } if(o.x > W - o.r){ o.x = W - o.r; o.vx = -Math.abs(o.vx); }
     if(o.y < o.r){ o.y = o.r; o.vy = Math.abs(o.vy)*.3; }
-    if(ready && now - o.hit > 380) for(const [p, pr] of pts){ if(dist(p, o) < o.r + pr && o.vy > -.4*T){
-      o.vy = -1.55*T; o.vx = (o.x - p.x)/o.r * .5*T; o.hit = now; X.lastSeen = now; sfx('hit'); addRep(true); break; } }
+    if(ready) for(const [p, pr, k] of pts){ const d = dist(p, o); if(d >= o.r + pr) continue;
+      const v = V[k], speed = Math.hypot(v.vx, v.vy)/b.sw, toward = (o.x - p.x)*v.vx + (o.y - p.y)*v.vy > 0;
+      if(speed > 1.6 && (toward || v.vy < -.8*b.sw) && o.vy > -.4*T && now - o.hit > 380){
+        o.vy = -1.55*T; o.vx = (o.x - p.x)/o.r * .5*T; o.hit = now; X.lastSeen = now; sfx('hit'); addRep(true); break; }
+      // resting contact: no point — push the balloon off the body and let it keep falling
+      const nx = (o.x - p.x)/(d || 1), ny = (o.y - p.y)/(d || 1), over = o.r + pr - d;
+      o.x += nx*over; o.y += Math.min(0, ny)*over*.2;
+      o.vx = (Math.abs(nx) > .15 ? Math.sign(nx) : (Math.random() < .5 ? -1 : 1)) * .55*T; o.vy = Math.max(o.vy, .12*T);
+      break; }
     if(o.y - o.r > floor){ X.dropped = now; sfx('miss'); o.y = Math.max(T*.6, b.nose.y - T*1.1); o.x = b.sh.x + (Math.random()-.5)*b.sw; o.vy = 0; o.vx = 0; }
     const pop = now - o.hit < 200 ? 1.12 : 1;
     ctx.save(); ctx.lineWidth = W/150; ctx.strokeStyle = C.ink;
@@ -840,6 +864,8 @@ function wireTask(t){
   if(!Y.camOn){
     cnt.addEventListener('click', ()=>{
       if(t.type === 'hold'){ if(Y.t) return; cnt.classList.add('run'); sfx('tick'); Y.t = setInterval(()=>{ add(false); if(k >= goal){ clearInterval(Y.t); Y.t = null; cnt.classList.remove('run'); } }, 1000); return; }
+      const now = performance.now(), gap = t.type === 'seq' ? 2500 : 600;     // a whole sequence takes a few seconds
+      if(now - (Y.lastTap || 0) < gap){ sfx('miss'); return; } Y.lastTap = now;
       add(false); });
     return;
   }
@@ -1107,8 +1133,12 @@ function starRecord(sk, book){
     ${sk.yuzi ? `<div class="rec-say"><img src="${yuziArt(sk.yuzi[0])}" alt=""><div class="bubble">${sk.yuzi[1]}</div></div>` : ''}`;
   flipFigs($('#rsFig'), sk.fig, 1000);
   $$('.modes [data-m]').forEach(b => b.addEventListener('click', ()=>{ R.mode = b.dataset.m; if(R.camOn){ R.camOn = false; camOff(); } sfx('click'); starRecord(sk, book); }));
-  const record = v => {
+  const record = (v, ok) => {
     const prevList = st.rec.filter(r => !jump || r.m === R.mode), prev = prevList.length ? prevList[prevList.length-1].v : null;
+    /* a number typed in or a stopwatch someone else ran is only a star once a grown-up has seen it */
+    if(!ok && !(jump && R.mode === 'cam') && prev !== null && v > prev && st.stars < 7){
+      R.pending = {v, sk, book}; sfx('soft');
+      return `<b>${show(v)} ${unit}، بیشتر از دفعهٔ قبل!</b> بزرگترت دید؟<span class="seenrow"><button class="cta gold" id="rsYes">بله، دیدم</button><button class="ghost" id="rsNo">نه، دوباره</button></span>`; }
     st.rec.push({v, m: jump ? R.mode : 't', d:H.dayNum()}); H.save();
     let msg;
     if(prev !== null && v > prev && st.stars < 7){ giveStar(); msg = `<b>بیشتر از دفعهٔ قبل!</b> ${show(v)} ${unit}؛ یک ستارهٔ تازه گرفتی.`; }
@@ -1116,6 +1146,7 @@ function starRecord(sk, book){
     else { sfx('soft'); msg = `<b>${show(v)} ${unit}</b>. دفعهٔ قبل ${show(prev)} بود. دوباره امتحان کن!`; }
     return msg;
   };
+  if(R.confirmed != null){ const v = R.confirmed; R.confirmed = null; const m = record(v, true); starRecord(sk, book); $('#rsMsg').innerHTML = m; return; }
   if(jump && R.mode === 'feet'){
     const setF = d => { R.feet = Math.max(1, Math.min(15, R.feet + d)); $('#rsFeet').textContent = fa(R.feet); sfx('tap', R.feet); };
     $('#rsMinus').addEventListener('click', ()=>setF(-1)); $('#rsPlus').addEventListener('click', ()=>setF(1));
@@ -1157,6 +1188,12 @@ function starRecord(sk, book){
   }
 }
 
+document.addEventListener('click', e => {
+  const id = e.target && e.target.id; if((id !== 'rsYes' && id !== 'rsNo') || !R.pending) return;
+  const {v, sk, book} = R.pending; R.pending = null;
+  if(id === 'rsNo'){ sfx('click'); $('#rsMsg').textContent = 'اشکال ندارد؛ دوباره انجامش بده و بزرگترت ببیند.'; return; }
+  R.confirmed = v; starRecord(sk, book);       // re-render, then record with the grown-up's ok
+});
 /* ===================================================================== parents */
 let ptab = null;
 const CAM_LABELS = {balloon:'ضربه به بادکنکِ مجازی', freeMove:'حرکت با چوب پشتِ شانه', squat:'بنشین‌وپاشو با چوب', jump:'پرشِ جفت', frog:'پرشِ قورباغه', hen:'بال زدنِ مرغ', drum:'مشت به سینه مثلِ گوریل',
@@ -1195,7 +1232,7 @@ function renderParentsTabs(){
 }
 
 /* ===================================================================== wiring into the page */
-window.HKX = {
+window.HKX = { _X: X,
   openKhan,
   enter(name){
     if(name === 'gkhan'){ if(S().cur <= 4) G.khan = LESSONS[S().cur].khan; renderKhan();
