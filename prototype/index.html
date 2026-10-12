@@ -3,6 +3,36 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Vazirmatn:wght@400;500;700;800&display=swap">
 <style>
+/* فونت‌ها کنارِ صفحه هم هستند تا بدونِ اینترنت هم درست دیده شوند */
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/BalooBhaijaan2-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/BalooBhaijaan2-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/BalooBhaijaan2-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/Vazirmatn-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/Vazirmatn-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/Vazirmatn-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/Vazirmatn-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/Vazirmatn-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/Vazirmatn-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/Vazirmatn-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+}
+@font-face { font-family: 'HK Vazir'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/Vazirmatn-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 /* Layout: one phone-sized app (the child's journey scroll) beside a narrow notes column that maps each screen back to the textbook. Deliberately single-theme: the game is its own painted world. */
 :root{
   color-scheme: light;
@@ -22,8 +52,8 @@
   --on-dark:#fff7e6;
   --page:#e9dcc0;       /* desk around the phone */
   --page-ink:#3a2f4d;
-  --f-display:"Baloo Bhaijaan 2","Vazirmatn",Tahoma,sans-serif;
-  --f-body:"Vazirmatn",Tahoma,"Segoe UI",sans-serif;
+  --f-display:"HK Baloo","Baloo Bhaijaan 2","HK Vazir","Vazirmatn",Tahoma,sans-serif;
+  --f-body:"HK Vazir","Vazirmatn",Tahoma,"Segoe UI",sans-serif;
   --r-tile:22px; --r-pill:999px;
   --press:0 6px 0;      /* clay-tile thickness */
 }
@@ -63,6 +93,8 @@ button{font:inherit;color:inherit}
 .torches{display:flex;gap:4px;align-items:flex-end;background:rgba(0,0,0,.18);padding:6px 10px;border-radius:var(--r-pill)}
 .torches span{font-size:11px;color:#c9cdf0;margin-inline-start:4px}
 .torch{width:16px;height:26px}
+.mute{width:40px;height:40px;border-radius:50%;border:0;cursor:pointer;background:rgba(0,0,0,.18);color:var(--on-dark);display:grid;place-items:center;flex:0 0 auto}
+.mute svg{width:22px;height:22px}
 
 /* ---------- map ---------- */
 .map{position:relative;height:1180px;margin-top:-6px}
@@ -348,6 +380,7 @@ button{font:inherit;color:inherit}
           <div class="avatar" aria-hidden="true"><img src="img/yuzi-1-idle.webp" alt=""></div>
           <div class="who"><b>سارا</b><small>همسفر: یوزی · توله‌یوز</small></div>
           <div class="torches" aria-label="مشعل‌های این هفته" id="topTorches"></div>
+          <button class="mute" id="mute" aria-label="صدا"></button>
         </div>
         <div class="map" id="map">
           <div class="map-title">هفت‌خوانِ حرکت<small>از پایین شروع کن و تا قله برو</small></div>
@@ -433,7 +466,7 @@ button{font:inherit;color:inherit}
           <h3 id="rewardTitle">آفرین پهلوان!</h3>
           <div class="big-torches" id="bigTorches" aria-hidden="true"></div>
           <p id="rewardText">مشعل روز دوم روشن شد. یک روز دیگر تا گذشتن از پلِ لرزان.</p>
-          <div class="xp"><span>یوزی دارد بزرگ می‌شود · ۷۰ از ۱۰۰</span><div class="bar"><i id="xpBar" style="width:40%"></i></div></div>
+          <div class="xp"><span id="xpText">یوزی دارد بزرگ می‌شود</span><div class="bar"><i id="xpBar" style="width:40%"></i></div></div>
           <button class="cta gold" data-go="khan">برگرد به خوان</button>
         </div>
       </section>
@@ -556,6 +589,33 @@ const store = {
   get(k, d){ try{ const v = localStorage.getItem('hk.'+k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
   set(k, v){ try{ localStorage.setItem('hk.'+k, JSON.stringify(v)); }catch(e){} }
 };
+
+/* ---------- sound: every effect is synthesised, so the game ships no audio files ---------- */
+let actx = null, muted = store.get('muted', false);
+function ac(){ try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ actx = null; } return actx; }
+function tone(f, t0, dur, type='triangle', vol=.16, f2=null){
+  const c = ac(); if(!c || muted) return;
+  const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
+  o.type = type; o.frequency.setValueAtTime(f, t); if(f2) o.frequency.exponentialRampToValueAtTime(f2, t+dur);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+.015); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  o.connect(g).connect(c.destination); o.start(t); o.stop(t+dur+.02);
+}
+const SFX = {
+  click: ()=> tone(660, 0, .05, 'sine', .07),
+  tap:   n => { tone(392*Math.pow(2, n/12), 0, .12, 'triangle', .18); tone(784*Math.pow(2, n/12), .02, .08, 'sine', .06); },
+  done:  ()=> [523,659,784].forEach((f,i)=> tone(f, i*.09, .22, 'triangle', .16)),
+  tick:  ()=> tone(1046, 0, .05, 'square', .05),
+  hit:   ()=> { tone(988, 0, .12, 'sine', .16); tone(1318, .08, .2, 'sine', .14); },
+  miss:  ()=> tone(260, 0, .18, 'sine', .12, 170),
+  start: ()=> tone(330, 0, .25, 'triangle', .12, 660),
+  star:  ()=> [1318,1568,2093].forEach((f,i)=> tone(f, i*.07, .25, 'sine', .12)),
+  soft:  ()=> [392,330].forEach((f,i)=> tone(f, i*.16, .3, 'sine', .12)),
+  sleep: ()=> [523,440,392].forEach((f,i)=> tone(f, i*.18, .35, 'sine', .09)),
+  fanfare: big => { const n = big ? [523,659,784,1046,784,1046] : [523,659,784,1046];
+    n.forEach((f,i)=> tone(f, i*.13, i===n.length-1 ? .7 : .2, 'triangle', .17));
+    tone(131, 0, n.length*.13+.5, 'sine', .08); }
+};
+function sfx(name, arg){ try{ SFX[name] && SFX[name](arg); }catch(e){} }
 
 /* ---------- data from the book ---------- */
 const KHANS = [
@@ -690,7 +750,7 @@ function renderTorches(){
   $('#toolDay').textContent = `روزِ پیش‌نمایش: ${state.off ? `${fa(state.off)} روز بعد از امروز` : 'امروز'}`;
 }
 $('#playTile').addEventListener('click', ()=>{
-  if(practicedToday() || doneDays()>=3){ const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
+  if(practicedToday() || doneDays()>=3){ sfx('sleep'); const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
   go('ex');
 });
 
@@ -712,7 +772,7 @@ function go(name){
   showNote(name);
 }
 document.addEventListener('click', e=>{
-  const t = e.target.closest('[data-go]'); if(t){ go(t.dataset.go); return; }
+  const t = e.target.closest('[data-go]'); if(t){ sfx('click'); go(t.dataset.go); return; }
   const n = e.target.closest('[data-note]'); if(n){ showNote(n.dataset.note); }
 });
 
@@ -773,17 +833,18 @@ function renderCount(){
 }
 $('#tap').addEventListener('click', ()=>{
   const m = MOVES[mi]; if(count>=m.goal) return;
-  count++; renderCount();
+  count++; renderCount(); sfx('tap', count);
   const b = $('#tap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   try{ navigator.vibrate && navigator.vibrate(12); }catch(e){}
-  if(count>=m.goal) setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450);
+  if(count>=m.goal){ setTimeout(()=>sfx('done'), 120); setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450); }
 });
 let feelings = [];
 function nextMove(){ if(mi < MOVES.length-1){ mi++; count=0; renderMove(); } else finishDay(); }
 $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
   feelings[mi] = +b.dataset.feel;
   $('#feel').hidden = true;
-  if(feelings[mi]===0){ $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
+  sfx('click');
+  if(feelings[mi]===0){ sfx('soft'); $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
   else nextMove();
 }));
 function finishDay(){
@@ -797,7 +858,9 @@ function finishDay(){
   $('#rewardText').textContent = crossed ? 'هر سه مشعل روشن شد. لک‌لک به تو افتخار می‌کند و منزلِ «زندگی فعال» باز شد.'
     : `مشعلِ روزِ ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روزِ دیگر':'دو روزِ دیگر'} تا گذشتن از پلِ لرزان. فردا دوباره بیا!`;
   $('#reward').hidden = false;
+  $('#xpText').textContent = crossed ? 'یوزی آمادهٔ خوانِ بعدی است' : `یوزی دارد بزرگ می‌شود · ${fa(lit)} از ۳ مشعل`;
   $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = crossed ? '100%' : `${40+lit*15}%`));
+  sfx('fanfare', crossed);
   confetti();
 }
 function confetti(){
@@ -816,7 +879,7 @@ function confetti(){
 /* ---------- family: the phone is the music referee ---------- */
 const PLAYERS = [{n:'بابا',img:'dad'},{n:'سارا',img:'girl-idle',kid:1},{n:'مادربزرگ',img:'grandma'},{n:'آرش',img:'sibling'},{n:'مامان',img:'mom'}];
 const CHALLENGES = ['مثل لک‌لک روی یک پا بایست و تا ده بشمار','روی یک پا بایست و دست‌هایت را مثل بال باز کن','روی یک پا بایست و چشم‌هایت را تا پنج ببند','روی پنجهٔ پا سه قدمِ آرام بردار'];
-let holder = 0, playing = false, stepT = null, stopT = null, actx = null, noteT = null;
+let holder = 0, playing = false, stepT = null, stopT = null, noteT = null;
 function circlePos(i){ const a = Math.PI/2 + i*2*Math.PI/PLAYERS.length; return {x:50 + 42*Math.cos(a), y:50 + 42*Math.sin(a)}; }
 function drawCircle(){
   const el = $('#circle');
@@ -833,8 +896,9 @@ function placeTissue(){
 }
 const MELODY = [523,587,659,784,659,587,523,440,523,659,784,880,784,659,587,523];
 function playMelody(){
-  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  if(!ac()) return;
   let k=0; const tick = ()=>{ if(!playing) return;
+    if(muted){ noteT = setTimeout(tick, 300); return; }
     const o = actx.createOscillator(), g = actx.createGain(); o.type='triangle'; o.frequency.value = MELODY[k++%MELODY.length];
     g.gain.setValueAtTime(.0001, actx.currentTime); g.gain.exponentialRampToValueAtTime(.18, actx.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime+.28);
     o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.3); noteT = setTimeout(tick, 300); };
@@ -853,7 +917,7 @@ $('#music').addEventListener('click', ()=>{
     const p = PLAYERS[holder]; const ch = CHALLENGES[Math.random()*CHALLENGES.length|0];
     $(`.player[data-i="${holder}"]`).classList.add('hit');
     $('#famCall').innerHTML = `<b>آهنگ قطع شد! نوبتِ ${p.n}</b>${ch}<small>پیشنهاد گوشی است؛ هم‌بازی‌ها می‌توانند حرکت دیگری پیشنهاد بدهند</small>`;
-    $('#music').textContent = 'دور بعد';
+    $('#music').textContent = 'دور بعد'; sfx('fanfare');
     if(!state.family){ state.family = true; save(); }
   }, 6000 + Math.random()*7000);
 });
@@ -899,9 +963,9 @@ function renderStory(i){
       <div class="st-nav"><button class="ghost" id="stPrev">قبلی</button><button class="cta" id="stNext" disabled style="opacity:.5">پیدا کن تا تمام شود</button></div>`;
     $$('#storyBody .w').forEach(b=> b.addEventListener('click', ()=>{
       const clean = b.textContent.replace(/[.،,]/g,'');
-      if(clean === KEYWORD){ found.add(b.dataset.k); b.classList.add('hit'); $('#foundN').textContent = fa(found.size);
-        if(found.size===3){ const n=$('#stNext'); n.disabled=false; n.style.opacity=''; n.textContent='تمام! برگرد به خوان'; $('#askMore').hidden=false; state.story=true; save(); try{ navigator.vibrate && navigator.vibrate([20,40,20]); }catch(e){} } }
-      else { b.classList.remove('miss'); void b.offsetWidth; b.classList.add('miss'); }
+      if(clean === KEYWORD){ sfx(found.has(b.dataset.k) ? 'click' : 'hit'); found.add(b.dataset.k); b.classList.add('hit'); $('#foundN').textContent = fa(found.size);
+        if(found.size===3){ setTimeout(()=>sfx('fanfare'), 250); const n=$('#stNext'); n.disabled=false; n.style.opacity=''; n.textContent='تمام! برگرد به خوان'; $('#askMore').hidden=false; state.story=true; save(); try{ navigator.vibrate && navigator.vibrate([20,40,20]); }catch(e){} } }
+      else { sfx('miss'); b.classList.remove('miss'); void b.offsetWidth; b.classList.add('miss'); }
     }));
   }
   const prev = $('#stPrev'); if(prev) prev.addEventListener('click', ()=>renderStory(page-1));
@@ -912,7 +976,8 @@ function countdown(){
   const b = $('#cnt'); let n = 0; b.classList.add('run'); b.disabled = true;
   const say = ['یک','دو','سه','چهار','پنج'];
   b.textContent = '';
-  countT = setInterval(()=>{ n++; b.textContent = fa(n); b.setAttribute('aria-label', say[n-1]);
+  sfx('tick');
+  countT = setInterval(()=>{ n++; b.textContent = fa(n); n<5 ? sfx('tick') : sfx('done'); b.setAttribute('aria-label', say[n-1]);
     if(n>=5){ clearInterval(countT); b.classList.remove('run'); b.disabled = false;
       const a = $('#after'); if(a) a.hidden = false;
       const nx = $('#stNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; } }, 1000);
@@ -936,8 +1001,9 @@ function stopWatch(record){
   const prev = state.rec.length ? state.rec[state.rec.length-1] : null;
   state.rec.push(sec);
   let msg;
-  if(prev!==null && sec > prev && state.recStars < 7){ state.recStars++; msg = `<b>بیشتر از دفعهٔ قبل!</b> ${secs(sec)} ثانیه ایستادی و یک ستارهٔ تازه گرفتی.`; }
-  else if(prev===null) msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ بعد بیشتر بایست تا ستاره بگیری.`;
+  if(prev!==null && sec > prev && state.recStars < 7){ state.recStars++; sfx('star'); msg = `<b>بیشتر از دفعهٔ قبل!</b> ${secs(sec)} ثانیه ایستادی و یک ستارهٔ تازه گرفتی.`; }
+  else sfx('soft');
+  if(prev===null) msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ بعد بیشتر بایست تا ستاره بگیری.`;
   else msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ قبل ${secs(prev)} ثانیه بود. دوباره امتحان کن!`;
   save(); renderRecord();
   $('#recBtn').textContent = 'دوباره';
@@ -946,6 +1012,7 @@ function stopWatch(record){
 }
 $('#recBtn').addEventListener('click', ()=>{
   if(watchT){ stopWatch(true); return; }
+  sfx('start');
   watchStart = performance.now();
   $('#recBtn').textContent = 'پایم زمین خورد'; $('#recBtn').classList.add('stop');
   $('#recMsg').textContent = 'مثل لک‌لک بایست و نیفتی!';
@@ -981,6 +1048,12 @@ $$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
 for(let m=1;m<=3;m++) for(const f of 'ab'){ const im = new Image(); im.src = `img/girl-m5-${m}${f}.webp`; }
 $('#nextDay').addEventListener('click', ()=>{ state.off++; save(); renderTorches(); go('khan'); });
 $('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); save(); renderTorches(); go('khan'); });
+function renderMute(){ $('#mute').innerHTML = muted
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19.5 5.5a9 9 0 0 1 0 13"/></svg>';
+  $('#mute').setAttribute('aria-pressed', muted ? 'true' : 'false'); $('#mute').setAttribute('aria-label', muted ? 'صدا خاموش است' : 'صدا روشن است'); }
+$('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', muted); renderMute(); sfx('click'); });
+renderMute();
 drawMap(); renderTorches(); drawCircle(); renderTreasure(); go('map');
 })();
 </script>
