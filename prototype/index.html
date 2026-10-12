@@ -1,3 +1,6 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#17215a">
 <title>هفت‌خوانِ حرکت</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -437,8 +440,20 @@ button{font:inherit;color:inherit}
 @media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 @media (max-width:860px){.stage{gap:24px;padding-block:16px}.phone{height:780px}.notes h1{font-size:32px}}
 @media (max-width:430px){.stage{padding-inline:8px}.phone{border-radius:34px;padding:6px;height:760px}.app{border-radius:28px}}
+
+/* ---------- play mode: the real app, full screen. The phone mock-up and notes are only for ?preview ---------- */
+html.play body{background:var(--lapis-deep)}
+html.play .notes{display:none}
+html.play .stage{display:block;padding:0;min-height:0;height:100%}
+html.play .phone{width:100%;max-width:560px;margin-inline:auto;height:100vh;height:100dvh;min-height:0;border-radius:0;padding:0;box-shadow:none;background:none}
+html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}
+@media (min-width:600px){html.play .phone{box-shadow:0 0 0 1px #0e1540,0 0 60px rgba(0,0,0,.35)}}
+.khan.soon .medal{background:#3b4aa0;box-shadow:var(--press) #2a3785}
+.khan.soon .medal img{filter:grayscale(1) brightness(1.4);opacity:.45}
+.khan.soon .label{opacity:.7}
 </style>
 
+<script>document.documentElement.classList.add(/[?&]preview\b/.test(location.search) ? 'preview' : 'play');</script>
 <div class="stage">
   <div class="phone" aria-label="پیش‌نمایش برنامه روی گوشی">
     <div class="app" id="app">
@@ -796,18 +811,24 @@ const STAR = (on) => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 
 
 /* ---------- state ---------- */
 const DAY = 864e5;
-const seed = () => ({ v:3, off:0, days:[{d:dayNum(-2), move:0, feel:2}, null, null], story:false, family:false, rec:[6.2, 8.4], recStars:1, profile:null,
+const PREVIEW = document.documentElement.classList.contains('preview');
+const SKEY = PREVIEW ? 'state' : 'play';
+const seed = () => (PREVIEW ? { v:3, off:0, days:[{d:dayNum(-2), move:0, feel:2}, null, null], story:false, family:false, rec:[6.2, 8.4], recStars:1, profile:null,
+  cam:{dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0} }
+  : { v:3, off:0, days:[null, null, null], story:false, family:false, rec:[], recStars:0, profile:null,
   cam:{dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0} });
-let state = store.get('state', null);
+let state = store.get(SKEY, null);
 function dayNum(delta=0){ const t = Date.now() + ((state && state.off)||0)*DAY - new Date().getTimezoneOffset()*60000; return Math.floor(t/DAY) + delta; }
 function dayKey(delta=0){ const d = new Date(Date.now() + ((state && state.off)||0)*DAY + delta*DAY); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
 if(!state || state.v !== 3){ state = null; state = seed(); }
-function save(){ store.set('state', state); }
+function save(){ store.set(SKEY, state); }
 if(!state.cam) state.cam = {dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0};
 const kid = () => (state.profile && state.profile.kid) || 'girl';
 const kidName = () => (state.profile && state.profile.name) || 'قهرمان';
 /* Yuzi grows with the journey: a cub to khan 3, young from khan 4, grown after khan 7 */
-const khansPassed = () => CURRENT;
+/* the preview tells a story where khans 1-2 are behind us; a real player has passed none — only khan 3 is built */
+const PASSED = PREVIEW ? CURRENT : 0;
+const khansPassed = () => PASSED;
 const yuziStage = () => khansPassed() >= 7 ? 3 : khansPassed() >= 3 ? 2 : 1;
 const YUZI_NAMES = ['','توله‌یوز','یوزِ جوان','یوزِ تیزپا'];
 /* Movement figures for the chosen hero. Add a name here when its boy image is in img/
@@ -829,7 +850,7 @@ function drawMap(){
   const pts = [ [180,1080], [90,930], [250,780], [110,630], [250,480], [110,330], [190,180] ]; // bottom → top
   let d = `M${pts[0][0]} ${pts[0][1]+80}`;
   pts.forEach((p,i)=>{ if(i===0){ d += ` L${p[0]} ${p[1]}`; return; } const q = pts[i-1]; const my = (p[1]+q[1])/2; d += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; });
-  const doneLen = CURRENT; // segments completed
+  const doneLen = PASSED; // segments completed
   let dDone = `M${pts[0][0]} ${pts[0][1]+80} L${pts[0][0]} ${pts[0][1]}`;
   for(let i=1;i<=doneLen;i++){ const p=pts[i], q=pts[i-1], my=(p[1]+q[1])/2; dDone += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; }
   let stars=''; for(let i=0;i<40;i++){ stars += `<circle cx="${(i*97)%W}" cy="${(i*233)%H}" r="${1+(i%3)*.6}" fill="#fff7e6" opacity="${.25+(i%4)*.12}"/>`; }
@@ -843,12 +864,12 @@ function drawMap(){
   map.insertAdjacentHTML('beforeend', svg);
   KHANS.forEach((k,i)=>{
     const [x,y] = pts[i];
-    const cls = i<CURRENT ? 'done' : i===CURRENT ? 'now' : 'locked';
+    const cls = i<PASSED ? 'done' : i===CURRENT ? 'now' : i<CURRENT ? 'soon' : 'locked';
     const b = document.createElement('button');
     b.className = 'khan '+cls;
     b.style.right = `${(1 - x/W)*100}%`;
     b.style.top = `${y/H*100}%`;
-    const status = i<CURRENT ? 'گذشته' : i===CURRENT ? 'خوانِ امروز' : 'هنوز بسته';
+    const status = i<PASSED ? 'گذشته' : i===CURRENT ? 'خوانِ امروز' : i<CURRENT ? 'به‌زودی' : 'هنوز بسته';
     b.setAttribute('aria-label', `خوان ${fa(i+1)}: ${k.name} — ${status}`);
     b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><img src="img/${k.guard}-greet.webp" alt="">${i>CURRENT?`<span class="lock">${LOCK}</span>`:''}</span>
       <span class="label">${k.name}</span><span class="sub">${k.lessons.join(' · ')}</span>`;
@@ -879,7 +900,7 @@ function renderTorches(){
   $('#storyDone').hidden = !state.story;
   $('#familyDone').hidden = !state.family;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
-  $('#recSub').textContent = `بهترین: ${secs(best)} ثانیه · ستاره ${fa(state.recStars)} از ۷`;
+  $('#recSub').textContent = state.rec.length ? `بهترین: ${secs(best)} ثانیه · ستاره ${fa(state.recStars)} از ۷` : 'هنوز رکوردی نداری · مثلِ لک‌لک بایست!';
   const open6 = n>=3;
   $('#m6').classList.toggle('locked-manzil', !open6);
   $('#m6note').innerHTML = open6
@@ -893,11 +914,11 @@ $('#playTile').addEventListener('click', ()=>{
 });
 
 function meetGuardian(i){
-  const k = KHANS[i], passed = i < CURRENT;
+  const k = KHANS[i], passed = i < PASSED, soon = !passed && i < CURRENT;
   $('#gImg').src = `img/${k.guard}-${passed ? 'proud' : 'challenge'}.webp`; $('#gImg').alt = GUARD_NAMES[k.guard];
-  $('#gTag').textContent = passed ? 'گذشتی!' : 'هنوز بسته'; $('#gTag').classList.toggle('done', passed);
+  $('#gTag').textContent = passed ? 'گذشتی!' : soon ? 'به‌زودی' : 'هنوز بسته'; $('#gTag').classList.toggle('done', passed);
   $('#gTitle').innerHTML = `${GUARD_NAMES[k.guard]}<small>خوانِ ${fa(i+1)}: ${k.name} · ${k.lessons.join('، ')}</small>`;
-  $('#gText').textContent = passed ? `این خوان را گذشتی، ${kidName()}! من به تو افتخار می‌کنم.` : `«${GUARD_LINES[k.guard]}» وقتی خوانِ قبلی را بگذرانی، این‌جا منتظرت هستم.`;
+  $('#gText').textContent = passed ? `این خوان را گذشتی، ${kidName()}! من به تو افتخار می‌کنم.` : soon ? `«${GUARD_LINES[k.guard]}» این خوان به‌زودی باز می‌شود. فعلاً برو پلِ لرزان؛ لک‌لک منتظرت است!` : `«${GUARD_LINES[k.guard]}» وقتی خوانِ قبلی را بگذرانی، این‌جا منتظرت هستم.`;
   $('#gcard').hidden = false; sfx(passed ? 'star' : 'soft'); $('#gClose').focus();
 }
 $('#gClose').addEventListener('click', ()=>{ $('#gcard').hidden = true; sfx('click'); });
@@ -1484,7 +1505,7 @@ function renderTreasure(){
   const st = [['توله‌یوز','از خوان ۱'],['یوزِ جوان','از خوان ۴'],['یوزِ تیزپا','بعد از خوان ۷']];
   const cur = yuziStage() - 1;
   $('#stages').innerHTML = st.map((s,i)=>`<div class="stage-c ${i===cur?'cur':i<cur?'':'off'}"><img src="img/yuzi-${i+1}-idle.webp" alt=""><b>${s[0]}</b>${s[1]}</div>`).join('');
-  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<CURRENT?'got':'off'}" title="${k.name}"><img src="img/${k.guard}-greet.webp" alt="نگهبانِ ${k.name}"></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
+  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<PASSED?'got':'off'}" title="${k.name}"><img src="img/${k.guard}-greet.webp" alt="نگهبانِ ${k.name}"></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
 }
 
 
