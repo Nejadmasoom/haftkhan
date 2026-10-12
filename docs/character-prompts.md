@@ -350,6 +350,54 @@ DO NOT include any text, letters, numbers, labels, captions, logos, watermark or
 
 ---
 
+## منزل ۵ — تصویرهای قصه
+
+قصهٔ کتاب (ص ۳۴) سه حالتِ تعادل دارد. حالتِ لک‌لک را از قبل داریم (`girl-m5-2a`)؛ این دو برگه بقیه را می‌سازند.
+تا وقتی برسند، در پیش‌نمایش جایشان آدمکِ ساده است.
+
+### ۱۵. دختر در حالت‌های درخت و فرشته · نسبت ۳:۲
+
+برگهٔ دختر (پرامپت ۲) را پیوست کنید. نام فایل‌ها: `girl-tree`، `girl-angel`.
+
+```
+Character pose sheet for a children's exercise game made in Iran. The character is the SAME girl as in the attached image: identical face, turquoise sports hijab hood, turquoise jacket with saffron stripes, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign her.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, calm focused smile.
+
+LAYOUT: 2 poses in one row. Every pose full body, same scale. The standing foot of both poses on the same invisible horizontal baseline. Generous empty space between poses, nothing overlaps.
+
+POSES, in order:
+1. TREE POSE: standing tall on her RIGHT leg, facing the viewer (front view); the left knee bent out to the side with the sole of the left foot resting against the inside of the right calf; both arms raised straight above the head with the palms touching, like the branches of a tree. Calm, proud expression.
+2. ANGEL POSE (arabesque), three-quarter view facing LEFT: standing on her RIGHT leg; the left leg stretched straight backward and up to hip height; the upper body leaning forward almost level with the floor; both arms stretched out wide to the sides like wings. Concentrating, tongue slightly out.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under the standing foot. No scenery, no frames, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۱۶. شخصیت‌های قصه: درخت، کلاغ، گنجشک · نسبت ۳:۲
+
+یک برگه از یوزی (پرامپت ۱) را پیوست کنید. نام فایل‌ها: `story-tree`، `story-crow`، `story-sparrow`.
+
+```
+Character sheet of three talking characters for a children's story in a mobile game made in Iran, for 6–7 year old kids. Use the attached image only as a style reference (line, shading, colors); draw new characters.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, big expressive kind eyes, warm and funny. Color palette only: turquoise #16a39a, lapis blue #22327a, saffron gold #f3a530, pomegranate red #d6404c, cream #fbf1dc, dark plum #2b2140, plus natural greens and browns.
+
+LAYOUT: 3 characters in one row, same overall height, each one standing on the same invisible horizontal baseline. Generous empty space between them, nothing overlaps. Each one is TALKING: mouth open mid-sentence, friendly.
+
+CHARACTERS, in order:
+1. A young friendly tree with a face on its trunk (big kind eyes, smiling mouth), a round green crown of leaves, standing on its roots like feet; two branches raised above the crown like arms reaching up.
+2. A clever black-and-grey crow, standing on one leg, one wing lifted as if teaching, a small turquoise scarf.
+3. A tiny round house sparrow with brown and cream feathers, both wings spread wide open to the sides, hovering just above the baseline.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each character. No rooftop, no garden, no scenery, no frames, no borders.
+
+DO NOT include any text, letters, numbers, speech bubbles, labels, captions, logos, watermark or signature.
+```
+
+---
+
 ## حرکت‌های بقیهٔ درس‌ها
 
 برای آن‌ها هنوز پرامپت ننوشته‌ام. اول باید تمرین‌های هر درس از کتاب استخراج شود، چون همهٔ درس‌ها سه حرکت بدنی ندارند. وقتی استخراج شد، با همان الگوی پرامپت ۴ نوشته می‌شوند.

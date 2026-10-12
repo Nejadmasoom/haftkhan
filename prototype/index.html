@@ -258,6 +258,74 @@ button{font:inherit;color:inherit}
 .legend{direction:rtl;text-align:right;font-size:12.5px;line-height:1.8;color:var(--page-ink)}
 .legend ol{margin:6px 0 0;padding-inline-start:18px}
 
+/* ---------- story ---------- */
+.story{display:flex;flex-direction:column;gap:14px}
+.st-steps{display:flex;gap:6px;justify-content:center}
+.st-steps i{width:22px;height:6px;border-radius:var(--r-pill);background:var(--paper-2)}
+.st-steps i.on{background:var(--saffron)}
+.st-steps i.cur{background:var(--anar)}
+.st-art{height:170px;border-radius:24px;background:#fff8ea;display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:8px;position:relative;box-shadow:0 4px 0 var(--paper-2)}
+.st-art img{height:100%;width:auto;max-width:48%;object-fit:contain}
+.st-art svg{height:100%;width:auto}
+.st-art .who-says{position:absolute;top:10px;inset-inline-start:12px;background:var(--lapis);color:var(--on-dark);font-size:12px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill)}
+.st-text{margin:0;font-size:16.5px;line-height:2.05;color:var(--ink)}
+.st-text b{color:var(--anar);font-family:var(--f-display);font-size:19px;font-weight:700}
+.st-text q{quotes:none;color:var(--lapis);font-weight:500}
+.read-note{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--ink-soft)}
+.read-note svg{width:18px;height:18px;flex:0 0 auto}
+.pose{display:flex;align-items:center;gap:14px;background:var(--lapis);color:var(--on-dark);border-radius:22px;padding:12px 14px}
+.pose .cnt{width:74px;height:74px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;background:var(--saffron);color:var(--ink);font-family:var(--f-display);font-size:40px;box-shadow:0 5px 0 var(--saffron-deep);border:0;cursor:pointer}
+.pose .cnt:active{transform:translateY(4px);box-shadow:0 1px 0 var(--saffron-deep)}
+.pose .cnt.run{animation:pop 1s ease infinite}
+.pose p{margin:0;font-size:14px;line-height:1.7}
+.pose p b{display:block;font-family:var(--f-display);font-size:18px;color:var(--saffron)}
+.st-nav{display:flex;justify-content:space-between;gap:10px}
+.st-nav .cta{flex:1}
+.ghost{border:0;cursor:pointer;border-radius:var(--r-pill);padding:12px 18px;min-height:48px;background:var(--paper-2);color:var(--ink);font-weight:700}
+.words{font-size:18px;line-height:2.3;color:var(--ink)}
+.words .w{border:0;background:none;padding:2px 3px;margin:0 1px;border-radius:8px;cursor:pointer;font:inherit;color:inherit}
+.words .w.hit{background:var(--saffron);color:var(--ink);font-weight:800}
+.words .w.miss{animation:shake .35s ease}
+.find-bar{display:flex;align-items:center;gap:10px;background:#fff8ea;border-radius:18px;padding:10px 14px;font-size:14px;box-shadow:0 3px 0 var(--paper-2)}
+.find-bar b{font-family:var(--f-display);font-size:22px;color:var(--anar)}
+.ask{background:#fde3b2;border-radius:20px;padding:14px 16px;font-size:14.5px;line-height:1.9;color:var(--ink)}
+.ask b{display:block;font-family:var(--f-display);font-size:18px}
+@keyframes shake{25%{transform:translateX(-4px)}75%{transform:translateX(4px)}}
+
+/* ---------- stork record ---------- */
+.rec{display:flex;flex-direction:column;min-height:100%;background:linear-gradient(#2a3b8f, var(--lapis) 40%);padding-bottom:18px}
+.rec-stars{display:flex;gap:6px;justify-content:center;padding:2px 16px 8px}
+.rec-stars svg{width:30px;height:30px}
+.rec-stage{display:flex;align-items:flex-end;justify-content:center;gap:6px;height:190px;margin:0 16px;border-radius:28px;background:var(--paper);box-shadow:0 6px 0 var(--paper-2);padding-top:8px;overflow:hidden}
+.rec-stage img{height:100%;width:auto;object-fit:contain}
+.watch{display:flex;flex-direction:column;align-items:center;gap:10px;padding:16px}
+.watch .time{font-family:var(--f-display);font-size:64px;line-height:1;color:var(--on-dark);font-variant-numeric:tabular-nums}
+.watch .time small{font-size:20px;color:#c9cdf0;margin-inline-start:6px}
+.watch .cta{min-width:220px}
+.watch .cta.stop{background:var(--anar);box-shadow:var(--press) var(--anar-deep)}
+.rec-msg{min-height:48px;text-align:center;font-size:15px;line-height:1.7;padding:0 20px}
+.rec-msg b{color:var(--saffron);font-family:var(--f-display);font-size:19px}
+.bars{display:flex;align-items:flex-end;gap:8px;height:70px;margin:4px 20px 0;padding:0 4px;border-bottom:2px solid rgba(255,247,230,.25)}
+.bars div{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:3px;height:100%;font-size:10.5px;color:#c9cdf0;font-variant-numeric:tabular-nums}
+.bars i{display:block;width:100%;max-width:26px;border-radius:6px 6px 0 0;background:rgba(255,247,230,.35)}
+.bars i.up{background:var(--saffron)}
+.rec-say{display:flex;gap:8px;align-items:flex-end;padding:12px 16px 0}
+.rec-say img{width:64px;height:64px;object-fit:contain;flex:0 0 auto}
+.rec-say .bubble{font-size:13px}
+
+/* ---------- daily rest + comfort ---------- */
+.t-play.rest{background:#3b4aa0;box-shadow:var(--press) #2a3785}
+.t-play.rest .ic{background:rgba(255,255,255,.12)}
+.t-play.rest .ic img{width:52px;height:52px;object-fit:contain}
+.comfort{position:absolute;inset:0;z-index:12;background:rgba(23,33,90,.94);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
+.comfort img{width:150px;height:150px;object-fit:contain}
+.comfort p{margin:0;font-size:17px;line-height:1.8;max-width:26ch}
+.tool{direction:rtl;text-align:right;border:2px dashed #b9a57a;border-radius:18px;padding:12px 14px;display:flex;flex-direction:column;gap:8px;font-size:12.5px;color:var(--page-ink)}
+.tool b{font-size:13px}
+.tool div{display:flex;gap:8px;flex-wrap:wrap}
+.tool button{border:0;cursor:pointer;border-radius:12px;padding:8px 12px;min-height:40px;background:#f7efdc;box-shadow:0 3px 0 #d9c79f;font-weight:700;color:var(--page-ink)}
+.tool span{font-variant-numeric:tabular-nums}
+
 @keyframes spin{to{transform:rotate(360deg)}}
 @keyframes bob{50%{transform:translate(50%,calc(-50% - 6px))}}
 @keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
@@ -300,32 +368,32 @@ button{font:inherit;color:inherit}
           <div class="manzil">
             <h3>منزل ۵ · تعادل <span class="tag">کتاب، ص ۳۳ تا ۳۷</span></h3>
             <div class="tiles">
-              <button class="tile t-play" data-go="ex">
-                <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg></span>
-                <span class="grow"><b>برویم بازی!</b><small>سه تمرین تعادل · امروز روز دومِ هفته است</small>
+              <button class="tile t-play" id="playTile">
+                <span class="ic" id="playIc"></span>
+                <span class="grow"><b id="playTitle">برویم بازی!</b><small id="playSub"></small>
                   <span class="days" id="khanDays"></span></span>
               </button>
-              <button class="tile t-story" data-note="story">
-                <span class="done-chip"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+              <button class="tile t-story" data-go="story">
+                <span class="done-chip" id="storyDone" hidden><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
                 <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#5d4f72" stroke-width="3" stroke-linecap="round"><path d="M6 10c6-3 10-3 14 0v22c-4-3-8-3-14 0zM34 10c-6-3-10-3-14 0v22c4-3 8-3 14 0z"/></svg></span>
-                <b>قصهٔ حرکت</b><small>گوش کن و هر جا «تعادل» شنیدی، روی یک پا بایست</small>
+                <b>قصهٔ حرکت</b><small>تاپ‌تاپو و سه حالتِ تعادل: درخت، لک‌لک، فرشته</small>
               </button>
               <button class="tile t-family" data-go="family">
+                <span class="done-chip" id="familyDone" hidden><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
                 <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0c7a73" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="11" r="4"/><circle cx="28" cy="11" r="4"/><circle cx="20" cy="22" r="3"/><path d="M5 34c0-7 4-11 7-11s5 2 6 4M35 34c0-7-4-11-7-11s-5 2-6 4M15 36c0-4 2-7 5-7s5 3 5 7"/></svg></span>
                 <b>بازی خانوادگی</b><small>دستمال‌بازی روی یک پا، با آهنگ</small>
               </button>
-              <button class="tile t-stars" data-go="parents" style="grid-column:span 2;min-height:0">
+              <button class="tile t-stars" data-go="record" style="grid-column:span 2;min-height:0">
                 <span style="display:flex;align-items:center;gap:12px">
                   <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="#f3a530" stroke="#c87a0c" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
-                  <span style="display:flex;flex-direction:column;gap:2px"><b>ستاره‌های رفتار</b><small>بزرگترت هر بار که رفتار خوبت را دید، ستاره را مُهر می‌زند</small></span>
+                  <span style="display:flex;flex-direction:column;gap:2px"><b>رکوردِ لک‌لک</b><small id="recSub"></small></span>
                 </span>
               </button>
             </div>
           </div>
-          <div class="manzil locked-manzil" aria-disabled="true">
+          <div class="manzil" id="m6">
             <h3>منزل ۶ · زندگی فعال <span class="tag">کتاب، ص ۳۹ تا ۴۳</span></h3>
-            <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
-              وقتی سه مشعلِ تعادل روشن شود، این منزل باز می‌شود.</div>
+            <div class="lock-note" id="m6note"></div>
           </div>
         </div>
       </section>
@@ -358,14 +426,43 @@ button{font:inherit;color:inherit}
             </div>
           </div>
         </div>
+        <div class="comfort" id="comfort" hidden><img src="img/yuzi-1-comfort.webp" alt=""><p>اشکال ندارد! هر بار که تمرین کنی، آسان‌تر می‌شود.</p></div>
         <div class="reward" id="reward" hidden>
           <canvas id="confetti"></canvas>
-          <img src="img/yuzi-1-cheer.webp" alt="" class="reward-yuzi">
-          <h3>آفرین پهلوان!</h3>
+          <img src="img/yuzi-1-cheer.webp" alt="" class="reward-yuzi" id="rewardImg">
+          <h3 id="rewardTitle">آفرین پهلوان!</h3>
           <div class="big-torches" id="bigTorches" aria-hidden="true"></div>
           <p id="rewardText">مشعل روز دوم روشن شد. یک روز دیگر تا گذشتن از پلِ لرزان.</p>
           <div class="xp"><span>یوزی دارد بزرگ می‌شود · ۷۰ از ۱۰۰</span><div class="bar"><i id="xpBar" style="width:40%"></i></div></div>
           <button class="cta gold" data-go="khan">برگرد به خوان</button>
+        </div>
+      </section>
+
+      <!-- ===== STORY ===== -->
+      <section class="screen" id="s-story" hidden aria-label="قصهٔ حرکت">
+        <div class="hdr">
+          <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <h2>قصهٔ حرکت<small>تاپ‌تاپو و تعادل · کتاب، ص ۳۴</small></h2>
+        </div>
+        <div class="sheet story" id="storyBody"></div>
+      </section>
+
+      <!-- ===== STORK RECORD ===== -->
+      <section class="screen" id="s-record" hidden aria-label="رکورد لک‌لک">
+        <div class="rec">
+          <div class="hdr">
+            <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+            <h2>رکوردِ لک‌لک<small>بازی کن و ستاره بگیر · کتاب، ص ۳۷</small></h2>
+          </div>
+          <div class="rec-stars" id="recStars" role="img"></div>
+          <div class="rec-stage"><img src="img/girl-m5-2a.webp" alt="دختری مثل لک‌لک روی یک پا ایستاده"><img src="img/stork-challenge.webp" alt="لک‌لک"></div>
+          <div class="watch">
+            <div class="time" id="recTime" aria-live="off">۰٫۰<small>ثانیه</small></div>
+            <button class="cta gold" id="recBtn">شروع</button>
+          </div>
+          <p class="rec-msg" id="recMsg" aria-live="polite">مثل لک‌لک روی یک پا بایست. بزرگترت «شروع» را بزند و وقتی پایت زمین خورد، «پایم زمین خورد» را.</p>
+          <div class="bars" id="recBars" aria-hidden="true"></div>
+          <div class="rec-say"><img src="img/yuzi-1-balance.webp" alt=""><div class="bubble">من تلاش می‌کنم هر بار در بازی نتیجهٔ بهتری بگیرم.</div></div>
         </div>
       </section>
 
@@ -402,8 +499,8 @@ button{font:inherit;color:inherit}
         <div class="sheet">
           <div class="p-sum">
             <div><b id="pDays">۱ از ۳</b><span>روزِ تمرینِ این هفته</span></div>
-            <div><b id="pStars">۲</b><span>ستارهٔ رفتار</span></div>
-            <div><b>۲ از ۷</b><span>خوانِ گذشته</span></div>
+            <div><b id="pBest">۰</b><span>بهترین رکوردِ لک‌لک (ثانیه)</span></div>
+            <div><b id="pStars">۰ از ۷</b><span>ستارهٔ این هفته</span></div>
           </div>
           <div class="p-h">تقویم هفتگی</div>
           <table class="cal">
@@ -411,8 +508,9 @@ button{font:inherit;color:inherit}
             <tbody id="calBody"></tbody>
           </table>
           <p class="src">صورتک‌ها را خودِ کودک بعد از هر تمرین انتخاب کرده است، مثل جدول «روز اول، دوم، سوم» در کتاب.</p>
-          <div class="p-h">ستاره‌های رفتار را شما مُهر بزنید</div>
-          <div id="behList"></div>
+          <div class="p-h">رکوردِ لک‌لک</div>
+          <div id="pRec"></div>
+          <p class="src">کتاب (ص ۳۷) می‌خواهد کودک هر روز مثل لک‌لک بایستد و هر بار که بیشتر از دفعهٔ قبل ایستاد، یک ستاره رنگ کند. این‌جا زمان را گوشی می‌گیرد و ستاره خودش رنگ می‌شود.</p>
           <div class="p-h">از «سخنی با والدین» کتاب</div>
           <ul class="tips">
             <li>لطفاً فقط ناظر نباشید. با آن‌ها هم‌بازی شوید.</li>
@@ -436,6 +534,12 @@ button{font:inherit;color:inherit}
     <h1>هفت‌خوانِ حرکت</h1>
     <p class="lead">پیش‌نمایشِ رابطِ اختصاصی برای «کتاب کار حرکت و بازی، اول دبستان». دوازده درسِ کتاب در هفت خوان چیده شده و یوزپلنگِ خودِ کتاب، همسفرِ کودک است که با هر روزِ تمرین بزرگ‌تر می‌شود.</p>
     <div class="note-card" id="noteCard"></div>
+    <div class="tool">
+      <b>ابزارِ پیش‌نمایش</b>
+      این دکمه‌ها فقط برای امتحانِ پیش‌نمایش‌اند و در برنامهٔ واقعی نیستند. تمرینِ روزانه هر روز یک بار باز می‌شود.
+      <div><button id="nextDay">برو به فردا</button><button id="resetAll">شروع از اول</button></div>
+      <span id="toolDay"></span>
+    </div>
     <div class="legend">
       <b>چیدمانِ دوازده درس در هفت خوان</b>
       <ol id="legend"></ol>
@@ -469,10 +573,19 @@ const MOVES = [
   {t:'روی یک پا بایست و با پای دیگر دایره‌های رنگی را لمس کن.', goal:4, unit:'دایره', prop:'dots'},
   {t:'روی یک پا بایست و با یک دست لیوان‌های پلاستیکی را روی هم بچین.', goal:6, unit:'لیوان', prop:'cups'}
 ];
-const BEHAVIORS = [
-  {t:'من موقع بازی کردن، مواظب وسایل اطرافم هستم.', n:1},
-  {t:'من قانون بازی را رعایت می‌کنم.', n:1}
+/* کتاب، ص ۳۴: «حرکت و خلاقیت». متن عینِ کتاب است؛ «تعادل» همان‌جا که کتاب پررنگ کرده پررنگ است. */
+const STORY = [
+  {art:['cat-challenge'], who:'تاپ‌تاپو', t:'تاپ‌تاپو توی حیاط بود. گربه‌ی پشمالو روی لبه‌ی دیوار راه می‌رفت. تاپ‌تاپو گفت: <q>خوش به حالِ گربه که می‌تواند روی لبه‌ی دیوار راه برود. من حتّی لبه‌ی باغچه هم نمی‌توانم راه بروم.</q>'},
+  {pose:'tree', who:'درخت', name:'مثلِ درخت', t:'درخت گفت: <q>باید تمرین کنی تا <b>تعادل</b> خودت را حفظ کنی و سعی کنی که نیفتی.</q> تاپ‌تاپو گفت: <q>چه جوری؟</q> درخت گفت: <q>مثلِ من روی یکی از پاهایت بایست و دست‌هایت را مثلِ شاخه‌های من بالای سرت ببر و تا پنج بشمار.</q>',
+    after:'تاپ‌تاپو مثلِ درخت ایستاد. اولش سخت بود، اما کم‌کم یاد گرفت.'},
+  {pose:'stork', art:['stork-greet'], who:'کلاغ', name:'مثلِ لک‌لک', t:'کلاغ از روی پشت‌بام گفت: <q>حالا باید حرکتِ لک‌لک را یاد بگیری.</q> تاپ‌تاپو گفت: <q>ولی تو لک‌لک نیستی.</q> کلاغ گفت: <q>از دوستم لک‌لک یاد گرفته‌ام. روی یک پایت بایست، پای دیگرت را با خم‌کردنِ زانو بالا ببر و سعی کن که <b>تعادل</b> خودت را حفظ کنی و نیفتی. تا پنج بشمار.</q>',
+    after:'تاپ‌تاپو مثلِ لک‌لک ایستاد. اولش سخت بود، اما کم‌کم یاد گرفت.'},
+  {pose:'angel', who:'گنجشک', name:'مثلِ فرشته', t:'گنجشکِ روی درخت گفت: <q>باید حرکتِ فرشته را هم یاد بگیری. یک پایت روی زمین باشد، یک‌پایت را صاف به عقب و بالا ببر. کمرت را خم کن. دست‌هایت را مثلِ بال‌های من به دو طرف باز کن. سعی کن که <b>تعادل</b> خودت را حفظ کنی و نیفتی. تا پنج بشمار.</q>',
+    after:'تاپ‌تاپو مثلِ فرشته ایستاد. اوّلش سخت بود، ولی کم‌کم یاد گرفت.'},
+  {art:['yuzi-1-balance'], who:'پایانِ قصه', t:'تاپ‌تاپو با احتیاط لبه‌ی باغچه ایستاد. دست‌هایش را باز کرد. جلو را نگاه کرد. آرام‌آرام راه رفت و نیفتاد.'}
 ];
+const STORY_WORDS = 'باید تمرین کنی تا تعادل خودت را حفظ کنی و سعی کنی که نیفتی. روی یک پایت بایست، پای دیگرت را با خم‌کردن زانو بالا ببر و سعی کن که تعادل خودت را حفظ کنی و نیفتی. دست‌هایت را مثل بال‌های من به دو طرف باز کن. سعی کن که تعادل خودت را حفظ کنی و نیفتی.';
+const KEYWORD = 'تعادل';
 
 /* ---------- shared drawings ---------- */
 const C = {ink:'#2b2140', saffron:'#f3a530', sd:'#c87a0c', anar:'#d6404c', paper:'#fbf1dc', fay:'#16a39a', lapis:'#22327a'};
@@ -498,16 +611,26 @@ function face(v){
   const mouth = v===2 ? 'M19 36 Q30 46 41 36' : v===1 ? 'M20 38 H40' : 'M19 42 Q30 32 41 42';
   return `<circle cx="30" cy="30" r="26" fill="${fill}" stroke="${C.ink}" stroke-width="2.5"/><circle cx="21" cy="24" r="3.5" fill="${C.ink}"/><circle cx="39" cy="24" r="3.5" fill="${C.ink}"/><path d="${mouth}" stroke="${C.ink}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
 }
+function pose(kind){ // آدمکِ آموزشی؛ تا وقتی تصویرِ دختر در حالتِ درخت و فرشته برسد
+  const st = `fill="none" stroke="${C.ink}" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"`;
+  const head = (x,y)=>`<circle cx="${x}" cy="${y}" r="12" fill="${C.saffron}" stroke="${C.ink}" stroke-width="4"/>`;
+  const ground = `<path d="M18 134 H102" stroke="#e3cf9f" stroke-width="6" stroke-linecap="round"/>`;
+  if(kind==='tree') return `<svg viewBox="0 0 120 140" role="img" aria-label="حالتِ درخت">${ground}<path d="M60 40 V82 M60 82 V130 M60 82 L80 100 L62 108 M60 48 L46 24 L58 4 M60 48 L74 24 L62 4" ${st}/>${head(60,28)}</svg>`;
+  if(kind==='stork') return `<svg viewBox="0 0 120 140" role="img" aria-label="حالتِ لک‌لک">${ground}<path d="M60 40 V82 M60 82 V130 M60 82 L84 88 L80 110 M24 52 H96" ${st}/>${head(60,28)}</svg>`;
+  return `<svg viewBox="0 0 120 140" role="img" aria-label="حالتِ فرشته">${ground}<path d="M48 52 L70 76 M70 76 V130 M70 76 L108 60 M52 56 L24 66 M56 54 L80 34" ${st}/>${head(40,42)}</svg>`;
+}
 const STAR = (on) => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?C.saffron:'none'}" stroke="${on?C.sd:'#c9b583'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 
 /* ---------- state ---------- */
-let state = store.get('state', null) || {
-  days:[[2,2,1], null, null],   // day 1 done with feelings per move
-  stars:[1,1],
-  today:1
-};
+const DAY = 864e5;
+const seed = () => ({ v:2, off:0, days:[{date:dayKey(-1), feel:[2,2,1]}, null, null], story:false, family:false, rec:[6.2, 8.4], recStars:1 });
+let state = store.get('state', null);
+function dayKey(delta=0){ const d = new Date(Date.now() + ((state && state.off)||0)*DAY + delta*DAY); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
+if(!state || state.v !== 2){ state = null; state = seed(); }
 function save(){ store.set('state', state); }
 const doneDays = () => state.days.filter(Boolean).length;
+const practicedToday = () => state.days.some(d => d && d.date === dayKey());
+const secs = n => fa(n.toFixed(1)).replace('.', '٫');
 
 /* ---------- map ---------- */
 function drawMap(){
@@ -551,19 +674,46 @@ function drawMap(){
   map.appendChild(y);
 }
 function renderTorches(){
-  $('#topTorches').innerHTML = [0,1,2].map(i=>torch(!!state.days[i])).join('') + `<span>${fa(doneDays())} از ۳</span>`;
-  $('#khanDays').innerHTML = ['روز ۱','روز ۲','روز ۳'].map((t,i)=>`<span class="day ${state.days[i]?'lit':''} ${i===state.today&&!state.days[i]?'today':''}" title="${t}">${fa(i+1)}</span>`).join('');
-  $('#pDays').textContent = `${fa(doneDays())} از ۳`;
+  const n = doneDays(), today = practicedToday();
+  $('#topTorches').innerHTML = [0,1,2].map(i=>torch(!!state.days[i])).join('') + `<span>${fa(n)} از ۳</span>`;
+  $('#khanDays').innerHTML = [0,1,2].map(i=>`<span class="day ${state.days[i]?'lit':''} ${i===n&&!today?'today':''}">${fa(i+1)}</span>`).join('');
+  $('#pDays').textContent = `${fa(n)} از ۳`;
+  const tile = $('#playTile'), rest = today || n>=3;
+  tile.classList.toggle('rest', rest);
+  tile.setAttribute('aria-disabled', rest ? 'true' : 'false');
+  $('#playIc').innerHTML = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">`
+    : `<svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg>`;
+  $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'تمرینِ امروز تمام شد' : 'برویم بازی!';
+  $('#playSub').textContent = n>=3 ? 'از پلِ لرزان گذشتی. آفرین!' : today ? 'یوزی خوابید. فردا دوباره بیا تا مشعلِ بعدی روشن شود.'
+    : `سه تمرینِ تعادل · امروز روزِ ${['اول','دوم','سوم'][n]} است`;
+  $('#storyDone').hidden = !state.story;
+  $('#familyDone').hidden = !state.family;
+  const best = state.rec.length ? Math.max(...state.rec) : 0;
+  $('#recSub').textContent = `بهترین: ${secs(best)} ثانیه · ستاره ${fa(state.recStars)} از ۷`;
+  const open6 = n>=3;
+  $('#m6').classList.toggle('locked-manzil', !open6);
+  $('#m6note').innerHTML = open6
+    ? `<img src="img/stork-proud.webp" alt="" style="width:44px;height:44px;object-fit:contain">باز شد! تمرین‌های این منزل در نسخهٔ بعدی ساخته می‌شوند.`
+    : `<svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ تعادل روشن شود، این منزل باز می‌شود.`;
+  $('#toolDay').textContent = `روزِ پیش‌نمایش: ${state.off ? `${fa(state.off)} روز بعد از امروز` : 'امروز'}`;
 }
+$('#playTile').addEventListener('click', ()=>{
+  if(practicedToday() || doneDays()>=3){ const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
+  go('ex');
+});
 
 /* ---------- navigation ---------- */
-const NAV_OF = {map:'map', khan:'map', ex:'map', family:'family', treasure:'treasure', parents:'parents'};
+const NAV_OF = {map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents'};
 function go(name){
   $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
   $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
-  $('.nav').hidden = (name==='ex');
+  $('.nav').hidden = (name==='ex' || name==='story' || name==='record');
   if(name==='ex') startExercise();
   if(name==='parents') renderParents();
+  if(name==='story') renderStory(0);
+  if(name==='record') renderRecord();
+  if(name==='khan') renderTorches();
+  if(name!=='record') stopWatch(false);
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic();
   if(name!=='ex') flip(false);
@@ -613,7 +763,7 @@ function flip(on){ clearInterval(flipT); if(!on) return; const m = mi+1; let f =
 function startExercise(){ mi = 0; count = 0; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
 function renderMove(){
   const m = MOVES[mi];
-  $('#exTitle').innerHTML = `تمرین ${fa(mi+1)} از ۳<small>تعادل · روز ${['اول','دوم','سوم'][state.today]}</small>`;
+  $('#exTitle').innerHTML = `تمرین ${fa(mi+1)} از ۳<small>تعادل · روزِ ${['اول','دوم','سوم'][doneDays()]}</small>`;
   $$('#exSteps i').forEach((el,i)=> el.className = i<mi ? 'on' : i===mi ? 'cur' : '');
   flip(true);
   $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن · جای بازی را خلوت کن</small>`;
@@ -637,24 +787,25 @@ $('#tap').addEventListener('click', ()=>{
   if(count>=m.goal) setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450);
 });
 let feelings = [];
+function nextMove(){ if(mi < MOVES.length-1){ mi++; count=0; renderMove(); } else finishDay(); }
 $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
   feelings[mi] = +b.dataset.feel;
   $('#feel').hidden = true;
-  if(mi < MOVES.length-1){ mi++; count=0; renderMove(); }
-  else finishDay();
+  if(feelings[mi]===0){ $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
+  else nextMove();
 }));
 function finishDay(){
   flip(false);
-  const d = state.today;
-  state.days[d] = feelings.slice(0,3);
-  if(state.today < 2) state.today++;
+  state.days[doneDays()] = {date:dayKey(), feel:feelings.slice(0,3)};
   save(); renderTorches();
-  const lit = doneDays();
-  $('#bigTorches').innerHTML = [0,1,2].map(i=> torch(i<lit, i===lit-1 ? 'new' : '').replace('class="torch','class="torch')).join('');
-  $('#rewardText').textContent = lit>=3 ? 'هر سه مشعل روشن شد! پلِ لرزان را رد کردی و منزلِ «زندگی فعال» باز شد.'
-                                        : `مشعل روز ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روز دیگر':'دو روز دیگر'} تا گذشتن از پلِ لرزان.`;
+  const lit = doneDays(), crossed = lit>=3;
+  $('#bigTorches').innerHTML = [0,1,2].map(i=> torch(i<lit, i===lit-1 ? 'new' : '')).join('');
+  $('#rewardImg').src = crossed ? 'img/stork-proud.webp' : 'img/yuzi-1-cheer.webp';
+  $('#rewardTitle').textContent = crossed ? 'از پلِ لرزان گذشتی!' : 'آفرین پهلوان!';
+  $('#rewardText').textContent = crossed ? 'هر سه مشعل روشن شد. لک‌لک به تو افتخار می‌کند و منزلِ «زندگی فعال» باز شد.'
+    : `مشعلِ روزِ ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روزِ دیگر':'دو روزِ دیگر'} تا گذشتن از پلِ لرزان. فردا دوباره بیا!`;
   $('#reward').hidden = false;
-  $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = lit>=3 ? '100%' : '70%'));
+  $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = crossed ? '100%' : `${40+lit*15}%`));
   confetti();
 }
 function confetti(){
@@ -711,19 +862,103 @@ $('#music').addEventListener('click', ()=>{
     $(`.player[data-i="${holder}"]`).classList.add('hit');
     $('#famCall').innerHTML = `<b>آهنگ قطع شد! نوبتِ ${p.n}</b>${ch}<small>پیشنهاد گوشی است؛ هم‌بازی‌ها می‌توانند حرکت دیگری پیشنهاد بدهند</small>`;
     $('#music').textContent = 'دور بعد';
+    if(!state.family){ state.family = true; save(); }
   }, 6000 + Math.random()*7000);
 });
 
 /* ---------- parents ---------- */
 function renderParents(){
   $('#calBody').innerHTML = MOVES.map((m,mIdx)=>`<tr><td>${m.t}</td>${[0,1,2].map(d=>{
-      const v = state.days[d] && state.days[d][mIdx];
+      const v = state.days[d] && state.days[d].feel[mIdx];
       return `<td>${v===undefined||v===null ? '<span class="empty" aria-label="هنوز نه"></span>' : `<svg viewBox="0 0 60 60" role="img" aria-label="${['سخت بود','معمولی بود','خیلی خوب بود'][v]}">${face(v)}</svg>`}</td>`; }).join('')}</tr>`).join('');
-  $('#behList').innerHTML = BEHAVIORS.map((b,i)=>`<div class="beh"><p>${b.t}</p><span class="stars" aria-label="${fa(state.stars[i])} ستاره">${[0,1,2].map(k=>STAR(k<state.stars[i])).join('')}</span>
-      <button class="seal" data-seal="${i}" ${state.stars[i]>=3?'disabled':''}>${state.stars[i]>=3?'کامل':'مُهر بزن'}</button></div>`).join('');
-  $('#pStars').textContent = fa(state.stars.reduce((a,b)=>a+b,0));
+  const best = state.rec.length ? Math.max(...state.rec) : 0;
+  $('#pBest').textContent = secs(best);
+  $('#pStars').textContent = `${fa(state.recStars)} از ۷`;
+  $('#pRec').innerHTML = state.rec.length
+    ? `<div class="beh"><p>${state.rec.map((r,i)=> i && r>state.rec[i-1] ? `<b>${secs(r)}</b>` : secs(r)).join(' ← ')} ثانیه</p><span class="stars">${STAR(true)}</span></div>`
+    : `<div class="beh"><p>هنوز رکوردی ثبت نشده.</p></div>`;
 }
-document.addEventListener('click', e=>{ const s = e.target.closest('[data-seal]'); if(!s) return; const i=+s.dataset.seal; if(state.stars[i]<3){ state.stars[i]++; save(); renderParents(); } });
+
+/* ---------- story: read together, hold each pose, then find the word ---------- */
+let page = 0, countT = null, found = new Set();
+function renderStory(i){
+  page = i; clearInterval(countT);
+  const total = STORY.length + 1;
+  const steps = Array.from({length:total}, (_,k)=>`<i class="${k<i?'on':k===i?'cur':''}"></i>`).join('');
+  const readNote = `<div class="read-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2" stroke-linecap="round"><path d="M4 6c3-2 5-2 8 0v13c-3-2-5-2-8 0zM20 6c-3-2-5-2-8 0v13c3-2 5-2 8 0z"/></svg>این قصه را بزرگترت برایت بلند بخواند.</div>`;
+  if(i < STORY.length){
+    const sc = STORY[i];
+    const art = (sc.pose ? pose(sc.pose) : '') + (sc.art||[]).map(a=>`<img src="img/${a}.webp" alt="">`).join('');
+    const poseBox = sc.pose ? `<div class="pose"><button class="cnt" id="cnt" aria-label="شروعِ شمارش">۵</button><p><b>${sc.name} بایست</b>دکمه را بزن و تا پنج بشمارید. بعد پایت را عوض کن و یک بارِ دیگر.</p></div>` : '';
+    $('#storyBody').innerHTML = `<div class="st-steps">${steps}</div>${i===0?readNote:''}
+      <div class="st-art"><span class="who-says">${sc.who}</span>${art}</div>
+      <p class="st-text">${sc.t}</p>${poseBox}
+      ${sc.after ? `<p class="st-text" id="after" hidden>${sc.after}</p>` : ''}
+      <div class="st-nav">${i>0?'<button class="ghost" id="stPrev">قبلی</button>':''}<button class="cta" id="stNext" ${sc.pose?'disabled style="opacity:.5"':''}>${sc.pose?'اول بایست و بشمار':'بعدی'}</button></div>`;
+    if(sc.pose) $('#cnt').addEventListener('click', ()=> countdown());
+  } else {
+    found = new Set();
+    const words = STORY_WORDS.split(' ');
+    $('#storyBody').innerHTML = `<div class="st-steps">${steps}</div>
+      <div class="ask"><b>کلمهٔ «${KEYWORD}» را پیدا کن</b>با کمکِ بزرگترت، هر جا «${KEYWORD}» را دیدی رویش بزن.</div>
+      <div class="find-bar"><img src="img/yuzi-1-wait.webp" alt="" style="width:44px;height:44px;object-fit:contain"><span>پیدا کردی:</span><b id="foundN">۰</b><span>از ۳</span></div>
+      <p class="words">${words.map((w,k)=>`<button class="w" data-k="${k}">${w}</button>`).join(' ')}</p>
+      <div class="ask" id="askMore" hidden><b>حالا با هم حرف بزنید</b>بگو چطور می‌توانی روی یک پایت بایستی و نیفتی؟</div>
+      <div class="st-nav"><button class="ghost" id="stPrev">قبلی</button><button class="cta" id="stNext" disabled style="opacity:.5">پیدا کن تا تمام شود</button></div>`;
+    $$('#storyBody .w').forEach(b=> b.addEventListener('click', ()=>{
+      const clean = b.textContent.replace(/[.،,]/g,'');
+      if(clean === KEYWORD){ found.add(b.dataset.k); b.classList.add('hit'); $('#foundN').textContent = fa(found.size);
+        if(found.size===3){ const n=$('#stNext'); n.disabled=false; n.style.opacity=''; n.textContent='تمام! برگرد به خوان'; $('#askMore').hidden=false; state.story=true; save(); try{ navigator.vibrate && navigator.vibrate([20,40,20]); }catch(e){} } }
+      else { b.classList.remove('miss'); void b.offsetWidth; b.classList.add('miss'); }
+    }));
+  }
+  const prev = $('#stPrev'); if(prev) prev.addEventListener('click', ()=>renderStory(page-1));
+  $('#stNext').addEventListener('click', ()=> page < STORY.length ? renderStory(page+1) : go('khan'));
+  $('#s-story').scrollTop = 0;
+}
+function countdown(){
+  const b = $('#cnt'); let n = 0; b.classList.add('run'); b.disabled = true;
+  const say = ['یک','دو','سه','چهار','پنج'];
+  b.textContent = '';
+  countT = setInterval(()=>{ n++; b.textContent = fa(n); b.setAttribute('aria-label', say[n-1]);
+    if(n>=5){ clearInterval(countT); b.classList.remove('run'); b.disabled = false;
+      const a = $('#after'); if(a) a.hidden = false;
+      const nx = $('#stNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; } }, 1000);
+}
+
+/* ---------- stork record: an attempt longer than the one before earns a star (book p.37) ---------- */
+let watchT = null, watchStart = 0;
+function renderRecord(){
+  $('#recStars').innerHTML = Array.from({length:7}, (_,k)=>STAR(k<state.recStars)).join('');
+  $('#recStars').setAttribute('aria-label', `${fa(state.recStars)} ستاره از هفت`);
+  const off = Math.max(0, state.rec.length-7), last = state.rec.slice(off), top = Math.max(10, ...last);
+  $('#recBars').innerHTML = last.map((r,k)=>{ const prev = off+k>0 ? state.rec[off+k-1] : null;
+    return `<div>${secs(r)}<i class="${prev!==null && r>prev ? 'up':''}" style="height:${Math.max(6, r/top*100)}%"></i></div>`; }).join('');
+  if(!watchT){ $('#recBtn').textContent = 'شروع'; $('#recBtn').classList.remove('stop'); }
+}
+function stopWatch(record){
+  if(!watchT) return;
+  clearInterval(watchT); watchT = null;
+  const sec = Math.round((performance.now()-watchStart)/100)/10;
+  if(!record){ $('#recTime').innerHTML = `۰٫۰<small>ثانیه</small>`; return; }
+  const prev = state.rec.length ? state.rec[state.rec.length-1] : null;
+  state.rec.push(sec);
+  let msg;
+  if(prev!==null && sec > prev && state.recStars < 7){ state.recStars++; msg = `<b>بیشتر از دفعهٔ قبل!</b> ${secs(sec)} ثانیه ایستادی و یک ستارهٔ تازه گرفتی.`; }
+  else if(prev===null) msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ بعد بیشتر بایست تا ستاره بگیری.`;
+  else msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ قبل ${secs(prev)} ثانیه بود. دوباره امتحان کن!`;
+  save(); renderRecord();
+  $('#recBtn').textContent = 'دوباره';
+  $('#recTime').innerHTML = `${secs(sec)}<small>ثانیه</small>`;
+  $('#recMsg').innerHTML = msg;
+}
+$('#recBtn').addEventListener('click', ()=>{
+  if(watchT){ stopWatch(true); return; }
+  watchStart = performance.now();
+  $('#recBtn').textContent = 'پایم زمین خورد'; $('#recBtn').classList.add('stop');
+  $('#recMsg').textContent = 'مثل لک‌لک بایست و نیفتی!';
+  watchT = setInterval(()=>{ $('#recTime').innerHTML = `${secs((performance.now()-watchStart)/1000)}<small>ثانیه</small>`; }, 100);
+});
 
 /* ---------- treasure ---------- */
 function renderTreasure(){
@@ -740,8 +975,9 @@ const NOTES = {
   ex:{h:'برویم بازی!', d:[['در کتاب','ص ۳۴: سه حرکتِ تعادلی با کیسهٔ شن، دایرهٔ رنگی و لیوان'],['در برنامه','یک حرکت در هر صفحه، با شمارنده‌ای که کودک خودش می‌زند'],['صورتک‌ها','همان سه صورتکِ تقویم هفتگیِ کتاب؛ بعد از هر حرکت'],['پاداش','روشن شدنِ مشعلِ امروز و بزرگ شدنِ یوزی']]},
   family:{h:'بازی خانوادگی', d:[['در کتاب','ص ۳۶: دستمال‌بازی روی یک پا با آهنگ'],['در برنامه','گوشی داور می‌شود: آهنگ پخش می‌کند و یک جای غیرمنتظره قطعش می‌کند'],['چرا','در کتاب یک نفر باید آهنگ را قطع کند و از بازی جا می‌ماند؛ این‌جا همه بازی می‌کنند']]},
   treasure:{h:'گنجینه', d:[['یوزی','یوزپلنگِ کتاب، با خط‌های اشکیِ یوزِ ایرانی؛ در سه مرحله بزرگ می‌شود'],['نشان‌ها','برای هر خوانِ گذشته یک نشان']]},
-  parents:{h:'بخش والدین', d:[['در کتاب','جدولِ کاغذیِ «روز اول، دوم، سوم» و ستاره‌هایی که خودِ کودک رنگ می‌کند'],['در برنامه','صورتک‌ها را کودک انتخاب می‌کند، اما ستارهٔ رفتار را بزرگتر مُهر می‌زند'],['پیام‌ها','جمله‌های یوزپلنگ در کتاب، مثل «من قانون بازی را رعایت می‌کنم»، این‌جا رفتارهای قابلِ ستاره‌اند']]},
-  story:{h:'قصهٔ حرکت', d:[['در کتاب','بخش «حرکت و خلاقیت»: قصه‌ای که بزرگتر می‌خواند و کودک کلمهٔ کلیدی را پیدا می‌کند'],['در برنامه','قصه پخش می‌شود و هر جا کلمهٔ «تعادل» آمد، کودک روی یک پا می‌ایستد'],['وضعیت','در این نمونه انجام‌شده نشان داده شده؛ در پیش‌نمایش ساخته نشده']]}
+  parents:{h:'بخش والدین', d:[['در کتاب','جدولِ کاغذیِ «روز اول، دوم، سوم» و ستاره‌هایی که خودِ کودک رنگ می‌کند'],['در برنامه','صورتک‌ها را کودک انتخاب می‌کند؛ زمانِ ایستادن را گوشی می‌گیرد، پس ستاره واقعی است'],['پیشرفت','همهٔ رکوردهای لک‌لک به ترتیب؛ آن‌هایی که بیشتر از دفعهٔ قبل بوده‌اند پررنگ‌اند']]},
+  record:{h:'رکوردِ لک‌لک', d:[['در کتاب','ص ۳۷: هر روز مثلِ لک‌لک بایست؛ هر بار بیشتر از دفعهٔ قبل ایستادی، یکی از هفت ستاره را رنگ کن'],['در برنامه','کرنومتر: بزرگتر «شروع» و «پایم زمین خورد» را می‌زند؛ ستاره خودش رنگ می‌شود'],['مقایسه','با دفعهٔ قبل، نه با بهترین رکورد؛ همان چیزی که کتاب می‌گوید و برای کودکِ هفت‌ساله دست‌یافتنی‌تر است'],['جملهٔ یوزپلنگ','«من تلاش می‌کنم هر بار در بازی نتیجهٔ بهتری بگیرم.» از همان صفحه']]},
+  story:{h:'قصهٔ حرکت', d:[['در کتاب','ص ۳۴: قصهٔ تاپ‌تاپو؛ درخت، کلاغ و گنجشک سه حالتِ تعادل یادش می‌دهند و هر بار «تا پنج بشمار»'],['در برنامه','متنِ عینِ کتاب، صفحه به صفحه؛ هر حالت یک شمارشِ پنج‌ثانیه‌ای دارد و تا انجامش نشود قصه جلو نمی‌رود'],['پیدا کردنِ کلمه','کتاب می‌گوید «واژهٔ تعادل را پیدا کن و انگشتت را زیرش بگذار»؛ این‌جا رویش ضربه می‌زند'],['تصویرها','آدمک‌های درخت و فرشته موقت‌اند تا تصویرِ دختر در این دو حالت ساخته شود']]}
 };
 function showNote(k){ const n = NOTES[k]; if(!n) return; $('#noteCard').innerHTML = `<h4>${n.h}</h4><dl>${n.d.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>`; }
 function flashNote(i){ const k = KHANS[i]; $('#noteCard').innerHTML = `<h4>خوان ${fa(i+1)}: ${k.name}</h4><dl><dt>درس‌ها</dt><dd>${k.lessons.join('، ')}</dd><dt>وضعیت</dt><dd>${i<CURRENT?'گذشته؛ نشانش در گنجینه است':'هنوز بسته؛ بعد از خوانِ قبلی باز می‌شود'}</dd></dl>`; }
@@ -751,6 +987,8 @@ $('#legend').innerHTML = KHANS.map((k,i)=>`<li><b>${k.name}</b>: ${k.lessons.map
 /* ---------- boot ---------- */
 $$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
 for(let m=1;m<=3;m++) for(const f of 'ab'){ const im = new Image(); im.src = `img/girl-m5-${m}${f}.webp`; }
+$('#nextDay').addEventListener('click', ()=>{ state.off++; save(); renderTorches(); go('khan'); });
+$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); save(); renderTorches(); go('khan'); });
 drawMap(); renderTorches(); drawCircle(); renderTreasure(); go('map');
 })();
 </script>
