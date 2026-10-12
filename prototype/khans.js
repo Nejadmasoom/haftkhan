@@ -13,7 +13,8 @@ const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':
 /* ===================================================================== art
    Images that have arrived from the illustrator (prompts 19–28). Until a name is listed here, a simple
    figure drawn in code stands in for it, so every screen works before the art does. */
-const READY = new Set([]);        // girl move frames, without the "girl-" prefix, e.g. 'm1-legL'
+const READY = new Set([          // girl move frames, without the "girl-" prefix
+  'm1-legL','m1-legR','m1-headR','m1-headL','m1-headD','m1-headU','m1-armU','m1-armF','m1-armS','m1-armD']);
 const READY_BOY = new Set([]);    // the same for the boy
 const READY_ART = new Set([]);    // story-mom, story-aunt, story-rabbit, story-frog, story-uncle, animal-*, yuzi-1-careful …
 
@@ -158,8 +159,7 @@ function figSrc(name){
   if(name === 'stand') return `img/${H.kid()}-idle.webp`;
   if(name === 'cheer') return `img/${H.kid()}-cheer.webp`;
   if(boy && READY_BOY.has(name)) return `img/boy-${name}.webp`;
-  if(READY.has(name) && (!boy || !POSES[name])) return `img/girl-${name}.webp`;
-  if(READY.has(name) && boy) return stickSVG(name);   // the boy keeps his own colours until his frames arrive
+  if(READY.has(name)) return `img/girl-${name}.webp`;   // as in khan 3, the boy sees the girl's frames until his own arrive
   return stickSVG(name);
 }
 const yuziArt = pose => READY_ART.has(`yuzi-1-${pose}`) ? `img/yuzi-1-${pose}.webp` : H.yz('talk');
