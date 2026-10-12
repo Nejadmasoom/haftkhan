@@ -441,6 +441,68 @@ button{font:inherit;color:inherit}
 @media (max-width:860px){.stage{gap:24px;padding-block:16px}.phone{height:780px}.notes h1{font-size:32px}}
 @media (max-width:430px){.stage{padding-inline:8px}.phone{border-radius:34px;padding:6px;height:760px}.app{border-radius:28px}}
 
+/* ---------- khans 1-2 (khans.js) ---------- */
+.khan.open .medal{background:var(--paper)}
+.ptabs{display:flex;gap:6px;overflow-x:auto;padding:2px 2px 10px;scrollbar-width:none}
+.ptabs::-webkit-scrollbar{display:none}
+.ptabs button{flex:0 0 auto;border:0;cursor:pointer;border-radius:var(--r-pill);padding:8px 14px;min-height:40px;background:var(--paper-2);color:var(--ink);font-weight:700;font-size:13px}
+.ptabs button[aria-selected="true"]{background:var(--lapis);color:var(--on-dark)}
+.task{display:flex;flex-direction:column;gap:10px;background:var(--lapis);color:var(--on-dark);border-radius:22px;padding:14px}
+.task .row{display:flex;align-items:center;gap:14px}
+.task p{margin:0;font-size:14px;line-height:1.7}
+.task p b{display:block;font-family:var(--f-display);font-size:18px;color:var(--saffron)}
+.task .cnt{width:74px;height:74px;border-radius:50%;flex:0 0 auto;display:flex;flex-direction:column;align-items:center;justify-content:center;background:var(--saffron);color:var(--ink);font-family:var(--f-display);font-size:34px;line-height:1;box-shadow:0 5px 0 var(--saffron-deep);border:0;cursor:pointer}
+.task .cnt small{font-family:var(--f-body);font-size:11px;font-weight:700}
+.task .cnt:active{transform:translateY(4px);box-shadow:0 1px 0 var(--saffron-deep)}
+.task .cnt.done{background:var(--leaf);color:#fff;box-shadow:0 5px 0 #2f7d3b}
+.task .camslot{width:100%;height:220px;border-radius:16px;overflow:hidden}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chips span{font-size:12.5px;font-weight:700;padding:5px 10px;border-radius:var(--r-pill);background:rgba(255,247,230,.14);color:#dfe3ff;transition:background .2s}
+.chips span.on{background:var(--saffron);color:var(--ink)}
+.chips span.ok{background:rgba(79,179,90,.35);color:#fff}
+.figrow{display:flex;justify-content:center;gap:4px;height:150px;background:#fff8ea;border-radius:18px;padding:6px}
+.figrow img{height:100%;width:auto;max-width:48%;object-fit:contain}
+.asks{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px}
+.asks li{display:flex;gap:8px;align-items:flex-start;font-size:14px;line-height:1.8}
+.asks li::before{content:"";flex:0 0 9px;height:9px;margin-top:9px;border-radius:50%;background:var(--anar)}
+.choice.picked{box-shadow:0 0 0 3px var(--saffron),0 5px 0 var(--paper-2)}
+.choice .pickmark{position:absolute;top:8px;inset-inline-end:10px;background:var(--saffron);color:var(--ink);font-size:11px;font-weight:700;padding:2px 9px;border-radius:var(--r-pill)}
+.choice .eye{position:absolute;bottom:8px;inset-inline-end:10px;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:var(--r-pill);background:rgba(22,163,154,.15);color:var(--fayruz-deep)}
+.choice .eye.hand{background:rgba(214,64,76,.12);color:var(--anar-deep)}
+.cards{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:0 16px}
+.card{border:0;cursor:pointer;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:0 5px 0 var(--paper-2);padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:132px;font-size:13px;font-weight:700;line-height:1.5;text-align:center;position:relative}
+.card:active{transform:translateY(4px);box-shadow:0 1px 0 var(--paper-2)}
+.card svg{width:64px;height:64px}
+.card .n{position:absolute;top:6px;inset-inline-end:8px;background:var(--saffron);color:var(--ink);border-radius:var(--r-pill);font-size:11px;padding:1px 7px}
+.checks{display:flex;flex-direction:column;gap:10px;margin:0 16px}
+.check{display:flex;align-items:center;gap:12px;border:0;cursor:pointer;border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:0 5px 0 var(--paper-2);padding:8px 12px;text-align:start;min-height:84px}
+.check img{width:64px;height:72px;object-fit:contain;flex:0 0 auto}
+.check b{flex:1;font-size:15px;line-height:1.5}
+.check i{width:34px;height:34px;border-radius:50%;border:3px dashed #d8c69e;flex:0 0 auto;display:grid;place-items:center}
+.check.on i{border:0;background:var(--leaf)}
+.check.on i::after{content:"";width:14px;height:8px;border:solid #fff;border-width:0 0 4px 4px;transform:rotate(-45deg) translate(1px,-2px)}
+.grbody{display:flex;flex-direction:column;gap:12px}
+.grbody .rec-stage{margin:0 16px}
+.tally{display:flex;flex-direction:column;gap:8px;width:100%}
+.tally div{display:flex;align-items:center;gap:10px;background:#fff8ea;border-radius:16px;padding:6px 10px;box-shadow:0 3px 0 var(--paper-2)}
+.tally img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 20%;background:#fff}
+.tally b{flex:1;font-size:14px}
+.tally output{font-family:var(--f-display);font-size:22px;min-width:28px;text-align:center;color:var(--lapis)}
+.tally button{width:40px;height:40px;border-radius:12px;border:0;cursor:pointer;background:var(--paper-2);font-size:20px;font-weight:800;color:var(--ink)}
+.tally .lead{box-shadow:0 0 0 3px var(--saffron),0 3px 0 var(--paper-2)}
+.bigcmd{background:var(--paper);color:var(--ink);border-radius:24px;padding:16px;text-align:center;box-shadow:0 6px 0 var(--paper-2);display:flex;flex-direction:column;align-items:center;gap:6px;width:100%}
+.bigcmd img{height:120px;width:auto;object-fit:contain}
+.bigcmd b{font-family:var(--f-display);font-size:26px;color:var(--anar);line-height:1.2}
+.bigcmd small{font-size:12.5px;color:var(--ink-soft)}
+.secret{min-height:150px;justify-content:center}
+.numin{display:flex;gap:8px;align-items:center;justify-content:center}
+.numin input{width:110px;min-height:52px;border-radius:16px;border:3px solid transparent;background:var(--paper);color:var(--ink);font:inherit;font-size:24px;text-align:center}
+.numin input:focus{outline:none;border-color:var(--saffron)}
+.modes{display:flex;gap:6px;justify-content:center;flex-wrap:wrap;padding:0 16px}
+.modes button{border:0;cursor:pointer;border-radius:var(--r-pill);padding:8px 14px;min-height:40px;background:rgba(255,247,230,.14);color:var(--on-dark);font-weight:700;font-size:13px}
+.modes button[aria-pressed="true"]{background:var(--saffron);color:var(--ink)}
+#gxScene .fig{height:94%;width:auto;max-width:60%;right:6%;object-fit:contain}
+
 /* ---------- play mode: the real app, full screen. The phone mock-up and notes are only for ?preview ---------- */
 html.play body{background:var(--lapis-deep)}
 html.play .notes{display:none}
@@ -646,6 +708,8 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <section class="screen" id="s-parents" hidden aria-label="بخش والدین">
         <div class="hdr"><h2 id="parentsTitle">برای پدر و مادر<small>هفتهٔ تعادل · منزل ۵</small></h2></div>
         <div class="sheet">
+          <div class="ptabs" id="pTabs" role="tablist" aria-label="منزل‌ها"></div>
+          <div id="p5">
           <div class="p-sum">
             <div><b id="pDays">۱ از ۳</b><span>روزِ تمرینِ این هفته</span></div>
             <div><b id="pBest">۰</b><span>بهترین رکوردِ لک‌لک (ثانیه)</span></div>
@@ -663,6 +727,8 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
           <div class="p-h">رکوردِ لک‌لک</div>
           <div id="pRec"></div>
           <p class="src">کتاب (ص ۳۷) می‌خواهد کودک هر روز مثل لک‌لک بایستد و هر بار که بیشتر از دفعهٔ قبل ایستاد، یک ستاره رنگ کند. این‌جا زمان را گوشی می‌گیرد و ستاره خودش رنگ می‌شود.</p>
+          </div>
+          <div id="pG" hidden></div>
           <div class="p-h">از «سخنی با والدین» کتاب</div>
           <ul class="tips">
             <li>لطفاً فقط ناظر نباشید. با آن‌ها هم‌بازی شوید.</li>
@@ -670,6 +736,77 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
             <li>وسایل موردنیاز برای بازی را فراهم و آماده‌سازی نمایید.</li>
             <li>زمانی منظم و ثابت در طول هفته را به بازی و فعالیت‌های آن اختصاص دهید.</li>
           </ul>
+        </div>
+      </section>
+
+      <!-- ===== KHANS 1-2: built from data in khans.js ===== -->
+      <section class="screen" id="s-gkhan" hidden aria-label="خوان">
+        <div class="hdr"><button class="back" data-go="map" aria-label="برگشت به نقشه"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="gkTitle"></h2></div>
+        <div class="guard"><img id="gkGuard" src="" alt="" class="guard-img"><div class="bubble" id="gkBubble"></div></div>
+        <div class="sheet" id="gkBody"></div>
+      </section>
+
+      <section class="screen" id="s-gchoose" hidden aria-label="انتخابِ بازیِ امروز">
+        <div class="hdr"><button class="back" data-go="gkhan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="gcTitle"></h2></div>
+        <div class="sheet"><div class="book-rule"><img src="img/yuzi-1-talk.webp" alt=""><span id="gcRule"></span></div><div class="choices" id="gcChoices"></div><div id="gcGo"></div></div>
+      </section>
+
+      <section class="screen" id="s-gex" hidden aria-label="بازی">
+        <div class="ex">
+          <div class="hdr"><button class="back" data-go="gkhan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="gxTitle"></h2></div>
+          <div class="scene" id="gxScene"><svg viewBox="0 0 320 250" id="gxSvg" aria-hidden="true"></svg><img class="fig" id="gxFig" alt=""></div>
+          <div style="display:flex;justify-content:center;padding-top:10px"><button class="camtoggle" id="gxCam" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg><span>یوزی با دوربین ببیند</span></button></div>
+          <p class="instr" id="gxInstr"></p>
+          <div class="counter">
+            <div class="ring">
+              <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="68" fill="none" stroke="rgba(255,247,230,.15)" stroke-width="10"/>
+                <circle id="gxArc" cx="75" cy="75" r="68" fill="none" stroke="#f3a530" stroke-width="10" stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="427" style="transition:stroke-dashoffset .3s"/></svg>
+              <button id="gxTap" aria-live="polite"><span id="gxNum">۰</span><small id="gxUnit"></small></button>
+            </div>
+            <div class="hint" id="gxHint"></div>
+          </div>
+          <div class="feel" id="gxFeel" hidden>
+            <h3>این بازی چطور بود؟</h3>
+            <p>یکی از صورتک‌ها را انتخاب کن</p>
+            <div class="faces">
+              <button data-feel="2" aria-label="خیلی خوب بود"><svg viewBox="0 0 60 60" data-face="2"></svg></button>
+              <button data-feel="1" aria-label="معمولی بود"><svg viewBox="0 0 60 60" data-face="1"></svg></button>
+              <button data-feel="0" aria-label="سخت بود"><svg viewBox="0 0 60 60" data-face="0"></svg></button>
+            </div>
+          </div>
+          <div class="feel" id="gxSeen" hidden>
+            <img src="img/yuzi-1-wait.webp" alt="" style="width:110px;height:110px;object-fit:contain">
+            <h3>بزرگترت دید؟</h3>
+            <p id="gxSeenText">یوزی این حرکت را با دوربین نمی‌بیند؛ بزرگترت تأیید کند.</p>
+            <div style="display:flex;gap:10px"><button class="cta gold" id="gxSeenYes">بله، دیدم</button><button class="ghost" id="gxSeenNo">هنوز نه</button></div>
+          </div>
+        </div>
+        <div class="comfort" id="gxComfort" hidden><div class="pair"><img id="gxComfortKid" src="" alt=""><img id="gxComfortYuzi" src="" alt=""></div><p>اشکال ندارد! هر بار که تمرین کنی، آسان‌تر می‌شود.</p></div>
+        <div class="reward" id="gxReward" hidden>
+          <canvas id="gxConfetti"></canvas>
+          <div class="pair"><img id="gxRewardKid" src="" alt="" class="reward-yuzi"><img id="gxRewardImg" src="" alt="" class="reward-yuzi"></div>
+          <h3 id="gxRewardTitle"></h3>
+          <div class="big-torches" id="gxTorches" aria-hidden="true"></div>
+          <p id="gxRewardText"></p>
+          <button class="cta gold" data-go="gkhan">برگرد به خوان</button>
+        </div>
+      </section>
+
+      <section class="screen" id="s-gstory" hidden aria-label="قصهٔ حرکت">
+        <div class="hdr"><button class="back" data-go="gkhan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="gsTitle"></h2></div>
+        <div class="sheet story" id="gsBody"></div>
+      </section>
+
+      <section class="screen lattice" id="s-gfam" hidden aria-label="بازی خانوادگی">
+        <div class="hdr"><button class="back" data-go="gkhan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="gfTitle"></h2></div>
+        <div class="sheet" id="gfBody"></div>
+      </section>
+
+      <section class="screen" id="s-gstar" hidden aria-label="بازی کن و ستاره بگیر">
+        <div class="rec">
+          <div class="hdr"><button class="back" data-go="gkhan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="grTitle"></h2></div>
+          <div class="rec-stars" id="grStars" role="img"></div>
+          <div id="grBody" class="grbody"></div>
         </div>
       </section>
 
@@ -763,7 +900,7 @@ const KHANS = [
   {name:'چشمهٔ دل', lessons:['قلب قوی'], icon:'heart', guard:'rakhsh'},
   {name:'جشنِ سرزمین', lessons:['بازی‌های بومی‌محلی'], icon:'flag', guard:'simorgh'}
 ];
-const CURRENT = 2; // khan index in progress (0-based)
+const BUILT = 3; // khans 1..3 have playable lessons; the rest are on the map but not built yet
 const MOVES = [
   {t:'روی یک پا بایست و با پای دیگر کیسه‌های شن را داخل سبد بگذار.', goal:5, unit:'کیسه', prop:'bags'},
   {t:'روی یک پا بایست و با پای دیگر دایره‌های رنگی را لمس کن.', goal:4, unit:'دایره', prop:'dots'},
@@ -823,12 +960,25 @@ function dayKey(delta=0){ const d = new Date(Date.now() + ((state && state.off)|
 if(!state || state.v !== 3){ state = null; state = seed(); }
 function save(){ store.set(SKEY, state); }
 if(!state.cam) state.cam = {dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0};
+/* lessons 1-4 (khans 1 and 2) — the engine for them lives in khans.js */
+const newLesson = () => ({days:[null,null,null], story:false, family:false, stars:0, rec:[], log:{}, cam:{}});
+if(!state.L){ state.L = {1:newLesson(), 2:newLesson(), 3:newLesson(), 4:newLesson()}; }
+/* while the game is being tested, every built khan is open; the parents page can turn the real order back on */
+if(state.openAll === undefined) state.openAll = true;
+if(!state.cur) state.cur = 1;
+const daysOf = n => n === 5 ? state.days : state.L[n].days;
+const lessonDone = n => daysOf(n).filter(Boolean).length >= 3;
+const LESSON_KHAN = {1:0, 2:0, 3:1, 4:1, 5:2};
+const KHAN_LESSONS = [[1,2],[3,4],[5]];   // lesson 6 (khan 3) is not built yet
+const khanPassed = i => i < BUILT && KHAN_LESSONS[i].every(lessonDone);
+const khanOpen = i => i < BUILT && (i === 0 || state.openAll || khanPassed(i-1));
+const lessonOpen = n => state.openAll || n === 1 || lessonDone(n-1);
 const kid = () => (state.profile && state.profile.kid) || 'girl';
 const kidName = () => (state.profile && state.profile.name) || 'قهرمان';
 /* Yuzi grows with the journey: a cub to khan 3, young from khan 4, grown after khan 7 */
 /* the preview tells a story where khans 1-2 are behind us; a real player has passed none — only khan 3 is built */
-const PASSED = PREVIEW ? CURRENT : 0;
-const khansPassed = () => PASSED;
+const khansPassed = () => KHANS.filter((k,i)=>khanPassed(i)).length;
+const curKhan = () => LESSON_KHAN[state.cur] ?? 0;
 const yuziStage = () => khansPassed() >= 7 ? 3 : khansPassed() >= 3 ? 2 : 1;
 const YUZI_NAMES = ['','توله‌یوز','یوزِ جوان','یوزِ تیزپا'];
 /* Movement figures for the chosen hero. Add a name here when its boy image is in img/
@@ -846,11 +996,12 @@ const secs = n => fa(n.toFixed(1)).replace('.', '٫');
 /* ---------- map ---------- */
 function drawMap(){
   const map = $('#map');
+  map.querySelectorAll('svg.path,.khan,.yuzi-on-map').forEach(n=>n.remove());
   const H = 1180, W = 360;
   const pts = [ [180,1080], [90,930], [250,780], [110,630], [250,480], [110,330], [190,180] ]; // bottom → top
   let d = `M${pts[0][0]} ${pts[0][1]+80}`;
   pts.forEach((p,i)=>{ if(i===0){ d += ` L${p[0]} ${p[1]}`; return; } const q = pts[i-1]; const my = (p[1]+q[1])/2; d += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; });
-  const doneLen = PASSED; // segments completed
+  let doneLen = 0; while(doneLen < KHANS.length-1 && khanPassed(doneLen)) doneLen++; // segments completed
   let dDone = `M${pts[0][0]} ${pts[0][1]+80} L${pts[0][0]} ${pts[0][1]}`;
   for(let i=1;i<=doneLen;i++){ const p=pts[i], q=pts[i-1], my=(p[1]+q[1])/2; dDone += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; }
   let stars=''; for(let i=0;i<40;i++){ stars += `<circle cx="${(i*97)%W}" cy="${(i*233)%H}" r="${1+(i%3)*.6}" fill="#fff7e6" opacity="${.25+(i%4)*.12}"/>`; }
@@ -864,29 +1015,30 @@ function drawMap(){
   map.insertAdjacentHTML('beforeend', svg);
   KHANS.forEach((k,i)=>{
     const [x,y] = pts[i];
-    const cls = i<PASSED ? 'done' : i===CURRENT ? 'now' : i<CURRENT ? 'soon' : 'locked';
+    const cur = curKhan(), open = khanOpen(i), passed = khanPassed(i);
+    const cls = passed ? 'done' : i===cur ? 'now' : open ? 'open' : i>=BUILT && (i===0 || khanPassed(i-1)) ? 'soon' : 'locked';
     const b = document.createElement('button');
     b.className = 'khan '+cls;
     b.style.right = `${(1 - x/W)*100}%`;
     b.style.top = `${y/H*100}%`;
-    const status = i<PASSED ? 'گذشته' : i===CURRENT ? 'خوانِ امروز' : i<CURRENT ? 'به‌زودی' : 'هنوز بسته';
+    const status = passed ? 'گذشته' : i===cur ? 'خوانِ امروز' : open ? 'باز' : cls==='soon' ? 'به‌زودی' : 'هنوز بسته';
     b.setAttribute('aria-label', `خوان ${fa(i+1)}: ${k.name} — ${status}`);
-    b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><img src="img/${k.guard}-greet.webp" alt="">${i>CURRENT?`<span class="lock">${LOCK}</span>`:''}</span>
+    b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><img src="img/${k.guard}-greet.webp" alt="">${cls==='locked'||cls==='soon'?`<span class="lock">${LOCK}</span>`:''}</span>
       <span class="label">${k.name}</span><span class="sub">${k.lessons.join(' · ')}</span>`;
-    if(i===CURRENT) b.addEventListener('click', ()=>go('khan'));
+    if(open || passed) b.addEventListener('click', ()=> enterKhan(i));
     else b.addEventListener('click', ()=>{ flashNote(i); meetGuardian(i); });
     map.appendChild(b);
   });
   const y = document.createElement('div');
   y.className='yuzi-on-map';
-  const [cx,cy] = pts[CURRENT];
+  const [cx,cy] = pts[curKhan()];
   y.style.right = `${(1 - (cx+62)/W)*100}%`; y.style.top = `${(cy-30)/H*100}%`;
   y.innerHTML = `<img id="mapYuzi" src="img/yuzi-${yuziStage()}-idle.webp" alt="" style="width:100%;height:100%;object-fit:contain">`;
   map.appendChild(y);
 }
 function renderTorches(){
   const n = doneDays(), today = practicedToday();
-  $('#topTorches').innerHTML = [0,1,2].map(i=>torch(!!state.days[i])).join('') + `<span>${fa(n)} از ۳</span>`;
+  renderTop();
   $('#khanDays').innerHTML = [0,1,2].map(i=>`<span class="day ${state.days[i]?'lit':''} ${i===n&&canPlay()?'today':''}">${fa(i+1)}</span>`).join('');
   $('#pDays').textContent = `${fa(n)} از ۳`;
   const tile = $('#playTile'), rest = !canPlay(), resting = restDay();
@@ -914,22 +1066,36 @@ $('#playTile').addEventListener('click', ()=>{
 });
 
 function meetGuardian(i){
-  const k = KHANS[i], passed = i < PASSED, soon = !passed && i < CURRENT;
+  const k = KHANS[i], passed = khanPassed(i), soon = !passed && i >= BUILT;
   $('#gImg').src = `img/${k.guard}-${passed ? 'proud' : 'challenge'}.webp`; $('#gImg').alt = GUARD_NAMES[k.guard];
   $('#gTag').textContent = passed ? 'گذشتی!' : soon ? 'به‌زودی' : 'هنوز بسته'; $('#gTag').classList.toggle('done', passed);
   $('#gTitle').innerHTML = `${GUARD_NAMES[k.guard]}<small>خوانِ ${fa(i+1)}: ${k.name} · ${k.lessons.join('، ')}</small>`;
-  $('#gText').textContent = passed ? `این خوان را گذشتی، ${kidName()}! من به تو افتخار می‌کنم.` : soon ? `«${GUARD_LINES[k.guard]}» این خوان به‌زودی باز می‌شود. فعلاً برو پلِ لرزان؛ لک‌لک منتظرت است!` : `«${GUARD_LINES[k.guard]}» وقتی خوانِ قبلی را بگذرانی، این‌جا منتظرت هستم.`;
+  $('#gText').textContent = passed ? `این خوان را گذشتی، ${kidName()}! من به تو افتخار می‌کنم.` : soon ? `«${GUARD_LINES[k.guard]}» این خوان هنوز ساخته نشده و به‌زودی باز می‌شود.` : `«${GUARD_LINES[k.guard]}» وقتی خوانِ قبلی را بگذرانی، این‌جا منتظرت هستم.`;
   $('#gcard').hidden = false; sfx(passed ? 'star' : 'soft'); $('#gClose').focus();
 }
 $('#gClose').addEventListener('click', ()=>{ $('#gcard').hidden = true; sfx('click'); });
 $('#gcard').addEventListener('click', e=>{ if(e.target.id === 'gcard') $('#gcard').hidden = true; });
 
+function enterKhan(i){
+  sfx('click');
+  if(i === 2){ state.cur = 5; save(); go('khan'); return; }
+  window.HKX && HKX.openKhan(i);
+}
+/* top bar: the torches of the lesson the child is in now */
+function renderTop(){
+  const d = daysOf(state.cur), n = d.filter(Boolean).length;
+  $('#topTorches').innerHTML = [0,1,2].map(i=>torch(!!d[i])).join('') + `<span>${fa(n)} از ۳</span>`;
+}
+
 /* ---------- navigation ---------- */
-const NAV_OF = {choose:'map', hello:'map', map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents'};
+const NAV_OF = {choose:'map', hello:'map', map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents',
+  gkhan:'map', gchoose:'map', gex:'map', gstory:'map', gfam:'family', gstar:'map'};
 function go(name){
+  if(name==='family' && state.cur !== 5 && window.HKX) name = 'gfam';   // the family tab opens the current lesson's game
+  if(window.HKX) HKX.leave(name);
   $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
   $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
-  $('.nav').hidden = (name==='ex' || name==='story' || name==='record' || name==='hello');
+  $('.nav').hidden = ['ex','story','record','hello','gex','gstory','gstar'].includes(name);
   if(name==='choose') renderChoose();
   if(name==='ex') startExercise();
   if(name==='parents') renderParents();
@@ -939,7 +1105,11 @@ function go(name){
   if(name!=='record') stopWatch(false);
   if(name!=='ex' && CAM.exOn) exCamOff();
   if(name!=='family' && CAM.famOn) famCamOff();
-  if(name!=='record' && name!=='story' && name!=='ex' && name!=='family' && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
+  if(!['record','story','ex','family','gex','gstory','gfam','gstar'].includes(name) && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
+  if(name==='map'){ drawMap(); renderTop(); }
+  if(name==='khan' && state.cur !== 5){ state.cur = 5; save(); }
+  if(name==='treasure') renderTreasure();
+  if(window.HKX) HKX.enter(name);
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic();
   if(name!=='ex') flip(false);
@@ -1369,13 +1539,14 @@ function loop(){
     else if(raw==='down' && held > 450) next = 'twoFeet';
     if(next !== CAM.state){ CAM.state = next; setCamState(next); }
     if(CAM.state === 'oneLeg') CAM.lastOneLeg = now;
+    if(CAM.chipOn){ const ch = CAM.box.querySelector('.camchip'); if(ch) ch.classList.toggle('on', !!CAM.chipOn()); }
     if(CAM.hint){ const h = CAM.hint(); if(h && h !== CAM.lastHint){ CAM.lastHint = h; const sp = CAM.box.querySelector('.camchip span'); if(sp) sp.textContent = h; } }
   }
   CAM.raf = requestAnimationFrame(loop);
 }
 function setCamState(st){
   const chip = CAM.box && CAM.box.querySelector('.camchip'); if(!chip) return;
-  chip.classList.toggle('on', st==='oneLeg');
+  chip.classList.toggle('on', CAM.chipOn ? !!CAM.chipOn() : st==='oneLeg');
   CAM.lastHint = '';
   chip.querySelector('span').textContent = st==='nobody' ? 'از سر تا پایت را در کادر بیاور' : st==='twoFeet' ? 'حالا مثلِ لک‌لک یک پایت را بالا ببر' : 'روی یک پا ایستادی!';
   CAM.listeners.forEach(f=>f(st));
@@ -1505,7 +1676,7 @@ function renderTreasure(){
   const st = [['توله‌یوز','از خوان ۱'],['یوزِ جوان','از خوان ۴'],['یوزِ تیزپا','بعد از خوان ۷']];
   const cur = yuziStage() - 1;
   $('#stages').innerHTML = st.map((s,i)=>`<div class="stage-c ${i===cur?'cur':i<cur?'':'off'}"><img src="img/yuzi-${i+1}-idle.webp" alt=""><b>${s[0]}</b>${s[1]}</div>`).join('');
-  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<PASSED?'got':'off'}" title="${k.name}"><img src="img/${k.guard}-greet.webp" alt="نگهبانِ ${k.name}"></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
+  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${khanPassed(i)?'got':'off'}" title="${k.name}"><img src="img/${k.guard}-greet.webp" alt="نگهبانِ ${k.name}"></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
 }
 
 
@@ -1523,7 +1694,7 @@ const NOTES = {
   story:{h:'قصهٔ حرکت', d:[['در کتاب','ص ۳۴: قصهٔ تاپ‌تاپو؛ درخت، کلاغ و گنجشک سه حالتِ تعادل یادش می‌دهند و هر بار «تا پنج بشمار»'],['در برنامه','متنِ عینِ کتاب، صفحه به صفحه؛ هر حالت یک شمارشِ پنج‌ثانیه‌ای دارد و تا انجامش نشود قصه جلو نمی‌رود'],['پیدا کردنِ کلمه','کتاب می‌گوید «واژهٔ تعادل را پیدا کن و انگشتت را زیرش بگذار»؛ این‌جا رویش ضربه می‌زند'],['تصویرها','گوینده (درخت، کلاغ، گنجشک) کنارِ دختری که همان حالت را نشان می‌دهد']]}
 };
 function showNote(k){ const n = NOTES[k]; if(!n) return; $('#noteCard').innerHTML = `<h4>${n.h}</h4><dl>${n.d.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>`; }
-function flashNote(i){ const k = KHANS[i]; $('#noteCard').innerHTML = `<h4>خوان ${fa(i+1)}: ${k.name}</h4><dl><dt>درس‌ها</dt><dd>${k.lessons.join('، ')}</dd><dt>وضعیت</dt><dd>${i<CURRENT?'گذشته؛ نشانش در گنجینه است':'هنوز بسته؛ بعد از خوانِ قبلی باز می‌شود'}</dd></dl>`; }
+function flashNote(i){ const k = KHANS[i]; $('#noteCard').innerHTML = `<h4>خوان ${fa(i+1)}: ${k.name}</h4><dl><dt>درس‌ها</dt><dd>${k.lessons.join('، ')}</dd><dt>وضعیت</dt><dd>${khanPassed(i)?'گذشته؛ نشانش در گنجینه است':'هنوز بسته؛ بعد از خوانِ قبلی باز می‌شود'}</dd></dl>`; }
 let ln = 1;
 $('#legend').innerHTML = KHANS.map((k,i)=>`<li><b>${k.name}</b>: ${k.lessons.map(l=>`${fa(ln++)}. ${l}`).join('، ')}</li>`).join('');
 
@@ -1532,7 +1703,7 @@ $$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
 window.HKfig = fig;
 for(let m=1;m<=3;m++) for(const f of 'ab'){ const im = new Image(); im.src = fig(`m5-${m}${f}`); }
 $('#nextDay').addEventListener('click', ()=>{ state.off++; save(); renderTorches(); go('khan'); });
-$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
+$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); state.L = {1:newLesson(), 2:newLesson(), 3:newLesson(), 4:newLesson()}; state.openAll = true; state.cur = 1; save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
 let pickKid = 'girl';
 $$('.pick button').forEach(b=> b.addEventListener('click', ()=>{ pickKid = b.dataset.kid; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x===b ? 'true' : 'false')); sfx('click'); }));
 $('#helloGo').addEventListener('click', ()=>{
@@ -1553,6 +1724,12 @@ function renderMute(){ $('#mute').innerHTML = muted
 $('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', muted); renderMute(); sfx('click'); });
 renderMute();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
+/* what khans.js (khans 1 and 2) needs from this page */
+window.HK = { get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
+  fig: n => fig(n), kid, kidName, yz, go, CAM, camStart, camStop, readPose, face, torch, STAR, confetti, dayNum, LOCK,
+  PLAYERS, syncPlayers, lessonOpen, lessonDone, daysOf, KHANS, GUARD_NAMES, renderTop, drawMap, PREVIEW,
+  newLesson };
 drawMap(); renderProfile(); renderTorches(); drawCircle(); renderTreasure(); go(state.profile ? 'map' : 'hello');
 })();
 </script>
+<script src="khans.js"></script>
