@@ -398,6 +398,65 @@ DO NOT include any text, letters, numbers, speech bubbles, labels, captions, log
 
 ---
 
+## پسر — همان حرکت‌ها و حالت‌ها
+
+اگر کودک پسر را انتخاب کند، این تصویرها جای دختر را می‌گیرند. تا وقتی نرسیده‌اند، برنامه همان تصویرهای دختر را نشان می‌دهد.
+
+### ۱۷. حرکت‌های خوانِ تعادل (پسر) · نسبت ۲:۳
+
+برگهٔ پسر (پرامپت ۳) را پیوست کنید. نام فایل‌ها مثلِ دختر است با `boy` به‌جای `girl`:
+ردیف ۱ `boy-m5-1a` (کادرِ راست) و `boy-m5-1b` (کادرِ چپ)، ردیف ۲ `boy-m5-2a` و `boy-m5-2b`، ردیف ۳ `boy-m5-3a` و `boy-m5-3b`.
+
+```
+Animation keyframe sheet for a children's exercise game made in Iran. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: 3 rows × 2 columns = 6 frames. Each row is one balance exercise; the RIGHT frame is the starting pose and the LEFT frame is the peak of the movement. Every frame full body, same scale. In every frame he stands on his RIGHT leg, and the right foot stays in exactly the same spot on the same invisible baseline, so the two frames of a row can be swapped like an animation. Three-quarter view facing LEFT. Generous empty space between frames, nothing overlaps.
+
+ROW 1 — "stand on one leg and put sandbags into a basket with the other foot":
+  right frame: standing on the right leg, left knee lifted forward to hip height, toes pointing down as if gripping something small, arms stretched out to the sides for balance.
+  left frame: standing on the right leg, left leg extended forward and slightly up, foot held at knee height as if dropping something into a basket in front of him, arms out for balance.
+ROW 2 — "stand on one leg and touch colored circles on the floor with the other foot":
+  right frame: standing on the right leg, left knee lifted, arms out to the sides.
+  left frame: standing on the right leg, left leg stretched far forward-left with the toes just touching the floor, body leaning slightly back, arms out.
+ROW 3 — "stand on one leg and stack plastic cups with one hand":
+  right frame: standing on the right leg, left knee slightly lifted, bending forward at the hips, left hand low near the floor holding one small red plastic cup, right arm out for balance.
+  left frame: standing tall on the right leg, left knee lifted, left hand raised to chest height placing the red cup on top of an invisible stack, right arm out for balance.
+
+IMPORTANT: keep this exact order — in every row the RIGHT frame is the start and the LEFT frame is the peak.
+
+No other objects: no sandbags, no basket, no circles, no cup stack — only the single red cup in his hand in row 3.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under the standing foot. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۱۸. پسر در حالت‌های درخت و فرشته · نسبت ۳:۲
+
+برگهٔ پسر (پرامپت ۳) را پیوست کنید. نام فایل‌ها: `boy-tree`، `boy-angel`. (حالتِ لک‌لکِ قصه همان `boy-m5-2a` است.)
+
+```
+Character pose sheet for a children's exercise game made in Iran. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, calm focused smile.
+
+LAYOUT: 2 poses in one row. Every pose full body, same scale. The standing foot of both poses on the same invisible horizontal baseline. Generous empty space between poses, nothing overlaps.
+
+POSES, in order:
+1. TREE POSE: standing tall on his RIGHT leg, facing the viewer (front view); the left knee bent out to the side with the sole of the left foot resting against the inside of the right calf; both arms raised straight above the head with the palms touching, like the branches of a tree. Calm, proud expression.
+2. ANGEL POSE (arabesque), three-quarter view facing LEFT: standing on his RIGHT leg; the left leg stretched straight backward and up to hip height; the upper body leaning forward almost level with the floor; both arms stretched out wide to the sides like wings. Concentrating, tongue slightly out.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under the standing foot. No scenery, no frames, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+**بعد از ساخت:** برگه‌ها را بفرستید. من می‌بُرم، کادرها را هم‌تراز می‌کنم و نامشان را در `BOY_READY` داخلِ `prototype/index.html` می‌گذارم تا برای پسر نشان داده شوند.
+
+---
+
 ## حرکت‌های بقیهٔ درس‌ها
 
 برای آن‌ها هنوز پرامپت ننوشته‌ام. اول باید تمرین‌های هر درس از کتاب استخراج شود، چون همهٔ درس‌ها سه حرکت بدنی ندارند. وقتی استخراج شد، با همان الگوی پرامپت ۴ نوشته می‌شوند.
