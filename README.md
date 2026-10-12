@@ -13,6 +13,8 @@
 | `assets/sheets/` | برگه‌های خامِ کاراکترها، همان‌طور که از تصویرساز آمده‌اند |
 | `tools/` | ابزارِ بریدنِ برگه‌ها و هم‌ترازکردنِ کادرهای حرکت |
 | `docs/character-prompts.md` | پرامپت‌های ساختِ هر برگه |
+| `docs/screens/` | عکسِ صفحه‌های واقعیِ پیش‌نمایش (`overview-1.png` و `overview-2.png` همه را کنارِ هم دارند) |
+| `docs/voice-script.md` | متنِ هر جملهٔ صوتی و نامِ فایلش |
 | `docs/characters.md` | فهرستِ کاراکترها و حالت‌هایی که باید کشیده شوند |
 | `assets/characters/` | محلِ تصویرِ کاراکترها |
 | `.claude/skills/ui-ux-pro-max/` | اسکیلِ طراحیِ رابط ([منبع](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill)) |

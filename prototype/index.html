@@ -1049,7 +1049,7 @@ function renderParents(){
       return `<td>${v===undefined||v===null ? '<span class="empty" aria-label="هنوز نه"></span>' : `<svg viewBox="0 0 60 60" role="img" aria-label="${['سخت بود','معمولی بود','خیلی خوب بود'][v]}">${face(v)}</svg>`}</td>`; }).join('')}</tr>`).join('');
   const c = state.cam;
   $('#pCam').innerHTML = [[c.dots,'لمسِ دایره با نوکِ پا'],[c.bags,'کیسه در سبد، روی یک پا'],[c.cups,'لیوانِ چیده‌شده، روی یک پا'],[c.oneLegReps,'ضربهٔ تأییدشده روی یک پا'],
-    [secs(c.poseSec),'ثانیه حالتِ درست در قصه'],[c.recs,'رکوردِ لک‌لک با زمانِ دوربین'],[c.family,'داوریِ دستمال‌بازی']].map(([n,t])=>`<div><b>${typeof n==='number'?fa(n):n}</b><span>${t}</span></div>`).join('');
+    [c.poseSec ? secs(c.poseSec) : 0,'ثانیه حالتِ درست در قصه'],[c.recs,'رکوردِ لک‌لک با زمانِ دوربین'],[c.family,'داوریِ دستمال‌بازی']].map(([n,t])=>`<div><b>${n===0||n==='۰٫۰' ? '<small style="font-size:14px;color:var(--ink-soft)">هنوز نه</small>' : typeof n==='number'?fa(n):n}</b><span>${t}</span></div>`).join('');
   $('#parentsTitle').innerHTML = `گزارشِ ${kidName()}<small>هفتهٔ تعادل · منزل ۵</small>`;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
   $('#pBest').textContent = secs(best);
