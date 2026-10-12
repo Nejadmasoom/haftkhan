@@ -1,6 +1,6 @@
 """یک برگهٔ کاراکتر (زمینهٔ سفید) را به حالت‌های جدا با زمینهٔ شفاف می‌بُرد.
 
-    python3 tools/cut_sheet.py SHEET OUT_DIR ROWS name ...
+    python3 tools/cut_sheet.py [--cells] SHEET OUT_DIR ROWS name ...
 
 ROWS تعداد ردیف‌های برگه است. نام‌ها به ترتیبِ خواندنِ برگه داده می‌شوند:
 ردیف به ردیف از بالا، و در هر ردیف از چپ به راست. نامِ «-» یعنی آن حالت ذخیره نشود.
@@ -8,6 +8,10 @@ ROWS تعداد ردیف‌های برگه است. نام‌ها به ترتیب
 هر حالت یک تکهٔ پیوسته از تصویر است؛ تکه‌های کوچکِ جدا (ستاره، ماه، توپ)
 به نزدیک‌ترین حالت می‌چسبند. همهٔ حالت‌های یک ردیف با یک مقیاس و یک بازهٔ عمودی
 بریده می‌شوند تا خطِ پاها بینشان ثابت بماند.
+
+با --cells هر حالت با خانهٔ خودش در جدولِ برگه بریده می‌شود، نه با جعبهٔ دورش؛
+جای افقیِ کاراکتر در خانه حفظ می‌شود. برای کادرهای یک حرکت لازم است که
+پای ایستاده در هر دو کادر باید یک‌جا بماند.
 """
 import sys
 from collections import deque
@@ -66,7 +70,10 @@ def components(fg):
 
 
 def main():
-    sheet, out, rows, names = sys.argv[1], Path(sys.argv[2]), int(sys.argv[3]), sys.argv[4:]
+    args = sys.argv[1:]
+    cells = args[0] == "--cells"
+    if cells: args = args[1:]
+    sheet, out, rows, names = args[0], Path(args[1]), int(args[2]), args[3:]
     img = np.array(Image.open(sheet).convert("RGBA"))
     bg = background(img[..., :3])
     img[bg] = (0, 0, 0, 0)
@@ -75,7 +82,10 @@ def main():
     poses = [list(c[1:5]) + [[c[5]]] for c in comps[:len(names)]]
     # تکه‌های کوچک به نزدیک‌ترین حالت (فاصلهٔ مرکز تا جعبهٔ حالت)
     for cnt, y0, x0, y1, x1, n in comps[len(names):]:
-        if cnt < 15: continue
+        piece = img[y0:y1, x0:x1][lab[y0:y1, x0:x1] == n][:, :3].astype(int)
+        # تکه‌های ریز یا خاکستریِ روشن، باقی‌ماندهٔ سایه‌اند نه بخشی از کاراکتر
+        if cnt < 60 or (piece.min(axis=1).mean() > 150 and (piece.max(axis=1) - piece.min(axis=1)).mean() < 45):
+            img[lab == n] = (0, 0, 0, 0); continue
         cy, cx = (y0 + y1) / 2, (x0 + x1) / 2
         def dist(p):
             dy = max(p[0] - cy, 0, cy - p[2]); dx = max(p[1] - cx, 0, cx - p[3])
@@ -91,17 +101,21 @@ def main():
         take = per + (1 if r < len(poses) % rows else 0)
         grid.append(sorted(poses[i:i + take], key=lambda p: p[1])); i += take
     pad = 14
-    biggest = max(max(p[3] - p[1], max(q[2] for q in row) - min(q[0] for q in row))
-                  for row in grid for p in row) + 2 * pad
+    cols = max(len(row) for row in grid)
+    cell_w = img.shape[1] / cols
+    widest = cell_w if cells else max(p[3] - p[1] for row in grid for p in row) + 2 * pad
+    tallest = max(max(q[2] for q in row) - min(q[0] for q in row) for row in grid) + 2 * pad
+    biggest = max(widest, tallest)
     scale = CANVAS * 0.9 / biggest
     out.mkdir(parents=True, exist_ok=True)
-    flat = [(p, row) for row in grid for p in row]
-    for (p, row), name in zip(flat, names):
+    flat = [(p, row, c) for row in grid for c, p in enumerate(row)]
+    for (p, row, c), name in zip(flat, names):
         if name == "-": continue
         top, bottom = min(q[0] for q in row), max(q[2] for q in row)
         mine = np.isin(lab, p[4])
         piece = img.copy(); piece[~mine] = (0, 0, 0, 0)
-        crop = Image.fromarray(piece[max(top - pad, 0):bottom + pad, max(p[1] - pad, 0):p[3] + pad])
+        x0, x1 = (round(c * cell_w), round((c + 1) * cell_w)) if cells else (max(p[1] - pad, 0), p[3] + pad)
+        crop = Image.fromarray(piece[max(top - pad, 0):bottom + pad, x0:x1])
         crop = crop.resize((round(crop.width * scale), round(crop.height * scale)), Image.LANCZOS)
         canvas = Image.new("RGBA", (CANVAS, CANVAS), (0, 0, 0, 0))
         # پایینِ ردیف روی ۹۵٪ ارتفاع: پاهای همهٔ حالت‌های یک ردیف روی یک خط
