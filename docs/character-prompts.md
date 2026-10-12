@@ -734,3 +734,166 @@ DO NOT include any text, letters, numbers, "Z" letters, labels, captions, logos,
 ```
 
 **بعد از ساخت:** برگه‌ها را بفرستید. می‌بُرم، کادرهای هر ردیف را هم‌تراز می‌کنم و جای تصویرهای موقت می‌گذارم.
+
+## پسر — خوان‌های ۱ و ۲ (پرامپت‌های ۱۹ تا ۲۵)
+
+برگهٔ پسر (پرامپت ۳) را پیوست کنید. نام‌ها مثلِ دختر است با `boy` به‌جای `girl`.
+نسبت به نسخهٔ دختر سه چیز روشن‌تر گفته شده، چون تصویرساز در برگه‌های دختر اشتباه کرد: در ۱۹ دو پای متفاوت، در ۲۱ فقط هشت حالت و کیف روی یک شانه، و در ۲۵ کادرِ دومِ خرچنگی هم خرچنگی. در برگه‌های حرکتی هم کادرِ **چپ** شروع است، چون تصویرساز همیشه همین‌طور می‌کشید.
+
+### ۱۹. حرکت‌های قصهٔ «درکِ حرکت» (پسر) · نسبت ۵:۳
+
+```
+Character pose sheet for a children's exercise game made in Iran. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: 2 rows × 5 columns = 10 poses, read like a book from top-left. Every pose full body, FRONT VIEW (facing the viewer), same scale, all feet on the same invisible baseline in each row. Generous empty space between poses, nothing overlaps.
+
+POSES, in order:
+1. Standing on his right leg, his LEFT knee lifted high in front to hip height (the lifted leg is on the RIGHT side of the picture, since he faces us), arms relaxed at the sides.
+2. Standing on his left leg, his RIGHT knee lifted high in front to hip height (the lifted leg is on the LEFT side of the picture — the OTHER leg from pose 1), arms relaxed at the sides.
+3. Standing straight, head turned to HIS RIGHT (we see his face in profile looking toward the left edge of the picture), shoulders still facing us.
+4. Standing straight, head turned to HIS LEFT (face in profile looking toward the right edge), shoulders still facing us.
+5. Standing straight, head bent DOWN, chin close to the chest, looking at his feet.
+6. Standing straight, head tilted UP, looking at the sky, smiling.
+7. Standing straight, both arms raised STRAIGHT UP above the head, palms facing forward.
+8. Standing straight, both arms stretched STRAIGHT FORWARD toward the viewer at shoulder height, palms down (draw the foreshortening clearly: we see his palms and short forearms).
+9. Standing straight, both arms stretched STRAIGHT OUT to the sides at shoulder height, like the letter T.
+10. Standing straight like a soldier, arms straight down along the body, proud smile.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۲۰. ضربه به بادکنک و فرمان‌های اوستا (پسر) · نسبت ۵:۳
+
+```
+Character pose sheet for a children's exercise game made in Iran. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: 2 rows × 5 columns = 10 poses, read like a book from top-left. Every pose full body, three-quarter view facing LEFT, same scale, feet on the same invisible baseline in each row. Generous empty space between poses, nothing overlaps.
+
+POSES, in order (there is NO balloon in the picture; he hits an imaginary balloon above-left of him):
+1. HEAD HIT: a small hop, both feet just off the ground, looking up, forehead pushing up and forward as if bouncing a balloon with his head, arms out for balance.
+2. HAND HIT: one arm swinging up above the head with an open palm, as if tapping a balloon up, the other arm low.
+3. KNEE HIT: standing on one leg, the other knee popping up high in front as if bouncing a balloon with the knee, arms out.
+4. FOOT HIT: standing on one leg, the other leg kicking gently forward at knee height with the foot flexed, arms out.
+5. WHOLE BODY: jumping joyfully, one hand up and one knee up at the same time, big smile.
+6. SQUAT: deep squat with thighs level, heels on the ground, back straight, both arms stretched forward for balance.
+7. HAND ON NOSE: standing straight, the tip of one index finger touching the tip of his own nose, eyes crossed playfully, giggling.
+8. STICK BEHIND SHOULDERS: standing straight, a light thin wooden stick (like a broom handle) lying across the back of his shoulders behind the neck, both hands holding the stick near the ends, elbows bent, chest proud.
+9. STICK AND BOOK: the same stick behind the shoulders, a closed blue book balanced flat on top of his head, knees half bent in a slow careful squat, back very straight, concentrating.
+10. STICK AND KICK: the same stick behind the shoulders, standing on one leg and kicking the other foot forward at knee height.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۲۱. وضعیتِ درست و نادرست (پسر) · نسبت ۲:۱
+
+```
+Character pose sheet for a children's exercise game made in Iran, teaching good posture. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: exactly 2 rows × 4 columns = 8 poses, no more, read like a book from top-left, in pairs: each GOOD pose is followed by the SAME situation done BADLY. Every pose full body, same scale, feet on the same invisible baseline in each row. Generous empty space between poses, nothing overlaps.
+
+POSES, in order:
+1. GOOD STANDING, exact SIDE VIEW facing LEFT: standing tall, ear, shoulder, hip and ankle in one straight vertical line, chin level, relaxed arms, proud smile.
+2. BAD STANDING, exact SIDE VIEW facing LEFT: slouching, rounded shoulders, head pushed forward, belly out, bored face.
+3. GOOD SITTING, SIDE VIEW facing LEFT, on a simple wooden school chair: back straight against the backrest, feet flat on the floor, knees at a right angle, hands on the thighs, smile.
+4. BAD SITTING, same chair, SIDE VIEW: slumped down, back curved, one leg tucked under, head hanging, sleepy face.
+5. GOOD BACKPACK, three-quarter BACK view: a red school backpack worn on BOTH shoulders, straps snug, the bag high on the back, walking tall.
+6. BAD BACKPACK, three-quarter BACK view: the same red backpack hanging from ONE shoulder only (the other shoulder strap clearly empty), low near the hip, the body leaning sideways to carry it.
+7. GOOD WRITING, SIDE VIEW facing LEFT: sitting straight at a small school desk, writing in an open notebook with a pencil held correctly between thumb and index finger, eyes a good distance from the page.
+8. BAD WRITING, same desk, SIDE VIEW: bent over the desk with the face almost touching the notebook, pencil gripped in a fist.
+
+Allowed objects only: the chair, the desk, the notebook, the pencil and the red backpack.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۲۲. راه رفتن، دویدن، کانگورو، قورباغه (پسر) · نسبت ۲:۳
+
+```
+Animation keyframe sheet for a children's exercise game made in Iran. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: 4 rows × 2 columns = 8 frames. Each row is one movement: the LEFT frame is the starting pose and the RIGHT frame is the peak of the movement. Every frame full body, same scale. In each row the feet (or the hands and feet, for floor moves) stay on the same invisible baseline, so the two frames of a row can be swapped like an animation. Generous empty space between frames, nothing overlaps. Three-quarter view facing LEFT.
+
+ROW 1 — WALKING calmly (in place): left frame: left foot stepping forward, right arm swinging forward; right frame: right foot stepping forward, left arm swinging forward. Relaxed, calm smile.
+ROW 2 — RUNNING (in place): left frame: left knee high, right arm forward, elbows bent at a right angle, leaning slightly forward; right frame: right knee high, left arm forward. Energetic, determined face.
+ROW 3 — KANGAROO JUMP (two feet together, straight up): left frame: crouching with knees bent, both arms swung back behind him; right frame: in the air high above the baseline, both feet together, legs straight, both arms swung up above the head. A soft shadow stays on the baseline under him.
+ROW 4 — FROG JUMP: left frame: deep frog squat, knees wide apart, both hands flat on the floor between the feet, looking forward; right frame: leaping up and forward from the squat, arms and legs spread wide like a jumping frog, joyful laugh.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۲۳. مرغ، گوریل، گربه، مار (پسر) · نسبت ۲:۳
+
+```
+Animation keyframe sheet for a children's exercise game made in Iran: the boy pretends to be animals. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression. Playful, funny faces that match each animal.
+
+LAYOUT: 4 rows × 2 columns = 8 frames. Each row is one movement: the LEFT frame is the starting pose and the RIGHT frame is the peak of the movement. Every frame full body, same scale. In each row the feet (or the hands and feet, for floor moves) stay on the same invisible baseline, so the two frames of a row can be swapped like an animation. Generous empty space between frames, nothing overlaps. Three-quarter view facing LEFT for rows 1–2, SIDE VIEW facing LEFT for rows 3–4.
+
+ROW 1 — HEN: left frame: standing, knees slightly bent, hands tucked into the armpits so the elbows are folded like small wings held close to the body, lips pushed out like a beak; right frame: the same, but the folded elbows flapped up and out like wings, one knee lifted in a strutting step.
+ROW 2 — GORILLA: left frame: wide stance, knees bent, body leaning forward, long arms hanging down with the knuckles near the floor; right frame: standing up a little in the same wide stance, both fists drumming on his chest, mouth open in a funny roar.
+ROW 3 — CAT CRAWL on hands and knees: left frame: on all fours, back flat, the left hand stepping forward; right frame: on all fours, the right hand stepping forward, back gently arched, looking forward like a curious cat.
+ROW 4 — SNAKE: left frame: lying flat on his tummy on the floor, arms along the body, chin on the floor; right frame: still lying on his tummy, chest and head lifted, hands flat under the shoulders, body making a small S-curve, tongue out playfully.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۲۴. حرکت‌های قصهٔ «بدنِ قوی» (پسر) · نسبت ۲:۳
+
+```
+Animation keyframe sheet for a children's strength exercise game made in Iran. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: 4 rows × 2 columns = 8 frames. Each row is one movement: the LEFT frame is the starting pose and the RIGHT frame is the peak of the movement. Every frame full body, same scale. In each row the feet (or the hands and feet, for floor moves) stay on the same invisible baseline, so the two frames of a row can be swapped like an animation. Generous empty space between frames, nothing overlaps. FRONT VIEW for rows 1–3, SIDE VIEW facing LEFT for row 4.
+
+ROW 1 — ARM CIRCLES: left frame: standing, both arms stretched out to the sides at shoulder height, hands in loose fists slightly raised; right frame: the same, hands slightly lowered and turned, as if drawing small circles in the air (show the change only by the position of the hands, no motion lines).
+ROW 2 — TIPTOES: left frame: standing straight with feet flat, hands on the hips; right frame: risen high on his tiptoes, heels lifted off the ground, hands on the hips, standing tall and proud.
+ROW 3 — KNEE HUG: left frame: standing straight, arms at the sides; right frame: standing on the left leg, the right knee pulled up to the chest and hugged with both arms, balanced, smiling.
+ROW 4 — LUNGE: left frame: standing straight, hands on the hips; right frame: a big step forward with the left foot, front knee bent at a right angle above the ankle, back knee lowered close to the floor, back straight, hands on the hips.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
+
+### ۲۵. حرکت‌های روی زمین (پسر) · نسبت ۲:۳
+
+```
+Animation keyframe sheet for a children's strength exercise game made in Iran: exercises on the floor. The character is the SAME boy as in the attached image: identical face, short dark brown hair, saffron zip-up sports jacket with turquoise stripes on the sleeves, lapis blue trousers, red sneakers, identical style, outline and colors. Do not redesign him.
+
+STYLE: flat 2D vector illustration with soft cel shading, thick clean outline in dark plum (#2b2140), rounded friendly shapes, cheerful focused expression.
+
+LAYOUT: 4 rows × 2 columns = 8 frames. Each row is one movement: the LEFT frame is the starting pose and the RIGHT frame is the peak of the movement. Every frame full body, same scale. In each row the feet (or the hands and feet, for floor moves) stay on the same invisible baseline, so the two frames of a row can be swapped like an animation. Generous empty space between frames, nothing overlaps. SIDE VIEW facing LEFT in every frame, all figures resting on the same floor baseline in each row.
+
+ROW 1 — PLANK AND CUPS: left frame: a straight plank on straight arms, body in one straight line from head to heels, one small red plastic cup on the floor beside the hands; right frame: the same plank on ONE arm, the other hand lifting the red cup up, body still straight, concentrating.
+ROW 2 — CRAB WALK: left frame: sitting on the floor then lifted into crab position — facing up, hands on the floor behind the shoulders with fingers pointing toward the feet, feet flat, hips lifted level; right frame: STILL in the same crab position (facing up, hips lifted, NOT standing), taking one step, one hand and the opposite foot moved forward.
+ROW 3 — SPIN ON HANDS: left frame: both feet resting on a small round purple floor cushion, hands on the floor, hips high like an upside-down letter V; right frame: the same, the hands walked a step sideways around the cushion, looking at the hands, giggling.
+ROW 4 — FEET WORK (two single poses):
+  left frame: sitting on the floor, leaning back on both hands, holding a small soft colorful cushion between his feet and lifting it to stack it on another cushion.
+  right frame: lying on his back, legs lifted straight up, holding a soft toy rabbit between his feet and bringing it over his head toward the floor behind him.
+
+Allowed objects only: the red cup, the purple floor cushion, the small cushions and the soft toy rabbit.
+
+BACKGROUND: plain flat pure white (#FFFFFF). Only a small soft oval shadow under each figure. No scenery, no frames, no grid lines, no borders.
+
+DO NOT include any text, letters, numbers, arrows, motion lines, labels, captions, logos, watermark or signature.
+```
