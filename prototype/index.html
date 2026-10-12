@@ -241,6 +241,8 @@ button{font:inherit;color:inherit}
 .medals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
 .m{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:var(--paper-2);position:relative}
 .m svg{width:55%;height:55%}
+.m img{width:86%;height:86%;object-fit:contain}
+.m.off img{filter:grayscale(1);opacity:.35}
 .m.got{background:var(--saffron);box-shadow:0 4px 0 var(--saffron-deep)}
 .m.off svg{opacity:.35}
 
@@ -389,7 +391,7 @@ button{font:inherit;color:inherit}
         <div class="sheet">
           <div class="p-h" style="margin-top:4px">یوزی چطور بزرگ می‌شود</div>
           <div class="stages" id="stages"></div>
-          <div class="p-h">نشان‌های هفت خوان</div>
+          <div class="p-h">نگهبان‌های هفت خوان</div>
           <div class="medals" id="medals"></div>
         </div>
       </section>
@@ -453,13 +455,13 @@ const store = {
 
 /* ---------- data from the book ---------- */
 const KHANS = [
-  {name:'بیدارِ بدن', lessons:['درک حرکت','وضعیت‌های بدنی درست'], icon:'sun'},
-  {name:'دشتِ تیزپاها', lessons:['راه رفتن، دویدن، پریدن','بدن قوی'], icon:'run'},
-  {name:'پلِ لرزان', lessons:['تعادل','زندگی فعال'], icon:'bridge'},
-  {name:'بیشهٔ بید', lessons:['بدن نرم','هماهنگی'], icon:'willow'},
-  {name:'درهٔ پرتاب', lessons:['پرتاب و دریافت','کار با پا'], icon:'ball'},
-  {name:'چشمهٔ دل', lessons:['قلب قوی'], icon:'heart'},
-  {name:'جشنِ سرزمین', lessons:['بازی‌های بومی‌محلی'], icon:'flag'}
+  {name:'بیدارِ بدن', lessons:['درک حرکت','وضعیت‌های بدنی درست'], icon:'sun', guard:'rooster'},
+  {name:'دشتِ تیزپاها', lessons:['راه رفتن، دویدن، پریدن','بدن قوی'], icon:'run', guard:'gazelle'},
+  {name:'پلِ لرزان', lessons:['تعادل','زندگی فعال'], icon:'bridge', guard:'stork'},
+  {name:'بیشهٔ بید', lessons:['بدن نرم','هماهنگی'], icon:'willow', guard:'cat'},
+  {name:'درهٔ پرتاب', lessons:['پرتاب و دریافت','کار با پا'], icon:'ball', guard:'ibex'},
+  {name:'چشمهٔ دل', lessons:['قلب قوی'], icon:'heart', guard:'rakhsh'},
+  {name:'جشنِ سرزمین', lessons:['بازی‌های بومی‌محلی'], icon:'flag', guard:'simorgh'}
 ];
 const CURRENT = 2; // khan index in progress (0-based)
 const MOVES = [
@@ -727,7 +729,7 @@ document.addEventListener('click', e=>{ const s = e.target.closest('[data-seal]'
 function renderTreasure(){
   const st = [['توله‌یوز','از خوان ۱'],['یوزِ جوان','از خوان ۴'],['یوزِ تیزپا','بعد از خوان ۷']];
   $('#stages').innerHTML = st.map((s,i)=>`<div class="stage-c ${i===0?'cur':'off'}"><img src="img/yuzi-${i+1}-idle.webp" alt=""><b>${s[0]}</b>${s[1]}</div>`).join('');
-  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<CURRENT?'got':'off'}" title="${k.name}"><svg viewBox="0 0 48 48">${ICONS[k.icon]}</svg></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
+  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<CURRENT?'got':'off'}" title="${k.name}"><img src="img/${k.guard}-greet.webp" alt="نگهبانِ ${k.name}"></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
 }
 
 
