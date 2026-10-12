@@ -1,6 +1,6 @@
 """یک برگهٔ کاراکتر (زمینهٔ سفید) را به حالت‌های جدا با زمینهٔ شفاف می‌بُرد.
 
-    python3 tools/cut_sheet.py [--cells] SHEET OUT_DIR ROWS name ...
+    python3 tools/cut_sheet.py [--cells] [--holes] SHEET OUT_DIR ROWS name ...
 
 ROWS تعداد ردیف‌های برگه است. نام‌ها به ترتیبِ خواندنِ برگه داده می‌شوند:
 ردیف به ردیف از بالا، و در هر ردیف از چپ به راست. نامِ «-» یعنی آن حالت ذخیره نشود.
@@ -12,6 +12,10 @@ ROWS تعداد ردیف‌های برگه است. نام‌ها به ترتیب
 با --cells هر حالت با خانهٔ خودش در جدولِ برگه بریده می‌شود، نه با جعبهٔ دورش؛
 جای افقیِ کاراکتر در خانه حفظ می‌شود. برای کادرهای یک حرکت لازم است که
 پای ایستاده در هر دو کادر باید یک‌جا بماند.
+
+با --holes حفره‌های سفیدِ بسته هم برداشته می‌شوند، مثلِ فضای بینِ دو دستِ
+به‌هم‌چسبیده بالای سر. پیش‌فرض نیست، چون بدنِ کاراکترِ سفید (گربه، لک‌لک)
+هم از همین جنس است.
 """
 import sys
 from collections import deque
@@ -66,16 +70,23 @@ def components(fg):
                 if 0 <= ny < h and 0 <= nx < w and fg[ny, nx] and not lab[ny, nx]:
                     lab[ny, nx] = n; q.append((ny, nx))
         out.append((cnt, y0, x0, y1 + 1, x1 + 1, n))
+    components.last = lab
     return out, lab
 
 
 def main():
     args = sys.argv[1:]
-    cells = args[0] == "--cells"
-    if cells: args = args[1:]
+    cells = "--cells" in args
+    holes = "--holes" in args
+    args = [a for a in args if a not in ("--cells", "--holes")]
     sheet, out, rows, names = args[0], Path(args[1]), int(args[2]), args[3:]
     img = np.array(Image.open(sheet).convert("RGBA"))
     bg = background(img[..., :3])
+    if holes:
+        rgb = img[..., :3].astype(np.int16)
+        white = (rgb.min(axis=2) > 240) & ((rgb.max(axis=2) - rgb.min(axis=2)) < 12) & ~bg
+        for cnt, y0, x0, y1, x1, n in components(white)[0]:
+            if cnt > 400: bg[components.last == n] = True
     img[bg] = (0, 0, 0, 0)
     comps, lab = components(~bg)
     comps.sort(reverse=True)
