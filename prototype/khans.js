@@ -302,7 +302,7 @@ const LESSONS = {
   }
 };
 const KHAN_INFO = [
-  {lessons:[1,2], name:'بیدارِ بدن', ord:'اول', guard:'rooster', text:'من <b>خروسِ سحر</b>م! هر صبح همه را بیدار می‌کنم. بیا بدنت را بیدار کنیم و یاد بگیریم درست بایستیم و درست بنشینیم.'},
+  {lessons:[1,2], name:'حیاطِ خروس', ord:'اول', guard:'rooster', text:'من <b>خروسِ سحر</b>م! هر صبح همه را بیدار می‌کنم. بیا بدنت را بیدار کنیم و یاد بگیریم درست بایستیم و درست بنشینیم.'},
   {lessons:[3,4], name:'دشتِ تیزپاها', ord:'دوم', guard:'gazelle', text:'من <b>آهوی تیزپا</b>م! بیا راه رفتن، دویدن و پریدن را یاد بگیریم و بدنت را قوی کنیم.'}
 ];
 
@@ -468,18 +468,18 @@ function manzilHTML(n){
   const sub = d>=3 ? 'این منزل را گذراندی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
     : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.'
     : `${Ld.play.pick===2 ? 'دو تا از شش حرکت را انتخاب کن' : 'یکی از سه بازی را انتخاب کن'}، روزِ ${DAYW[d]}`;
-  const ic = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : `<svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg>`;
+  const ic = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : H.ICON.play();
   const starSub = LS(n).stars ? `ستاره ${fa(LS(n).stars)} از ۷` : starIntro(n);
   return `<div class="manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
     <div class="tiles">
       <button class="tile t-play ${rest?'rest':''}" data-act="play" aria-disabled="${rest}"><span class="ic">${ic}</span><span class="grow"><b>${title}</b><small>${sub}</small>
         <span class="days">${[0,1,2].map(i=>`<span class="day ${st.days[i]?'lit':''} ${i===d&&canPlay(n)?'today':''}">${fa(i+1)}</span>`).join('')}</span></span></button>
-      <button class="tile t-story" data-act="gstory">${st.story?doneChip:''}<span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#5d4f72" stroke-width="3" stroke-linecap="round"><path d="M6 10c6-3 10-3 14 0v22c-4-3-8-3-14 0zM34 10c-6-3-10-3-14 0v22c4-3 8-3 14 0z"/></svg></span>
+      <button class="tile t-story" data-act="gstory">${st.story?doneChip:''}<span class="ic">${H.ICON.story()}</span>
         <b>قصهٔ حرکت</b><small>${Ld.story.name}، کتاب، ${Ld.story.src}</small></button>
-      <button class="tile t-family" data-act="gfam">${st.family?doneChip:''}<span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0c7a73" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="11" r="4"/><circle cx="28" cy="11" r="4"/><circle cx="20" cy="22" r="3"/><path d="M5 34c0-7 4-11 7-11s5 2 6 4M35 34c0-7-4-11-7-11s-5 2-6 4M15 36c0-4 2-7 5-7s5 3 5 7"/></svg></span>
+      <button class="tile t-family" data-act="gfam">${st.family?doneChip:''}<span class="ic">${H.ICON.family()}</span>
         <b>بازی خانوادگی</b><small>${Ld.family.title}، کتاب، ${Ld.family.src}</small></button>
       <button class="tile t-stars" data-act="gstar" style="grid-column:span 2;min-height:0"><span style="display:flex;align-items:center;gap:12px">
-        <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="#f3a530" stroke="#c87a0c" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+        <span class="ic">${H.ICON.star()}</span>
         <span style="display:flex;flex-direction:column;gap:2px"><b>${Ld.star.title}</b><small>${starSub}</small></span></span></button>
     </div></div>`;
 }
@@ -595,7 +595,7 @@ function finishDay(){
     : doneL ? `هر سه مشعل روشن شد. منزلِ ${nextName} باز شد!`
     : `مشعلِ روزِ ${DAYW[lit-1]} روشن شد. ${lit===2 ? 'یک روزِ دیگر' : 'دو روزِ دیگر'} تا تمام شدنِ این منزل. فردا روزِ استراحت است؛ پس‌فردا بیا!`;
   $('#gxReward').hidden = false; H.renderTop();
-  sfx('fanfare', doneL); setTimeout(()=>voice('cheer'), 900);
+  sfx('fanfare', doneL); H.voiceLater('cheer', 900);
   confettiOn($('#gxConfetti'));
 }
 function confettiOn(cv){
@@ -784,10 +784,9 @@ function markChip(t, i){ $$('#tkChips span').forEach(s => { const k = +s.dataset
 /* ===================================================================== family games */
 const F = {t:null, t2:null, playing:false, camOn:false, round:0, performer:1, tally:null, osta:null};
 function famStop(){ clearTimeout(F.t); clearInterval(F.t2); clearTimeout(F.t3); F.playing = false; stopTune(); }
-let tuneT = null;
-function playTune(){ stopTune(); if(!H.ac()) return; const notes = [523,659,784,659,587,698,880,698,523,659,784,1046,880,784,659,587]; let k = 0;
-  const tick = () => { if(!H.muted) H.tone(notes[k++ % notes.length], 0, .26, 'triangle', .16); tuneT = setTimeout(tick, 280); }; tick(); }
-function stopTune(){ clearTimeout(tuneT); tuneT = null; }
+/* game music lives in music.js: a march for walking round the chairs, a bouncy tune for the feet game */
+function playTune(name){ stopTune(); if(!H.ac() || H.muted || !window.HKMusic) return; HKMusic.play(name, {ctx: H.ac()}); }
+function stopTune(){ window.HKMusic && HKMusic.stop(); }
 function renderFamily(){
   const n = G.n = S().cur, Ld = LESSONS[n], fm = Ld.family; famStop(); H.syncPlayers();
   $('#gfTitle').innerHTML = `${fm.title}<small>بازی خانوادگی منزل ${fa(n)}، کتاب، ${fm.src}</small>`;
@@ -853,7 +852,7 @@ function famChairs(fm, intro){
   const CAM = H.CAM;
   $('#cMusic').addEventListener('click', ()=>{
     if(F.playing){ famStop(); $('#cMusic').textContent = 'پخش آهنگ'; return; }
-    F.playing = true; playTune(); $('#cMusic').textContent = 'آهنگ در حال پخش…';
+    F.playing = true; playTune('march'); $('#cMusic').textContent = 'آهنگ در حال پخش…';
     $('#cCall').innerHTML = '<b>آرام دورِ صندلی‌ها راه بروید</b><small>گوش کنید؛ آهنگ هر لحظه ممکن است قطع شود!</small>';
     CAM.onFrame = null; CAM.chipOn = null; CAM.hint = () => 'با آهنگ راه برو';
     F.t = setTimeout(()=>{
@@ -913,7 +912,7 @@ function famFeet(fm, intro){
     $$('.tally button').forEach(b => b.addEventListener('click', ()=>{ const i = +b.dataset.i; F.tally[i] = Math.max(0, F.tally[i] + +b.dataset.d); sfx('tap', F.tally[i]); draw(F.playing ? F.left : null); }));
     $('#fMusic').addEventListener('click', ()=>{
       if(F.playing){ famStop(); draw(); return; }
-      F.tally = P.map(()=>0); F.playing = true; F.left = 30; playTune(); draw(F.left);
+      F.tally = P.map(()=>0); F.playing = true; F.left = 30; playTune('hop'); draw(F.left);
       F.t2 = setInterval(()=>{ F.left--; const c = $('#fCall'); if(c) c.innerHTML = `<b>${fa(F.left)} ثانیه</b>با پا بردار، با دست بالای سر بگذار!`;
         if(F.left <= 0){ famStop(); sfx('fanfare'); famDone(); draw(); const best = Math.max(...F.tally), w = P.filter((p,i)=>F.tally[i]===best && best>0).map(p=>p.n);
           $('#fCall').innerHTML = w.length ? `<b>آفرین ${w.map(esc).join(' و ')}!</b>بیشترین شیء را بالای سر گذاشت. همه تشویقش کنید!` : '<b>آهنگ تمام شد!</b>شماره‌ها را وارد کنید و برنده را تشویق کنید.'; } }, 1000);
@@ -937,17 +936,20 @@ function renderStar(){
 }
 function giveStar(msg){ const st = LS(G.n); if(st.stars < 7){ st.stars++; H.save(); sfx('star'); vib([20,40,20]); }
   $('#grStars').innerHTML = Array.from({length:7}, (_,k)=>H.STAR(k < st.stars)).join(''); }
+/* the six good behaviours of book p.13, as pictures a child can read without the words */
+const KIDF = (x, y, hood, s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-7" y="6" width="14" height="14" rx="5" fill="${hood}" stroke="${C.ink}" stroke-width="2"/><circle r="8.5" fill="${hood}" stroke="${C.ink}" stroke-width="2"/><circle cy="1" r="5.6" fill="#e8b48a"/><circle cx="-2" cy=".2" r=".9" fill="${C.ink}"/><circle cx="2" cy=".2" r=".9" fill="${C.ink}"/><path d="M-1.8 3q1.8 1.4 3.6 0" fill="none" stroke="${C.ink}" stroke-width="1" stroke-linecap="round"/></g>`;
+const BOYF = (x, y, shirt, s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-7" y="6" width="14" height="14" rx="5" fill="${shirt}" stroke="${C.ink}" stroke-width="2"/><circle r="7.5" fill="#e8b48a" stroke="${C.ink}" stroke-width="2"/><path d="M-7.5 -1q0-8 7.5-8t7.5 8q-3-4-7.5-4t-7.5 4z" fill="#4a2c1a" stroke="${C.ink}" stroke-width="1.6"/><circle cx="-2.4" cy=".6" r=".9" fill="${C.ink}"/><circle cx="2.4" cy=".6" r=".9" fill="${C.ink}"/><path d="M-2 3.4q2 1.4 4 0" fill="none" stroke="${C.ink}" stroke-width="1" stroke-linecap="round"/></g>`;
 const CARD_ICONS = {
-  turn:`<rect x="8" y="40" width="48" height="6" rx="3" fill="#d9c79f"/><circle cx="18" cy="24" r="7" fill="${C.fay}"/><rect x="12" y="31" width="12" height="9" rx="4" fill="${C.fay}"/><circle cx="34" cy="24" r="7" fill="${C.saffron}"/><rect x="28" y="31" width="12" height="9" rx="4" fill="${C.saffron}"/><circle cx="50" cy="24" r="7" fill="${C.anar}"/><rect x="44" y="31" width="12" height="9" rx="4" fill="${C.anar}"/>`,
-  water:`<rect x="22" y="14" width="20" height="38" rx="8" fill="${C.fay}" stroke="${C.ink}" stroke-width="2.5"/><rect x="26" y="8" width="12" height="8" rx="2" fill="${C.anar}" stroke="${C.ink}" stroke-width="2.5"/><path d="M22 32h20" stroke="#fff" stroke-width="3"/>`,
-  help:`<circle cx="20" cy="18" r="7" fill="${C.saffron}"/><circle cx="44" cy="30" r="7" fill="${C.fay}"/><path d="M20 26v14M20 30l16 4M44 38v14" stroke="${C.ink}" stroke-width="4" stroke-linecap="round"/><path d="M28 50q4-6 10-4" fill="none" stroke="${C.anar}" stroke-width="3"/>`,
-  trash:`<path d="M18 22h28l-3 32H21z" fill="${C.lapis}" stroke="${C.ink}" stroke-width="2.5"/><rect x="15" y="16" width="34" height="6" rx="2" fill="${C.lapis}" stroke="${C.ink}" stroke-width="2.5"/><path d="M30 6l4 6" stroke="${C.ink}" stroke-width="3"/><circle cx="28" cy="8" r="4" fill="${C.anar}"/>`,
-  tidy:`<path d="M12 30h40v22H12z" fill="#c9893f" stroke="${C.ink}" stroke-width="2.5"/><circle cx="24" cy="24" r="8" fill="${C.anar}" stroke="${C.ink}" stroke-width="2.5"/><rect x="34" y="16" width="12" height="14" rx="2" fill="${C.saffron}" stroke="${C.ink}" stroke-width="2.5"/>`,
-  outside:`<circle cx="46" cy="16" r="8" fill="${C.saffron}"/><path d="M8 52q14-14 24 0t24 0" fill="#4fb35a"/><path d="M14 38l20-10-6 14z" fill="#fff" stroke="${C.ink}" stroke-width="2.5" stroke-linejoin="round"/>`
+  turn: `<path d="M44 16h8v36h-4V22h-4z" fill="#3b82c4" stroke="${C.ink}" stroke-width="2"/><path d="M44 18q-6 18-22 30l4 4q18-12 22-32z" fill="#f3a530" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M48 22v30M52 22v30" stroke="${C.ink}" stroke-width="1.6"/>${KIDF(48,4,C.fay,.75)}${BOYF(30,30,C.anar,.7)}${KIDF(14,30,'#a35bc4',.7)}`,
+  water: null, tidy: null,
+  help: `${BOYF(18,18,'#3b82c4',.9)}<g transform="translate(42 34) rotate(-60)">${KIDF(0,0,C.fay,.85)}</g><path d="M24 34q8 2 12 2" stroke="#e8b48a" stroke-width="4" stroke-linecap="round"/><path d="M24 34q8 2 12 2" stroke="${C.ink}" stroke-width="1.2" fill="none" stroke-linecap="round"/><path d="M50 10c-4-3-4-6-2-7 1-.4 1.7.3 2 1 .3-.7 1-1.4 2-1 2 1 0 4-2 7z" fill="${C.anar}" stroke="${C.ink}" stroke-width="1.3"/><path d="M6 54h52" stroke="#8fd270" stroke-width="4" stroke-linecap="round"/>`,
+  trash: `<path d="M20 24h24l-3 30H23z" fill="#16a39a" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><rect x="17" y="18" width="30" height="7" rx="3" fill="#0c7a73" stroke="${C.ink}" stroke-width="2.4"/><path d="M27 36l3-5 3 5M37 40l-3 5h-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 4l6 3-2 6-6-1z" fill="#fff" stroke="${C.ink}" stroke-width="1.8" stroke-linejoin="round"/><path d="M45 14q-2 4-4 2" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="2 2"/><g transform="translate(13 40) scale(.6)">${BOYF(0,0,C.saffron)}</g>`,
+  outside: `<rect width="64" height="60" rx="10" fill="#c8ecff"/><circle cx="52" cy="12" r="7" fill="#ffd45a" stroke="#f3a530" stroke-width="2"/><path d="M0 46q16-8 32 0t32 0v14H0z" fill="#8fd270"/><path d="M14 20l12-8 4 12z" fill="${C.anar}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M26 22q-2 10 6 20" fill="none" stroke="${C.ink}" stroke-width="1.4"/>${KIDF(36,36,C.fay,.85)}<g transform="translate(10 44)"><rect x="-1.5" width="3" height="8" fill="#8a5a2b"/><circle cy="-2" r="6" fill="#3fa34d" stroke="${C.ink}" stroke-width="1.6"/></g>`
 };
+const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp'};
 function starCards(sk, book){
   const st = LS(G.n); st.log.cards = st.log.cards || {};
-  $('#grBody').innerHTML = `${book}<div class="cards">${sk.cards.map(([k,t])=>`<button class="card" data-k="${k}">${st.log.cards[k]?`<span class="n">${fa(st.log.cards[k])}</span>`:''}<svg viewBox="0 0 64 60">${CARD_ICONS[k]}</svg>${t}</button>`).join('')}</div>
+  $('#grBody').innerHTML = `${book}<div class="cards">${sk.cards.map(([k,t])=>`<button class="card" data-k="${k}">${st.log.cards[k]?`<span class="n">${fa(st.log.cards[k])}</span>`:''}${CARD_IMG[k] ? `<img src="${CARD_IMG[k]}" alt="" class="card-img">` : `<svg viewBox="0 0 64 60">${CARD_ICONS[k]}</svg>`}${t}</button>`).join('')}</div>
     <div class="callout" id="cdAsk" style="margin:0 16px;width:auto" hidden></div>
     <p class="rec-msg" id="cdMsg">هر کارِ درستی که امروز انجام دادی را بزن؛ بزرگترت تأیید کند و یک ستاره بگیر.</p>`;
   $$('.card').forEach(b => b.addEventListener('click', ()=>{

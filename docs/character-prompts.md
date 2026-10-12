@@ -172,7 +172,7 @@ DO NOT include any text, letters, numbers, names, labels, captions, logos, water
 
 برای پرامپت‌های ۷ تا ۱۲ فقط بخش **CHARACTER** و **POSES** فرق می‌کند. هر کدام کامل نوشته شده تا مستقیم کپی شود.
 
-### ۷. خروسِ سحر، نگهبانِ خوانِ ۱ «بیدارِ بدن» · نسبت ۳:۲
+### ۷. خروسِ سحر، نگهبانِ خوانِ ۱ «حیاطِ خروس» · نسبت ۳:۲
 
 ```
 Character model sheet for a children's mobile game made in Iran, for 6–7 year old kids. Use the attached image only as a style reference (line, shading, colors); draw a new character.

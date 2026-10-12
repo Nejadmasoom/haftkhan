@@ -623,6 +623,47 @@ button{font:inherit;color:inherit}
   .t-play:not(.rest) .ic{animation:wiggle 2.6s ease-in-out infinite}
   .khan.now .medal img{animation:bob2 2s ease-in-out infinite}
 }
+/* softer accents: the pomegranate red stays for small details only, never for a halo or a big surface */
+.khan.now .medal{background:#fff;border-color:var(--fayruz-deep);box-shadow:0 6px 0 var(--ink), var(--clay-in), 0 0 0 7px rgba(22,163,154,.22), 0 0 26px 8px rgba(255,255,255,.85)}
+.khan.now .medal::after{border:none;inset:-12px;background:radial-gradient(circle, rgba(255,255,255,0) 58%, rgba(22,163,154,.28) 60%, rgba(22,163,154,0) 72%);animation:glow 2.4s ease-in-out infinite}
+.khan.now .num{background:var(--fayruz);color:#fff}
+.khan.now .label{background:var(--fayruz);color:#fff;text-shadow:none;border:2px solid var(--ink)}
+@keyframes glow{0%,100%{transform:scale(.94);opacity:.7}50%{transform:scale(1.08);opacity:1}}
+.t-play{background:linear-gradient(160deg,#36c9a6,#16a39a 60%,#128a83);color:#fff}
+.t-play .ic{background:rgba(255,255,255,.22)}
+.t-play .day{border-color:var(--ink)}
+.t-play .day.today{box-shadow:0 0 0 3px #fff}
+.hello h2{color:var(--lapis)}
+.reward h3{color:var(--lapis)}
+.st-text b{color:var(--fayruz-deep)}
+.bubble b{color:var(--fayruz-deep)}
+.bigcmd b{color:var(--lapis)}
+.st-steps i.cur{background:var(--saffron)}
+.player.hold .face{border-color:var(--saffron)}
+.find-bar b{color:var(--fayruz-deep)}
+.ring button{background:var(--saffron)}
+@media (prefers-reduced-motion: reduce){.khan.now .medal::after{animation:none}}
+
+/* picture icons */
+.tile .ic{overflow:visible}
+.tile .ic svg{width:38px;height:38px}
+.t-story .ic,.t-stars .ic{width:58px;height:58px;border-radius:18px}
+.t-story .ic svg,.t-stars .ic svg{width:46px;height:46px}
+.t-play .ic{width:68px;height:68px;border-radius:20px;background:#fff;overflow:hidden}
+.t-play .ic .ic-img{width:120%;height:120%;object-fit:contain;object-position:50% 0;margin-top:6px}
+.t-play.rest .ic{background:#fff}
+.t-family .ic{width:auto;height:58px;padding:0 6px;border-radius:18px}
+.faces3{display:flex;align-items:center}
+.faces3 img{width:40px;height:40px;border-radius:50%;object-fit:cover;object-position:50% 18%;background:#fff;border:2.5px solid var(--ink);margin-inline-start:-10px}
+.faces3 img:first-child{margin-inline-start:0}
+.faces3 img.kidface{transform:none;object-position:50% 4%;width:44px;height:44px;z-index:1}
+.nav .nic{display:grid;place-items:center;width:34px;height:34px}
+.nav .nic svg{width:34px;height:34px}
+.nav .nic .faces3 img{width:22px;height:22px;border-width:2px;margin-inline-start:-7px}
+.nav .nic .faces3 img.kidface{width:24px;height:24px}
+.nav button{gap:3px}
+.card svg,.card .card-img{width:84px;height:78px;object-fit:contain}
+.card{min-height:150px;font-size:14px}
 @keyframes wiggle{0%,100%{transform:rotate(0)}6%{transform:rotate(-8deg)}12%{transform:rotate(8deg)}18%{transform:rotate(0)}}
 
 /* ---------- play mode: the real app, full screen. The phone mock-up and notes are only for ?preview ---------- */
@@ -692,17 +733,17 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
               </button>
               <button class="tile t-story" data-go="story">
                 <span class="done-chip" id="storyDone" hidden><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
-                <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#5d4f72" stroke-width="3" stroke-linecap="round"><path d="M6 10c6-3 10-3 14 0v22c-4-3-8-3-14 0zM34 10c-6-3-10-3-14 0v22c4-3 8-3 14 0z"/></svg></span>
+                <span class="ic" data-ic="story"></span>
                 <b>قصهٔ حرکت</b><small>تاپ‌تاپو و سه حالتِ تعادل: درخت، لک‌لک، فرشته</small>
               </button>
               <button class="tile t-family" data-go="family">
                 <span class="done-chip" id="familyDone" hidden><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
-                <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0c7a73" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="11" r="4"/><circle cx="28" cy="11" r="4"/><circle cx="20" cy="22" r="3"/><path d="M5 34c0-7 4-11 7-11s5 2 6 4M35 34c0-7-4-11-7-11s-5 2-6 4M15 36c0-4 2-7 5-7s5 3 5 7"/></svg></span>
+                <span class="ic" data-ic="family"></span>
                 <b>بازی خانوادگی</b><small>دستمال‌بازی روی یک پا، با آهنگ</small>
               </button>
               <button class="tile t-stars" data-go="record" style="grid-column:span 2;min-height:0">
                 <span style="display:flex;align-items:center;gap:12px">
-                  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="#f3a530" stroke="#c87a0c" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+                  <span class="ic" data-ic="star"></span>
                   <span style="display:flex;flex-direction:column;gap:2px"><b>رکوردِ لک‌لک</b><small id="recSub"></small></span>
                 </span>
               </button>
@@ -940,10 +981,10 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         <button class="cta gold" id="gClose" style="width:100%">باشه!</button>
       </div></div>
       <nav class="nav" aria-label="بخش‌ها">
-        <button data-go="map" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>نقشه</button>
-        <button data-go="family"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c0-4 3-7 6-7s6 3 6 7M14 20c0-3 1.5-5 3-5s4 2 4 5"/></svg>خانواده</button>
-        <button data-go="treasure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 10h18v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 10l2-5h14l2 5M10 14h4"/></svg>گنجینه</button>
-        <button data-go="parents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>والدین</button>
+        <button data-go="map" aria-current="page"><span class="nic" data-ic="nav-map"></span>نقشه</button>
+        <button data-go="family"><span class="nic" data-ic="nav-family"></span>خانواده</button>
+        <button data-go="treasure"><span class="nic" data-ic="nav-treasure"></span>گنجینه</button>
+        <button data-go="parents"><span class="nic" data-ic="nav-parents"></span>والدین</button>
       </nav>
     </div>
   </div>
@@ -966,6 +1007,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
 </div>
 
 <script src="audio/list.js"></script>
+<script src="music.js"></script>
 <script>
 (function(){
 const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
@@ -1004,7 +1046,10 @@ const SFX = {
 function sfx(name, arg){ try{ SFX[name] && SFX[name](arg); }catch(e){} }
 /* Recorded narration (docs/voice-script.md). audio/list.js names the files that exist, so a
    missing recording is simply skipped instead of erroring. */
-let voiceEl = null;
+let voiceEl = null, voiceT = null;
+/* leaving a screen silences it: whatever was being said belonged to that screen */
+function hush(){ clearTimeout(voiceT); voiceT = null; if(voiceEl){ try{ voiceEl.pause(); }catch(e){} voiceEl = null; } }
+function voiceLater(id, ms){ clearTimeout(voiceT); voiceT = setTimeout(()=>voice(id), ms); }
 function voice(id){
   if(muted || !(window.HK_AUDIO||[]).includes(id)) return;
   try{ if(voiceEl){ voiceEl.pause(); } voiceEl = new Audio(`audio/${id}.mp3`); voiceEl.play().catch(()=>{}); }catch(e){}
@@ -1014,7 +1059,7 @@ function voice(id){
 const GUARD_NAMES = {rooster:'خروسِ سحر', gazelle:'آهوی تیزپا', stork:'لک‌لکِ نگهبانِ پل', cat:'گربهٔ ایرانی', ibex:'بزِ کوهی', rakhsh:'رخش', simorgh:'سیمرغ'};
 const GUARD_LINES = {rooster:'صاف بایست، بدن را بیدار کن!', gazelle:'بدو، بپر، تیزپا شو!', stork:'روی یک پا بایست و نیفت!', cat:'بدنت را مثلِ من نرم و کش بده!', ibex:'توپ را بگیر و با پا هدایتش کن!', rakhsh:'قلبت را قوی کن و با من بدو!', simorgh:'به جشنِ بازی‌های سرزمینم خوش آمدی!'};
 const KHANS = [
-  {name:'بیدارِ بدن', lessons:['درک حرکت','وضعیت‌های بدنی درست'], icon:'sun', guard:'rooster'},
+  {name:'حیاطِ خروس', lessons:['درک حرکت','وضعیت‌های بدنی درست'], icon:'sun', guard:'rooster'},
   {name:'دشتِ تیزپاها', lessons:['راه رفتن، دویدن، پریدن','بدن قوی'], icon:'run', guard:'gazelle'},
   {name:'پلِ لرزان', lessons:['تعادل','زندگی فعال'], icon:'bridge', guard:'stork'},
   {name:'بیشهٔ بید', lessons:['بدن نرم','هماهنگی'], icon:'willow', guard:'cat'},
@@ -1068,6 +1113,20 @@ function face(v){
 }
 const STAR = (on) => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?C.saffron:'none'}" stroke="${on?C.sd:'#c9b583'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
 
+
+/* ---------- icons: pictures a 6-year-old recognises, drawn with the game's own characters ---------- */
+const IK = '#2b2140';
+const ICON = {
+  play: () => `<img class="ic-img" src="img/${kid()}-cheer.webp" alt="">`,
+  family: () => `<span class="faces3"><img src="img/mom.webp" alt=""><img src="img/${kid()}-idle.webp" alt="" class="kidface"><img src="img/dad.webp" alt=""></span>`,
+  story: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 13c6-3 12-3 18 1 6-4 12-4 18-1v25c-6-3-12-3-18 1-6-4-12-4-18-1z" fill="#16a39a" stroke="${IK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M9 12c5-2 10-1.5 15 2v23c-5-3-10-3.5-15-2z" fill="#fff7e6" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><path d="M39 12c-5-2-10-1.5-15 2v23c5-3 10-3.5 15-2z" fill="#fff" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><path d="M12 18h8M12 22h9M12 26h7M28 18h8M28 22h7" stroke="#b9a7cf" stroke-width="2" stroke-linecap="round"/><path d="M31 26l1.6 3.2 3.4.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4-2.5-2.4 3.4-.5z" fill="#f3a530" stroke="${IK}" stroke-width="1.4" stroke-linejoin="round"/><path d="M34 9v9l-2.5-2-2.5 2V9" fill="#d6404c" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
+  star: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l5.6 11.6 12.7 1.8-9.2 8.9 2.2 12.6L24 34l-11.3 5.9 2.2-12.6-9.2-8.9 12.7-1.8z" fill="#ffc93c" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 11l3.4 7 6.6 1" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".8"/><circle cx="20" cy="24" r="1.8" fill="${IK}"/><circle cx="28" cy="24" r="1.8" fill="${IK}"/><path d="M20.5 28.5q3.5 3 7 0" fill="none" stroke="${IK}" stroke-width="2" stroke-linecap="round"/><path d="M41 6l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1zM7 34l.8 1.8 1.8.8-1.8.8L7 39.2l-.8-1.8-1.8-.8 1.8-.8z" fill="#f3a530"/></svg>`,
+  'nav-map': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 12l12-5 14 5 12-5v29l-12 5-14-5-12 5z" fill="#bfe6a0" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M17 7v29M31 12v29" stroke="${IK}" stroke-width="2"/><path d="M17 7l14 5v29l-14-5z" fill="#8fd6ff"/><path d="M9 32c4-2 6-8 11-8s7 6 12 2 6-10 9-12" fill="none" stroke="#f3a530" stroke-width="3" stroke-dasharray="1 4.5" stroke-linecap="round"/><path d="M37 8a5 5 0 0 1 5 5c0 4-5 9-5 9s-5-5-5-9a5 5 0 0 1 5-5z" fill="#d6404c" stroke="${IK}" stroke-width="2.2"/><circle cx="37" cy="13" r="1.8" fill="#fff"/></svg>`,
+  'nav-family': () => ICON.family(),
+  'nav-treasure': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 20h36v20a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" fill="#c9893f" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 20a9 9 0 0 1 9-9h18a9 9 0 0 1 9 9z" fill="#e0a95a" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 26h36" stroke="${IK}" stroke-width="2.4"/><rect x="20" y="22" width="8" height="10" rx="2" fill="#ffc93c" stroke="${IK}" stroke-width="2.2"/><path d="M14 11v32M34 11v32" stroke="#f3a530" stroke-width="3"/><circle cx="12" cy="7" r="2.4" fill="#16a39a"/><circle cx="24" cy="5" r="2.8" fill="#d6404c"/><circle cx="36" cy="7" r="2.4" fill="#ffc93c"/></svg>`,
+  'nav-parents': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="7" width="30" height="37" rx="4" fill="#fff" stroke="${IK}" stroke-width="2.6"/><rect x="17" y="4" width="14" height="7" rx="3" fill="#a35bc4" stroke="${IK}" stroke-width="2.2"/><rect x="14" y="30" width="5" height="9" rx="1.5" fill="#16a39a" stroke="${IK}" stroke-width="1.6"/><rect x="21.5" y="25" width="5" height="14" rx="1.5" fill="#f3a530" stroke="${IK}" stroke-width="1.6"/><rect x="29" y="20" width="5" height="19" rx="1.5" fill="#3b82c4" stroke="${IK}" stroke-width="1.6"/><path d="M24 22c-6-4-6-9-3-10 1.6-.6 2.6.4 3 1.4.4-1 1.4-2 3-1.4 3 1-1 6-3 10z" fill="#d6404c" stroke="${IK}" stroke-width="1.6" transform="translate(-5 -6) scale(.9)"/></svg>`
+};
+function paintIcons(root=document){ root.querySelectorAll('[data-ic]').forEach(el=>{ const f = ICON[el.dataset.ic]; if(f) el.innerHTML = f(); }); }
 /* ---------- state ---------- */
 const DAY = 864e5;
 const PREVIEW = document.documentElement.classList.contains('preview');
@@ -1178,8 +1237,7 @@ function renderTorches(){
   const tile = $('#playTile'), rest = !canPlay(), resting = restDay();
   tile.classList.toggle('rest', rest);
   tile.setAttribute('aria-disabled', rest ? 'true' : 'false');
-  $('#playIc').innerHTML = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">`
-    : `<svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg>`;
+  $('#playIc').innerHTML = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : ICON.play();
   $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'بازیِ امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
   $('#playSub').textContent = n>=3 ? 'از پلِ لرزان گذشتی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
     : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازیِ تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
@@ -1226,6 +1284,7 @@ const NAV_OF = {choose:'map', hello:'map', map:'map', khan:'map', ex:'map', stor
   gkhan:'map', gchoose:'map', gex:'map', gstory:'map', gfam:'family', gstar:'map'};
 function go(name){
   if(name==='family' && state.cur !== 5 && window.HKX) name = 'gfam';   // the family tab opens the current lesson's game
+  hush();
   if(window.HKX) HKX.leave(name);
   $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
   $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
@@ -1355,7 +1414,7 @@ function finishDay(){
   $('#reward').hidden = false;
   $('#xpText').textContent = crossed ? 'یوزی آمادهٔ خوانِ بعدی است' : `یوزی دارد بزرگ می‌شود، ${fa(lit)} از ۳ مشعل`;
   $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = crossed ? '100%' : `${40+lit*15}%`));
-  sfx('fanfare', crossed); setTimeout(()=>voice(crossed ? 'crossed' : 'cheer'), 900);
+  sfx('fanfare', crossed); voiceLater(crossed ? 'crossed' : 'cheer', 900);
   confetti();
 }
 function confetti(){
@@ -1391,17 +1450,9 @@ function placeTissue(){
   t.style.right = `${50 + (x-50)*.62}%`; t.style.top = `${50 + (y-50)*.62}%`;
   $$('.player').forEach(p=> p.classList.toggle('hold', +p.dataset.i===holder));
 }
-const MELODY = [523,587,659,784,659,587,523,440,523,659,784,880,784,659,587,523];
-function playMelody(){
-  if(!ac()) return;
-  let k=0; const tick = ()=>{ if(!playing) return;
-    if(muted){ noteT = setTimeout(tick, 300); return; }
-    const o = actx.createOscillator(), g = actx.createGain(); o.type='triangle'; o.frequency.value = MELODY[k++%MELODY.length];
-    g.gain.setValueAtTime(.0001, actx.currentTime); g.gain.exponentialRampToValueAtTime(.18, actx.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime+.28);
-    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.3); noteT = setTimeout(tick, 300); };
-  tick();
-}
-function stopMusic(){ playing=false; clearInterval(stepT); clearTimeout(stopT); clearTimeout(noteT); const b=$('#music'); if(b) b.textContent='پخش آهنگ'; }
+/* the tissue game races round the circle, so it gets Rossini's gallop (music.js) */
+function playMelody(){ if(!ac() || muted || !window.HKMusic) return; HKMusic.play('galop', {ctx: actx}); }
+function stopMusic(){ playing=false; clearInterval(stepT); clearTimeout(stopT); clearTimeout(noteT); window.HKMusic && HKMusic.stop(); const b=$('#music'); if(b) b.textContent='پخش آهنگ'; }
 $('#music').addEventListener('click', ()=>{
   if(playing){ stopMusic(); return; }
   $$('.player').forEach(p=>p.classList.remove('hit'));
@@ -1842,11 +1893,12 @@ let pickKid = 'girl';
 $$('.pick button').forEach(b=> b.addEventListener('click', ()=>{ pickKid = b.dataset.kid; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x===b ? 'true' : 'false')); sfx('click'); }));
 $('#helloGo').addEventListener('click', ()=>{
   state.profile = {name: ($('#kidName').value || '').trim().slice(0,14) || 'قهرمان', kid: pickKid}; save();
-  renderProfile(); drawCircle(); sfx('fanfare'); voice('hello'); go('map');
+  renderProfile(); drawCircle(); sfx('fanfare'); go('map'); voice('hello');
 });
 function renderProfile(){
   $('#kidLabel').textContent = kidName();
   $('#avatarImg').src = `img/${kid()}-idle.webp`;
+  paintIcons();
   $('#yuziLabel').textContent = `همسفر: یوزی، ${YUZI_NAMES[yuziStage()]}`;
   const my = $('#mapYuzi'); if(my) my.src = `img/yuzi-${yuziStage()}-idle.webp`;
   if(!state.profile){ $('#kidName').value = ''; pickKid = 'girl'; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x.dataset.kid==='girl' ? 'true' : 'false')); }
@@ -1859,7 +1911,7 @@ $('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', mu
 renderMute();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
 /* what khans.js (khans 1 and 2) needs from this page */
-window.HK = { get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
+window.HK = { ICON, paintIcons, voiceLater, hush, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
   fig: n => fig(n), kid, kidName, yz, go, CAM, camStart, camStop, readPose, face, torch, STAR, confetti, dayNum, LOCK,
   PLAYERS, syncPlayers, lessonOpen, lessonDone, daysOf, KHANS, GUARD_NAMES, renderTop, drawMap, PREVIEW,
   newLesson };
