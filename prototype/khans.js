@@ -446,7 +446,7 @@ function openKhan(i){ G.khan = i; const first = KHAN_INFO[i].lessons.find(n => !
   S().cur = first; H.save(); H.go('gkhan'); }
 function renderKhan(){
   const K = KHAN_INFO[G.khan], passed = K.lessons.every(H.lessonDone);
-  $('#gkTitle').innerHTML = `خوانِ ${K.ord}: ${K.name}<small>منزل ${K.lessons.map(fa).join(' و ')} کتاب · ${K.lessons.map(n=>LESSONS[n].title).join('، ')}</small>`;
+  $('#gkTitle').innerHTML = `خوانِ ${K.ord}: ${K.name}<small>منزل ${K.lessons.map(fa).join(' و ')} کتاب، ${K.lessons.map(n=>LESSONS[n].title).join('، ')}</small>`;
   $('#gkGuard').src = `img/${K.guard}-${passed ? 'proud' : 'greet'}.webp`; $('#gkGuard').alt = H.GUARD_NAMES[K.guard];
   $('#gkBubble').innerHTML = passed ? `آفرین ${esc(H.kidName())}! از خوانِ <b>${K.name}</b> گذشتی. من به تو افتخار می‌کنم.` : K.text;
   $('#gkBody').innerHTML = K.lessons.map(n => manzilHTML(n)).join('');
@@ -461,23 +461,23 @@ function renderKhan(){
 }
 function manzilHTML(n){
   const Ld = LESSONS[n], st = LS(n), d = doneDays(n), open = H.lessonOpen(n);
-  if(!open) return `<div class="manzil locked-manzil" id="mz${n}"><h3>منزل ${fa(n)} · ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
+  if(!open) return `<div class="manzil locked-manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
     <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ «${LESSONS[n-1].title}» روشن شود، این منزل باز می‌شود.</div></div>`;
   const rest = !canPlay(n), today = practicedToday(n), resting = restDay(n);
   const title = d>=3 ? 'هر سه مشعل روشن است' : today ? 'بازیِ امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
   const sub = d>=3 ? 'این منزل را گذراندی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
     : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.'
-    : `${Ld.play.pick===2 ? 'دو تا از شش حرکت را انتخاب کن' : 'یکی از سه بازی را انتخاب کن'} · روزِ ${DAYW[d]}`;
+    : `${Ld.play.pick===2 ? 'دو تا از شش حرکت را انتخاب کن' : 'یکی از سه بازی را انتخاب کن'}، روزِ ${DAYW[d]}`;
   const ic = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : `<svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg>`;
   const starSub = LS(n).stars ? `ستاره ${fa(LS(n).stars)} از ۷` : starIntro(n);
-  return `<div class="manzil" id="mz${n}"><h3>منزل ${fa(n)} · ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
+  return `<div class="manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
     <div class="tiles">
       <button class="tile t-play ${rest?'rest':''}" data-act="play" aria-disabled="${rest}"><span class="ic">${ic}</span><span class="grow"><b>${title}</b><small>${sub}</small>
         <span class="days">${[0,1,2].map(i=>`<span class="day ${st.days[i]?'lit':''} ${i===d&&canPlay(n)?'today':''}">${fa(i+1)}</span>`).join('')}</span></span></button>
       <button class="tile t-story" data-act="gstory">${st.story?doneChip:''}<span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#5d4f72" stroke-width="3" stroke-linecap="round"><path d="M6 10c6-3 10-3 14 0v22c-4-3-8-3-14 0zM34 10c-6-3-10-3-14 0v22c4-3 8-3 14 0z"/></svg></span>
-        <b>قصهٔ حرکت</b><small>${Ld.story.name} · کتاب، ${Ld.story.src}</small></button>
+        <b>قصهٔ حرکت</b><small>${Ld.story.name}، کتاب، ${Ld.story.src}</small></button>
       <button class="tile t-family" data-act="gfam">${st.family?doneChip:''}<span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0c7a73" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="11" r="4"/><circle cx="28" cy="11" r="4"/><circle cx="20" cy="22" r="3"/><path d="M5 34c0-7 4-11 7-11s5 2 6 4M35 34c0-7-4-11-7-11s-5 2-6 4M15 36c0-4 2-7 5-7s5 3 5 7"/></svg></span>
-        <b>بازی خانوادگی</b><small>${Ld.family.title} · کتاب، ${Ld.family.src}</small></button>
+        <b>بازی خانوادگی</b><small>${Ld.family.title}، کتاب، ${Ld.family.src}</small></button>
       <button class="tile t-stars" data-act="gstar" style="grid-column:span 2;min-height:0"><span style="display:flex;align-items:center;gap:12px">
         <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="#f3a530" stroke="#c87a0c" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
         <span style="display:flex;flex-direction:column;gap:2px"><b>${Ld.star.title}</b><small>${starSub}</small></span></span></button>
@@ -489,7 +489,7 @@ const starIntro = n => ({cards:'هر کارِ درست یک ستاره', posture
 let picked = [];
 function renderChoose(){
   const n = G.n = S().cur, Ld = LESSONS[n], pl = Ld.play; picked = [];
-  $('#gcTitle').innerHTML = `${pl.pick===2 ? 'دو حرکتِ امروز را انتخاب کن' : 'بازیِ امروز را انتخاب کن'}<small>برویم بازی! · منزل ${fa(n)} · کتاب، ${pl.src}</small>`;
+  $('#gcTitle').innerHTML = `${pl.pick===2 ? 'دو حرکتِ امروز را انتخاب کن' : 'بازیِ امروز را انتخاب کن'}<small>برویم بازی!، منزل ${fa(n)}، کتاب، ${pl.src}</small>`;
   $('#gcRule').innerHTML = `کتاب می‌گوید: «${pl.rule}»<br><small style="color:var(--ink-soft)">وسیله: ${pl.need}</small>`;
   const did = gi => LS(n).days.findIndex(x => x && (x.moves||[]).includes(gi));
   $('#gcChoices').innerHTML = pl.games.map((g,i)=>{ const dd = did(i);
@@ -518,8 +518,8 @@ function startGame(){
 }
 function startOne(){
   const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.det = g.det ? detector(g.det) : null; resetBase();
-  $('#gxTitle').innerHTML = `${g.name}<small>منزل ${fa(n)} · روزِ ${DAYW[Math.min(2, doneDays(n))]}${X.q.length>1 ? ` · حرکتِ ${fa(X.qi+1)} از ۲` : ''} · کتاب، ${LESSONS[n].play.src}</small>`;
-  $('#gxInstr').innerHTML = `${g.t}${g.need==='stick' ? '<small>چوب پشتِ شانه‌ها بماند</small>' : g.kind==='manual' ? '<small>این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند</small>' : '<small>جای بازی را خلوت کن · با دوربین، یوزی خودش می‌شمارد</small>'}`;
+  $('#gxTitle').innerHTML = `${g.name}<small>منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}، کتاب، ${LESSONS[n].play.src}</small>`;
+  $('#gxInstr').innerHTML = `${g.t}${g.need==='stick' ? '<small>چوب پشتِ شانه‌ها بماند</small>' : g.kind==='manual' ? '<small>این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند</small>' : '<small>جای بازی را خلوت کن، با دوربین، یوزی خودش می‌شمارد</small>'}`;
   $('#gxCam').parentElement.hidden = g.kind === 'manual';
   if(g.kind === 'manual' && X.camOn) gxCamOff();
   flipFigs($('#gxFig'), g.figs);
@@ -674,7 +674,7 @@ const Y = {page:0, found:new Set(), camOn:false, task:null, t:null};
 function renderStory(i){
   const n = G.n = S().cur, Ld = LESSONS[n], st = Ld.story; Y.page = i; clearInterval(Y.t); Y.task = null;
   const H2 = H.CAM; H2.onFrame = null; H2.hint = null; H2.chipOn = null;
-  $('#gsTitle').innerHTML = `قصهٔ حرکت<small>${st.name} · منزل ${fa(n)} · کتاب، ${st.src}</small>`;
+  $('#gsTitle').innerHTML = `قصهٔ حرکت<small>${st.name}، منزل ${fa(n)}، کتاب، ${st.src}</small>`;
   const total = st.pages.length + 1;
   const steps = Array.from({length:total}, (_,k)=>`<i class="${k<i?'on':k===i?'cur':''}"></i>`).join('');
   const readNote = `<div class="read-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2" stroke-linecap="round"><path d="M4 6c3-2 5-2 8 0v13c-3-2-5-2-8 0zM20 6c-3-2-5-2-8 0v13c3-2 5-2 8 0z"/></svg>این قصه را بزرگترت برایت بلند بخواند.</div>`;
@@ -715,7 +715,7 @@ function taskHTML(t){
   const figs = t.figs ? `<div class="figrow">${t.figs.map(f=>`<img src="${figSrc(f)}" alt="">`).join('')}</div>` : '';
   let body = '';
   if(t.type === 'seq') body = `<div class="chips" id="tkChips">${t.steps.map((s,k)=>`<span data-k="${k}">${s[1]}</span>`).join('')}</div>`;
-  if(t.type === 'race') body = `<div class="watch" style="padding:4px 0"><div class="time" id="tkTime" style="font-size:44px">۰٫۰<small>ثانیه</small></div>
+  if(t.type === 'race') body = `<div class="watch" style="padding:4px 0"><div class="time" id="tkTime" style="font-size:44px">۰<small>ثانیه</small></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="cta gold" id="tkWalk">راه رفتن: شروع</button><button class="cta" id="tkRun" disabled style="opacity:.5">دویدن: شروع</button></div>
       <p id="tkRes" style="margin:0;font-size:14px;line-height:1.8;text-align:center">بزرگترت «شروع» را بزند؛ وقتی به آن طرفِ اتاق رسیدی، «رسیدم».</p></div>`;
   const cnt = t.type === 'race' ? '' : `<button class="cnt" id="tkCnt" aria-live="polite">${t.type==='confirm' ? '✓' : t.type==='hold' ? fa(t.sec) : '۰'}<small>${t.type==='seq' ? `از ${fa(t.reps)} دور` : t.type==='reps' ? `از ${fa(t.goal)}` : t.type==='hold' ? 'ثانیه' : ''}</small></button>`;
@@ -764,7 +764,7 @@ function wireTask(t){
   CAM.hint = () => {
     if(CAM.state === 'nobody') return 'از سر تا پایت را در کادر بیاور';
     if(k >= goal) return 'آفرین! تمام شد';
-    if(t.type === 'seq') return `${t.steps[seqI][1]}${t.steps[0][0].startsWith('head') && !BASE.head ? ' · اول به دوربین نگاه کن' : ''}`;
+    if(t.type === 'seq') return `${t.steps[seqI][1]}${t.steps[0][0].startsWith('head') && !BASE.head ? '، اول به دوربین نگاه کن' : ''}`;
     if(t.type === 'hold') return performance.now() - seen < 500 ? 'آفرین! همین‌طور بمان' : t.tip;
     return performance.now() - seen < 600 ? `${fa(k)} از ${fa(goal)}` : t.tip;
   };
@@ -790,7 +790,7 @@ function playTune(){ stopTune(); if(!H.ac()) return; const notes = [523,659,784,
 function stopTune(){ clearTimeout(tuneT); tuneT = null; }
 function renderFamily(){
   const n = G.n = S().cur, Ld = LESSONS[n], fm = Ld.family; famStop(); H.syncPlayers();
-  $('#gfTitle').innerHTML = `${fm.title}<small>بازی خانوادگی منزل ${fa(n)} · کتاب، ${fm.src}</small>`;
+  $('#gfTitle').innerHTML = `${fm.title}<small>بازی خانوادگی منزل ${fa(n)}، کتاب، ${fm.src}</small>`;
   const say = `<div class="rec-say" style="padding:0 0 12px"><img src="${yuziArt(fm.yuzi[0])}" alt=""><div class="bubble">${fm.yuzi[1]}</div></div>`;
   const intro = `<p class="fam-intro">${fm.intro}</p>${say}`;
   if(fm.kind === 'osta') famOsta(fm, intro);
@@ -815,7 +815,7 @@ function famOsta(fm, intro){
     <div class="fam-ctrl">
       <div class="bigcmd" id="oCmd"><img src="img/rooster-challenge.webp" alt=""><b>گوشی اوستا می‌شود</b><small>«فرمان بده» را بزن؛ همه زود انجام بدهند!</small></div>
       ${famCam('#fSlot', `یوزی ${esc(H.kidName())} را داوری کند`)}
-      <div class="callout" id="oCall"><b>فرمان‌ها</b>${fm.cmds.map(c=>c.t).join(' · ')}<small>اشتباه کنی، اوستا توپ را به طرفت می‌اندازد!</small></div>
+      <div class="callout" id="oCall"><b>فرمان‌ها</b>${fm.cmds.map(c=>c.t).join('، ')}<small>اشتباه کنی، اوستا توپ را به طرفت می‌اندازد!</small></div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="cta gold" id="oNext">فرمان بده</button><button class="ghost" id="oAuto" aria-pressed="false">خودکار</button></div>
     </div>`;
   let last = -1, auto = false;
@@ -927,7 +927,7 @@ const R = {watchT:null, start:0, camOn:false, mode:'cam'};
 function renderStar(){
   const n = G.n = S().cur, Ld = LESSONS[n], sk = Ld.star, st = LS(n);
   clearInterval(R.watchT); R.watchT = null;
-  $('#grTitle').innerHTML = `${sk.title}<small>بازی کن و ستاره بگیر · منزل ${fa(n)} · کتاب، ${sk.src}</small>`;
+  $('#grTitle').innerHTML = `${sk.title}<small>بازی کن و ستاره بگیر، منزل ${fa(n)}، کتاب، ${sk.src}</small>`;
   $('#grStars').innerHTML = Array.from({length:7}, (_,k)=>H.STAR(k < st.stars)).join('');
   $('#grStars').setAttribute('aria-label', `${fa(st.stars)} ستاره از هفت`);
   const book = `<p class="rec-msg" style="min-height:0">«${sk.t}»</p>`;
@@ -993,9 +993,9 @@ function starRecord(sk, book){
   if(jump && R.mode === 'cam') ctrl = `<div style="display:flex;justify-content:center">${camBtn('rsCam', R.camOn, 'یوزی با دوربین اندازه بگیرد', false)}</div>
       <div class="watch"><div class="time" id="rsVal">${recs.length ? show(recs[recs.length-1].v) : '۰'}<small>${unit}</small></div></div>
       <p class="rec-msg" id="rsMsg">${R.camOn ? 'جفت‌پا درجا بپر؛ یوزی بلندیِ پرش را اندازه می‌گیرد.' : 'دوربین را روشن کن و از سر تا پا در کادر بایست. بعد جفت‌پا بپر!'}</p>`;
-  else if(jump) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ۸۵" aria-label="طولِ پرش به سانتی‌متر"><span style="color:#c9cdf0">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
+  else if(jump) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ۸۵" aria-label="طولِ پرش به سانتی‌متر"><span style="color:var(--ink-soft);font-weight:700">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
       <p class="rec-msg" id="rsMsg">مثلِ شکل جفت‌پا به جلو بپر. بزرگترت از خطِ شروع تا پاشنه را با متر اندازه بگیرد و این‌جا بنویسد.</p>`;
-  else ctrl = `<div class="watch"><div class="time" id="rsVal">۰٫۰<small>ثانیه</small></div><button class="cta gold" id="rsBtn">شروع</button></div>
+  else ctrl = `<div class="watch"><div class="time" id="rsVal">۰<small>ثانیه</small></div><button class="cta gold" id="rsBtn">شروع</button></div>
       <p class="rec-msg" id="rsMsg">مثلِ شکل خرچنگی راه برو. بزرگترت «شروع» را بزند و وقتی نشستی یا ایستادی، «تمام».</p>`;
   $('#grBody').innerHTML = `${book}${modes}${fig}${ctrl}<div class="bars" aria-hidden="true">${bars}</div>
     ${sk.yuzi ? `<div class="rec-say"><img src="${yuziArt(sk.yuzi[0])}" alt=""><div class="bubble">${sk.yuzi[1]}</div></div>` : ''}`;
@@ -1038,7 +1038,7 @@ function starRecord(sk, book){
             /* a 7-year-old's leg (hip to ankle) is about 55 cm; good enough to compare one jump with the next */
             const cm = Math.max(1, (hip0 - top)/b.leg * 55);
             bumpCam(G.n, 'jump'); const m = record(Math.round(cm));
-            $('#rsVal').innerHTML = `${fa(Math.round(cm))}<small>سانتی‌متر</small>`; $('#rsMsg').innerHTML = m + '<br><small style="color:#c9cdf0">اندازه تقریبی است؛ هر پرش با پرشِ قبلیِ خودت مقایسه می‌شود.</small>';
+            $('#rsVal').innerHTML = `${fa(Math.round(cm))}<small>سانتی‌متر</small>`; $('#rsMsg').innerHTML = m + '<br><small style="color:var(--ink-soft)">اندازه تقریبی است؛ هر پرش با پرشِ قبلیِ خودت مقایسه می‌شود.</small>';
             $('#grStars').innerHTML = Array.from({length:7}, (_,k)=>H.STAR(k < st.stars)).join(''); } } };
       H.camStart(stage).then(ok => { if(!ok) R.camOn = false; });
     }
@@ -1057,9 +1057,9 @@ function renderParentsTabs(){
   $('#pTabs').innerHTML = list.map(n => `<button role="tab" data-n="${n}" aria-selected="${n===ptab}">منزل ${fa(n)}</button>`).join('');
   $$('#pTabs button').forEach(b => b.addEventListener('click', ()=>{ ptab = +b.dataset.n; sfx('click'); renderParentsTabs(); }));
   $('#p5').hidden = ptab !== 5; $('#pG').hidden = ptab === 5;
-  if(ptab === 5){ $('#parentsTitle').innerHTML = `گزارشِ ${esc(H.kidName())}<small>هفتهٔ تعادل · منزل ۵</small>`; return; }
+  if(ptab === 5){ $('#parentsTitle').innerHTML = `گزارشِ ${esc(H.kidName())}<small>هفتهٔ تعادل، منزل ۵</small>`; return; }
   const n = ptab, Ld = LESSONS[n], st = LS(n), d = doneDays(n);
-  $('#parentsTitle').innerHTML = `گزارشِ ${esc(H.kidName())}<small>هفتهٔ «${Ld.title}» · منزل ${fa(n)}</small>`;
+  $('#parentsTitle').innerHTML = `گزارشِ ${esc(H.kidName())}<small>هفتهٔ «${Ld.title}»، منزل ${fa(n)}</small>`;
   const cal = Ld.play.games.map((g,gi)=>`<tr><td>${g.name}</td>${[0,1,2].map(k=>{ const x = st.days[k], v = x && (x.moves||[]).includes(gi) ? x.feel : null;
     return `<td>${v===null||v===undefined ? '<span class="empty" aria-label="هنوز نه"></span>' : `<svg viewBox="0 0 60 60" role="img" aria-label="${['سخت بود','معمولی بود','خیلی خوب بود'][v]}">${H.face(v)}</svg>`}</td>`; }).join('')}</tr>`).join('');
   const camRows = Object.entries(st.cam).filter(([k,v])=>v>0).map(([k,v])=>`<div><b>${fa(k==='standStraight'||k==='sitStraight' ? v : v)}</b><span>${CAM_LABELS[k]||k}</span></div>`).join('');

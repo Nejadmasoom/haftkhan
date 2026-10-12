@@ -1,21 +1,21 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#17215a">
+<meta name="theme-color" content="#8fd6ff">
 <title>هفت‌خوانِ حرکت</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Vazirmatn:wght@400;500;700;800&display=swap">
 <style>
 /* فونت‌ها کنارِ صفحه هم هستند تا بدونِ اینترنت هم درست دیده شوند */
-@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06EF, U+06FA-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
 @font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/BalooBhaijaan2-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06EF, U+06FA-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
 @font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/BalooBhaijaan2-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
+@font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/BalooBhaijaan2-arabic.woff2) format('woff2'); unicode-range: U+0600-06EF, U+06FA-06FF, U+0750-077F, U+0870-0891, U+0897-08E1, U+08E3-08FF, U+200C-200E, U+2010-2011, U+204F, U+2E41, U+FB50-FDFF, U+FE70-FE74, U+FE76-FEFC, U+102E0-102FB, U+10E60-10E7E, U+10EC2-10EC7, U+10EC9-10EEE, U+10EF0-10EFF, U+1EE00-1EE03, U+1EE05-1EE1F, U+1EE21-1EE22, U+1EE24, U+1EE27, U+1EE29-1EE32, U+1EE34-1EE37, U+1EE39, U+1EE3B, U+1EE42, U+1EE47, U+1EE49, U+1EE4B, U+1EE4D-1EE4F, U+1EE51-1EE52, U+1EE54, U+1EE57, U+1EE59, U+1EE5B, U+1EE5D, U+1EE5F, U+1EE61-1EE62, U+1EE64, U+1EE67-1EE6A, U+1EE6C-1EE72, U+1EE74-1EE77, U+1EE79-1EE7C, U+1EE7E, U+1EE80-1EE89, U+1EE8B-1EE9B, U+1EEA1-1EEA3, U+1EEA5-1EEA9, U+1EEAB-1EEBB, U+1EEF0-1EEF1;
 }
 @font-face { font-family: 'HK Baloo'; font-style: normal; font-weight: 800; font-display: swap; src: url(fonts/BalooBhaijaan2-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
@@ -55,7 +55,7 @@
   --on-dark:#fff7e6;
   --page:#e9dcc0;       /* desk around the phone */
   --page-ink:#3a2f4d;
-  --f-display:"HK Baloo","Baloo Bhaijaan 2","HK Vazir","Vazirmatn",Tahoma,sans-serif;
+  --f-display:"HK Baloo","HK Vazir","Baloo Bhaijaan 2","Vazirmatn",Tahoma,sans-serif;   /* Persian digits skip Baloo (it draws ۴ ۶ ۷ the Urdu way) and land on Vazirmatn */
   --f-body:"HK Vazir","Vazirmatn",Tahoma,"Segoe UI",sans-serif;
   --r-tile:22px; --r-pill:999px;
   --press:0 6px 0;      /* clay-tile thickness */
@@ -503,8 +503,130 @@ button{font:inherit;color:inherit}
 .modes button[aria-pressed="true"]{background:var(--saffron);color:var(--ink)}
 #gxScene .fig{height:94%;width:auto;max-width:60%;right:6%;object-fit:contain}
 
+/* ---------- daylight clay theme: bright, chunky and toy-like for 6–7 year olds ----------
+   Sky backgrounds instead of night lapis, thick ink outlines, puffy two-layer shadows,
+   bigger type. Lapis, turquoise, saffron and pomegranate stay as the accent colours. */
+:root{ --sky:#8fd6ff; --sky-2:#dff4ff; --meadow:#f1fbe6; --clay:0 6px 0 var(--ink), 0 10px 18px rgba(43,33,64,.18); --clay-in:inset 0 -6px 0 rgba(43,33,64,.10), inset 0 4px 0 rgba(255,255,255,.55); --bw:3px }
+.app{background:linear-gradient(var(--sky), var(--sky-2) 55%, var(--meadow));color:var(--ink);font-size:16px}
+.lattice{background-color:transparent;background-image:
+  radial-gradient(ellipse 60px 22px at 18% 9%, #fff 98%, transparent 100%),
+  radial-gradient(ellipse 80px 26px at 80% 22%, #fff 98%, transparent 100%),
+  radial-gradient(ellipse 54px 20px at 30% 56%, rgba(255,255,255,.9) 98%, transparent 100%),
+  linear-gradient(var(--sky), var(--sky-2) 55%, var(--meadow));
+  background-size:auto;background-repeat:no-repeat;background-attachment:local}
+/* header and top bar */
+.hdr h2{color:var(--ink);font-size:26px}
+.hdr h2 small{color:var(--ink-soft);font-size:13px}
+.back{background:#fff;color:var(--ink);border:var(--bw) solid var(--ink);box-shadow:0 4px 0 var(--ink);width:48px;height:48px}
+.back:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.topbar{background:linear-gradient(rgba(143,214,255,.95) 70%, transparent)}
+.who b{color:var(--ink)} .who small{color:var(--ink-soft);font-size:13px}
+.avatar{box-shadow:0 0 0 3px var(--ink), 0 4px 0 var(--ink)}
+.torches,.mute{background:#fff;border:var(--bw) solid var(--ink);box-shadow:0 4px 0 var(--ink)}
+.torches span{color:var(--ink);font-weight:800;font-size:12px}
+.mute{color:var(--ink);width:46px;height:46px}
+/* map */
+.map-title{color:#fff;-webkit-text-stroke:1.5px var(--ink);text-shadow:0 4px 0 var(--ink);font-size:34px}
+.map-title small{color:var(--ink);-webkit-text-stroke:0;text-shadow:none;font-size:13px;font-weight:700}
+.medal{border:4px solid var(--ink);box-shadow:var(--clay), var(--clay-in)}
+.khan.done .medal{background:var(--saffron);box-shadow:var(--clay), var(--clay-in)}
+.khan.now .medal{background:var(--anar);box-shadow:var(--clay), 0 0 0 10px rgba(214,64,76,.25), var(--clay-in)}
+.khan.locked .medal,.khan.soon .medal{background:#d9d3f2;box-shadow:0 6px 0 var(--ink)}
+.khan.locked .medal img,.khan.soon .medal img{filter:grayscale(1) brightness(1.1);opacity:.55}
+.khan .label{color:var(--ink);font-size:18px;text-shadow:0 0 6px #fff,0 0 3px #fff,0 2px 0 #fff;background:rgba(255,255,255,.75);border-radius:999px;padding:1px 10px}
+.khan .sub{color:var(--ink-soft);font-weight:700;font-size:11.5px;text-shadow:0 0 4px #fff}
+.khan .num{background:#fff;color:var(--ink);box-shadow:0 0 0 3px var(--ink)}
+.khan:active .medal{transform:translateY(4px) scale(.98)}
+.lock{background:#fff;box-shadow:0 0 0 3px var(--ink)}
+.lock svg{stroke:var(--ink)}
+.yuzi-on-map{filter:drop-shadow(0 6px 4px rgba(43,33,64,.3))}
+/* bottom bar */
+.nav{background:#fff;border-top:var(--bw) solid var(--ink);box-shadow:0 -6px 16px rgba(43,33,64,.12)}
+.nav button{color:var(--ink-soft);font-weight:700;font-size:12.5px}
+.nav button[aria-current="page"]{color:var(--ink);background:#ffe3a3;box-shadow:inset 0 0 0 3px var(--ink)}
+.nav button svg{width:28px;height:28px}
+/* paper sheets and cards */
+.sheet{border:var(--bw) solid var(--ink);border-bottom:0;border-radius:32px 32px 0 0;background:var(--paper)}
+.sheet::before{border-color:rgba(43,33,64,.08)}
+.bubble,.book-rule,.find-bar,.ask,.lock-note,.beh,.p-sum div,.verified div,.stage-c,.choice,.card,.check,.tally div,.bigcmd,.st-art,.figrow{border:var(--bw) solid var(--ink)}
+.bubble{box-shadow:0 5px 0 var(--ink);font-size:15px}
+.tile{border:var(--bw) solid var(--ink);border-radius:26px;box-shadow:var(--clay), var(--clay-in);transition:transform .2s cubic-bezier(.34,1.56,.64,1), box-shadow .2s}
+.tile:active,.t-play:active,.t-story:active,.t-family:active,.t-stars:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink), var(--clay-in)}
+.tile b{font-size:19px} .tile small{font-size:13.5px}
+.tile .ic{background:#fff;border:var(--bw) solid var(--ink);width:46px;height:46px;border-radius:14px}
+.t-play .ic{width:60px;height:60px;background:rgba(255,255,255,.25)}
+.t-story{background:#e3d4ff} .t-family{background:#bff0e6} .t-stars{background:#ffe08a}
+.t-play.rest{background:#b9b3e6;color:var(--ink)}
+.day{border:2px solid var(--ink);background:#fff;color:var(--ink)}
+.day.lit{background:var(--saffron)}
+.manzil h3{font-size:22px}
+.manzil h3 .tag{border:2px solid var(--ink);background:#fff}
+.done-chip{border:2px solid var(--ink)}
+.choice{border-radius:26px;box-shadow:var(--clay), var(--clay-in);min-height:120px}
+.choice:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.choice b{font-size:19px} .choice small{font-size:13.5px;color:var(--ink-soft)}
+.choice img{width:100px;height:112px;background:#fff;border-radius:18px;border:2px solid rgba(43,33,64,.15)}
+.choice.picked{box-shadow:0 0 0 5px var(--saffron), var(--clay)}
+.cta{border:var(--bw) solid var(--ink);box-shadow:0 6px 0 var(--ink);font-size:22px;min-height:58px;transition:transform .2s cubic-bezier(.34,1.56,.64,1)}
+.cta:active,.cta.gold:active{transform:translateY(5px);box-shadow:0 1px 0 var(--ink)}
+.cta.gold{box-shadow:0 6px 0 var(--ink)}
+.ghost{border:var(--bw) solid var(--ink);background:#fff;box-shadow:0 4px 0 var(--ink)}
+.camtoggle{background:#fff;color:var(--ink);border:var(--bw) solid var(--ink);box-shadow:0 4px 0 var(--ink);font-size:15px;min-height:50px}
+.camtoggle[aria-pressed="true"]{background:var(--fayruz);color:#fff}
+.modes button{background:#fff;color:var(--ink);border:2px solid var(--ink)}
+.modes button[aria-pressed="true"]{background:var(--saffron);color:var(--ink)}
+/* play screen, record screen */
+.ex,.rec{background:transparent}
+.scene{border:var(--bw) solid var(--ink);box-shadow:var(--clay)}
+.instr{color:var(--ink);font-size:20px;font-weight:700}
+.instr small{color:var(--ink-soft);font-size:13.5px}
+.hint{color:var(--ink-soft);font-weight:700;font-size:14.5px}
+.ring svg circle:first-child{stroke:rgba(43,33,64,.12)}
+.ring button{border:4px solid var(--ink);box-shadow:0 8px 0 var(--ink), var(--clay-in);font-size:46px}
+.ring button:active{box-shadow:0 2px 0 var(--ink)}
+.steps i{background:rgba(43,33,64,.15)}
+.watch .time{color:var(--ink)} .watch .time small{color:var(--ink-soft)}
+.rec-msg{color:var(--ink);font-size:16px} .rec-msg b{color:var(--anar-deep)}
+.rec-stage{border:var(--bw) solid var(--ink);box-shadow:var(--clay)}
+.rec-stars svg{width:34px;height:34px;filter:drop-shadow(0 2px 0 var(--ink))}
+.bars{border-bottom-color:rgba(43,33,64,.25)} .bars div{color:var(--ink-soft);font-weight:700}
+.bars i{background:#d9d3f2;border:2px solid var(--ink);border-bottom:0}
+.bars i.up{background:var(--saffron)}
+.private{color:var(--ink-soft)}
+/* overlays keep a dark veil so the choice in front stands out */
+.feel,.comfort{color:var(--on-dark)}
+.faces button{border:var(--bw) solid var(--ink);box-shadow:0 6px 0 var(--ink);width:92px;height:92px}
+.reward{background:repeating-conic-gradient(from 0deg at 50% 32%, #ffe07a 0 12deg, #ffd04d 12deg 24deg);color:var(--ink)}
+.reward h3{color:var(--anar);-webkit-text-stroke:0;font-size:36px;text-shadow:0 3px 0 #fff}
+.reward p{font-size:16.5px;font-weight:700;background:rgba(255,255,255,.75);border:var(--bw) solid var(--ink);border-radius:20px;padding:10px 14px}
+.xp{color:var(--ink);font-weight:700} .xp .bar{background:#fff;border:2px solid var(--ink)}
+/* story */
+.st-text{font-size:18px}
+.pose,.task,.callout{border:var(--bw) solid var(--ink);box-shadow:0 6px 0 var(--ink)}
+.st-steps i{height:8px;border:1.5px solid var(--ink)}
+.words .w.hit{border:2px solid var(--ink)}
+/* hello */
+.hello h2{color:var(--anar);font-size:34px;text-shadow:0 3px 0 #fff}
+.hello p{color:var(--ink);font-weight:700}
+.hello label{color:var(--ink)}
+.hello input{border:var(--bw) solid var(--ink);box-shadow:0 5px 0 var(--ink)}
+.hello input:focus{border-color:var(--ink);box-shadow:0 5px 0 var(--ink), 0 0 0 5px rgba(243,165,48,.45)}
+.pick button{background:#fff;color:var(--ink);border:var(--bw) solid var(--ink);box-shadow:0 6px 0 var(--ink);font-size:18px}
+.pick button[aria-pressed="true"]{background:#ffe08a;box-shadow:0 6px 0 var(--ink), inset 0 0 0 4px var(--saffron)}
+/* parents, treasure */
+.ptabs button{border:2px solid var(--ink);background:#fff}
+.ptabs button[aria-selected="true"]{background:var(--lapis);color:#fff}
+.m{border:var(--bw) solid var(--ink)}
+.gcard > div{border:var(--bw) solid var(--ink);box-shadow:0 8px 0 var(--ink)}
+.guard-img{filter:drop-shadow(0 6px 4px rgba(43,33,64,.25))}
+@media (prefers-reduced-motion: no-preference){
+  .t-play:not(.rest) .ic{animation:wiggle 2.6s ease-in-out infinite}
+  .khan.now .medal img{animation:bob2 2s ease-in-out infinite}
+}
+@keyframes wiggle{0%,100%{transform:rotate(0)}6%{transform:rotate(-8deg)}12%{transform:rotate(8deg)}18%{transform:rotate(0)}}
+
 /* ---------- play mode: the real app, full screen. The phone mock-up and notes are only for ?preview ---------- */
-html.play body{background:var(--lapis-deep)}
+html.play body{background:#5fb8ea}
 html.play .notes{display:none}
 html.play .stage{display:block;padding:0;min-height:0;height:100%}
 html.play .phone{width:100%;max-width:560px;margin-inline:auto;height:100vh;height:100dvh;min-height:0;border-radius:0;padding:0;box-shadow:none;background:none}
@@ -540,7 +662,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <section class="screen lattice" id="s-map" aria-label="نقشهٔ سفر">
         <div class="topbar">
           <div class="avatar" aria-hidden="true"><img id="avatarImg" src="img/girl-idle.webp" alt=""></div>
-          <div class="who"><b id="kidLabel">قهرمان</b><small id="yuziLabel">همسفر: یوزی · توله‌یوز</small></div>
+          <div class="who"><b id="kidLabel">قهرمان</b><small id="yuziLabel">همسفر: یوزی، توله‌یوز</small></div>
           <div class="torches" aria-label="مشعل‌های این هفته" id="topTorches"></div>
           <button class="mute" id="mute" aria-label="صدا"></button>
         </div>
@@ -553,7 +675,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <section class="screen" id="s-khan" hidden aria-label="خوان سوم">
         <div class="hdr">
           <button class="back" data-go="map" aria-label="برگشت به نقشه"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-          <h2>خوان سوم: پلِ لرزان<small>منزل ۵ و ۶ کتاب · تعادل، زندگی فعال</small></h2>
+          <h2>خوان سوم: پلِ لرزان<small>منزل ۵ و ۶ کتاب، تعادل، زندگی فعال</small></h2>
         </div>
         <div class="guard">
           <img src="img/stork-greet.webp" alt="لک‌لک، نگهبانِ پل" class="guard-img">
@@ -561,7 +683,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         </div>
         <div class="sheet">
           <div class="manzil">
-            <h3>منزل ۵ · تعادل <span class="tag">کتاب، ص ۳۳ تا ۳۷</span></h3>
+            <h3>منزل ۵: تعادل <span class="tag">کتاب، ص ۳۳ تا ۳۷</span></h3>
             <div class="tiles">
               <button class="tile t-play" id="playTile">
                 <span class="ic" id="playIc"></span>
@@ -587,7 +709,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
             </div>
           </div>
           <div class="manzil" id="m6">
-            <h3>منزل ۶ · زندگی فعال <span class="tag">کتاب، ص ۳۹ تا ۴۳</span></h3>
+            <h3>منزل ۶: زندگی فعال <span class="tag">کتاب، ص ۳۹ تا ۴۳</span></h3>
             <div class="lock-note" id="m6note"></div>
           </div>
         </div>
@@ -598,7 +720,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         <div class="ex">
           <div class="hdr">
             <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-            <h2 id="exTitle">تمرین ۱ از ۳<small>تعادل · روز دوم</small></h2>
+            <h2 id="exTitle">تمرین ۱ از ۳<small>تعادل، روز دوم</small></h2>
           </div>
           
           <div class="scene" id="scene"><svg viewBox="0 0 320 250" id="sceneSvg" aria-hidden="true"></svg><img class="fig" id="fig" alt=""></div>
@@ -638,7 +760,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <section class="screen" id="s-choose" hidden aria-label="انتخابِ بازیِ امروز">
         <div class="hdr">
           <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-          <h2>بازیِ امروز را انتخاب کن<small>برویم بازی! · کتاب، ص ۳۴</small></h2>
+          <h2>بازیِ امروز را انتخاب کن<small>برویم بازی!، کتاب، ص ۳۴</small></h2>
         </div>
         <div class="sheet">
           <div class="book-rule"><img src="img/yuzi-1-talk.webp" alt="">کتاب می‌گوید: «یک روز در میان یکی از بازی‌ها را انجام بده.» امروز کدام را بازی می‌کنی؟</div>
@@ -650,7 +772,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <section class="screen" id="s-story" hidden aria-label="قصهٔ حرکت">
         <div class="hdr">
           <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-          <h2>قصهٔ حرکت<small>تاپ‌تاپو و تعادل · کتاب، ص ۳۴</small></h2>
+          <h2>قصهٔ حرکت<small>تاپ‌تاپو و تعادل، کتاب، ص ۳۴</small></h2>
         </div>
         <div class="sheet story" id="storyBody"></div>
       </section>
@@ -660,13 +782,13 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         <div class="rec">
           <div class="hdr">
             <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-            <h2>رکوردِ لک‌لک<small>بازی کن و ستاره بگیر · کتاب، ص ۳۷</small></h2>
+            <h2>رکوردِ لک‌لک<small>بازی کن و ستاره بگیر، کتاب، ص ۳۷</small></h2>
           </div>
           <div class="rec-stars" id="recStars" role="img"></div>
           <div class="rec-stage" id="recStage"><img id="recFig" src="img/girl-m5-2a.webp" alt="دختری مثل لک‌لک روی یک پا ایستاده"><img src="img/stork-challenge.webp" alt="لک‌لک"></div>
           <div style="display:flex;justify-content:center;padding-top:12px"><button class="camtoggle" id="recCam" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg><span>یوزی با دوربین ببیند</span></button></div>
           <div class="watch">
-            <div class="time" id="recTime" aria-live="off">۰٫۰<small>ثانیه</small></div>
+            <div class="time" id="recTime" aria-live="off">۰<small>ثانیه</small></div>
             <button class="cta gold" id="recBtn">شروع</button>
           </div>
           <p class="rec-msg" id="recMsg" aria-live="polite">مثل لک‌لک روی یک پا بایست. بزرگترت «شروع» را بزند و وقتی پایت زمین خورد، «پایم زمین خورد» را.</p>
@@ -679,7 +801,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <section class="screen lattice" id="s-family" hidden aria-label="بازی خانوادگی">
         <div class="hdr">
           <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-          <h2>دستمال‌بازی<small>بازی خانوادگی منزل ۵ · کتاب، ص ۳۶</small></h2>
+          <h2>دستمال‌بازی<small>بازی خانوادگی منزل ۵، کتاب، ص ۳۶</small></h2>
         </div>
         <div class="sheet">
           <p class="fam-intro">دست هم را بگیرید و <b>روی یک پا</b> حلقه بزنید. دستمال جلوی یک نفر روی زمین است. با آهنگ، هر کس دستمال را <b>با انگشت‌های پای دیگرش</b> برمی‌دارد و جلوی نفر بعدی می‌گذارد. آهنگ که قطع شد، صاحب دستمال یک حرکت تعادلی انجام می‌دهد.</p>
@@ -706,7 +828,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
 
       <!-- ===== PARENTS ===== -->
       <section class="screen" id="s-parents" hidden aria-label="بخش والدین">
-        <div class="hdr"><h2 id="parentsTitle">برای پدر و مادر<small>هفتهٔ تعادل · منزل ۵</small></h2></div>
+        <div class="hdr"><h2 id="parentsTitle">برای پدر و مادر<small>هفتهٔ تعادل، منزل ۵</small></h2></div>
         <div class="sheet">
           <div class="ptabs" id="pTabs" role="tablist" aria-label="منزل‌ها"></div>
           <div id="p5">
@@ -1004,14 +1126,26 @@ function drawMap(){
   let doneLen = 0; while(doneLen < KHANS.length-1 && khanPassed(doneLen)) doneLen++; // segments completed
   let dDone = `M${pts[0][0]} ${pts[0][1]+80} L${pts[0][0]} ${pts[0][1]}`;
   for(let i=1;i<=doneLen;i++){ const p=pts[i], q=pts[i-1], my=(p[1]+q[1])/2; dDone += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; }
-  let stars=''; for(let i=0;i<40;i++){ stars += `<circle cx="${(i*97)%W}" cy="${(i*233)%H}" r="${1+(i%3)*.6}" fill="#fff7e6" opacity="${.25+(i%4)*.12}"/>`; }
-  const svg = `<svg class="path" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${stars}
-     <path d="M0 ${H} Q60 1100 120 ${H}Z M220 ${H} Q300 1080 ${W} ${H}Z" fill="#1b2867"/>
-     <path d="${d}" fill="none" stroke="#17215a" stroke-width="30" stroke-linecap="round"/>
-     <path d="${d}" fill="none" stroke="#3b4aa0" stroke-width="22" stroke-linecap="round"/>
-     <path d="${d}" fill="none" stroke="#6e7bc9" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>
-     <path d="${dDone}" fill="none" stroke="${C.saffron}" stroke-width="10" stroke-linecap="round"/>
-     <path d="M150 70 l40 -40 l40 40z M120 90 l30 -30 l30 30z" fill="#3b4aa0" opacity=".6"/></svg>`;
+  /* a daytime world: sky and sun at the summit, hills and meadows below, a sandy road climbing through them */
+  const hill = (y, amp, col, ph=0) => { let q = `M0 ${H}V${y}`; for(let x=0;x<=W;x+=45) q += ` Q${x+22} ${y-amp*Math.sin((x/45+ph)*1.7)} ${x+45} ${y}`; return `<path d="${q}V${H}Z" fill="${col}"/>`; };
+  const cloud = (x, y, s=1) => `<g transform="translate(${x} ${y}) scale(${s})" opacity=".95"><ellipse cx="0" cy="0" rx="26" ry="13" fill="#fff"/><ellipse cx="-18" cy="4" rx="16" ry="10" fill="#fff"/><ellipse cx="20" cy="5" rx="17" ry="9" fill="#fff"/><ellipse cx="2" cy="-8" rx="15" ry="11" fill="#fff"/></g>`;
+  const tree = (x, y, s=1) => `<g transform="translate(${x} ${y}) scale(${s})"><rect x="-2.5" y="0" width="5" height="12" rx="2" fill="#8a5a2b"/><circle cx="0" cy="-4" r="11" fill="#3fa34d" stroke="#2b2140" stroke-width="2"/><circle cx="-4" cy="-8" r="3" fill="#7fd36b"/></g>`;
+  const flower = (x, y, c) => `<g transform="translate(${x} ${y})"><circle r="3.4" fill="${c}"/><circle r="1.4" fill="#fff7e6"/></g>`;
+  let deco = '';
+  [[60,120,1],[290,250,.8],[70,420,.9],[300,600,.75],[40,760,.8],[300,900,.7]].forEach(c=> deco += cloud(...c));
+  [[30,1010],[330,980],[20,860],[340,700],[25,560],[335,420]].forEach(([x,y],k)=> deco += tree(x, y, .9 + (k%2)*.25));
+  for(let k=0;k<26;k++) deco += flower((k*137)%W, 700 + (k*97)%460, ['#d6404c','#f3a530','#ffffff','#a35bc4'][k%4]);
+  const svg = `<svg class="path" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">
+     <defs><linearGradient id="skyG" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7fd0ff"/><stop offset=".45" stop-color="#c8ecff"/><stop offset=".62" stop-color="#e9f8ff"/></linearGradient></defs>
+     <rect width="${W}" height="${H}" fill="url(#skyG)"/>
+     <g transform="translate(300 70)"><circle r="34" fill="#ffd45a" stroke="#f3a530" stroke-width="5"/><g stroke="#f3a530" stroke-width="5" stroke-linecap="round">${Array.from({length:8},(_,k)=>{ const a = k*Math.PI/4; return `<path d="M${Math.cos(a)*44} ${Math.sin(a)*44}L${Math.cos(a)*56} ${Math.sin(a)*56}"/>`; }).join('')}</g></g>
+     <path d="M-10 260 L70 150 L120 210 L190 110 L260 220 L320 160 L380 260Z" fill="#b9b3e6"/><path d="M190 110 L208 136 L196 132 L188 142 L176 128Z M70 150 L84 170 L72 166 L62 172Z" fill="#fff"/>
+     ${hill(330, 18, '#bfe6a0', 0)}${hill(520, 22, '#a6dc86', 1.3)}${hill(720, 20, '#8fd270', .6)}${hill(920, 24, '#7cc860', 2.1)}
+     ${deco}
+     <path d="${d}" fill="none" stroke="#2b2140" stroke-width="34" stroke-linecap="round" opacity=".9"/>
+     <path d="${d}" fill="none" stroke="#f6dca6" stroke-width="27" stroke-linecap="round"/>
+     <path d="${d}" fill="none" stroke="#fff7e6" stroke-width="3.5" stroke-dasharray="8 12" stroke-linecap="round"/>
+     <path d="${dDone}" fill="none" stroke="${C.saffron}" stroke-width="12" stroke-linecap="round"/></svg>`;
   map.insertAdjacentHTML('beforeend', svg);
   KHANS.forEach((k,i)=>{
     const [x,y] = pts[i];
@@ -1024,7 +1158,7 @@ function drawMap(){
     const status = passed ? 'گذشته' : i===cur ? 'خوانِ امروز' : open ? 'باز' : cls==='soon' ? 'به‌زودی' : 'هنوز بسته';
     b.setAttribute('aria-label', `خوان ${fa(i+1)}: ${k.name} — ${status}`);
     b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><img src="img/${k.guard}-greet.webp" alt="">${cls==='locked'||cls==='soon'?`<span class="lock">${LOCK}</span>`:''}</span>
-      <span class="label">${k.name}</span><span class="sub">${k.lessons.join(' · ')}</span>`;
+      <span class="label">${k.name}</span><span class="sub">${k.lessons.join('، ')}</span>`;
     if(open || passed) b.addEventListener('click', ()=> enterKhan(i));
     else b.addEventListener('click', ()=>{ flashNote(i); meetGuardian(i); });
     map.appendChild(b);
@@ -1048,11 +1182,11 @@ function renderTorches(){
     : `<svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg>`;
   $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'بازیِ امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
   $('#playSub').textContent = n>=3 ? 'از پلِ لرزان گذشتی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
-    : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازیِ تعادل را انتخاب کن · روزِ ${['اول','دوم','سوم'][n]}`;
+    : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازیِ تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
   $('#storyDone').hidden = !state.story;
   $('#familyDone').hidden = !state.family;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
-  $('#recSub').textContent = state.rec.length ? `بهترین: ${secs(best)} ثانیه · ستاره ${fa(state.recStars)} از ۷` : 'هنوز رکوردی نداری · مثلِ لک‌لک بایست!';
+  $('#recSub').textContent = state.rec.length ? `بهترین: ${secs(best)} ثانیه، ستاره ${fa(state.recStars)} از ۷` : 'هنوز رکوردی نداری، مثلِ لک‌لک بایست!';
   const open6 = n>=3;
   $('#m6').classList.toggle('locked-manzil', !open6);
   $('#m6note').innerHTML = open6
@@ -1069,7 +1203,7 @@ function meetGuardian(i){
   const k = KHANS[i], passed = khanPassed(i), soon = !passed && i >= BUILT;
   $('#gImg').src = `img/${k.guard}-${passed ? 'proud' : 'challenge'}.webp`; $('#gImg').alt = GUARD_NAMES[k.guard];
   $('#gTag').textContent = passed ? 'گذشتی!' : soon ? 'به‌زودی' : 'هنوز بسته'; $('#gTag').classList.toggle('done', passed);
-  $('#gTitle').innerHTML = `${GUARD_NAMES[k.guard]}<small>خوانِ ${fa(i+1)}: ${k.name} · ${k.lessons.join('، ')}</small>`;
+  $('#gTitle').innerHTML = `${GUARD_NAMES[k.guard]}<small>خوانِ ${fa(i+1)}: ${k.name}، ${k.lessons.join('، ')}</small>`;
   $('#gText').textContent = passed ? `این خوان را گذشتی، ${kidName()}! من به تو افتخار می‌کنم.` : soon ? `«${GUARD_LINES[k.guard]}» این خوان هنوز ساخته نشده و به‌زودی باز می‌شود.` : `«${GUARD_LINES[k.guard]}» وقتی خوانِ قبلی را بگذرانی، این‌جا منتظرت هستم.`;
   $('#gcard').hidden = false; sfx(passed ? 'star' : 'soft'); $('#gClose').focus();
 }
@@ -1166,10 +1300,10 @@ function renderChoose(){
 function startExercise(){ mi = chosen; count = 0; CAM.dot = null; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
 function renderMove(){
   const m = MOVES[mi];
-  $('#exTitle').innerHTML = `بازیِ امروز<small>تعادل · روزِ ${['اول','دوم','سوم'][doneDays()]} · کتاب، ص ۳۴</small>`;
+  $('#exTitle').innerHTML = `بازیِ امروز<small>تعادل، روزِ ${['اول','دوم','سوم'][doneDays()]}، کتاب، ص ۳۴</small>`;
   flip(true);
   voice(`move-${mi+1}`);
-  $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن · جای بازی را خلوت کن</small>`;
+  $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن، جای بازی را خلوت کن</small>`;
   renderCount();
 }
 function renderCount(){
@@ -1219,7 +1353,7 @@ function finishDay(){
   $('#rewardText').textContent = crossed ? 'هر سه مشعل روشن شد. لک‌لک به تو افتخار می‌کند و منزلِ «زندگی فعال» باز شد.'
     : `مشعلِ روزِ ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روزِ دیگر':'دو روزِ دیگر'} تا گذشتن از پلِ لرزان. فردا روزِ استراحت است؛ پس‌فردا بیا!`;
   $('#reward').hidden = false;
-  $('#xpText').textContent = crossed ? 'یوزی آمادهٔ خوانِ بعدی است' : `یوزی دارد بزرگ می‌شود · ${fa(lit)} از ۳ مشعل`;
+  $('#xpText').textContent = crossed ? 'یوزی آمادهٔ خوانِ بعدی است' : `یوزی دارد بزرگ می‌شود، ${fa(lit)} از ۳ مشعل`;
   $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = crossed ? '100%' : `${40+lit*15}%`));
   sfx('fanfare', crossed); setTimeout(()=>voice(crossed ? 'crossed' : 'cheer'), 900);
   confetti();
@@ -1272,7 +1406,7 @@ $('#music').addEventListener('click', ()=>{
   if(playing){ stopMusic(); return; }
   $$('.player').forEach(p=>p.classList.remove('hit'));
   playing = true; $('#music').textContent = 'آهنگ در حال پخش…';
-  $('#famCall').innerHTML = '<b>دستمال را با پا رد کنید!</b><small>روی یک پا · هر کس نوبتش شد، دستمال را جلوی نفر بعدی بگذارد</small>';
+  $('#famCall').innerHTML = '<b>دستمال را با پا رد کنید!</b><small>روی یک پا، هر کس نوبتش شد، دستمال را جلوی نفر بعدی بگذارد</small>';
   playMelody();
   stepT = setInterval(()=>{ holder = (holder+1)%PLAYERS.length; placeTissue(); }, 1500);
   stopT = setTimeout(()=>{
@@ -1315,7 +1449,7 @@ function renderParents(){
   const c = state.cam;
   $('#pCam').innerHTML = [[c.dots,'لمسِ دایره با نوکِ پا'],[c.bags,'کیسه در سبد، روی یک پا'],[c.cups,'لیوانِ چیده‌شده، روی یک پا'],[c.oneLegReps,'ضربهٔ تأییدشده روی یک پا'],
     [c.poseSec ? secs(c.poseSec) : 0,'ثانیه حالتِ درست در قصه'],[c.recs,'رکوردِ لک‌لک با زمانِ دوربین'],[c.family,'داوریِ دستمال‌بازی']].map(([n,t])=>`<div><b>${n===0||n==='۰٫۰' ? '<small style="font-size:14px;color:var(--ink-soft)">هنوز نه</small>' : typeof n==='number'?fa(n):n}</b><span>${t}</span></div>`).join('');
-  $('#parentsTitle').innerHTML = `گزارشِ ${kidName()}<small>هفتهٔ تعادل · منزل ۵</small>`;
+  $('#parentsTitle').innerHTML = `گزارشِ ${kidName()}<small>هفتهٔ تعادل، منزل ۵</small>`;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
   $('#pBest').textContent = secs(best);
   $('#pStars').textContent = `${fa(state.recStars)} از ۷`;
@@ -1402,7 +1536,7 @@ function stopWatch(record){
   if(!watchT) return;
   clearInterval(watchT); watchT = null;
   const sec = Math.round((performance.now()-watchStart)/100)/10;
-  if(!record){ $('#recTime').innerHTML = `۰٫۰<small>ثانیه</small>`; return; }
+  if(!record){ $('#recTime').innerHTML = `۰<small>ثانیه</small>`; return; }
   const prev = state.rec.length ? state.rec[state.rec.length-1] : null;
   state.rec.push(sec);
   let msg;
@@ -1713,7 +1847,7 @@ $('#helloGo').addEventListener('click', ()=>{
 function renderProfile(){
   $('#kidLabel').textContent = kidName();
   $('#avatarImg').src = `img/${kid()}-idle.webp`;
-  $('#yuziLabel').textContent = `همسفر: یوزی · ${YUZI_NAMES[yuziStage()]}`;
+  $('#yuziLabel').textContent = `همسفر: یوزی، ${YUZI_NAMES[yuziStage()]}`;
   const my = $('#mapYuzi'); if(my) my.src = `img/yuzi-${yuziStage()}-idle.webp`;
   if(!state.profile){ $('#kidName').value = ''; pickKid = 'girl'; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x.dataset.kid==='girl' ? 'true' : 'false')); }
 }
