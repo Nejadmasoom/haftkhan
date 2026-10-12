@@ -1,0 +1,106 @@
+"""یک برگهٔ کاراکتر (زمینهٔ سفید) را به حالت‌های جدا با زمینهٔ شفاف می‌بُرد.
+
+    python3 tools/cut_sheet.py SHEET OUT_DIR ROWS name ...
+
+ROWS تعداد ردیف‌های برگه است. نام‌ها به ترتیبِ خواندنِ برگه داده می‌شوند:
+ردیف به ردیف از بالا، و در هر ردیف از چپ به راست. نامِ «-» یعنی آن حالت ذخیره نشود.
+
+هر حالت یک تکهٔ پیوسته از تصویر است؛ تکه‌های کوچکِ جدا (ستاره، ماه، توپ)
+به نزدیک‌ترین حالت می‌چسبند. همهٔ حالت‌های یک ردیف با یک مقیاس و یک بازهٔ عمودی
+بریده می‌شوند تا خطِ پاها بینشان ثابت بماند.
+"""
+import sys
+from collections import deque
+from pathlib import Path
+
+import numpy as np
+from PIL import Image
+
+CANVAS = 1024
+
+
+def background(rgb):
+    """زمینه = پیکسل‌های روشن و کم‌رنگ (سفید و سایهٔ کم‌رنگ) که به لبهٔ تصویر وصل‌اند."""
+    light = (rgb.min(axis=2) > 200) & ((rgb.max(axis=2) - rgb.min(axis=2)) < 40)
+    h, w = light.shape
+    bg = np.zeros_like(light)
+    q = deque()
+    for y in range(h):
+        for x in (0, w - 1):
+            if light[y, x] and not bg[y, x]: bg[y, x] = True; q.append((y, x))
+    for x in range(w):
+        for y in (0, h - 1):
+            if light[y, x] and not bg[y, x]: bg[y, x] = True; q.append((y, x))
+    while q:
+        y, x = q.popleft()
+        for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+            if 0 <= ny < h and 0 <= nx < w and light[ny, nx] and not bg[ny, nx]:
+                bg[ny, nx] = True; q.append((ny, nx))
+    return bg
+
+
+def components(fg):
+    """تکه‌های پیوستهٔ پیش‌زمینه: [(تعداد پیکسل، y0, x0, y1, x1, برچسب)]."""
+    h, w = fg.shape
+    lab = np.zeros((h, w), np.int32)
+    out, n = [], 0
+    for sy, sx in zip(*np.nonzero(fg)):
+        if lab[sy, sx]: continue
+        n += 1; lab[sy, sx] = n
+        q = deque([(sy, sx)]); cnt = 0; y0 = y1 = sy; x0 = x1 = sx
+        while q:
+            y, x = q.popleft(); cnt += 1
+            y0, y1, x0, x1 = min(y0, y), max(y1, y), min(x0, x), max(x1, x)
+            for ny, nx in ((y + 1, x), (y - 1, x), (y, x + 1), (y, x - 1)):
+                if 0 <= ny < h and 0 <= nx < w and fg[ny, nx] and not lab[ny, nx]:
+                    lab[ny, nx] = n; q.append((ny, nx))
+        out.append((cnt, y0, x0, y1 + 1, x1 + 1, n))
+    return out, lab
+
+
+def main():
+    sheet, out, rows, names = sys.argv[1], Path(sys.argv[2]), int(sys.argv[3]), sys.argv[4:]
+    img = np.array(Image.open(sheet).convert("RGBA"))
+    bg = background(img[..., :3])
+    img[bg] = (0, 0, 0, 0)
+    comps, lab = components(~bg)
+    comps.sort(reverse=True)
+    poses = [list(c[1:5]) + [[c[5]]] for c in comps[:len(names)]]
+    # تکه‌های کوچک به نزدیک‌ترین حالت (فاصلهٔ مرکز تا جعبهٔ حالت)
+    for cnt, y0, x0, y1, x1, n in comps[len(names):]:
+        if cnt < 15: continue
+        cy, cx = (y0 + y1) / 2, (x0 + x1) / 2
+        def dist(p):
+            dy = max(p[0] - cy, 0, cy - p[2]); dx = max(p[1] - cx, 0, cx - p[3])
+            return dx * dx + dy * dy
+        p = min(poses, key=dist)
+        p[0], p[1], p[2], p[3] = min(p[0], y0), min(p[1], x0), max(p[2], y1), max(p[3], x1)
+        p[4].append(n)
+    # ترتیبِ خواندن: ردیف‌ها بر اساس مرکزِ عمودی، بعد چپ به راست
+    poses.sort(key=lambda p: (p[0] + p[2]) / 2)
+    per = len(poses) // rows
+    grid, i = [], 0
+    for r in range(rows):
+        take = per + (1 if r < len(poses) % rows else 0)
+        grid.append(sorted(poses[i:i + take], key=lambda p: p[1])); i += take
+    pad = 14
+    biggest = max(max(p[3] - p[1], max(q[2] for q in row) - min(q[0] for q in row))
+                  for row in grid for p in row) + 2 * pad
+    scale = CANVAS * 0.9 / biggest
+    out.mkdir(parents=True, exist_ok=True)
+    flat = [(p, row) for row in grid for p in row]
+    for (p, row), name in zip(flat, names):
+        if name == "-": continue
+        top, bottom = min(q[0] for q in row), max(q[2] for q in row)
+        mine = np.isin(lab, p[4])
+        piece = img.copy(); piece[~mine] = (0, 0, 0, 0)
+        crop = Image.fromarray(piece[max(top - pad, 0):bottom + pad, max(p[1] - pad, 0):p[3] + pad])
+        crop = crop.resize((round(crop.width * scale), round(crop.height * scale)), Image.LANCZOS)
+        canvas = Image.new("RGBA", (CANVAS, CANVAS), (0, 0, 0, 0))
+        # پایینِ ردیف روی ۹۵٪ ارتفاع: پاهای همهٔ حالت‌های یک ردیف روی یک خط
+        canvas.paste(crop, ((CANVAS - crop.width) // 2, round(CANVAS * 0.95) - crop.height), crop)
+        canvas.save(out / f"{name}.png", optimize=True)
+        print(out / f"{name}.png")
+
+
+main()
