@@ -65,6 +65,9 @@ Then:
 | `galop` (Rossini) | tissue game, khan 3 | passing round a circle fast |
 | `march` | musical chairs, khan 1 | walking round the chairs |
 | `hop` | "over the head with the feet", khan 2 | bouncy, on the floor |
+| `theme` | background under the map and menus | quiet `stroll` groove, played at low volume; ducks while the narrator speaks; has its own on/off button (🎵) separate from the sound button |
+
+Background music never plays during a story, an exercise or a game screen: there the child must hear the instructions. A game's own song (chairs, tissue, feet) is part of the game, so it plays even when background music is off — only the sound button silences it.
 
 ## Sources
 - University of Sheffield commentary on what makes children's songs work (tempo 60–120 BPM, major key, narrow range, repetition), reported by [Staffordshire Live](https://www.staffordshire-live.co.uk/news/uk-world-news/beyonce-and-queen-children-songs-9463466)

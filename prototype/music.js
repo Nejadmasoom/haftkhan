@@ -33,7 +33,14 @@ const SONGS = {
   march: { title:'رژهٔ قهرمان', bpm:108, key:'G', lead:'warm', groove:'march',
     melody: parse(`G4:2 G4:1 A4:1 B4:2 G4:2  C5:2 B4:2 A4:4  A4:2 A4:1 B4:1 C5:2 A4:2  D5:2 C5:2 B4:4
                    E5:2 D5:1 C5:1 B4:2 A4:2  G4:2 A4:2 B4:2 G4:2  A4:2 D5:2 C5:2 A4:2  G4:6 -:2`).notes,
-    beats: 32, chords: bars(4, 'G C D G C G D G'.split(' ')) }
+    beats: 32, chords: bars(4, 'G C D G C G D G'.split(' ')) },
+  /* original: the quiet, sunny theme under the map and menus — A A′ B A″, sixteen bars so it does not tire */
+  theme: { title:'سفرِ یوزی', bpm:112, key:'C', lead:'soft', groove:'stroll', beats:64,
+    melody: parse(`C5:2 E5:2 G5:3 E5:1  F5:2 A5:2 G5:4  E5:2 C5:1 D5:1 E5:2 G5:2  D5:6 -:2
+                   C5:2 E5:2 G5:3 E5:1  F5:2 A5:2 C6:4  B5:2 A5:1 G5:1 F5:2 D5:2  C5:6 -:2
+                   A5:2 A5:1 G5:1 F5:2 A5:2  G5:2 G5:1 F5:1 E5:4  F5:2 F5:1 E5:1 D5:2 F5:2  E5:2 D5:2 G5:4
+                   C5:2 E5:2 G5:3 E5:1  F5:2 A5:2 C6:3 A5:1  G5:2 E5:2 F5:2 D5:2  C5:6 -:2`).notes,
+    chords: bars(4, 'C F C G  C F G C  F C Dm G  C F G C'.split(/\s+/)) }
 };
 function bars(len, names){ return names.map((c,i)=>[i*len, c]); }
 
@@ -47,7 +54,8 @@ function lead(ctx, out, n, t, len, kind){
   const g = ctx.createGain(), f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = kind==='warm' ? 2600 : 3800; f.Q.value = .7;
   const o1 = ctx.createOscillator(), o2 = ctx.createOscillator(); o1.type = 'square'; o2.type = 'triangle';
   o1.frequency.value = hz(n); o2.frequency.value = hz(n)*1.003;
-  const m1 = ctx.createGain(); m1.gain.value = kind==='warm' ? .18 : .28; const m2 = ctx.createGain(); m2.gain.value = .7;
+  if(kind==='soft'){ o1.type = 'sine'; f.frequency.value = 2200; }
+  const m1 = ctx.createGain(); m1.gain.value = kind==='soft' ? .35 : kind==='warm' ? .18 : .28; const m2 = ctx.createGain(); m2.gain.value = .7;
   o1.connect(m1).connect(f); o2.connect(m2).connect(f); f.connect(g).connect(out);
   env(g, t, .006, .22, .08, .65, .07, len*.92);
   o1.start(t); o2.start(t); o1.stop(t+len+.2); o2.stop(t+len+.2);
@@ -57,8 +65,8 @@ function bass(ctx, out, n, t, len){ const o = ctx.createOscillator(), g = ctx.cr
 function stab(ctx, out, notes, t, len){ const f = ctx.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 1500; const g = ctx.createGain(); f.connect(g).connect(out);
   notes.forEach(n => { const o = ctx.createOscillator(); o.type = 'sawtooth'; o.frequency.value = hz(n); o.connect(f); o.start(t); o.stop(t+len+.1); });
   env(g, t, .004, .05, .06, .4, .04, len*.6); }
-function kick(ctx, out, t){ const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(48, t+.12);
-  o.connect(g).connect(out); g.gain.setValueAtTime(.55, t); g.gain.exponentialRampToValueAtTime(.0001, t+.2); o.start(t); o.stop(t+.22); }
+function kick(ctx, out, t, v=.55){ const o = ctx.createOscillator(), g = ctx.createGain(); o.frequency.setValueAtTime(140, t); o.frequency.exponentialRampToValueAtTime(48, t+.12);
+  o.connect(g).connect(out); g.gain.setValueAtTime(v, t); g.gain.exponentialRampToValueAtTime(.0001, t+.2); o.start(t); o.stop(t+.22); }
 function clap(ctx, out, t){ const s = ctx.createBufferSource(); s.buffer = noise(ctx); const f = ctx.createBiquadFilter(); f.type = 'bandpass'; f.frequency.value = 1700; f.Q.value = .8;
   const g = ctx.createGain(); s.connect(f).connect(g).connect(out);
   [0,.012,.024].forEach((d,i)=>{ g.gain.setValueAtTime(.3, t+d); g.gain.exponentialRampToValueAtTime(.05, t+d+.01); }); g.gain.exponentialRampToValueAtTime(.0001, t+.16); s.start(t); s.stop(t+.18); }
@@ -86,6 +94,12 @@ function events(song){
       if(b%2===0) ev.push([b, (c,o,t)=>kick(c,o,t)]); else { ev.push([b, (c,o,t)=>clap(c,o,t)]); ev.push([b+.5, (c,o,t)=>stab(c,o,tones,t,spb*.3)]); }
       ev.push([b, (c,o,t)=>hat(c,o,t)]); ev.push([b+.5, (c,o,t)=>hat(c,o,t, b%4===3)]);
       if(b%8===0) ev.push([b, (c,o,t)=>bell(c,o, 84 + CHORD[ch][0], t)]);
+    } else if(song.groove === 'stroll'){                      // easy walk: bass on 1 and 3, a pluck on 2 and 4, a bell every two bars
+      if(b%2===0){ ev.push([b, (c,o,t)=>bass(c,o, b%4 ? r+7 : r, t, spb*1.4)]); }
+      else ev.push([b, (c,o,t)=>stab(c,o,tones,t,spb*.25)]);
+      if(b%4===0) ev.push([b, (c,o,t)=>kick(c,o,t,.25)]);
+      ev.push([b+.5, (c,o,t)=>hat(c,o,t)]);
+      if(b%8===0) ev.push([b, (c,o,t)=>bell(c,o, 84 + CHORD[ch][0], t)]);
     } else {                                                  // march: left-right on bass and kick, chord on the off-beats
       ev.push([b, (c,o,t)=>bass(c,o, b%2 ? r+7 : r, t, spb*.6)]); ev.push([b, (c,o,t)=>kick(c,o,t)]);
       ev.push([b+.5, (c,o,t)=>stab(c,o,tones,t,spb*.35)]); ev.push([b+.5, (c,o,t)=>hat(c,o,t)]);
@@ -96,13 +110,15 @@ function events(song){
 }
 
 /* ---------------------------------------------------------------- live playback */
-const P = {timer:null, ctx:null, master:null};
-function mixer(ctx, dest){ const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3;
-  const m = ctx.createGain(); m.gain.value = .8; m.connect(comp).connect(dest); return m; }
-function play(name, {ctx, loop=true} = {}){
+const P = {timer:null, ctx:null, master:null, name:null, vol:.8, ducked:false};
+function mixer(ctx, dest, vol=.8){ const comp = ctx.createDynamicsCompressor(); comp.threshold.value = -14; comp.ratio.value = 3;
+  const m = ctx.createGain(); m.gain.value = vol; m.connect(comp).connect(dest); return m; }
+/* vol: .8 for a game's own song, lower for background music. fade: seconds to fade in. */
+function play(name, {ctx, loop=true, vol=.8, fade=0} = {}){
   stop(); const song = SONGS[name]; if(!song || !ctx) return;
   const spb = 60/song.bpm, ev = events(song), loopLen = song.beats*spb;
-  P.ctx = ctx; P.master = mixer(ctx, ctx.destination);
+  P.ctx = ctx; P.name = name; P.vol = vol; P.ducked = false; P.master = mixer(ctx, ctx.destination, fade ? .0001 : vol);
+  if(fade) P.master.gain.linearRampToValueAtTime(vol, ctx.currentTime + fade);
   let start = ctx.currentTime + .08, idx = 0, pass = 0;
   const tick = () => {
     const ahead = ctx.currentTime + .25;
@@ -118,7 +134,10 @@ function play(name, {ctx, loop=true} = {}){
 }
 function stop(){ clearInterval(P.timer); P.timer = null;
   if(P.master && P.ctx){ const m = P.master, c = P.ctx; try{ m.gain.cancelScheduledValues(c.currentTime); m.gain.setValueAtTime(m.gain.value, c.currentTime); m.gain.linearRampToValueAtTime(0, c.currentTime+.06); setTimeout(()=>{ try{ m.disconnect(); }catch(e){} }, 120); }catch(e){} }
-  P.master = null; }
+  P.master = null; P.name = null; }
+/* while the narrator speaks, the music steps back */
+function duck(on){ if(!P.master || !P.ctx || P.ducked === on) return; P.ducked = on; const g = P.master.gain, t = P.ctx.currentTime;
+  try{ g.cancelScheduledValues(t); g.setValueAtTime(g.value, t); g.linearRampToValueAtTime(on ? P.vol*.3 : P.vol, t + (on ? .2 : .6)); }catch(e){} }
 /* offline: the whole song rendered to an AudioBuffer, for listening outside the game */
 async function render(name, passes=2, rate=44100){
   const song = SONGS[name], spb = 60/song.bpm, len = song.beats*spb*passes + 1.2;
@@ -126,5 +145,5 @@ async function render(name, passes=2, rate=44100){
   for(let p=0;p<passes;p++) ev.forEach(([b, f]) => f(ctx, m, .05 + (p*song.beats + b)*spb, spb));
   return ctx.startRendering();
 }
-window.HKMusic = {play, stop, render, SONGS, playing: () => !!P.timer};
+window.HKMusic = {play, stop, duck, render, SONGS, playing: () => !!P.timer, current: () => P.timer ? P.name : null};
 })();

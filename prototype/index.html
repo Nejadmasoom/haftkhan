@@ -525,6 +525,9 @@ button{font:inherit;color:inherit}
 .torches,.mute{background:#fff;border:var(--bw) solid var(--ink);box-shadow:0 4px 0 var(--ink)}
 .torches span{color:var(--ink);font-weight:800;font-size:12px}
 .mute{color:var(--ink);width:46px;height:46px}
+.mute.off{color:#9aa7b4}
+@media (max-width:380px){ #yuziLabel{display:none} }
+.mute + .mute{margin-inline-start:-4px}
 /* map */
 .map-title{color:#fff;-webkit-text-stroke:1.5px var(--ink);text-shadow:0 4px 0 var(--ink);font-size:34px}
 .map-title small{color:var(--ink);-webkit-text-stroke:0;text-shadow:none;font-size:13px;font-weight:700}
@@ -705,6 +708,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
           <div class="avatar" aria-hidden="true"><img id="avatarImg" src="img/girl-idle.webp" alt=""></div>
           <div class="who"><b id="kidLabel">قهرمان</b><small id="yuziLabel">همسفر: یوزی، توله‌یوز</small></div>
           <div class="torches" aria-label="مشعل‌های این هفته" id="topTorches"></div>
+          <button class="mute" id="musicBtn" aria-label="موسیقی"></button>
           <button class="mute" id="mute" aria-label="صدا"></button>
         </div>
         <div class="map" id="map">
@@ -1021,38 +1025,84 @@ const store = {
 /* ---------- sound: every effect is synthesised, so the game ships no audio files ---------- */
 let actx = null, muted = store.get('muted', false);
 function ac(){ try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==='suspended') actx.resume(); }catch(e){ actx = null; } return actx; }
+/* every effect goes through one bus with a gentle limiter, so a burst of sounds never gets harsh */
+let sfxBus = null, noiseBuf = null;
+function bus(){ const c = ac(); if(!c || muted) return null;
+  if(!sfxBus){ const comp = c.createDynamicsCompressor(); comp.threshold.value = -12; comp.ratio.value = 4; sfxBus = c.createGain(); sfxBus.gain.value = .9; sfxBus.connect(comp).connect(c.destination); }
+  return sfxBus; }
 function tone(f, t0, dur, type='triangle', vol=.16, f2=null){
-  const c = ac(); if(!c || muted) return;
+  const out = bus(); if(!out) return; const c = actx;
   const o = c.createOscillator(), g = c.createGain(), t = c.currentTime + t0;
   o.type = type; o.frequency.setValueAtTime(f, t); if(f2) o.frequency.exponentialRampToValueAtTime(f2, t+dur);
-  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+.015); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
-  o.connect(g).connect(c.destination); o.start(t); o.stop(t+dur+.02);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+.012); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  o.connect(g).connect(out); o.start(t); o.stop(t+dur+.02);
 }
+/* a wooden mallet: the note plus a bright partial that dies at once — xylophone-like */
+function mallet(f, t0, vol=.2, dur=.45){ tone(f, t0, dur, 'sine', vol); tone(f*4, t0, .07, 'sine', vol*.35); tone(f*2, t0, dur*.4, 'triangle', vol*.2); }
+/* a little bell: inharmonic partials give it the shine of a real one */
+function bellT(f, t0, vol=.12, dur=.9){ tone(f, t0, dur, 'sine', vol); tone(f*2.76, t0, dur*.5, 'sine', vol*.35); tone(f*5.4, t0, dur*.25, 'sine', vol*.15); }
+function noiseT(t0, dur, vol, type, f1, f2=null, q=1){
+  const out = bus(); if(!out) return; const c = actx, t = c.currentTime + t0;
+  if(!noiseBuf){ noiseBuf = c.createBuffer(1, c.sampleRate, c.sampleRate); const d = noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i] = Math.random()*2-1; }
+  const s = c.createBufferSource(), fl = c.createBiquadFilter(), g = c.createGain(); s.buffer = noiseBuf; fl.type = type; fl.Q.value = q;
+  fl.frequency.setValueAtTime(f1, t); if(f2) fl.frequency.exponentialRampToValueAtTime(f2, t+dur);
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+.02); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  s.connect(fl).connect(g).connect(out); s.start(t); s.stop(t+dur+.02); }
+/* a soft brass note for fanfares: two detuned saws through a filter that opens and closes */
+function brass(f, t0, dur, vol=.09){
+  const out = bus(); if(!out) return; const c = actx, t = c.currentTime + t0, fl = c.createBiquadFilter(), g = c.createGain(); fl.type = 'lowpass'; fl.Q.value = 2;
+  fl.frequency.setValueAtTime(400, t); fl.frequency.exponentialRampToValueAtTime(2600, t+.06); fl.frequency.exponentialRampToValueAtTime(1100, t+dur);
+  [1, 1.006].forEach(d=>{ const o = c.createOscillator(); o.type = 'sawtooth'; o.frequency.value = f*d; o.connect(fl); o.start(t); o.stop(t+dur+.05); });
+  g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(vol, t+.03); g.gain.setValueAtTime(vol, t+dur*.7); g.gain.exponentialRampToValueAtTime(.0001, t+dur);
+  fl.connect(g).connect(out); }
+/* counting climbs the major scale, so ten reps sound like a tune going up, never like a wrong note */
+const SCALE = [0,2,4,5,7,9,11];
+const step = n => { n = Math.max(0, n|0); return 523.25 * Math.pow(2, (12*Math.floor(n/7) + SCALE[n%7])/12); };
 const SFX = {
-  click: ()=> tone(660, 0, .05, 'sine', .07),
-  tap:   n => { tone(392*Math.pow(2, n/12), 0, .12, 'triangle', .18); tone(784*Math.pow(2, n/12), .02, .08, 'sine', .06); },
-  done:  ()=> [523,659,784].forEach((f,i)=> tone(f, i*.09, .22, 'triangle', .16)),
-  tick:  ()=> tone(1046, 0, .05, 'square', .05),
-  hit:   ()=> { tone(988, 0, .12, 'sine', .16); tone(1318, .08, .2, 'sine', .14); },
-  miss:  ()=> tone(260, 0, .18, 'sine', .12, 170),
-  start: ()=> tone(330, 0, .25, 'triangle', .12, 660),
-  star:  ()=> [1318,1568,2093].forEach((f,i)=> tone(f, i*.07, .25, 'sine', .12)),
-  soft:  ()=> [392,330].forEach((f,i)=> tone(f, i*.16, .3, 'sine', .12)),
-  sleep: ()=> [523,440,392].forEach((f,i)=> tone(f, i*.18, .35, 'sine', .09)),
-  fanfare: big => { const n = big ? [523,659,784,1046,784,1046] : [523,659,784,1046];
-    n.forEach((f,i)=> tone(f, i*.13, i===n.length-1 ? .7 : .2, 'triangle', .17));
-    tone(131, 0, n.length*.13+.5, 'sine', .08); }
+  click: ()=> { tone(880, 0, .08, 'sine', .1, 440); noiseT(0, .03, .03, 'bandpass', 3000); },          // a bubble pop
+  tap:   n => { mallet(step(n), 0, .2); if(n && n%5===0) bellT(step(n)*2, .06, .07); },
+  done:  ()=> { [0,2,4,7].forEach((k,i)=> mallet(step(k), i*.08, .18)); bellT(step(9), .34, .1, 1.1); },
+  tick:  ()=> { tone(1400, 0, .04, 'sine', .09, 900); noiseT(0, .02, .03, 'highpass', 4000); },          // a woodblock
+  hit:   ()=> { bellT(1318, 0, .13, .5); bellT(1976, .07, .11, .7); noiseT(.05, .35, .02, 'highpass', 8000); }, // a coin
+  miss:  ()=> { tone(330, 0, .14, 'triangle', .11, 260); tone(262, .13, .22, 'triangle', .1, 196); },     // "uh-oh", gentle, never a buzzer
+  start: ()=> { noiseT(0, .35, .05, 'bandpass', 400, 3000, 1.5); tone(330, .05, .3, 'triangle', .09, 880); mallet(step(7), .32, .16); }, // whoosh up
+  star:  ()=> { [7,9,11,14,16].forEach((k,i)=> bellT(step(k), i*.055, .09, .8)); noiseT(.1, .7, .025, 'highpass', 9000); }, // twinkle
+  soft:  ()=> { mallet(step(4), 0, .13, .5); mallet(step(2), .16, .12, .6); },
+  sleep: ()=> { [7,4,2,0].forEach((k,i)=> bellT(step(k), i*.22, .07, 1)); },
+  fanfare: big => {                                                                                    // ta-da-da-DAAA with a cymbal
+    const n = big ? [0,2,4,7,4,7] : [0,2,4,7], d = .14;
+    n.forEach((k,i)=>{ const last = i===n.length-1; brass(step(k)/2, i*d, last ? .9 : .16, .1); mallet(step(k), i*d, .12); });
+    const end = (n.length-1)*d; [0,4,7].forEach(k=> brass(step(k)/4, end, .9, .05));
+    noiseT(end, 1.1, .05, 'highpass', 6000); bellT(step(14), end+.05, .08, 1.2); tone(131, 0, end+.8, 'sine', .07);
+    if(big) [0,.12,.24].forEach(x=> noiseT(end+.3+x, .12, .06, 'bandpass', 1700, null, .8)); },
+  swish: ()=> noiseT(0, .22, .035, 'bandpass', 900, 2600, 1.2)
 };
 function sfx(name, arg){ try{ SFX[name] && SFX[name](arg); }catch(e){} }
+/* Background music: a quiet theme under the map and menus, with its own on/off switch. Game songs (chairs,
+   tissue, feet) are part of the game, so they play even when the background music is off — only the sound
+   switch silences them. */
+let musicOn = store.get('music', true), bgScreen = 'hello';
+const BG_SCREENS = ['hello','map','khan','choose','treasure','gkhan','gchoose'];
+function bgSync(){
+  if(!window.HKMusic) return;
+  const want = musicOn && !muted && BG_SCREENS.includes(bgScreen);
+  if(want){ if(HKMusic.current() !== 'theme' && actx) HKMusic.play('theme', {ctx: actx, vol: .32, fade: 1.5}); }
+  else if(HKMusic.current() === 'theme') HKMusic.stop();
+}
+/* browsers allow sound only after the first touch, so the theme starts there */
+addEventListener('pointerdown', ()=>{ ac(); bgSync(); }, {once: true, capture: true});
 /* Recorded narration (docs/voice-script.md). audio/list.js names the files that exist, so a
    missing recording is simply skipped instead of erroring. */
 let voiceEl = null, voiceT = null;
 /* leaving a screen silences it: whatever was being said belonged to that screen */
-function hush(){ clearTimeout(voiceT); voiceT = null; if(voiceEl){ try{ voiceEl.pause(); }catch(e){} voiceEl = null; } }
+function hush(){ clearTimeout(voiceT); voiceT = null; if(voiceEl){ const el = voiceEl; voiceEl = null; try{ el.pause(); }catch(e){} } duck(false); }
+function duck(on){ window.HKMusic && HKMusic.duck(on); }
 function voiceLater(id, ms){ clearTimeout(voiceT); voiceT = setTimeout(()=>voice(id), ms); }
 function voice(id){
   if(muted || !(window.HK_AUDIO||[]).includes(id)) return;
-  try{ if(voiceEl){ voiceEl.pause(); } voiceEl = new Audio(`audio/${id}.mp3`); voiceEl.play().catch(()=>{}); }catch(e){}
+  try{ if(voiceEl){ voiceEl.pause(); } const el = voiceEl = new Audio(`audio/${id}.mp3`); duck(true);
+    const back = ()=>{ if(voiceEl === el || !voiceEl) duck(false); }; el.onended = back; el.onpause = back; el.onerror = back;
+    el.play().catch(back); }catch(e){}
 }
 
 /* ---------- data from the book ---------- */
@@ -1284,7 +1334,7 @@ const NAV_OF = {choose:'map', hello:'map', map:'map', khan:'map', ex:'map', stor
   gkhan:'map', gchoose:'map', gex:'map', gstory:'map', gfam:'family', gstar:'map'};
 function go(name){
   if(name==='family' && state.cur !== 5 && window.HKX) name = 'gfam';   // the family tab opens the current lesson's game
-  hush();
+  hush(); bgScreen = name;
   if(window.HKX) HKX.leave(name);
   $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
   $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
@@ -1304,7 +1354,7 @@ function go(name){
   if(name==='treasure') renderTreasure();
   if(window.HKX) HKX.enter(name);
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
-  stopMusic();
+  stopMusic(); bgSync();
   if(name!=='ex') flip(false);
   showNote(name);
 }
@@ -1907,8 +1957,14 @@ function renderMute(){ $('#mute').innerHTML = muted
     ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>'
     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19.5 5.5a9 9 0 0 1 0 13"/></svg>';
   $('#mute').setAttribute('aria-pressed', muted ? 'true' : 'false'); $('#mute').setAttribute('aria-label', muted ? 'صدا خاموش است' : 'صدا روشن است'); }
-$('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', muted); renderMute(); sfx('click'); });
+$('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', muted); renderMute();
+  if(muted){ hush(); window.HKMusic && HKMusic.stop(); } sfx('click'); bgSync(); });
 renderMute();
+function renderMusic(){ const b = $('#musicBtn'); b.classList.toggle('off', !musicOn);
+  b.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18V5l11-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="17" cy="16" r="3"/>' + (musicOn ? '' : '<path d="M3 3l18 18"/>') + '</svg>';
+  b.setAttribute('aria-pressed', musicOn ? 'true' : 'false'); b.setAttribute('aria-label', musicOn ? 'موسیقی روشن است' : 'موسیقی خاموش است'); }
+$('#musicBtn').addEventListener('click', ()=>{ musicOn = !musicOn; store.set('music', musicOn); renderMusic(); ac(); bgSync(); sfx('click'); });
+renderMusic();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
 /* what khans.js (khans 1 and 2) needs from this page */
 window.HK = { ICON, paintIcons, voiceLater, hush, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
