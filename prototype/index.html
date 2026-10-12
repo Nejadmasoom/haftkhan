@@ -367,6 +367,19 @@ button{font:inherit;color:inherit}
 .pose.withcam{flex-wrap:wrap}
 .private{font-size:11.5px;color:#c9cdf0;text-align:center;margin:-4px 0 0}
 
+/* ---------- guardian card + pairs ---------- */
+.gcard{position:absolute;inset:0;z-index:15;background:rgba(23,33,90,.9);display:flex;align-items:center;justify-content:center;padding:20px}
+.gcard > div{background:var(--paper);color:var(--ink);border-radius:28px;padding:18px 18px 20px;width:100%;max-width:320px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;box-shadow:0 8px 0 var(--paper-2)}
+.gcard img{width:190px;height:190px;object-fit:contain;margin-top:-70px;filter:drop-shadow(0 8px 10px rgba(0,0,0,.25))}
+.gcard h3{margin:0;font-family:var(--f-display);font-size:24px;line-height:1.2}
+.gcard h3 small{display:block;font-family:var(--f-body);font-size:12px;font-weight:500;color:var(--ink-soft)}
+.gcard p{margin:0;font-size:15px;line-height:1.8}
+.gcard .tag{font-size:12px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill);background:var(--paper-2)}
+.gcard .tag.done{background:var(--saffron)}
+.pair{display:flex;align-items:flex-end;justify-content:center;gap:4px}
+.pair img{width:130px;height:130px;object-fit:contain}
+.comfort .pair img{width:130px;height:130px}
+
 /* ---------- hello ---------- */
 .hello{min-height:100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 18px 28px;text-align:center}
 .hello h2{margin:0;font-family:var(--f-display);font-size:30px;color:var(--saffron);line-height:1.2}
@@ -520,10 +533,10 @@ button{font:inherit;color:inherit}
             </div>
           </div>
         </div>
-        <div class="comfort" id="comfort" hidden><img src="img/yuzi-1-comfort.webp" alt=""><p>اشکال ندارد! هر بار که تمرین کنی، آسان‌تر می‌شود.</p></div>
+        <div class="comfort" id="comfort" hidden><div class="pair"><img id="comfortKid" src="img/girl-tired.webp" alt=""><img id="comfortYuzi" src="img/yuzi-1-comfort.webp" alt=""></div><p>اشکال ندارد! هر بار که تمرین کنی، آسان‌تر می‌شود.</p></div>
         <div class="reward" id="reward" hidden>
           <canvas id="confetti"></canvas>
-          <img src="img/yuzi-1-cheer.webp" alt="" class="reward-yuzi" id="rewardImg">
+          <div class="pair"><img id="rewardKid" src="img/girl-cheer.webp" alt="" class="reward-yuzi"><img src="img/yuzi-1-cheer.webp" alt="" class="reward-yuzi" id="rewardImg"></div>
           <h3 id="rewardTitle">آفرین پهلوان!</h3>
           <div class="big-torches" id="bigTorches" aria-hidden="true"></div>
           <p id="rewardText">مشعل روز دوم روشن شد. یک روز دیگر تا گذشتن از پلِ لرزان.</p>
@@ -621,6 +634,13 @@ button{font:inherit;color:inherit}
         </div>
       </section>
 
+      <div class="gcard" id="gcard" hidden role="dialog" aria-modal="true" aria-labelledby="gTitle"><div>
+        <img id="gImg" src="" alt="">
+        <span class="tag" id="gTag"></span>
+        <h3 id="gTitle"></h3>
+        <p id="gText"></p>
+        <button class="cta gold" id="gClose" style="width:100%">باشه!</button>
+      </div></div>
       <nav class="nav" aria-label="بخش‌ها">
         <button data-go="map" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>نقشه</button>
         <button data-go="family"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c0-4 3-7 6-7s6 3 6 7M14 20c0-3 1.5-5 3-5s4 2 4 5"/></svg>خانواده</button>
@@ -693,6 +713,8 @@ function voice(id){
 }
 
 /* ---------- data from the book ---------- */
+const GUARD_NAMES = {rooster:'خروسِ سحر', gazelle:'آهوی تیزپا', stork:'لک‌لکِ نگهبانِ پل', cat:'گربهٔ ایرانی', ibex:'بزِ کوهی', rakhsh:'رخش', simorgh:'سیمرغ'};
+const GUARD_LINES = {rooster:'صاف بایست، بدن را بیدار کن!', gazelle:'بدو، بپر، تیزپا شو!', stork:'روی یک پا بایست و نیفت!', cat:'بدنت را مثلِ من نرم و کش بده!', ibex:'توپ را بگیر و با پا هدایتش کن!', rakhsh:'قلبت را قوی کن و با من بدو!', simorgh:'به جشنِ بازی‌های سرزمینم خوش آمدی!'};
 const KHANS = [
   {name:'بیدارِ بدن', lessons:['درک حرکت','وضعیت‌های بدنی درست'], icon:'sun', guard:'rooster'},
   {name:'دشتِ تیزپاها', lessons:['راه رفتن، دویدن، پریدن','بدن قوی'], icon:'run', guard:'gazelle'},
@@ -763,6 +785,7 @@ const kidName = () => (state.profile && state.profile.name) || 'قهرمان';
 const khansPassed = () => CURRENT;
 const yuziStage = () => khansPassed() >= 7 ? 3 : khansPassed() >= 3 ? 2 : 1;
 const YUZI_NAMES = ['','توله‌یوز','یوزِ جوان','یوزِ تیزپا'];
+const yz = pose => `img/yuzi-${['idle','cheer','talk','comfort'].includes(pose) ? yuziStage() : 1}-${pose}.webp`;
 const doneDays = () => state.days.filter(Boolean).length;
 const practicedToday = () => state.days.some(d => d && d.date === dayKey());
 const secs = n => fa(n.toFixed(1)).replace('.', '٫');
@@ -798,7 +821,7 @@ function drawMap(){
     b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><img src="img/${k.guard}-greet.webp" alt="">${i>CURRENT?`<span class="lock">${LOCK}</span>`:''}</span>
       <span class="label">${k.name}</span><span class="sub">${k.lessons.join(' · ')}</span>`;
     if(i===CURRENT) b.addEventListener('click', ()=>go('khan'));
-    else b.addEventListener('click', ()=>flashNote(i));
+    else b.addEventListener('click', ()=>{ flashNote(i); meetGuardian(i); });
     map.appendChild(b);
   });
   const y = document.createElement('div');
@@ -836,6 +859,17 @@ $('#playTile').addEventListener('click', ()=>{
   if(practicedToday() || doneDays()>=3){ sfx('sleep'); voice('sleep'); const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
   go('ex');
 });
+
+function meetGuardian(i){
+  const k = KHANS[i], passed = i < CURRENT;
+  $('#gImg').src = `img/${k.guard}-${passed ? 'proud' : 'challenge'}.webp`; $('#gImg').alt = GUARD_NAMES[k.guard];
+  $('#gTag').textContent = passed ? 'گذشتی!' : 'هنوز بسته'; $('#gTag').classList.toggle('done', passed);
+  $('#gTitle').innerHTML = `${GUARD_NAMES[k.guard]}<small>خوانِ ${fa(i+1)}: ${k.name} · ${k.lessons.join('، ')}</small>`;
+  $('#gText').textContent = passed ? `این خوان را گذشتی، ${kidName()}! من به تو افتخار می‌کنم.` : `«${GUARD_LINES[k.guard]}» وقتی خوانِ قبلی را بگذرانی، این‌جا منتظرت هستم.`;
+  $('#gcard').hidden = false; sfx(passed ? 'star' : 'soft'); $('#gClose').focus();
+}
+$('#gClose').addEventListener('click', ()=>{ $('#gcard').hidden = true; sfx('click'); });
+$('#gcard').addEventListener('click', e=>{ if(e.target.id === 'gcard') $('#gcard').hidden = true; });
 
 /* ---------- navigation ---------- */
 const NAV_OF = {hello:'map', map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents'};
@@ -939,7 +973,7 @@ $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
   feelings[mi] = +b.dataset.feel;
   $('#feel').hidden = true;
   sfx('click');
-  if(feelings[mi]===0){ sfx('soft'); voice('comfort'); $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
+  if(feelings[mi]===0){ sfx('soft'); voice('comfort'); $('#comfortKid').src = `img/${kid()}-tired.webp`; $('#comfortYuzi').src = yz('comfort'); $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
   else nextMove();
 }));
 function finishDay(){
@@ -949,7 +983,8 @@ function finishDay(){
   save(); renderTorches();
   const lit = doneDays(), crossed = lit>=3;
   $('#bigTorches').innerHTML = [0,1,2].map(i=> torch(i<lit, i===lit-1 ? 'new' : '')).join('');
-  $('#rewardImg').src = crossed ? 'img/stork-proud.webp' : 'img/yuzi-1-cheer.webp';
+  $('#rewardImg').src = crossed ? 'img/stork-proud.webp' : yz('cheer');
+  $('#rewardKid').src = `img/${kid()}-cheer.webp`;
   $('#rewardTitle').textContent = crossed ? 'از پلِ لرزان گذشتی!' : 'آفرین پهلوان!';
   $('#rewardText').textContent = crossed ? 'هر سه مشعل روشن شد. لک‌لک به تو افتخار می‌کند و منزلِ «زندگی فعال» باز شد.'
     : `مشعلِ روزِ ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روزِ دیگر':'دو روزِ دیگر'} تا گذشتن از پلِ لرزان. فردا دوباره بیا!`;
@@ -973,7 +1008,7 @@ function confetti(){
 }
 
 /* ---------- family: the phone is the music referee ---------- */
-const PLAYERS = [{n:'بابا',img:'dad'},{n:'قهرمان',img:'girl-idle',kid:1},{n:'مادربزرگ',img:'grandma'},{n:'آرش',img:'sibling'},{n:'مامان',img:'mom'}];
+const PLAYERS = [{n:'بابا',img:'dad'},{n:'قهرمان',img:'girl-idle',kid:1},{n:'مادربزرگ',img:'grandma'},{n:'پدربزرگ',img:'grandpa'},{n:'آرش',img:'sibling'},{n:'مامان',img:'mom'}];
 function syncPlayers(){ PLAYERS[1].n = kidName(); PLAYERS[1].img = `${kid()}-idle`; }
 const CHALLENGES = ['مثل لک‌لک روی یک پا بایست و تا ده بشمار','روی یک پا بایست و دست‌هایت را مثل بال باز کن','روی یک پا بایست و چشم‌هایت را تا پنج ببند','روی پنجهٔ پا سه قدمِ آرام بردار'];
 let holder = 0, playing = false, stepT = null, stopT = null, noteT = null;
