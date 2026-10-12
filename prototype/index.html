@@ -103,6 +103,8 @@ button{font:inherit;color:inherit}
 .medal{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;position:relative;
   background:var(--paper);box-shadow:var(--press) var(--paper-2),0 10px 18px rgba(0,0,0,.25);transition:transform .15s}
 .medal svg{width:46px;height:46px}
+.medal img{width:92%;height:92%;object-fit:contain;margin-top:-6px}
+.khan.locked .medal img{filter:grayscale(1) brightness(1.4);opacity:.45}
 .khan:active .medal{transform:translateY(4px);box-shadow:0 2px 0 var(--paper-2)}
 .khan .num{position:absolute;top:-6px;inset-inline-start:-6px;width:30px;height:30px;border-radius:50%;background:var(--lapis-deep);color:var(--saffron);
   font-family:var(--f-display);font-size:16px;display:grid;place-items:center;box-shadow:0 0 0 3px var(--saffron)}
@@ -365,6 +367,28 @@ button{font:inherit;color:inherit}
 .pose.withcam{flex-wrap:wrap}
 .private{font-size:11.5px;color:#c9cdf0;text-align:center;margin:-4px 0 0}
 
+/* ---------- hello ---------- */
+.hello{min-height:100%;display:flex;flex-direction:column;align-items:center;gap:14px;padding:22px 18px 28px;text-align:center}
+.hello h2{margin:0;font-family:var(--f-display);font-size:30px;color:var(--saffron);line-height:1.2}
+.hello p{margin:0;font-size:15px;line-height:1.8;max-width:30ch}
+.hello .yz{width:150px;height:150px;object-fit:contain;animation:bob2 2.4s ease-in-out infinite}
+@keyframes bob2{50%{transform:translateY(-6px)}}
+.hello label{font-weight:700;font-size:14px;align-self:stretch;text-align:start}
+.hello input{width:100%;min-height:52px;border-radius:18px;border:3px solid transparent;background:var(--paper);color:var(--ink);font:inherit;font-size:20px;padding:8px 16px;text-align:center}
+.hello input:focus{outline:none;border-color:var(--saffron)}
+.pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;width:100%}
+.pick button{border:0;cursor:pointer;border-radius:24px;background:rgba(255,247,230,.12);padding:10px 6px 12px;display:flex;flex-direction:column;align-items:center;gap:4px;color:var(--on-dark);font-weight:700;box-shadow:inset 0 0 0 3px transparent}
+.pick button img{height:150px;width:auto;object-fit:contain}
+.pick button[aria-pressed="true"]{background:rgba(243,165,48,.22);box-shadow:inset 0 0 0 3px var(--saffron)}
+/* ---------- camera-verified report ---------- */
+.verified{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.verified div{background:#fff8ea;border-radius:16px;padding:10px 12px;box-shadow:0 3px 0 var(--paper-2);display:flex;flex-direction:column;gap:2px}
+.verified b{font-family:var(--f-display);font-size:24px;color:var(--fayruz-deep);line-height:1.1}
+.verified span{font-size:12px;color:var(--ink-soft);line-height:1.5}
+.cam-badge{display:inline-flex;align-items:center;gap:6px;background:var(--fayruz);color:#fff;border-radius:var(--r-pill);padding:3px 10px;font-size:11.5px;font-weight:700}
+.cam-badge svg{width:14px;height:14px}
+.famcam{width:100%;height:240px;border-radius:20px;overflow:hidden;margin-top:6px}
+
 /* ---------- daily rest + comfort ---------- */
 .t-play.rest{background:#3b4aa0;box-shadow:var(--press) #2a3785}
 .t-play.rest .ic{background:rgba(255,255,255,.12)}
@@ -394,11 +418,27 @@ button{font:inherit;color:inherit}
   <div class="phone" aria-label="پیش‌نمایش برنامه روی گوشی">
     <div class="app" id="app">
 
+      <!-- ===== HELLO ===== -->
+      <section class="screen lattice" id="s-hello" hidden aria-label="سلام">
+        <div class="hello">
+          <img class="yz" src="img/yuzi-1-talk.webp" alt="یوزی">
+          <h2>سلام! من یوزی‌ام</h2>
+          <p>با هم از هفت خوان می‌گذریم. هر روز که بازی کنی، من بزرگ‌تر می‌شوم.</p>
+          <label for="kidName">اسمت چیه؟</label>
+          <input id="kidName" maxlength="14" autocomplete="off" placeholder="اسمت را بنویس">
+          <div class="pick" role="group" aria-label="قهرمانت را انتخاب کن">
+            <button data-kid="girl" aria-pressed="true"><img src="img/girl-idle.webp" alt="">دختر</button>
+            <button data-kid="boy" aria-pressed="false"><img src="img/boy-idle.webp" alt="">پسر</button>
+          </div>
+          <button class="cta gold" id="helloGo" style="width:100%">بزن بریم!</button>
+        </div>
+      </section>
+
       <!-- ===== MAP ===== -->
       <section class="screen lattice" id="s-map" aria-label="نقشهٔ سفر">
         <div class="topbar">
-          <div class="avatar" aria-hidden="true"><img src="img/yuzi-1-idle.webp" alt=""></div>
-          <div class="who"><b>سارا</b><small>همسفر: یوزی · توله‌یوز</small></div>
+          <div class="avatar" aria-hidden="true"><img id="avatarImg" src="img/girl-idle.webp" alt=""></div>
+          <div class="who"><b id="kidLabel">قهرمان</b><small id="yuziLabel">همسفر: یوزی · توله‌یوز</small></div>
           <div class="torches" aria-label="مشعل‌های این هفته" id="topTorches"></div>
           <button class="mute" id="mute" aria-label="صدا"></button>
         </div>
@@ -531,6 +571,8 @@ button{font:inherit;color:inherit}
           <p class="fam-intro">دست هم را بگیرید و <b>روی یک پا</b> حلقه بزنید. دستمال جلوی یک نفر روی زمین است. با آهنگ، هر کس دستمال را <b>با انگشت‌های پای دیگرش</b> برمی‌دارد و جلوی نفر بعدی می‌گذارد. آهنگ که قطع شد، صاحب دستمال یک حرکت تعادلی انجام می‌دهد.</p>
           <div class="circle" id="circle"><div class="rug"></div></div>
           <div class="fam-ctrl">
+            <button class="camtoggle" id="famCam" aria-pressed="false" style="background:var(--paper-2);color:var(--ink)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg><span>یوزی هم داوری کند</span></button>
+            <div class="famcam" id="famSlot" hidden></div>
             <div class="callout" id="famCall"><b>گوشی داور است</b><small>آهنگ را پخش کن؛ گوشی خودش یک جای غافلگیرکننده آهنگ را قطع می‌کند</small></div>
             <button class="cta" id="music">پخش آهنگ</button>
           </div>
@@ -550,7 +592,7 @@ button{font:inherit;color:inherit}
 
       <!-- ===== PARENTS ===== -->
       <section class="screen" id="s-parents" hidden aria-label="بخش والدین">
-        <div class="hdr"><h2>برای پدر و مادر<small>هفتهٔ تعادل · منزل ۵</small></h2></div>
+        <div class="hdr"><h2 id="parentsTitle">برای پدر و مادر<small>هفتهٔ تعادل · منزل ۵</small></h2></div>
         <div class="sheet">
           <div class="p-sum">
             <div><b id="pDays">۱ از ۳</b><span>روزِ تمرینِ این هفته</span></div>
@@ -563,6 +605,9 @@ button{font:inherit;color:inherit}
             <tbody id="calBody"></tbody>
           </table>
           <p class="src">صورتک‌ها را خودِ کودک بعد از هر تمرین انتخاب کرده است، مثل جدول «روز اول، دوم، سوم» در کتاب.</p>
+          <div class="p-h">آنچه دوربین دید <span class="cam-badge"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg>اندازه‌گیری، نه حدس</span></div>
+          <div class="verified" id="pCam"></div>
+          <p class="src">این عددها را یوزی با دوربین شمرده است: فقط وقتی حرکت درست و روی یک پا انجام شده. تصویری ذخیره یا فرستاده نمی‌شود؛ فقط همین عددها می‌مانند.</p>
           <div class="p-h">رکوردِ لک‌لک</div>
           <div id="pRec"></div>
           <p class="src">کتاب (ص ۳۷) می‌خواهد کودک هر روز مثل لک‌لک بایستد و هر بار که بیشتر از دفعهٔ قبل ایستاد، یک ستاره رنگ کند. این‌جا زمان را گوشی می‌گیرد و ستاره خودش رنگ می‌شود.</p>
@@ -602,6 +647,7 @@ button{font:inherit;color:inherit}
   </aside>
 </div>
 
+<script src="audio/list.js"></script>
 <script>
 (function(){
 const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
@@ -638,6 +684,13 @@ const SFX = {
     tone(131, 0, n.length*.13+.5, 'sine', .08); }
 };
 function sfx(name, arg){ try{ SFX[name] && SFX[name](arg); }catch(e){} }
+/* Recorded narration (docs/voice-script.md). audio/list.js names the files that exist, so a
+   missing recording is simply skipped instead of erroring. */
+let voiceEl = null;
+function voice(id){
+  if(muted || !(window.HK_AUDIO||[]).includes(id)) return;
+  try{ if(voiceEl){ voiceEl.pause(); } voiceEl = new Audio(`audio/${id}.mp3`); voiceEl.play().catch(()=>{}); }catch(e){}
+}
 
 /* ---------- data from the book ---------- */
 const KHANS = [
@@ -697,11 +750,19 @@ const STAR = (on) => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 
 
 /* ---------- state ---------- */
 const DAY = 864e5;
-const seed = () => ({ v:2, off:0, days:[{date:dayKey(-1), feel:[2,2,1]}, null, null], story:false, family:false, rec:[6.2, 8.4], recStars:1 });
+const seed = () => ({ v:2, off:0, days:[{date:dayKey(-1), feel:[2,2,1]}, null, null], story:false, family:false, rec:[6.2, 8.4], recStars:1, profile:null,
+  cam:{dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0} });
 let state = store.get('state', null);
 function dayKey(delta=0){ const d = new Date(Date.now() + ((state && state.off)||0)*DAY + delta*DAY); return `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`; }
 if(!state || state.v !== 2){ state = null; state = seed(); }
 function save(){ store.set('state', state); }
+if(!state.cam) state.cam = {dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0};
+const kid = () => (state.profile && state.profile.kid) || 'girl';
+const kidName = () => (state.profile && state.profile.name) || 'قهرمان';
+/* Yuzi grows with the journey: a cub to khan 3, young from khan 4, grown after khan 7 */
+const khansPassed = () => CURRENT;
+const yuziStage = () => khansPassed() >= 7 ? 3 : khansPassed() >= 3 ? 2 : 1;
+const YUZI_NAMES = ['','توله‌یوز','یوزِ جوان','یوزِ تیزپا'];
 const doneDays = () => state.days.filter(Boolean).length;
 const practicedToday = () => state.days.some(d => d && d.date === dayKey());
 const secs = n => fa(n.toFixed(1)).replace('.', '٫');
@@ -734,7 +795,7 @@ function drawMap(){
     b.style.top = `${y/H*100}%`;
     const status = i<CURRENT ? 'گذشته' : i===CURRENT ? 'خوانِ امروز' : 'هنوز بسته';
     b.setAttribute('aria-label', `خوان ${fa(i+1)}: ${k.name} — ${status}`);
-    b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><svg viewBox="0 0 48 48">${ICONS[k.icon]}</svg>${i>CURRENT?`<span class="lock">${LOCK}</span>`:''}</span>
+    b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><img src="img/${k.guard}-greet.webp" alt="">${i>CURRENT?`<span class="lock">${LOCK}</span>`:''}</span>
       <span class="label">${k.name}</span><span class="sub">${k.lessons.join(' · ')}</span>`;
     if(i===CURRENT) b.addEventListener('click', ()=>go('khan'));
     else b.addEventListener('click', ()=>flashNote(i));
@@ -744,7 +805,7 @@ function drawMap(){
   y.className='yuzi-on-map';
   const [cx,cy] = pts[CURRENT];
   y.style.right = `${(1 - (cx+62)/W)*100}%`; y.style.top = `${(cy-30)/H*100}%`;
-  y.innerHTML = `<img src="img/yuzi-1-idle.webp" alt="" style="width:100%;height:100%;object-fit:contain">`;
+  y.innerHTML = `<img id="mapYuzi" src="img/yuzi-${yuziStage()}-idle.webp" alt="" style="width:100%;height:100%;object-fit:contain">`;
   map.appendChild(y);
 }
 function renderTorches(){
@@ -772,24 +833,25 @@ function renderTorches(){
   $('#toolDay').textContent = `روزِ پیش‌نمایش: ${state.off ? `${fa(state.off)} روز بعد از امروز` : 'امروز'}`;
 }
 $('#playTile').addEventListener('click', ()=>{
-  if(practicedToday() || doneDays()>=3){ sfx('sleep'); const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
+  if(practicedToday() || doneDays()>=3){ sfx('sleep'); voice('sleep'); const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
   go('ex');
 });
 
 /* ---------- navigation ---------- */
-const NAV_OF = {map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents'};
+const NAV_OF = {hello:'map', map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents'};
 function go(name){
   $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
   $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
-  $('.nav').hidden = (name==='ex' || name==='story' || name==='record');
+  $('.nav').hidden = (name==='ex' || name==='story' || name==='record' || name==='hello');
   if(name==='ex') startExercise();
   if(name==='parents') renderParents();
-  if(name==='story') renderStory(0);
+  if(name==='story'){ renderStory(0); voice('story-1'); }
   if(name==='record') renderRecord();
   if(name==='khan') renderTorches();
   if(name!=='record') stopWatch(false);
   if(name!=='ex' && CAM.exOn) exCamOff();
-  if(name!=='record' && name!=='story' && name!=='ex' && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
+  if(name!=='family' && CAM.famOn) famCamOff();
+  if(name!=='record' && name!=='story' && name!=='ex' && name!=='family' && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic();
   if(name!=='ex') flip(false);
@@ -842,6 +904,7 @@ function renderMove(){
   $('#exTitle').innerHTML = `تمرین ${fa(mi+1)} از ۳<small>تعادل · روزِ ${['اول','دوم','سوم'][doneDays()]}</small>`;
   $$('#exSteps i').forEach((el,i)=> el.className = i<mi ? 'on' : i===mi ? 'cur' : '');
   flip(true);
+  voice(`move-${mi+1}`);
   $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن · جای بازی را خلوت کن</small>`;
   renderCount();
 }
@@ -855,8 +918,9 @@ function renderCount(){
   $('#hint').textContent = count===0 ? 'هر بار یکی را انجام دادی، دکمه را بزن'
     : count===half ? 'حالا پایت را عوض کن!' : count<m.goal ? `${fa(m.goal-count)} تای دیگر` : 'تمام شد!';
 }
-function addRep(){
+function addRep(byCam){
   const m = MOVES[mi]; if(count>=m.goal) return;
+  if(byCam){ state.cam[m.prop] = (state.cam[m.prop]||0) + 1; save(); }
   count++; renderCount(); sfx('tap', count);
   const b = $('#tap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   try{ navigator.vibrate && navigator.vibrate(12); }catch(e){}
@@ -866,6 +930,7 @@ $('#tap').addEventListener('click', ()=>{
   // with the camera on, a tap only counts if Yuzi saw one leg in the last moment
   if(CAM.exOn && CAM.stream && MOVES[mi].prop !== 'dots' && performance.now() - (CAM.lastOneLeg||0) > 1500){
     sfx('miss'); $('#hint').textContent = 'یوزی ندید! اول روی یک پا بایست، بعد بزن.'; return; }
+  if(CAM.exOn && CAM.stream){ state.cam.oneLegReps++; save(); }
   addRep();
 });
 let feelings = [];
@@ -874,7 +939,7 @@ $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
   feelings[mi] = +b.dataset.feel;
   $('#feel').hidden = true;
   sfx('click');
-  if(feelings[mi]===0){ sfx('soft'); $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
+  if(feelings[mi]===0){ sfx('soft'); voice('comfort'); $('#comfort').hidden = false; setTimeout(()=>{ $('#comfort').hidden = true; nextMove(); }, 2200); }
   else nextMove();
 }));
 function finishDay(){
@@ -891,7 +956,7 @@ function finishDay(){
   $('#reward').hidden = false;
   $('#xpText').textContent = crossed ? 'یوزی آمادهٔ خوانِ بعدی است' : `یوزی دارد بزرگ می‌شود · ${fa(lit)} از ۳ مشعل`;
   $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = crossed ? '100%' : `${40+lit*15}%`));
-  sfx('fanfare', crossed);
+  sfx('fanfare', crossed); setTimeout(()=>voice(crossed ? 'crossed' : 'cheer'), 900);
   confetti();
 }
 function confetti(){
@@ -908,11 +973,13 @@ function confetti(){
 }
 
 /* ---------- family: the phone is the music referee ---------- */
-const PLAYERS = [{n:'بابا',img:'dad'},{n:'سارا',img:'girl-idle',kid:1},{n:'مادربزرگ',img:'grandma'},{n:'آرش',img:'sibling'},{n:'مامان',img:'mom'}];
+const PLAYERS = [{n:'بابا',img:'dad'},{n:'قهرمان',img:'girl-idle',kid:1},{n:'مادربزرگ',img:'grandma'},{n:'آرش',img:'sibling'},{n:'مامان',img:'mom'}];
+function syncPlayers(){ PLAYERS[1].n = kidName(); PLAYERS[1].img = `${kid()}-idle`; }
 const CHALLENGES = ['مثل لک‌لک روی یک پا بایست و تا ده بشمار','روی یک پا بایست و دست‌هایت را مثل بال باز کن','روی یک پا بایست و چشم‌هایت را تا پنج ببند','روی پنجهٔ پا سه قدمِ آرام بردار'];
 let holder = 0, playing = false, stepT = null, stopT = null, noteT = null;
 function circlePos(i){ const a = Math.PI/2 + i*2*Math.PI/PLAYERS.length; return {x:50 + 42*Math.cos(a), y:50 + 42*Math.sin(a)}; }
 function drawCircle(){
+  syncPlayers();
   const el = $('#circle');
   el.querySelectorAll('.player,.tissue').forEach(n=>n.remove());
   PLAYERS.forEach((p,i)=>{ const {x,y} = circlePos(i);
@@ -949,15 +1016,41 @@ $('#music').addEventListener('click', ()=>{
     $(`.player[data-i="${holder}"]`).classList.add('hit');
     $('#famCall').innerHTML = `<b>آهنگ قطع شد! نوبتِ ${p.n}</b>${ch}<small>پیشنهاد گوشی است؛ هم‌بازی‌ها می‌توانند حرکت دیگری پیشنهاد بدهند</small>`;
     $('#music').textContent = 'دور بعد'; sfx('fanfare');
+    if(CAM.famOn && CAM.stream) famCheck(p.n);
     if(!state.family){ state.family = true; save(); }
   }, 6000 + Math.random()*7000);
 });
+
+/* the camera referee: after the music stops, the chosen player gets five seconds on one leg */
+let famT = null;
+function famCamOff(){ CAM.famOn = false; clearInterval(famT); CAM.hint = null; camStop(); $('#famSlot').hidden = true;
+  const b = $('#famCam'); b.setAttribute('aria-pressed','false'); b.style.background='var(--paper-2)'; b.style.color='var(--ink)'; b.querySelector('span').textContent = 'یوزی هم داوری کند'; }
+$('#famCam').addEventListener('click', async ()=>{
+  if(CAM.famOn){ famCamOff(); return; }
+  CAM.famOn = true; CAM.onFrame = null; CAM.hint = null;
+  const b = $('#famCam'); b.setAttribute('aria-pressed','true'); b.style.background=''; b.style.color='#fff'; b.querySelector('span').textContent = 'خاموش کردنِ دوربین';
+  const slot = $('#famSlot'); slot.hidden = false; slot.scrollIntoView({block:'center', behavior:'smooth'});
+  await camStart(slot);
+});
+function famCheck(name){
+  clearInterval(famT); let acc = 0, last = performance.now(), start = last;
+  CAM.hint = () => CAM.state === 'oneLeg' ? `${name}: ${fa(Math.min(5, Math.floor(acc/1000)))} از ۵ ثانیه` : `${name}، جلوی دوربین روی یک پا بایست`;
+  famT = setInterval(()=>{ const now = performance.now(); if(CAM.state==='oneLeg') acc += now-last; last = now;
+    const s5 = acc >= 5000, timeout = now - start > 15000;
+    if(s5 || timeout){ clearInterval(famT); CAM.hint = null;
+      $('#famCall').innerHTML = s5 ? `<b>آفرین ${name}!</b>پنج ثانیه روی یک پا ماندی؛ یوزی دید.<small>دور بعد را شروع کنید</small>` : `<b>${name}، ${secs(acc/1000)} ثانیه</b>دور بعد بیشتر بایست!<small>دور بعد را شروع کنید</small>`;
+      if(s5){ state.cam.family++; save(); sfx('star'); } else sfx('soft'); } }, 100);
+}
 
 /* ---------- parents ---------- */
 function renderParents(){
   $('#calBody').innerHTML = MOVES.map((m,mIdx)=>`<tr><td>${m.t}</td>${[0,1,2].map(d=>{
       const v = state.days[d] && state.days[d].feel[mIdx];
       return `<td>${v===undefined||v===null ? '<span class="empty" aria-label="هنوز نه"></span>' : `<svg viewBox="0 0 60 60" role="img" aria-label="${['سخت بود','معمولی بود','خیلی خوب بود'][v]}">${face(v)}</svg>`}</td>`; }).join('')}</tr>`).join('');
+  const c = state.cam;
+  $('#pCam').innerHTML = [[c.dots,'لمسِ دایره با نوکِ پا'],[c.bags,'کیسه در سبد، روی یک پا'],[c.cups,'لیوانِ چیده‌شده، روی یک پا'],[c.oneLegReps,'ضربهٔ تأییدشده روی یک پا'],
+    [secs(c.poseSec),'ثانیه حالتِ درست در قصه'],[c.recs,'رکوردِ لک‌لک با زمانِ دوربین'],[c.family,'داوریِ دستمال‌بازی']].map(([n,t])=>`<div><b>${typeof n==='number'?fa(n):n}</b><span>${t}</span></div>`).join('');
+  $('#parentsTitle').innerHTML = `گزارشِ ${kidName()}<small>هفتهٔ تعادل · منزل ۵</small>`;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
   $('#pBest').textContent = secs(best);
   $('#pStars').textContent = `${fa(state.recStars)} از ۷`;
@@ -1005,7 +1098,8 @@ function renderStory(i){
     }));
   }
   const prev = $('#stPrev'); if(prev) prev.addEventListener('click', ()=>renderStory(page-1));
-  $('#stNext').addEventListener('click', ()=> page < STORY.length ? renderStory(page+1) : go('khan'));
+  $('#stNext').addEventListener('click', ()=>{ if(page < STORY.length){ renderStory(page+1); voice(page < STORY.length ? `story-${page+1}` : 'find'); } else go('khan'); });
+
   $('#s-story').scrollTop = 0;
 }
 function countdown(){
@@ -1013,8 +1107,8 @@ function countdown(){
   if(CAM.storyOn && CAM.stream){ // counts only the seconds spent on one leg
     clearInterval(countT); b.textContent = '۰'; let acc = 0, last = performance.now();
     countT = setInterval(()=>{ const now = performance.now(), dt = now-last; last = now;
-      if(CAM.state==='oneLeg' && CAM.kind === STORY[page].pose){ acc += dt; const k = Math.floor(acc/1000); if(k>n){ n = k; b.textContent = fa(n); n<5 ? sfx('tick') : null; } }
-      if(n>=5){ clearInterval(countT); sfx('done'); b.classList.remove('run'); b.disabled = false;
+      if(CAM.state==='oneLeg' && CAM.kind === STORY[page].pose){ acc += dt; state.cam.poseSec += dt/1000; const k = Math.floor(acc/1000); if(k>n){ n = k; b.textContent = fa(n); n<5 ? sfx('tick') : null; } }
+      if(n>=5){ clearInterval(countT); sfx('done'); save(); b.classList.remove('run'); b.disabled = false;
         const a = $('#after'); if(a) a.hidden = false;
         const nx = $('#stNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; } }, 100);
     return;
@@ -1046,7 +1140,8 @@ function stopWatch(record){
   const prev = state.rec.length ? state.rec[state.rec.length-1] : null;
   state.rec.push(sec);
   let msg;
-  if(prev!==null && sec > prev && state.recStars < 7){ state.recStars++; sfx('star'); msg = `<b>بیشتر از دفعهٔ قبل!</b> ${secs(sec)} ثانیه ایستادی و یک ستارهٔ تازه گرفتی.`; }
+  if(CAM.recOn && CAM.stream) state.cam.recs++;
+  if(prev!==null && sec > prev && state.recStars < 7){ state.recStars++; sfx('star'); voice('star'); msg = `<b>بیشتر از دفعهٔ قبل!</b> ${secs(sec)} ثانیه ایستادی و یک ستارهٔ تازه گرفتی.`; }
   else sfx('soft');
   if(prev===null) msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ بعد بیشتر بایست تا ستاره بگیری.`;
   else msg = `<b>${secs(sec)} ثانیه</b> ایستادی. دفعهٔ قبل ${secs(prev)} ثانیه بود. دوباره امتحان کن!`;
@@ -1190,47 +1285,86 @@ function setCamState(st){
   CAM.listeners.forEach(f=>f(st));
 }
 
-/* exercise move 2 (book p.34): a coloured circle appears on the floor beside the child; it counts
-   when one ankle reaches it while the other foot stays where it was planted. */
-const DOT_COLS = ['#e2574c','#f2c230','#4fb35a','#3b82c4'];
+/* The three balance moves of book p.34, each measured on camera. Targets are placed in body units
+   (leg length) beside the child; first half on one side, then the child switches legs, as the book says.
+   - dots: a coloured circle on the floor; counts when one ankle reaches it while the other foot stays planted.
+   - bags: a sandbag on the floor and a basket at knee height; the free foot picks the bag up and drops it in.
+   - cups: a cup low beside the body and a stack at waist height; a hand carries the cup, and the drop only
+     counts while Yuzi sees the child on one leg. */
+const DOT_COLS = ['#e2574c','#f2c230','#4fb35a','#3b82c4','#a35bc4','#e2574c'];
+const dist = (a,b) => Math.hypot(a.x-b.x, a.y-b.y);
+function exWarn(d, text){ if(d.warned) return; d.warned = 1; sfx('miss'); $('#hint').textContent = text; }
 function exFrame(ctx, lm, cv){
-  if(MOVES[mi].prop !== 'dots' || count >= MOVES[mi].goal) return;
+  const m = MOVES[mi]; if(count >= m.goal) return;
   const ok = i => (lm[i].visibility ?? 1) > .45;
   if(!(ok(23)&&ok(24)&&ok(27)&&ok(28))) return;
   const W = cv.width, H = cv.height, P = i => ({x:lm[i].x*W, y:lm[i].y*H});
   const hip = {x:(P(23).x+P(24).x)/2, y:(P(23).y+P(24).y)/2}, aL = P(27), aR = P(28);
   const floor = Math.max(aL.y, aR.y), leg = floor - hip.y;
   if(leg < H*.12) return;
-  const now = performance.now();
+  const sh = ok(11)&&ok(12) ? {x:(P(11).x+P(12).x)/2, y:(P(11).y+P(12).y)/2} : {x:hip.x, y:hip.y-leg*.6};
+  const now = performance.now(), side = count < Math.ceil(m.goal/2) ? -1 : 1;
+  const cx = x => Math.min(W*.92, Math.max(W*.08, x));
   if(!CAM.dot){
-    const side = count < Math.ceil(MOVES[mi].goal/2) ? -1 : 1;   // first half one side, then switch legs, as the book says
-    CAM.dot = { x: Math.min(W*.92, Math.max(W*.08, hip.x + side*leg*.8)), y: floor - leg*.04, r: leg*.2,
-                col: DOT_COLS[count % 4], aL, aR, born: now, hit: 0 };
+    const d = {born:now, col:DOT_COLS[count % DOT_COLS.length], aL, aR};
+    if(m.prop==='dots') Object.assign(d, {x:cx(hip.x+side*leg*.8), y:floor-leg*.04, r:leg*.2});
+    if(m.prop==='bags') Object.assign(d, {x:cx(hip.x+side*leg*.55), y:floor-leg*.06, r:leg*.17, bx:cx(hip.x+side*leg*1.0), by:hip.y+leg*.5, br:leg*.24});
+    if(m.prop==='cups') Object.assign(d, {x:cx(hip.x+side*leg*.7), y:hip.y+leg*.5, r:leg*.15, bx:cx(hip.x+side*leg*.62), by:(sh.y+hip.y)/2, br:leg*.17});
+    // the support foot is the one farther from the target when it appears
+    d.sup = dist(aL, d) > dist(aR, d) ? 'L' : 'R';
+    CAM.dot = d;
   }
   const d = CAM.dot, t = (now - d.born)/1000;
-  if(!d.hit){
-    // which ankle is reaching: the one nearer the circle; the other must stay put
-    const nearL = Math.hypot(aL.x-d.x, aL.y-d.y), nearR = Math.hypot(aR.x-d.x, aR.y-d.y);
-    const [reach, dist, stay, stay0] = nearL < nearR ? ['L', nearL, aR, d.aR] : ['R', nearR, aL, d.aL];
-    const planted = Math.hypot(stay.x-stay0.x, stay.y-stay0.y) < leg*.25;
-    if(dist < d.r * 1.15 && t > .6){
-      if(planted){ d.hit = now; sfx('hit'); addRep(); }
-      else if(!d.warned){ d.warned = 1; sfx('miss'); $('#hint').textContent = 'پای ایستاده را جابه‌جا نکن؛ فقط با نوکِ پای دیگر لمس کن.'; }
+  const stay = d.sup==='L' ? aL : aR, stay0 = d.sup==='L' ? d.aL : d.aR, free = d.sup==='L' ? aR : aL;
+  const planted = dist(stay, stay0) < leg*.25;
+  if(!d.hit && t > .5){
+    if(m.prop==='dots'){
+      const near = Math.min(dist(aL,d), dist(aR,d));
+      if(near < d.r*1.15){ planted ? (d.hit = now, sfx('hit'), addRep(true)) : exWarn(d, 'پای ایستاده را جابه‌جا نکن؛ فقط با نوکِ پای دیگر لمس کن.'); }
+    }
+    if(m.prop==='bags'){
+      if(!d.picked){ if(dist(free, d) < d.r*1.3){ planted ? (d.picked = now, sfx('tap', 4)) : exWarn(d, 'پای ایستاده را جابه‌جا نکن.'); } }
+      else { d.x = free.x; d.y = free.y - d.r*.4;
+        if(!planted) { d.picked = 0; d.x = cx(hip.x+side*leg*.55); d.y = floor-leg*.06; exWarn(d, 'کیسه افتاد! روی یک پا بمان و دوباره بردار.'); }
+        else if(dist(free, {x:d.bx, y:d.by}) < d.br*1.1){ d.hit = now; sfx('hit'); addRep(true); } }
+    }
+    if(m.prop==='cups'){
+      const wL = P(15), wR = P(16);
+      if(!d.picked){ const w = dist(wL,d) < dist(wR,d) ? 'L' : 'R'; if(Math.min(dist(wL,d), dist(wR,d)) < d.r*1.4){ d.picked = now; d.hand = w; sfx('tap', 4); } }
+      else { const w = d.hand==='L' ? wL : wR; d.x = w.x; d.y = w.y;
+        if(dist(w, {x:d.bx, y:d.by - count*d.br*.55}) < d.br*1.4){
+          if(CAM.state === 'oneLeg'){ d.hit = now; sfx('hit'); addRep(true); } else exWarn(d, 'لیوان را فقط روی یک پا بچین!'); } }
     }
   }
-  const pop = d.hit ? Math.min(1, (now - d.hit)/350) : 0;
-  ctx.save();
-  ctx.globalAlpha = 1 - pop;
-  ctx.fillStyle = d.col; ctx.strokeStyle = '#2b2140'; ctx.lineWidth = W/120;
-  ctx.beginPath(); ctx.ellipse(d.x, d.y, d.r*(1+pop*.6)*(1+.06*Math.sin(t*6)), d.r*.42*(1+pop*.6), 0, 0, 7); ctx.fill(); ctx.stroke();
+  const pop = d.hit ? Math.min(1, (now - d.hit)/350) : 0, L = W/120;
+  ctx.save(); ctx.lineWidth = L; ctx.strokeStyle = '#2b2140';
+  if(m.prop==='dots'){
+    ctx.globalAlpha = 1 - pop; ctx.fillStyle = d.col;
+    ctx.beginPath(); ctx.ellipse(d.x, d.y, d.r*(1+pop*.6)*(1+.06*Math.sin(t*6)), d.r*.42*(1+pop*.6), 0, 0, 7); ctx.fill(); ctx.stroke();
+  }
+  if(m.prop==='bags'){
+    // basket with the bags already in it
+    const bw = d.br*2.2, bh = d.br*1.3;
+    ctx.fillStyle = '#c9893f'; ctx.beginPath(); ctx.moveTo(d.bx-bw/2, d.by-bh/2); ctx.lineTo(d.bx+bw/2, d.by-bh/2); ctx.lineTo(d.bx+bw*.38, d.by+bh/2); ctx.lineTo(d.bx-bw*.38, d.by+bh/2); ctx.closePath(); ctx.fill(); ctx.stroke();
+    for(let k=0;k<count;k++){ ctx.fillStyle = DOT_COLS[k % DOT_COLS.length]; ctx.fillRect(d.bx - bw*.4 + (k%3)*bw*.27, d.by - bh/2 - d.r*.5 - Math.floor(k/3)*d.r*.5, bw*.24, d.r*.5); }
+    if(!d.hit){ ctx.fillStyle = d.col; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(d.x-d.r*.8, d.y-d.r*.5, d.r*1.6, d.r, d.r*.35) : ctx.rect(d.x-d.r*.8, d.y-d.r*.5, d.r*1.6, d.r); ctx.fill(); ctx.stroke(); }
+  }
+  if(m.prop==='cups'){
+    const cup = (x, y, r, col, a=1) => { ctx.globalAlpha = a; ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(x-r*.65, y-r*.8); ctx.lineTo(x+r*.65, y-r*.8); ctx.lineTo(x+r*.45, y+r*.8); ctx.lineTo(x-r*.45, y+r*.8); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1; };
+    for(let k=0;k<count;k++) cup(d.bx, d.by - k*d.br*.55, d.br, DOT_COLS[k % DOT_COLS.length]);
+    ctx.setLineDash([L*2, L*2]); ctx.beginPath(); ctx.arc(d.bx, d.by - count*d.br*.55, d.br*1.1, 0, 7); ctx.stroke(); ctx.setLineDash([]);
+    if(!d.hit) cup(d.x, d.y, d.r, d.col);
+  }
   ctx.restore();
   if(d.hit && now - d.hit > 400) CAM.dot = null;
 }
 function exHint(){
   if(CAM.state === 'nobody') return null;
-  const m = MOVES[mi];
-  if(m.prop === 'dots') return CAM.dot ? 'با نوکِ پا به دایرهٔ رنگی بزن' : null;
-  return CAM.state === 'oneLeg' ? 'روی یک پا ایستادی! حالا بزن' : null;
+  const m = MOVES[mi], d = CAM.dot;
+  if(m.prop === 'dots') return d ? 'با نوکِ پا به دایرهٔ رنگی بزن' : null;
+  if(m.prop === 'bags') return !d ? null : d.picked ? 'کیسه را ببر توی سبد' : 'با نوکِ پا کیسه را بردار';
+  if(m.prop === 'cups') return CAM.state !== 'oneLeg' ? 'اول روی یک پا بایست' : !d ? null : d.picked ? 'لیوان را روی ستون بگذار' : 'با دست لیوان را بردار';
+  return null;
 }
 function exCamOff(){
   CAM.exOn = false; CAM.onFrame = null; CAM.hint = null; CAM.dot = null; camStop();
@@ -1273,7 +1407,8 @@ $('#recCam').addEventListener('click', async ()=>{
 /* ---------- treasure ---------- */
 function renderTreasure(){
   const st = [['توله‌یوز','از خوان ۱'],['یوزِ جوان','از خوان ۴'],['یوزِ تیزپا','بعد از خوان ۷']];
-  $('#stages').innerHTML = st.map((s,i)=>`<div class="stage-c ${i===0?'cur':'off'}"><img src="img/yuzi-${i+1}-idle.webp" alt=""><b>${s[0]}</b>${s[1]}</div>`).join('');
+  const cur = yuziStage() - 1;
+  $('#stages').innerHTML = st.map((s,i)=>`<div class="stage-c ${i===cur?'cur':i<cur?'':'off'}"><img src="img/yuzi-${i+1}-idle.webp" alt=""><b>${s[0]}</b>${s[1]}</div>`).join('');
   $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<CURRENT?'got':'off'}" title="${k.name}"><img src="img/${k.guard}-greet.webp" alt="نگهبانِ ${k.name}"></div>`).join('') + `<div class="m off"><img src="img/yuzi-3-idle.webp" alt="" style="width:80%;height:80%;object-fit:contain;opacity:.4"></div>`;
 }
 
@@ -1282,11 +1417,12 @@ function renderTreasure(){
 const NOTES = {
   map:{h:'نقشهٔ سفر', d:[['در کتاب','فهرستِ ص ۶ و ۷: دوازده درس، جدا از هم'],['در برنامه','یک راهِ پیوسته از پایین به قله؛ هر خوان یک یا دو درس'],['چرا','کتاب داستانِ کلانی ندارد؛ نقشه به هر روز تمرین معنا می‌دهد'],['مشعل‌ها','همان «سه بار در هفته» که مقدمهٔ کتاب می‌خواهد']]},
   khan:{h:'صفحهٔ خوان', d:[['در کتاب','هر درس پنج بخش دارد: آغاز، حرکت و خلاقیت، برویم بازی، بازی خانوادگی، بازی کن ستاره بگیر'],['در برنامه','همین بخش‌ها، به‌صورت کاشی‌هایی که زیر انگشت فرو می‌روند'],['نگهبان','هر خوان یک نگهبانِ دوست دارد؛ لک‌لک برای تعادل، چون روی یک پا می‌ایستد'],['باز شدن','منزلِ بعد با سه روز تمرین باز می‌شود، نه با یک بار']]},
-  ex:{h:'برویم بازی!', d:[['در کتاب','ص ۳۴: سه حرکتِ تعادلی با کیسهٔ شن، دایرهٔ رنگی و لیوان'],['در برنامه','یک حرکت در هر صفحه، با شمارنده‌ای که کودک خودش می‌زند'],['صورتک‌ها','همان سه صورتکِ تقویم هفتگیِ کتاب؛ بعد از هر حرکت'],['پاداش','روشن شدنِ مشعلِ امروز و بزرگ شدنِ یوزی']]},
+  ex:{h:'برویم بازی!', d:[['در کتاب','ص ۳۴: سه حرکتِ تعادلی با کیسهٔ شن، دایرهٔ رنگی و لیوان'],['در برنامه','یک حرکت در هر صفحه؛ با دوربین، کیسه و دایره و لیوانِ مجازی کنارِ بدنِ کودک ظاهر می‌شوند و هر حرکت واقعاً سنجیده می‌شود'],['صورتک‌ها','همان سه صورتکِ تقویم هفتگیِ کتاب؛ بعد از هر حرکت'],['پاداش','روشن شدنِ مشعلِ امروز و بزرگ شدنِ یوزی']]},
   family:{h:'بازی خانوادگی', d:[['در کتاب','ص ۳۶: دستمال‌بازی روی یک پا با آهنگ'],['در برنامه','گوشی داور می‌شود: آهنگ پخش می‌کند و یک جای غیرمنتظره قطعش می‌کند'],['چرا','در کتاب یک نفر باید آهنگ را قطع کند و از بازی جا می‌ماند؛ این‌جا همه بازی می‌کنند']]},
   treasure:{h:'گنجینه', d:[['یوزی','یوزپلنگِ کتاب، با خط‌های اشکیِ یوزِ ایرانی؛ در سه مرحله بزرگ می‌شود'],['نشان‌ها','برای هر خوانِ گذشته یک نشان']]},
   parents:{h:'بخش والدین', d:[['در کتاب','جدولِ کاغذیِ «روز اول، دوم، سوم» و ستاره‌هایی که خودِ کودک رنگ می‌کند'],['در برنامه','صورتک‌ها را کودک انتخاب می‌کند؛ زمانِ ایستادن را گوشی می‌گیرد، پس ستاره واقعی است'],['پیشرفت','همهٔ رکوردهای لک‌لک به ترتیب؛ آن‌هایی که بیشتر از دفعهٔ قبل بوده‌اند پررنگ‌اند']]},
   record:{h:'رکوردِ لک‌لک', d:[['در کتاب','ص ۳۷: هر روز مثلِ لک‌لک بایست؛ هر بار بیشتر از دفعهٔ قبل ایستادی، یکی از هفت ستاره را رنگ کن'],['در برنامه','کرنومتر: بزرگتر «شروع» و «پایم زمین خورد» را می‌زند؛ ستاره خودش رنگ می‌شود'],['مقایسه','با دفعهٔ قبل، نه با بهترین رکورد؛ همان چیزی که کتاب می‌گوید و برای کودکِ هفت‌ساله دست‌یافتنی‌تر است'],['جملهٔ یوزپلنگ','«من تلاش می‌کنم هر بار در بازی نتیجهٔ بهتری بگیرم.» از همان صفحه']]},
+  hello:{h:'شروع', d:[['چرا','کودک اسمش را می‌نویسد و قهرمانش را انتخاب می‌کند؛ از این به بعد بازی با اسمِ خودش حرفش را می‌زند'],['خانواده','همین قهرمان در حلقهٔ دستمال‌بازی می‌نشیند'],['نمایش','«شروع از اول» کنارِ گوشی به همین صفحه برمی‌گردد']]},
   story:{h:'قصهٔ حرکت', d:[['در کتاب','ص ۳۴: قصهٔ تاپ‌تاپو؛ درخت، کلاغ و گنجشک سه حالتِ تعادل یادش می‌دهند و هر بار «تا پنج بشمار»'],['در برنامه','متنِ عینِ کتاب، صفحه به صفحه؛ هر حالت یک شمارشِ پنج‌ثانیه‌ای دارد و تا انجامش نشود قصه جلو نمی‌رود'],['پیدا کردنِ کلمه','کتاب می‌گوید «واژهٔ تعادل را پیدا کن و انگشتت را زیرش بگذار»؛ این‌جا رویش ضربه می‌زند'],['تصویرها','گوینده (درخت، کلاغ، گنجشک) کنارِ دختری که همان حالت را نشان می‌دهد']]}
 };
 function showNote(k){ const n = NOTES[k]; if(!n) return; $('#noteCard').innerHTML = `<h4>${n.h}</h4><dl>${n.d.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>`; }
@@ -1298,7 +1434,20 @@ $('#legend').innerHTML = KHANS.map((k,i)=>`<li><b>${k.name}</b>: ${k.lessons.map
 $$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
 for(let m=1;m<=3;m++) for(const f of 'ab'){ const im = new Image(); im.src = `img/girl-m5-${m}${f}.webp`; }
 $('#nextDay').addEventListener('click', ()=>{ state.off++; save(); renderTorches(); go('khan'); });
-$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); save(); renderTorches(); go('khan'); });
+$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
+let pickKid = 'girl';
+$$('.pick button').forEach(b=> b.addEventListener('click', ()=>{ pickKid = b.dataset.kid; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x===b ? 'true' : 'false')); sfx('click'); }));
+$('#helloGo').addEventListener('click', ()=>{
+  state.profile = {name: ($('#kidName').value || '').trim().slice(0,14) || 'قهرمان', kid: pickKid}; save();
+  renderProfile(); drawCircle(); sfx('fanfare'); voice('hello'); go('map');
+});
+function renderProfile(){
+  $('#kidLabel').textContent = kidName();
+  $('#avatarImg').src = `img/${kid()}-idle.webp`;
+  $('#yuziLabel').textContent = `همسفر: یوزی · ${YUZI_NAMES[yuziStage()]}`;
+  const my = $('#mapYuzi'); if(my) my.src = `img/yuzi-${yuziStage()}-idle.webp`;
+  if(!state.profile){ $('#kidName').value = ''; pickKid = 'girl'; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x.dataset.kid==='girl' ? 'true' : 'false')); }
+}
 function renderMute(){ $('#mute').innerHTML = muted
     ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>'
     : '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16.5 8.5a5 5 0 0 1 0 7M19.5 5.5a9 9 0 0 1 0 13"/></svg>';
@@ -1306,6 +1455,6 @@ function renderMute(){ $('#mute').innerHTML = muted
 $('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', muted); renderMute(); sfx('click'); });
 renderMute();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
-drawMap(); renderTorches(); drawCircle(); renderTreasure(); go('map');
+drawMap(); renderProfile(); renderTorches(); drawCircle(); renderTreasure(); go(state.profile ? 'map' : 'hello');
 })();
 </script>
