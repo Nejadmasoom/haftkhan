@@ -907,7 +907,7 @@ function famFeet(fm, intro){
         <div class="figrow" style="width:100%"><img src="${figSrc('m4-feetUp')}" alt=""><img src="${figSrc('m4-feetStack')}" alt=""></div>
         <div class="callout" id="fCall">${left!=null ? `<b>${fa(left)} ثانیه</b>با پا بردار، با دست بالای سر بگذار!` : '<b>گوشی آهنگ پخش می‌کند</b><small>تا آهنگ تمام شود، هر کس هر چه می‌تواند بالای سرش بگذارد</small>'}</div>
         <button class="cta" id="fMusic">${F.playing ? 'توقف' : 'پخش آهنگ (۳۰ ثانیه)'}</button>
-        <div class="tally">${P.map((p,i)=>`<div class="${best>0 && F.tally[i]===best ? 'lead' : ''}"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"><b>${esc(p.n)}</b><button data-i="${i}" data-d="-1" aria-label="کم کن">−</button><output>${fa(F.tally[i])}</output><button data-i="${i}" data-d="1" aria-label="اضافه کن">+</button></div>`).join('')}</div>
+        <div class="tally">${P.map((p,i)=>`<div class="${best>0 && F.tally[i]===best ? 'lead' : ''}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><b>${esc(p.n)}</b><button data-i="${i}" data-d="-1" aria-label="کم کن">−</button><output>${fa(F.tally[i])}</output><button data-i="${i}" data-d="1" aria-label="اضافه کن">+</button></div>`).join('')}</div>
       </div>`;
     $$('.tally button').forEach(b => b.addEventListener('click', ()=>{ const i = +b.dataset.i; F.tally[i] = Math.max(0, F.tally[i] + +b.dataset.d); sfx('tap', F.tally[i]); draw(F.playing ? F.left : null); }));
     $('#fMusic').addEventListener('click', ()=>{
