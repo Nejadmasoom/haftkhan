@@ -508,6 +508,10 @@ html.camfull-on body{overflow:hidden}
 .tally{display:flex;flex-direction:column;gap:8px;width:100%}
 .numin.stepper{gap:10px}.numin.stepper output{font-family:var(--f-display);font-size:40px;min-width:48px;text-align:center}.numin.stepper button{width:48px;height:48px;font-size:24px;padding:0}
 .cam-note{display:block;text-align:center;font-size:12.5px;font-weight:700;color:var(--ink-soft);line-height:1.7;margin:-4px 8px 0}
+.lv{display:inline-block;font-family:var(--f-body);font-size:12px;font-weight:800;background:var(--saffron);color:var(--ink);border:2px solid var(--ink);border-radius:999px;padding:0 8px;vertical-align:middle;white-space:nowrap}
+.who{margin-top:10px;text-align:center}.who > b{display:block;font-size:14px;margin-bottom:4px}
+.free-note{display:block;margin-top:6px;font-size:12.5px;font-weight:700;line-height:1.7;color:var(--ink-soft)}
+.chal{display:block;margin-top:8px;font-size:14px;font-weight:700;line-height:1.8}
 .team{background:#fff;border:var(--bw) solid var(--ink);border-radius:20px;padding:10px 10px 8px;margin:0 0 12px;text-align:center}
 .team > b{display:block;font-size:15px;margin-bottom:6px}
 .tms{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:flex-start}
@@ -1018,7 +1022,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
           <h3 id="gxRewardTitle"></h3>
           <div class="big-torches" id="gxTorches" aria-hidden="true"></div>
           <p id="gxRewardText"></p>
-          <button class="cta gold" data-go="gkhan">برگرد به خوان</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="cta" id="gxAgain">یک دورِ دیگر، سخت‌تر!</button><button class="cta gold" data-go="gkhan">برگرد به خوان</button></div>
         </div>
       </section>
 
@@ -1811,11 +1815,19 @@ function fitOf(lm){
 }
 const FIT_TEXT = {nobody:['یوزی تو را نمی‌بیند','جلوی گوشی بایست و آن‌قدر عقب برو که از سر تا پا در تصویر باشی'], far:['دو قدم عقب برو','باید از سر تا پا دیده شوی'],
   feet:['کمی عقب برو','پاهایت دیده نمی‌شود'], head:['سرت دیده نمی‌شود','کمی عقب برو، یا گوشی را بالاتر بگذار'], closer:['کمی جلوتر بیا','خیلی دور ایستاده‌ای'], ok:['عالی! همین‌جا بمان','از سر تا پا دیده می‌شوی']};
+/* the child is across the room and may not read yet: Yuzi says it too, without talking over the narrator
+   and at most once every few seconds */
+function sayFit(f){
+  if(!CAM.solo || (f === 'ok' && CAM.wasFit)) return;
+  const now = performance.now(), busy = voiceEl && !voiceEl.paused && !voiceEl.ended && !/\/(fit-|place)/.test(voiceEl.src);
+  if(busy || now - (CAM.saidAt || 0) < 3500) return;
+  CAM.saidAt = now; voice(`fit-${f}`);
+}
 function showFit(f, now){
   const box = CAM.box, el = box.querySelector('.camfit'), ok = f === 'ok';
   box.classList.toggle('fit', ok); box.querySelector('.camguide').hidden = ok || f === 'far';
   el.classList.toggle('ok', ok); el.querySelector('b').textContent = FIT_TEXT[f][0]; el.querySelector('small').textContent = FIT_TEXT[f][1];
-  el.hidden = false; clearTimeout(CAM.fitT);
+  el.hidden = false; clearTimeout(CAM.fitT); sayFit(f);
   if(ok){ if(!CAM.wasFit) sfx('done'); CAM.wasFit = true; CAM.fitT = setTimeout(()=>{ el.hidden = true; }, 1400); }
 }
 function showCount(){
@@ -1837,8 +1849,9 @@ function camPlaceMsg(){ camMessage(`${PLACE_TIP}<b style="display:block;font-siz
 async function camStart(slot, opts={}){
   CAM.slot = slot; const box = camBox();
   if(!CAM.full) slot.appendChild(box);
-  if(CAM.stream){ if(opts.full && phoneSize() && !CAM.full) camFull(true); return true; }
-  CAM.wasFit = false; CAM.fitRaw = ''; CAM.fit = ''; CAM.countKey = null;
+  if(CAM.stream){ CAM.solo = !!opts.full; if(opts.full && phoneSize() && !CAM.full) camFull(true); return true; }
+  CAM.wasFit = false; CAM.fitRaw = ''; CAM.fit = ''; CAM.countKey = null; CAM.solo = !!opts.full; CAM.saidAt = 0;
+  if(CAM.solo) voiceLater('place', 600);
   box.querySelector('.camfit').hidden = true; box.querySelector('.camcount').hidden = true; box.querySelector('.camguide').hidden = true;
   camFull(!!opts.full && phoneSize());
   camPlaceMsg();

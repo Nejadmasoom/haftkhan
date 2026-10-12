@@ -237,7 +237,8 @@ const LESSONS = {
       need:'یک چوبِ سبک (مثلاً دستهٔ جارو)، یک کتاب و یک بادکنک', yuzi:['careful','من با وسایل بی‌خطر بازی می‌کنم.'],
       games:[
         {name:'چوب و حرکتِ دلخواه', t:'چوب سبکی را پشت شانه‌ات قرار بده، با دست‌هایت چوب را بگیر، حالا حرکاتی را که دوست داری انجام بده.', kind:'reps', det:'freeMove', need:'stick', goal:10, unit:'حرکت', figs:['m2-stick','m2-stickKick']},
-        {name:'چوب و کتاب روی سر', t:'چوب سبکی را پشت شانه‌ات قرار بده، با دست‌هایت چوب را بگیر، کتابی روی سرت بگذار. حالا بنشین و پاشو. سعی کن کتاب نیفتد.', kind:'reps', det:'squat', need:'stick', goal:8, unit:'بار', figs:['m2-stick','m2-stickBook']},
+        {name:'چوب و کتاب روی سر', t:'چوب سبکی را پشت شانه‌ات قرار بده، با دست‌هایت چوب را بگیر، کتابی روی سرت بگذار. حالا بنشین و پاشو. سعی کن کتاب نیفتد.', kind:'reps', det:'squat', need:'stick', goal:8, unit:'بار', figs:['m2-stick','m2-stickBook'],
+          easy:{t:'چوب پشتِ شانه، کتاب روی سر؛ روی صندلی بنشین و آرام بلند شو. سعی کن کتاب نیفتد.'}},
         {name:'چوب و بادکنک', t:'چوب سبکی را پشت شانه‌ات قرار بده، با دست‌هایت چوب را بگیر، حالا با سر و پاها به بادکنک ضربه بزن.', kind:'balloon', parts:['head','knee','foot'], need:'stick', balls:1, goal:10, unit:'ضربه', figs:['m2-stickKick','m2-stick']}]},
     family:{kind:'chairs', title:'صندلی‌بازی', src:'ص ۱۸', yuzi:['listen','من در وقت مناسب بازی می‌کنم.'],
       intro:'صندلی‌ها را دایره‌وار بچینید و یکی را علامت بزنید. با شروعِ آهنگ، همه آرام دورِ صندلی‌ها راه می‌روند. آهنگ که قطع شد، همه باید <b>به‌درستی</b> روی صندلی‌ها بنشینند. هر کس روی صندلیِ علامت‌دار نشست، یک حرکتِ نمایشی یا شیرین‌کاری اجرا می‌کند.',
@@ -261,12 +262,16 @@ const LESSONS = {
     play:{src:'ص ۲۳', rule:'به شکل‌ها نگاه کن. یک روز درمیان مثل دو تا از آن‌ها حرکت کن. آن را ده بار انجام بده.', pick:2,
       need:'جای خلوت؛ برای مار و گربه یک زیرانداز', yuzi:['drink','من موقع بازی کردن، وقتی تشنه می‌شوم، حتماً آب می‌خورم.'],
       games:[
-        {name:'مثل کانگورو', t:'جفت‌پا درجا بپر.', kind:'reps', det:'jump', goal:10, unit:'پرش', figs:['m3-roo-a','m3-roo-b'], art:'animal-kangaroo'},
-        {name:'مثل قورباغه', t:'بنشین، دست‌ها روی زمین، بعد بپر.', kind:'reps', det:'frog', goal:10, unit:'پرش', figs:['m3-frog-a','m3-frog-b'], art:'story-frog'},
+        {name:'مثل کانگورو', t:'جفت‌پا درجا بپر.', kind:'reps', det:'jump', goal:10, unit:'پرش', figs:['m3-roo-a','m3-roo-b'], art:'animal-kangaroo',
+          easy:{t:'به‌جای پرش: دست به پشتیِ صندلی، روی پنجه‌ها بلند شو و آرام پایین بیا.', det:'toe', unit:'بار'}},
+        {name:'مثل قورباغه', t:'بنشین، دست‌ها روی زمین، بعد بپر.', kind:'reps', det:'frog', goal:10, unit:'پرش', figs:['m3-frog-a','m3-frog-b'], art:'story-frog',
+          easy:{t:'به‌جای پرشِ قورباغه: روی صندلی بنشین و بدونِ کمکِ دست بلند شو.', det:'squat', unit:'بار'}},
         {name:'مثل مرغ', t:'آرنج‌ها را مثل بال بالا و پایین ببر و راه برو.', kind:'reps', det:'hen', goal:10, unit:'بار', figs:['m3-hen-a','m3-hen-b'], art:'animal-hen'},
         {name:'مثل گوریل', t:'زانوها خم، با مشت به سینه‌ات بزن.', kind:'reps', det:'drum', goal:10, unit:'بار', figs:['m3-gorilla-a','m3-gorilla-b'], art:'animal-gorilla'},
-        {name:'مثل گربه', t:'چهاردست‌وپا راه برو.', kind:'manual', goal:10, unit:'قدم', figs:['m3-cat-a','m3-cat-b'], art:'animal-cat'},
-        {name:'مثل مار', t:'روی شکم بخز.', kind:'manual', goal:10, unit:'بار', figs:['m3-snake-a','m3-snake-b'], art:'animal-snake'}]},
+        {name:'مثل گربه', t:'چهاردست‌وپا راه برو.', kind:'manual', goal:10, unit:'قدم', figs:['m3-cat-a','m3-cat-b'], art:'animal-cat',
+          easy:{t:'روی صندلی بنشین؛ مثلِ گربه دست‌ها را جلو ببر، کش بیا و برگرد.', unit:'بار'}},
+        {name:'مثل مار', t:'روی شکم بخز.', kind:'manual', goal:10, unit:'بار', figs:['m3-snake-a','m3-snake-b'], art:'animal-snake',
+          easy:{t:'روبه‌روی دیوار بایست، دست‌ها روی دیوار؛ مثلِ مار آرام بالا و پایین بخز (شنای دیواری).', unit:'بار'}}]},
     family:{kind:'charades', title:'حدسِ حیوان', src:'ص ۲۴', yuzi:['listen','من موقع صحبت کردن هم‌بازی‌ها، به حرف آن‌ها گوش می‌کنم.'],
       intro:'دانش‌آموز به‌عنوان شروع‌کننده‌ی بازی، حرکت یک حیوان را نشان می‌دهد و هم‌بازی‌ها باید نام حیوان را حدس بزنند. با مشخص شدن حیوان، همگی با تقلید صدای حیوان، حرکت را تکرار می‌کنند. فردی که قشنگ‌ترین نمایش را دارد، دور بعدی بازی را اجرا می‌کند.',
       elder:'هر کس حیوانی را نمایش دهد که برایش راحت است؛ پدربزرگ و مادربزرگ می‌توانند نشسته نمایش دهند.',
@@ -295,9 +300,12 @@ const LESSONS = {
     play:{src:'ص ۲۹', rule:'به شکل بازی‌ها نگاه کن. یک روز درمیان یکی از آن‌ها را انجام بده.', pick:1,
       need:'چند بالش یا کوسن، چند لیوانِ پلاستیکی و یک زیرانداز', yuzi:['tidy','من بعد از بازی، وسایل را جمع می‌کنم.'],
       games:[
-        {name:'چیدن با پا', t:'با پاهایت وسایل سبکی را روی‌هم بچین.', kind:'manual', goal:5, unit:'وسیله', figs:['m4-feetStack','m4-feetStack'], prop:'cushions'},
-        {name:'لیوان‌ها با یک دست', t:'با یک دست لیوان‌های پلاستیکی را روی‌هم بچین.', kind:'manual', goal:6, unit:'لیوان', figs:['m4-plank-a','m4-plank-b'], prop:'cups'},
-        {name:'چرخیدن روی دست‌ها', t:'با دست‌هایت روی زمین، دور خودت بچرخ.', kind:'manual', goal:2, unit:'دور', figs:['m4-spin-a','m4-spin-b']}]},
+        {name:'چیدن با پا', t:'با پاهایت وسایل سبکی را روی‌هم بچین.', kind:'manual', goal:5, unit:'وسیله', figs:['m4-feetStack','m4-feetStack'], prop:'cushions',
+          easy:{t:'روی صندلی بنشین؛ با پاها وسیله‌های سبک را بردار و کنارِ صندلی روی‌هم بچین.'}},
+        {name:'لیوان‌ها با یک دست', t:'با یک دست لیوان‌های پلاستیکی را روی‌هم بچین.', kind:'manual', goal:6, unit:'لیوان', figs:['m4-plank-a','m4-plank-b'], prop:'cups',
+          easy:{t:'یک دست روی میز تکیه بده؛ با دستِ دیگر لیوان‌ها را روی‌هم بچین.'}},
+        {name:'چرخیدن روی دست‌ها', t:'با دست‌هایت روی زمین، دور خودت بچرخ.', kind:'manual', goal:2, unit:'دور', figs:['m4-spin-a','m4-spin-b'],
+          easy:{t:'دست‌ها روی لبهٔ میز، پاها کمی عقب؛ آرام دورِ میز قدم بزن.'}}]},
     family:{kind:'feet', title:'بالای سر با پا', src:'ص ۳۰', yuzi:['careful','من موقع بازی کردن، مواظب هم‌بازی‌هایم هستم.'],
       elder:'این بازی روی زمین و با پاهاست؛ پدربزرگ و مادربزرگ داور شوند: آهنگ را پخش کنند و اشیا را بشمارند.',
       intro:'اشیای سبک را کنار هم بگذارید: عروسک، توپ‌های پارچه‌ای، جوراب یا لباسِ گلوله‌شده. همه با تکیه بر دست‌ها و پاهای صاف روی زمین دورِ اشیا حلقه بزنید. با پخشِ آهنگ، هر کس با پاهایش اشیا را یکی‌یکی برمی‌دارد و با کمکِ دست‌ها بالای سرش می‌گذارد. آهنگ که تمام شد، کسی که بیشترین شیء را بالای سر گذاشته تشویق می‌شود.'},
@@ -458,7 +466,7 @@ function renderKhan(){
     const box = $(`#mz${n}`); if(!box) return;
     box.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => {
       const act = b.dataset.act; S().cur = n; G.n = n; H.save(); sfx('click');
-      if(act === 'play'){ if(!canPlay(n)){ sfx('sleep'); voice('sleep'); b.style.animation = 'shake .35s'; setTimeout(()=>b.style.animation='', 400); return; } H.go('gchoose'); }
+      if(act === 'play'){ G.free = !canPlay(n); H.go('gchoose'); if(G.free) H.voiceLater('free', 300); }
       else H.go(act);
     }));
   });
@@ -469,14 +477,14 @@ function manzilHTML(n){
     <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ «${LESSONS[n-1].title}» روشن شود، این منزل باز می‌شود.</div></div>`;
   const rest = !canPlay(n), today = practicedToday(n), resting = restDay(n);
   const title = d>=3 ? 'هر سه مشعل روشن است' : today ? 'بازیِ امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
-  const sub = d>=3 ? 'این منزل را گذراندی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
-    : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.'
+  const sub = d>=3 ? 'این منزل را گذراندی. بازیِ آزاد و سطح‌های سخت‌تر همیشه باز است.' : today ? 'مشعلِ امروز روشن شد؛ مشعلِ بعدی پس‌فردا. تا آن موقع بازیِ آزاد باز است.'
+    : resting ? 'دیروز بازی کردی؛ مشعلِ بعدی فردا. امروز بازیِ آزاد باز است.'
     : `${Ld.play.pick===2 ? 'دو تا از شش حرکت را انتخاب کن' : 'یکی از سه بازی را انتخاب کن'}، روزِ ${DAYW[d]}`;
   const ic = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : H.ICON.play();
   const starSub = LS(n).stars ? `ستاره ${fa(LS(n).stars)} از ۷` : starIntro(n);
   return `<div class="manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
     <div class="tiles">
-      <button class="tile t-play ${rest?'rest':''}" data-act="play" aria-disabled="${rest}"><span class="ic">${ic}</span><span class="grow"><b>${title}</b><small>${sub}</small>
+      <button class="tile t-play ${rest?'rest':''}" data-act="play"><span class="ic">${ic}</span><span class="grow"><b>${title}</b><small>${sub}</small>
         <span class="days">${[0,1,2].map(i=>`<span class="day ${st.days[i]?'lit':''} ${i===d&&canPlay(n)?'today':''}">${fa(i+1)}</span>`).join('')}</span></span></button>
       <button class="tile t-story" data-act="gstory">${st.story?doneChip:''}<span class="ic">${H.ICON.story()}</span>
         <b>قصهٔ حرکت</b><small>${Ld.story.name}، کتاب، ${Ld.story.src}</small></button>
@@ -494,13 +502,18 @@ let picked = [];
 function renderChoose(){
   const n = G.n = S().cur, Ld = LESSONS[n], pl = Ld.play; picked = [];
   $('#gcTitle').innerHTML = `${pl.pick===2 ? 'دو حرکتِ امروز را انتخاب کن' : 'بازیِ امروز را انتخاب کن'}<small>برویم بازی!، منزل ${fa(n)}، کتاب، ${pl.src}</small>`;
-  $('#gcRule').innerHTML = `کتاب می‌گوید: «${pl.rule}»<br><small style="color:var(--ink-soft)">وسیله: ${pl.need}</small>`;
+  H.syncPlayers(); if(!H.PLAYERS.some(p => p.k === X.who)) X.who = 'kid';
+  const kidFree = !canPlay(n) && X.who === 'kid';
+  $('#gcRule').innerHTML = `کتاب می‌گوید: «${pl.rule}»<br><small style="color:var(--ink-soft)">وسیله: ${pl.need}</small>`
+    + `<div class="who"><b>کی بازی می‌کند؟</b><div class="tms">${H.PLAYERS.map(p => `<button class="tm ${p.k===X.who?'on':''}" data-who="${p.k}" aria-pressed="${p.k===X.who}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${esc(p.n)}</small></button>`).join('')}</div>
+      <small class="free-note">${X.who !== 'kid' ? `${esc(whoName())} هم بازی می‌کند و رکورد و سطحِ خودش را دارد؛ مشعل فقط مالِ ${esc(H.kidName())} است.` : kidFree ? 'امروز مشعل روشن نمی‌شود، ولی بازیِ آزاد باز است: سطح و رکوردت جلو می‌رود.' : 'بازی کن تا مشعلِ امروز روشن شود.'}${BAND[X.who]==='senior' ? ' برای پدربزرگ و مادربزرگ، پرش‌ها و حرکت‌های روی زمین نسخهٔ آرام‌تری دارند.' : ''}</small></div>`;
   const did = gi => LS(n).days.findIndex(x => x && (x.moves||[]).includes(gi));
-  $('#gcChoices').innerHTML = pl.games.map((g,i)=>{ const dd = did(i);
-    return `<button class="choice" data-g="${i}"><img src="${figSrc(g.figs[0])}" alt=""><span><b>${g.name}</b><small>${g.t}</small></span>
+  $('#gcChoices').innerHTML = pl.games.map((g0,i)=>{ const dd = did(i), g = effGame(n, i, X.who);
+    return `<button class="choice" data-g="${i}"><img src="${figSrc(g.figs[0])}" alt=""><span><b>${g.name} <span class="lv">سطحِ ${fa(g.lv)}: ${fa(g.goal)} ${g.unit}</span></b><small>${g.t}</small></span>
       ${dd>=0?`<em class="did" style="font-style:normal">روزِ ${DAYW[dd]} بازی کردی</em>`:''}
       <em class="eye ${g.kind==='manual'?'hand':''}" style="font-style:normal">${g.kind==='manual' ? 'بزرگتر تأیید می‌کند' : 'یوزی با دوربین می‌شمارد'}</em></button>`; }).join('');
   $('#gcGo').innerHTML = pl.pick===2 ? `<button class="cta gold" id="gcStart" style="width:100%;margin-top:14px;opacity:.5" disabled>دو حرکت را انتخاب کن</button>` : '';
+  $$('#gcRule .tm[data-who]').forEach(b => b.addEventListener('click', ()=>{ X.who = b.dataset.who; sfx('click'); renderChoose(); }));
   $$('#gcChoices .choice').forEach(b => b.addEventListener('click', ()=>{
     const gi = +b.dataset.g; sfx('click');
     if(pl.pick === 1){ picked = [gi]; H.go('gex'); return; }
@@ -512,22 +525,49 @@ function renderChoose(){
   const go = $('#gcStart'); if(go) go.addEventListener('click', ()=>{ if(picked.length===2){ sfx('click'); H.go('gex'); } });
 }
 
+/* ===================================================================== challenge
+   The book's count is level 1. Every player has a level for every game: a happy face after playing makes the
+   next time harder (+25% reps, faster and smaller balloons), "it was hard" makes it easier. Anyone in the
+   family can play; they start at a level for their age, and grandparents get a gentler version of jumps and
+   floor moves. */
+const BAND = {kid:'child', sib:'child2', mom:'adult', dad:'adult', grandma:'senior', grandpa:'senior'};
+const START_LV = {child:1, child2:2, adult:4, senior:1};
+const LV_MAX = 9;
+const gid = (n, gi) => `${n}-${gi}`;
+function lvOf(who, id){ const s = S(); s.lv = s.lv || {}; const m = s.lv[who] = s.lv[who] || {}; return m[id] || START_LV[BAND[who] || 'child']; }
+function setLv(who, id, L){ lvOf(who, id); S().lv[who][id] = Math.max(1, Math.min(LV_MAX, L)); H.save(); }
+function bestOf(who, id){ const b = S().best = S().best || {}; return (b[who] || {})[id]; }
+function setBest(who, id, rec){ const b = S().best = S().best || {}; (b[who] = b[who] || {})[id] = rec; H.save(); }
+const lvGoal = (goal, L) => Math.max(1, Math.round(goal * (1 + .25*(L - 1))));
+function effGame(n, gi, who){
+  const base = LESSONS[n].play.games[gi], L = lvOf(who, gid(n, gi)), senior = BAND[who] === 'senior', easy = senior && base.easy;
+  const g = Object.assign({}, base, easy || {}, {gi, id:gid(n, gi), lv:L, easyOn:!!easy});
+  g.goal = lvGoal(base.goal, L);
+  g.grav = (senior ? .8 : 1) * (1 + .1*(L - 1));     // balloons fall faster at higher levels
+  return g;
+}
+const whoName = () => (H.PLAYERS.find(p => p.k === X.who) || H.PLAYERS[0]).n;
+const freeRun = () => G.free || X.who !== 'kid';     // no torch: a rest day, a replay, or someone else playing
+
 /* ===================================================================== the game itself */
-const X = {q:[], qi:0, count:0, camOn:false, det:null, lastSeen:0, balls:[], feel:null};
-const curGame = () => LESSONS[G.n].play.games[X.q[X.qi]];
+const X = {q:[], qi:0, count:0, camOn:false, det:null, lastSeen:0, balls:[], feel:null, who:'kid', games:[], times:[]};
+const curGame = () => X.games[X.qi];
 function startGame(){
-  G.n = S().cur; X.q = picked.length ? picked.slice() : [0]; X.qi = 0; X.feel = null;
+  G.n = S().cur; X.q = picked.length ? picked.slice() : [0]; X.qi = 0; X.feel = null; X.times = []; X.lvd = 0;
+  if(!H.PLAYERS.some(p => p.k === X.who)) X.who = 'kid';
+  X.games = X.q.map(gi => effGame(G.n, gi, X.who));
   $('#gxReward').hidden = true; $('#gxFeel').hidden = true; $('#gxSeen').hidden = true; $('#gxComfort').hidden = true;
   startOne();
 }
 function startOne(){
   const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.det = g.det ? detector(g.det) : null; resetBase();
-  $('#gxTitle').innerHTML = `${g.name}<small>منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}، کتاب، ${LESSONS[n].play.src}</small>`;
+  const best = bestOf(X.who, g.id), bestT = best && best.t;
+  $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازیِ آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
   instr(g);
   $('#gxCam').parentElement.hidden = g.kind === 'manual';
   if(g.kind === 'manual' && X.camOn) gxCamOff();
   flipFigs($('#gxFig'), g.figs);
-  voice(`g${n}-${X.q[X.qi]+1}`);
+  if(!g.easyOn) voice(`g${n}-${X.q[X.qi]+1}`);
   if(X.camOn){ armCam(); if(H.phoneSize() && !H.CAM.full) H.camFull(true); }   // the second move of the day: back to the mirror
   renderCount();
 }
@@ -545,11 +585,12 @@ function sceneSVG(g, c){
     for(let k=0;k<(g.balls||1);k++){ const x = 70 + k*70, y = 60 + k*22;
       props += `<g class="sway" style="transform-origin:${x}px ${y+40}px"><path d="M${x} ${y+34} q-6 20 4 40" stroke="${C.ink}" stroke-width="1.5" fill="none"/><ellipse cx="${x}" cy="${y}" rx="24" ry="30" fill="${cols[k]}" stroke="${C.ink}" stroke-width="2.5"/><ellipse cx="${x-8}" cy="${y-10}" rx="5" ry="8" fill="#fff" opacity=".45"/><path d="M${x-4} ${y+30}h8l-4 6z" fill="${cols[k]}" stroke="${C.ink}" stroke-width="2"/></g>`; }
   }
-  if(g.prop === 'cups') for(let i=0;i<g.goal;i++){ const row = [0,0,0,1,1,2][i], pos = [0,1,2,0,1,0][i], on = i < c;
+  const shown = (max) => { const k = Math.min(g.goal, max); return {k, on: Math.floor(c * k / g.goal)}; };
+  if(g.prop === 'cups'){ const S6 = shown(6); for(let i=0;i<S6.k;i++){ const row = [0,0,0,1,1,2][i], pos = [0,1,2,0,1,0][i], on = i < S6.on;
     const x = on ? 22 + pos*26 + row*13 : 20 + i*22, y = on ? 186 - row*24 : 214;
-    props += `<path d="M${x} ${y} h20 l-3 22 h-14z" fill="${['#e2574c','#3b82c4','#4fb35a','#f2c230','#a35bc4','#e2574c'][i]}" opacity="${on?1:.45}" stroke="${C.ink}" stroke-width="1.5"/>`; }
-  if(g.prop === 'cushions') for(let i=0;i<g.goal;i++){ const on = i < c, x = on ? 60 : 24 + i*30, y = on ? 200 - i*16 : 220;
-    props += `<ellipse cx="${x}" cy="${y}" rx="${on?30:13}" ry="${on?9:6}" fill="${['#a35bc4','#f2c230','#4fb35a','#3b82c4','#e2574c'][i]}" opacity="${on?1:.5}" stroke="${C.ink}" stroke-width="2"/>`; }
+    props += `<path d="M${x} ${y} h20 l-3 22 h-14z" fill="${['#e2574c','#3b82c4','#4fb35a','#f2c230','#a35bc4','#e2574c'][i]}" opacity="${on?1:.45}" stroke="${C.ink}" stroke-width="1.5"/>`; } }
+  if(g.prop === 'cushions'){ const S5 = shown(5); for(let i=0;i<S5.k;i++){ const on = i < S5.on, x = on ? 60 : 24 + i*30, y = on ? 200 - i*16 : 220;
+    props += `<ellipse cx="${x}" cy="${y}" rx="${on?30:13}" ry="${on?9:6}" fill="${['#a35bc4','#f2c230','#4fb35a','#3b82c4','#e2574c'][i]}" opacity="${on?1:.5}" stroke="${C.ink}" stroke-width="2"/>`; } }
   return `<rect width="320" height="250" fill="${C.paper}"/><path d="M0 214 H320 V250 H0Z" fill="#efdcb0"/>
     <g opacity=".5" fill="none" stroke="#e8d3a3" stroke-width="2"><path d="M20 30 l10 10 l10 -10 l-10 -10z M280 40 l10 10 l10 -10 l-10 -10z"/></g>${props}`;
 }
@@ -565,18 +606,27 @@ function renderCount(){
 function addRep(byCam){
   const g = curGame(); if(X.count >= g.goal) return;
   if(byCam) bumpCam(G.n, g.kind==='balloon' ? 'balloon' : g.det);
+  if(X.count === 0) X.t0 = performance.now();
   X.count++; renderCount(); sfx('tap', X.count); vib(12);
   const b = $('#gxTap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   if(X.count >= g.goal){ setTimeout(()=>sfx('done'), 120); setTimeout(gameDone, 500); }
 }
+/* how fast: a record is a faster time at the same level, or any finish at a higher one */
+function timeRun(){
+  const g = curGame(); if(!X.t0 || g.goal < 3) return;
+  const sec = Math.round((performance.now() - X.t0)/100)/10, prev = bestOf(X.who, g.id);
+  const rec = !prev || g.lv > prev.lv || (g.lv === prev.lv && sec < prev.t);
+  if(rec) setBest(X.who, g.id, {t:sec, lv:g.lv});
+  X.times.push({name:g.name, sec, rec:rec && !!prev});
+}
 function gameDone(){
-  const g = curGame();
-  if(g.kind === 'manual'){ $('#gxSeenText').textContent = `${H.kidName()} «${g.name}» را ${fa(g.goal)} ${g.unit} انجام داد. یوزی این حرکت را با دوربین نمی‌بیند؛ بزرگترت تأیید کند.`; $('#gxSeen').hidden = false; $('#gxSeenYes').focus(); return; }
+  const g = curGame(); timeRun();
+  if(g.kind === 'manual'){ $('#gxSeenText').textContent = `${whoName()} «${g.name}» را ${fa(g.goal)} ${g.unit} انجام داد. یوزی این حرکت را با دوربین نمی‌بیند؛ بزرگترت تأیید کند.`; $('#gxSeen').hidden = false; $('#gxSeenYes').focus(); return; }
   nextOrFeel();
 }
 function nextOrFeel(){
   if(X.qi < X.q.length - 1){ X.qi++; sfx('fanfare'); startOne(); $('#gxHint').textContent = 'آفرین! حالا حرکتِ دوم'; return; }
-  if(X.camOn) gxCamOff();
+  X.camWas = X.camOn; if(X.camOn) gxCamOff();
   clearInterval(flipT);
   $('#gxFeel').hidden = false; const f = $('#gxFeel button'); f && f.focus();
 }
@@ -589,11 +639,14 @@ $('#gxTap').addEventListener('click', ()=>{
 });
 $$('#gxFeel [data-feel]').forEach(b => b.addEventListener('click', ()=>{
   X.feel = +b.dataset.feel; $('#gxFeel').hidden = true; sfx('click');
+  const d = X.feel === 2 ? 1 : X.feel === 0 ? -1 : 0;
+  X.games.forEach(g => setLv(X.who, g.id, g.lv + d)); X.lvd = d;
   if(X.feel === 0){ sfx('soft'); voice('comfort'); $('#gxComfortKid').src = `img/${H.kid()}-tired.webp`; $('#gxComfortYuzi').src = H.yz('comfort'); $('#gxComfort').hidden = false;
     setTimeout(()=>{ $('#gxComfort').hidden = true; finishDay(); }, 2200); }
   else finishDay();
 }));
 function finishDay(){
+  if(freeRun()) return finishFree();
   const n = G.n, st = LS(n), d = doneDays(n);
   st.days[d] = {d:H.dayNum(), moves:X.q.slice(), feel:X.feel}; H.save();
   const lit = doneDays(n), doneL = lit >= 3, K = KHAN_INFO[LESSONS[n].khan], passed = K.lessons.every(H.lessonDone);
@@ -604,9 +657,31 @@ function finishDay(){
   $('#gxRewardTitle').textContent = passed ? `از خوانِ ${K.name} گذشتی!` : doneL ? `منزلِ ${LESSONS[n].title} تمام شد!` : 'آفرین پهلوان!';
   $('#gxRewardText').textContent = passed ? `${H.GUARD_NAMES[K.guard]} به تو افتخار می‌کند. حالا منزلِ ${nextName} منتظرت است.`
     : doneL ? `هر سه مشعل روشن شد. منزلِ ${nextName} باز شد!`
-    : `مشعلِ روزِ ${DAYW[lit-1]} روشن شد. ${lit===2 ? 'یک روزِ دیگر' : 'دو روزِ دیگر'} تا تمام شدنِ این منزل. فردا روزِ استراحت است؛ پس‌فردا بیا!`;
+    : `مشعلِ روزِ ${DAYW[lit-1]} روشن شد. ${lit===2 ? 'یک روزِ دیگر' : 'دو روزِ دیگر'} تا تمام شدنِ این منزل. مشعلِ بعدی پس‌فردا؛ تا آن موقع بازیِ آزاد و سطح‌های سخت‌تر باز است.`;
+  $('#gxRewardText').insertAdjacentHTML('beforeend', challengeLine());
   $('#gxReward').hidden = false; H.renderTop();
-  sfx('fanfare', doneL); H.voiceLater('cheer', 900);
+  sfx('fanfare', doneL); H.voiceLater(X.times.some(t => t.rec) ? 'record' : 'cheer', 900);
+  confettiOn($('#gxConfetti'));
+}
+function challengeLine(){
+  const t = X.times.map(x => `${x.name}: ${secs(x.sec)} ثانیه${x.rec ? ' (رکوردِ تازه!)' : ''}`).join('، ');
+  const nx = X.lvd > 0 ? 'دفعهٔ بعد یک سطح سخت‌تر.' : X.lvd < 0 ? 'دفعهٔ بعد یک سطح آسان‌تر.' : 'دفعهٔ بعد همین سطح.';
+  return `<span class="chal">${t ? t + '. ' : ''}${nx}</span>`;
+}
+/* free play: no torch, but the level, the record and the movement all count */
+$('#gxAgain').addEventListener('click', ()=>{
+  G.free = true; $('#gxReward').hidden = true; sfx('start'); startGame();
+  if(X.camWas && curGame().kind !== 'manual') $('#gxCam').click();     // the child is still across the room
+});
+function finishFree(){
+  $('#gxTorches').innerHTML = '';
+  $('#gxRewardImg').src = H.yz('cheer');
+  const p = H.PLAYERS.find(q => q.k === X.who) || H.PLAYERS[0];
+  $('#gxRewardKid').src = p.kid ? `img/${H.kid()}-cheer.webp` : `img/${p.img}.webp`;
+  $('#gxRewardTitle').textContent = `آفرین ${whoName()}!`;
+  $('#gxRewardText').innerHTML = `${X.who === 'kid' && doneDays(G.n) < 3 ? 'این بازیِ آزاد بود؛ مشعل در روزِ بازی روشن می‌شود. ' : ''}${challengeLine()}`;
+  $('#gxReward').hidden = false;
+  sfx('fanfare'); H.voiceLater(X.times.some(t => t.rec) ? 'record' : X.lvd > 0 ? 'level-up' : 'cheer', 900);
   confettiOn($('#gxConfetti'));
 }
 function confettiOn(cv){
@@ -656,7 +731,7 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
   if(g.parts.includes('knee')) [b.kL, b.kR].forEach(p => pts.push([p, .35*b.sw]));
   if(g.parts.includes('foot')) [b.aL, b.aR, b.tL, b.tR].forEach(p => pts.push([p, .3*b.sw]));
   X.balls.forEach(o => {
-    o.r = T*.32; o.vy = Math.min(o.vy + .9*T*dt, .65*T); o.vx *= .985; o.x += o.vx*dt; o.y += o.vy*dt;
+    o.r = T*.32*Math.max(.7, 1 - .04*((g.lv||1) - 1)); o.vy = Math.min(o.vy + .9*T*dt*(g.grav||1), .65*T*(g.grav||1)); o.vx *= .985; o.x += o.vx*dt; o.y += o.vy*dt;
     if(o.x < o.r){ o.x = o.r; o.vx = Math.abs(o.vx); } if(o.x > W - o.r){ o.x = W - o.r; o.vx = -Math.abs(o.vx); }
     if(o.y < o.r){ o.y = o.r; o.vy = Math.abs(o.vy)*.3; }
     if(ready && now - o.hit > 380) for(const [p, pr] of pts){ if(dist(p, o) < o.r + pr && o.vy > -.4*T){
@@ -799,6 +874,7 @@ function autoNext(){
   const pages = LESSONS[G.n].story.pages, nx = pages[Y.page + 1], here = Y.page;
   if(!(Y.camOn && nx && nx.task && ['seq','hold','reps'].includes(nx.task.type))) return;
   H.CAM.hint = () => 'آفرین! حرکتِ بعدی…';
+  voice('next-move');
   clearTimeout(Y.auto); Y.auto = setTimeout(()=>{ const b = $('#gsNext'); if(Y.page === here && b && !b.disabled && !$('#s-gstory').hidden) b.click(); }, 2600);
 }
 function markChip(t, i){ $$('#tkChips span').forEach(s => { const k = +s.dataset.k; s.classList.toggle('on', k === i); s.classList.toggle('ok', k < i); }); }
