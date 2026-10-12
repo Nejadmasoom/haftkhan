@@ -182,6 +182,8 @@ button{font:inherit;color:inherit}
 .steps i.cur{background:var(--on-dark)}
 .scene{margin:6px 16px 0;border-radius:28px;background:var(--paper);height:250px;position:relative;overflow:hidden;box-shadow:0 6px 0 var(--paper-2)}
 .scene svg{position:absolute;inset:0;width:100%;height:100%}
+.scene.cam{height:310px;background:#101a4a}
+.scene.cam > svg,.scene.cam > .fig{display:none}
 .scene .fig{position:absolute;bottom:4px;right:-22px;width:62%;height:auto;pointer-events:none}
 .reward-yuzi{width:150px;height:150px;object-fit:contain;position:relative}
 .sway{transform-origin:100px 200px;animation:sway 2.8s ease-in-out infinite}
@@ -458,6 +460,7 @@ button{font:inherit;color:inherit}
           </div>
           <div class="steps" id="exSteps" aria-hidden="true"><i></i><i></i><i></i></div>
           <div class="scene" id="scene"><svg viewBox="0 0 320 250" id="sceneSvg" aria-hidden="true"></svg><img class="fig" id="fig" alt=""></div>
+          <div style="display:flex;justify-content:center;padding-top:10px"><button class="camtoggle" id="exCam" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg><span>یوزی با دوربین ببیند</span></button></div>
           <p class="instr" id="exInstr"></p>
           <div class="counter">
             <div class="ring">
@@ -785,7 +788,8 @@ function go(name){
   if(name==='record') renderRecord();
   if(name==='khan') renderTorches();
   if(name!=='record') stopWatch(false);
-  if(name!=='record' && name!=='story' && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
+  if(name!=='ex' && CAM.exOn) exCamOff();
+  if(name!=='record' && name!=='story' && name!=='ex' && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic();
   if(name!=='ex') flip(false);
@@ -832,7 +836,7 @@ function flip(on){ clearInterval(flipT); if(!on) return; const m = mi+1; let f =
   fig.src = `img/girl-m5-${m}a.webp`; fig.alt = MOVES[mi].t;
   if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   flipT = setInterval(()=>{ f = f==='a'?'b':'a'; fig.src = `img/girl-m5-${m}${f}.webp`; }, 900); }
-function startExercise(){ mi = 0; count = 0; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
+function startExercise(){ mi = 0; count = 0; CAM.dot = null; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
 function renderMove(){
   const m = MOVES[mi];
   $('#exTitle').innerHTML = `تمرین ${fa(mi+1)} از ۳<small>تعادل · روزِ ${['اول','دوم','سوم'][doneDays()]}</small>`;
@@ -851,15 +855,21 @@ function renderCount(){
   $('#hint').textContent = count===0 ? 'هر بار یکی را انجام دادی، دکمه را بزن'
     : count===half ? 'حالا پایت را عوض کن!' : count<m.goal ? `${fa(m.goal-count)} تای دیگر` : 'تمام شد!';
 }
-$('#tap').addEventListener('click', ()=>{
+function addRep(){
   const m = MOVES[mi]; if(count>=m.goal) return;
   count++; renderCount(); sfx('tap', count);
   const b = $('#tap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
   try{ navigator.vibrate && navigator.vibrate(12); }catch(e){}
-  if(count>=m.goal){ setTimeout(()=>sfx('done'), 120); setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450); }
+  if(count>=m.goal){ CAM.dot = null; setTimeout(()=>sfx('done'), 120); setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450); }
+}
+$('#tap').addEventListener('click', ()=>{
+  // with the camera on, a tap only counts if Yuzi saw one leg in the last moment
+  if(CAM.exOn && CAM.stream && MOVES[mi].prop !== 'dots' && performance.now() - (CAM.lastOneLeg||0) > 1500){
+    sfx('miss'); $('#hint').textContent = 'یوزی ندید! اول روی یک پا بایست، بعد بزن.'; return; }
+  addRep();
 });
 let feelings = [];
-function nextMove(){ if(mi < MOVES.length-1){ mi++; count=0; renderMove(); } else finishDay(); }
+function nextMove(){ CAM.dot = null; if(mi < MOVES.length-1){ mi++; count=0; renderMove(); } else finishDay(); }
 $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
   feelings[mi] = +b.dataset.feel;
   $('#feel').hidden = true;
@@ -869,6 +879,7 @@ $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
 }));
 function finishDay(){
   flip(false);
+  if(CAM.exOn) exCamOff();
   state.days[doneDays()] = {date:dayKey(), feel:feelings.slice(0,3)};
   save(); renderTorches();
   const lit = doneDays(), crossed = lit>=3;
@@ -974,8 +985,8 @@ function renderStory(i){
       <div class="st-nav">${i>0?'<button class="ghost" id="stPrev">قبلی</button>':''}<button class="cta" id="stNext" ${sc.pose?'disabled style="opacity:.5"':''}>${sc.pose?'اول بایست و بشمار':'بعدی'}</button></div>`;
     if(sc.pose){
       $('#cnt').addEventListener('click', ()=> countdown());
-      $('#storyCam').addEventListener('click', ()=>{ CAM.storyOn = !CAM.storyOn; if(!CAM.storyOn) camStop(); renderStory(page); });
-      if(CAM.storyOn){ const slot = $('#camSlot'); slot.scrollIntoView({block:'center', behavior:'smooth'}); camStart(slot).then(ok=>{ if(ok && page===i) countdown(); }); }
+      $('#storyCam').addEventListener('click', ()=>{ CAM.storyOn = !CAM.storyOn; if(!CAM.storyOn){ CAM.hint = null; camStop(); } renderStory(page); });
+      if(CAM.storyOn){ CAM.onFrame = null; CAM.hint = storyHint; const slot = $('#camSlot'); slot.scrollIntoView({block:'center', behavior:'smooth'}); camStart(slot).then(ok=>{ if(ok && page===i) countdown(); }); }
     }
   } else {
     found = new Set();
@@ -1002,7 +1013,7 @@ function countdown(){
   if(CAM.storyOn && CAM.stream){ // counts only the seconds spent on one leg
     clearInterval(countT); b.textContent = '۰'; let acc = 0, last = performance.now();
     countT = setInterval(()=>{ const now = performance.now(), dt = now-last; last = now;
-      if(CAM.state==='oneLeg'){ acc += dt; const k = Math.floor(acc/1000); if(k>n){ n = k; b.textContent = fa(n); n<5 ? sfx('tick') : null; } }
+      if(CAM.state==='oneLeg' && CAM.kind === STORY[page].pose){ acc += dt; const k = Math.floor(acc/1000); if(k>n){ n = k; b.textContent = fa(n); n<5 ? sfx('tick') : null; } }
       if(n>=5){ clearInterval(countT); sfx('done'); b.classList.remove('run'); b.disabled = false;
         const a = $('#after'); if(a) a.hidden = false;
         const nx = $('#stNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; } }, 100);
@@ -1109,6 +1120,26 @@ function camStop(keepBox){
 const BONES = [[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28],[27,31],[28,32]];
 /* One leg: one ankle (or knee) clearly higher than the other, measured against leg length so it
    works near or far from the camera. Hysteresis + short holds stop the timer flickering. */
+/* Which of the story's three poses (book p.34). Thresholds are in body units (shoulder width, torso). */
+function poseKind(lm){
+  const v = i => lm[i] && (lm[i].visibility ?? 1) > .4;
+  if(!(v(11)&&v(12)&&v(15)&&v(16)&&v(23)&&v(24))) return null;
+  const sw = Math.hypot(lm[11].x-lm[12].x, lm[11].y-lm[12].y) || .1;
+  const sh = {x:(lm[11].x+lm[12].x)/2, y:(lm[11].y+lm[12].y)/2}, hp = {x:(lm[23].x+lm[24].x)/2, y:(lm[23].y+lm[24].y)/2};
+  const tilt = Math.abs(sh.x-hp.x) / (Math.abs(sh.y-hp.y) + 1e-3);       // 0 upright, >1 leaning over
+  const wristsUp = lm[15].y < lm[0].y && lm[16].y < lm[0].y;
+  const wristsClose = Math.abs(lm[15].x-lm[16].x) < sw * 1.3;
+  const spread = Math.abs(lm[15].x-lm[16].x) > sw * 2.2;
+  const armsLevel = Math.abs(lm[15].y-sh.y) < sw * .9 && Math.abs(lm[16].y-sh.y) < sw * .9;
+  // angel is usually done side-on, where open arms overlap; what shows from any side is the
+  // torso leaning over and the back leg raised toward hip height
+  const legLen = v(27)&&v(28) ? Math.max(lm[27].y, lm[28].y) - hp.y : 0;
+  const backLeg = legLen > .08 ? Math.abs(lm[27].y-lm[28].y) / legLen : 0;
+  if(tilt > .7 && backLeg > .45) return 'angel';
+  if(wristsUp && wristsClose && tilt < .5) return 'tree';
+  if(spread && armsLevel && tilt < .5) return 'stork';
+  return null;
+}
 function readPose(lm){
   const v = i => lm[i] && (lm[i].visibility ?? 1) > .45;
   if(!(v(23)&&v(24)&&v(27)&&v(28))) return 'nobody';
@@ -1128,11 +1159,15 @@ function loop(){
     const ctx = cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
     let raw = 'nobody';
     if(lm){
-      raw = readPose(lm);
+      raw = readPose(lm); CAM.lastLm = lm;
+      const k = poseKind(lm), t = performance.now();
+      if(k !== CAM.kindRaw){ CAM.kindRaw = k; CAM.kindSince = t; }
+      if(t - CAM.kindSince > 250) CAM.kind = k;
       const col = CAM.state==='oneLeg' ? C.saffron : '#9fb0ff';
       ctx.lineWidth = Math.max(4, cv.width/90); ctx.lineCap = 'round'; ctx.strokeStyle = col;
       BONES.forEach(([a,b])=>{ if((lm[a].visibility??1)>.45 && (lm[b].visibility??1)>.45){ ctx.beginPath(); ctx.moveTo(lm[a].x*cv.width, lm[a].y*cv.height); ctx.lineTo(lm[b].x*cv.width, lm[b].y*cv.height); ctx.stroke(); } });
       ctx.fillStyle = col; [0,15,16,27,28].forEach(i=>{ if((lm[i].visibility??1)>.45){ ctx.beginPath(); ctx.arc(lm[i].x*cv.width, lm[i].y*cv.height, i===0? cv.width/28 : cv.width/70, 0, 7); ctx.fill(); } });
+      if(CAM.onFrame) CAM.onFrame(ctx, lm, cv);
     }
     const now = performance.now();
     if(raw !== rawLast){ rawLast = raw; rawSince = now; }
@@ -1142,14 +1177,81 @@ function loop(){
     else if(raw==='up' && held > 250) next = 'oneLeg';
     else if(raw==='down' && held > 450) next = 'twoFeet';
     if(next !== CAM.state){ CAM.state = next; setCamState(next); }
+    if(CAM.state === 'oneLeg') CAM.lastOneLeg = now;
+    if(CAM.hint){ const h = CAM.hint(); if(h && h !== CAM.lastHint){ CAM.lastHint = h; const sp = CAM.box.querySelector('.camchip span'); if(sp) sp.textContent = h; } }
   }
   CAM.raf = requestAnimationFrame(loop);
 }
 function setCamState(st){
   const chip = CAM.box && CAM.box.querySelector('.camchip'); if(!chip) return;
   chip.classList.toggle('on', st==='oneLeg');
+  CAM.lastHint = '';
   chip.querySelector('span').textContent = st==='nobody' ? 'از سر تا پایت را در کادر بیاور' : st==='twoFeet' ? 'حالا مثلِ لک‌لک یک پایت را بالا ببر' : 'روی یک پا ایستادی!';
   CAM.listeners.forEach(f=>f(st));
+}
+
+/* exercise move 2 (book p.34): a coloured circle appears on the floor beside the child; it counts
+   when one ankle reaches it while the other foot stays where it was planted. */
+const DOT_COLS = ['#e2574c','#f2c230','#4fb35a','#3b82c4'];
+function exFrame(ctx, lm, cv){
+  if(MOVES[mi].prop !== 'dots' || count >= MOVES[mi].goal) return;
+  const ok = i => (lm[i].visibility ?? 1) > .45;
+  if(!(ok(23)&&ok(24)&&ok(27)&&ok(28))) return;
+  const W = cv.width, H = cv.height, P = i => ({x:lm[i].x*W, y:lm[i].y*H});
+  const hip = {x:(P(23).x+P(24).x)/2, y:(P(23).y+P(24).y)/2}, aL = P(27), aR = P(28);
+  const floor = Math.max(aL.y, aR.y), leg = floor - hip.y;
+  if(leg < H*.12) return;
+  const now = performance.now();
+  if(!CAM.dot){
+    const side = count < Math.ceil(MOVES[mi].goal/2) ? -1 : 1;   // first half one side, then switch legs, as the book says
+    CAM.dot = { x: Math.min(W*.92, Math.max(W*.08, hip.x + side*leg*.8)), y: floor - leg*.04, r: leg*.2,
+                col: DOT_COLS[count % 4], aL, aR, born: now, hit: 0 };
+  }
+  const d = CAM.dot, t = (now - d.born)/1000;
+  if(!d.hit){
+    // which ankle is reaching: the one nearer the circle; the other must stay put
+    const nearL = Math.hypot(aL.x-d.x, aL.y-d.y), nearR = Math.hypot(aR.x-d.x, aR.y-d.y);
+    const [reach, dist, stay, stay0] = nearL < nearR ? ['L', nearL, aR, d.aR] : ['R', nearR, aL, d.aL];
+    const planted = Math.hypot(stay.x-stay0.x, stay.y-stay0.y) < leg*.25;
+    if(dist < d.r * 1.15 && t > .6){
+      if(planted){ d.hit = now; sfx('hit'); addRep(); }
+      else if(!d.warned){ d.warned = 1; sfx('miss'); $('#hint').textContent = 'پای ایستاده را جابه‌جا نکن؛ فقط با نوکِ پای دیگر لمس کن.'; }
+    }
+  }
+  const pop = d.hit ? Math.min(1, (now - d.hit)/350) : 0;
+  ctx.save();
+  ctx.globalAlpha = 1 - pop;
+  ctx.fillStyle = d.col; ctx.strokeStyle = '#2b2140'; ctx.lineWidth = W/120;
+  ctx.beginPath(); ctx.ellipse(d.x, d.y, d.r*(1+pop*.6)*(1+.06*Math.sin(t*6)), d.r*.42*(1+pop*.6), 0, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.restore();
+  if(d.hit && now - d.hit > 400) CAM.dot = null;
+}
+function exHint(){
+  if(CAM.state === 'nobody') return null;
+  const m = MOVES[mi];
+  if(m.prop === 'dots') return CAM.dot ? 'با نوکِ پا به دایرهٔ رنگی بزن' : null;
+  return CAM.state === 'oneLeg' ? 'روی یک پا ایستادی! حالا بزن' : null;
+}
+function exCamOff(){
+  CAM.exOn = false; CAM.onFrame = null; CAM.hint = null; CAM.dot = null; camStop();
+  $('#scene').classList.remove('cam');
+  const b = $('#exCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent = 'یوزی با دوربین ببیند';
+}
+$('#exCam').addEventListener('click', async ()=>{
+  if(CAM.exOn){ exCamOff(); renderCount(); return; }
+  CAM.exOn = true; CAM.onFrame = exFrame; CAM.hint = exHint; CAM.dot = null;
+  const b = $('#exCam'); b.setAttribute('aria-pressed','true'); b.querySelector('span').textContent = 'خاموش کردنِ دوربین';
+  $('#scene').classList.add('cam');
+  $('#hint').textContent = 'جلوی دوربین بایست؛ از سر تا پا باید دیده شوی.';
+  await camStart($('#scene'));
+});
+
+const POSE_TIPS = {tree:'دست‌ها را بالای سر به هم بچسبان، مثلِ شاخه‌های درخت', stork:'دست‌ها را مثلِ بال باز کن و زانو را بالا بیاور', angel:'به پهلو بایست، کمرت را خم کن و یک پا را صاف به عقب ببر'};
+const POSE_OK = {tree:'آفرین! مثلِ درخت ایستادی', stork:'آفرین! مثلِ لک‌لک ایستادی', angel:'آفرین! مثلِ فرشته ایستادی'};
+function storyHint(){
+  const want = STORY[page] && STORY[page].pose; if(!want || CAM.state === 'nobody') return null;
+  if(CAM.state === 'oneLeg' && CAM.kind === want) return POSE_OK[want];
+  return POSE_TIPS[want];
 }
 
 /* record screen: the timer runs exactly while Yuzi sees one leg */
@@ -1161,6 +1263,7 @@ CAM.listeners.add(st=>{
 $('#recCam').addEventListener('click', async ()=>{
   const btn = $('#recCam'), stage = $('#recStage');
   if(CAM.recOn){ CAM.recOn = false; camStop(); stage.classList.remove('cam'); stage.querySelectorAll('img').forEach(i=>i.hidden=false); btn.setAttribute('aria-pressed','false'); btn.querySelector('span').textContent = 'یوزی با دوربین ببیند'; return; }
+  CAM.onFrame = null; CAM.hint = null;
   CAM.recOn = true; btn.setAttribute('aria-pressed','true'); btn.querySelector('span').textContent = 'خاموش کردنِ دوربین';
   stage.classList.add('cam'); stage.querySelectorAll('img').forEach(i=>i.hidden=true);
   $('#recMsg').textContent = 'جلوی دوربین بایست. یوزی خودش زمان را می‌گیرد؛ تصویر از این دستگاه بیرون نمی‌رود.';
@@ -1202,6 +1305,7 @@ function renderMute(){ $('#mute').innerHTML = muted
   $('#mute').setAttribute('aria-pressed', muted ? 'true' : 'false'); $('#mute').setAttribute('aria-label', muted ? 'صدا خاموش است' : 'صدا روشن است'); }
 $('#mute').addEventListener('click', ()=>{ muted = !muted; store.set('muted', muted); renderMute(); sfx('click'); });
 renderMute();
+window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
 drawMap(); renderTorches(); drawCircle(); renderTreasure(); go('map');
 })();
 </script>
