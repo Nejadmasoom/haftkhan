@@ -20,8 +20,15 @@ CANVAS = 1024
 
 
 def background(rgb):
-    """زمینه = پیکسل‌های روشن و کم‌رنگ (سفید و سایهٔ کم‌رنگ) که به لبهٔ تصویر وصل‌اند."""
-    light = (rgb.min(axis=2) > 200) & ((rgb.max(axis=2) - rgb.min(axis=2)) < 40)
+    """زمینه = سفیدِ تقریباً خالص یا سایهٔ بنفش‌فام، به شرطِ وصل بودن به لبهٔ تصویر.
+
+    رنگ‌های کرم و گرم (روسری، شکم یوز) زمینه نیستند، حتی اگر روشن باشند:
+    در سایهٔ زمینه آبی از قرمز کم‌تر نیست، در کرم هست.
+    """
+    rgb = rgb.astype(np.int16)
+    r, g, b = rgb[..., 0], rgb[..., 1], rgb[..., 2]
+    lo, sat = rgb.min(axis=2), rgb.max(axis=2) - rgb.min(axis=2)
+    light = ((lo > 235) & (sat < 15)) | ((lo > 190) & (sat < 40) & (b >= r - 2) & (b >= g - 2))
     h, w = light.shape
     bg = np.zeros_like(light)
     q = deque()
