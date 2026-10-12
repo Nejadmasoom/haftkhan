@@ -1,0 +1,784 @@
+<title>هفت‌خوانِ حرکت</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Baloo+Bhaijaan+2:wght@600;700;800&family=Vazirmatn:wght@400;500;700;800&display=swap">
+<style>
+/* Layout: one phone-sized app (the child's journey scroll) beside a narrow notes column that maps each screen back to the textbook. Deliberately single-theme: the game is its own painted world. */
+:root{
+  color-scheme: light;
+  --lapis:#22327a;      /* night-sky lapis, miniature-painting ground */
+  --lapis-deep:#17215a;
+  --fayruz:#16a39a;     /* turquoise tile */
+  --fayruz-deep:#0c7a73;
+  --saffron:#f3a530;    /* gold / reward */
+  --saffron-deep:#c87a0c;
+  --anar:#d6404c;       /* pomegranate: heart, the active khan */
+  --anar-deep:#a62835;
+  --paper:#fbf1dc;      /* scroll paper */
+  --paper-2:#f3e2bd;
+  --ink:#2b2140;        /* text on paper */
+  --ink-soft:#5d4f72;
+  --leaf:#4f9a3c;
+  --on-dark:#fff7e6;
+  --page:#e9dcc0;       /* desk around the phone */
+  --page-ink:#3a2f4d;
+  --f-display:"Baloo Bhaijaan 2","Vazirmatn",Tahoma,sans-serif;
+  --f-body:"Vazirmatn",Tahoma,"Segoe UI",sans-serif;
+  --r-tile:22px; --r-pill:999px;
+  --press:0 6px 0;      /* clay-tile thickness */
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--page);color:var(--page-ink);font-family:var(--f-body);margin:0;
+  background-image:radial-gradient(circle at 20% 10%, #f4ead2 0, transparent 40%),radial-gradient(circle at 90% 90%, #e2d1ad 0, transparent 45%);}
+button{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--saffron);outline-offset:3px;border-radius:12px}
+
+.stage{min-height:100%;display:flex;gap:40px;align-items:flex-start;justify-content:center;padding:32px 16px;flex-wrap:wrap}
+
+/* ---------- phone ---------- */
+.phone{width:min(390px,100%);height:min(812px,calc(100vh - 64px));min-height:640px;border-radius:44px;background:var(--lapis-deep);
+  padding:10px;box-shadow:0 30px 60px -20px rgba(43,33,64,.55),0 0 0 2px #0e1540 inset;position:relative;flex:0 0 auto}
+.app{direction:rtl;height:100%;border-radius:36px;overflow:hidden;position:relative;background:var(--lapis);color:var(--on-dark);display:flex;flex-direction:column}
+.screen{flex:1;min-height:0;overflow-y:auto;overflow-x:hidden;scrollbar-width:none;position:relative}
+.screen::-webkit-scrollbar{display:none}
+.screen[hidden]{display:none!important}
+
+/* tile pattern (girih-ish star lattice) */
+.lattice{background-color:var(--lapis);background-image:
+  radial-gradient(circle at 50% 50%, rgba(255,247,230,.07) 0 3px, transparent 4px),
+  conic-gradient(from 45deg at 50% 50%, rgba(22,163,154,.10) 0 25%, transparent 0 50%, rgba(22,163,154,.10) 0 75%, transparent 0);
+  background-size:44px 44px, 44px 44px}
+
+/* ---------- top bar ---------- */
+.topbar{display:flex;align-items:center;gap:10px;padding:14px 16px 10px;position:sticky;top:0;z-index:5;
+  background:linear-gradient(var(--lapis) 70%, transparent)}
+.avatar{width:46px;height:46px;border-radius:50%;background:var(--paper);display:grid;place-items:center;box-shadow:0 0 0 3px var(--saffron);flex:0 0 auto}
+.avatar svg{width:42px;height:42px}
+.who{flex:1;min-width:0;line-height:1.2}
+.who b{font-family:var(--f-display);font-size:20px;display:block}
+.who small{color:#c9cdf0;font-size:12px}
+.torches{display:flex;gap:4px;align-items:flex-end;background:rgba(0,0,0,.18);padding:6px 10px;border-radius:var(--r-pill)}
+.torches span{font-size:11px;color:#c9cdf0;margin-inline-start:4px}
+.torch{width:16px;height:26px}
+
+/* ---------- map ---------- */
+.map{position:relative;height:1180px;margin-top:-6px}
+.map svg.path{position:absolute;inset:0;width:100%;height:100%}
+.khan{position:absolute;transform:translate(50%,-50%);display:flex;flex-direction:column;align-items:center;gap:6px;border:0;background:none;cursor:pointer;padding:0;width:120px}
+.medal{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;position:relative;
+  background:var(--paper);box-shadow:var(--press) var(--paper-2),0 10px 18px rgba(0,0,0,.25);transition:transform .15s}
+.medal svg{width:46px;height:46px}
+.khan:active .medal{transform:translateY(4px);box-shadow:0 2px 0 var(--paper-2)}
+.khan .num{position:absolute;top:-6px;inset-inline-start:-6px;width:30px;height:30px;border-radius:50%;background:var(--lapis-deep);color:var(--saffron);
+  font-family:var(--f-display);font-size:16px;display:grid;place-items:center;box-shadow:0 0 0 3px var(--saffron)}
+.khan .label{font-family:var(--f-display);font-size:16px;line-height:1.1;text-align:center;text-shadow:0 2px 0 rgba(0,0,0,.25)}
+.khan .sub{font-size:11px;color:#c9cdf0;text-align:center;margin-top:-4px}
+.khan.done .medal{background:var(--saffron);box-shadow:var(--press) var(--saffron-deep),0 10px 18px rgba(0,0,0,.25)}
+.khan.now .medal{background:var(--anar);box-shadow:var(--press) var(--anar-deep),0 0 0 8px rgba(214,64,76,.25),0 10px 18px rgba(0,0,0,.3);width:100px;height:100px}
+.khan.now .medal svg{width:58px;height:58px}
+.khan.now .medal::after{content:"";position:absolute;inset:-14px;border-radius:50%;border:3px dashed rgba(243,165,48,.8);animation:spin 14s linear infinite}
+.khan.locked .medal{background:#3b4aa0;box-shadow:var(--press) #2a3785;opacity:.9}
+.khan.locked .label{opacity:.7}
+.lock{position:absolute;bottom:-4px;inset-inline-end:-4px;width:28px;height:28px;border-radius:50%;background:var(--lapis-deep);display:grid;place-items:center;box-shadow:0 0 0 2px #6e7bc9}
+.lock svg{width:16px!important;height:16px!important}
+.yuzi-on-map{position:absolute;width:62px;height:62px;transform:translate(50%,-50%);animation:bob 2.4s ease-in-out infinite;pointer-events:none;filter:drop-shadow(0 6px 6px rgba(0,0,0,.3))}
+.map-title{position:absolute;top:10px;inset-inline:0;text-align:center;font-family:var(--f-display);font-size:30px;color:var(--saffron);text-shadow:0 3px 0 var(--lapis-deep)}
+.map-title small{display:block;font-family:var(--f-body);font-size:12px;color:#c9cdf0;text-shadow:none;margin-top:2px}
+.star-dot{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--on-dark);opacity:.6}
+
+/* ---------- bottom nav ---------- */
+.nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--lapis-deep);padding:8px 8px calc(10px + env(safe-area-inset-bottom,0px));gap:4px;flex:0 0 auto;border-top:2px solid rgba(243,165,48,.35)}
+.nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:#aeb4e6;padding:6px 0;border-radius:14px;cursor:pointer;min-height:52px}
+.nav button svg{width:26px;height:26px}
+.nav button[aria-current="page"]{color:var(--saffron);background:rgba(243,165,48,.12)}
+
+/* ---------- paper sheets ---------- */
+.sheet{background:var(--paper);color:var(--ink);border-radius:28px 28px 0 0;min-height:100%;padding:20px 16px 28px;position:relative}
+.sheet::before{content:"";position:absolute;inset:8px;border:2px solid var(--paper-2);border-radius:22px 22px 0 0;pointer-events:none}
+.back{border:0;background:rgba(255,247,230,.14);color:var(--on-dark);width:44px;height:44px;border-radius:50%;display:grid;place-items:center;cursor:pointer;flex:0 0 auto}
+.back svg{width:22px;height:22px}
+.hdr{display:flex;align-items:center;gap:10px;padding:14px 16px}
+.hdr h2{margin:0;font-family:var(--f-display);font-size:24px;flex:1;line-height:1.1}
+.hdr h2 small{display:block;font-family:var(--f-body);font-size:12px;font-weight:400;color:#c9cdf0}
+
+.guard{display:flex;gap:12px;align-items:flex-end;padding:0 16px 16px}
+.guard svg{width:96px;height:110px;flex:0 0 auto}
+.bubble{background:var(--paper);color:var(--ink);border-radius:20px 20px 20px 4px;padding:10px 14px;font-size:14px;line-height:1.7;position:relative;box-shadow:0 4px 0 var(--paper-2)}
+.bubble b{color:var(--anar)}
+
+.manzil{display:flex;flex-direction:column;gap:10px;margin-bottom:22px;position:relative}
+.manzil h3{margin:0;font-family:var(--f-display);font-size:20px;display:flex;align-items:center;gap:8px}
+.manzil h3 .tag{font-family:var(--f-body);font-size:11px;font-weight:500;background:var(--paper-2);color:var(--ink-soft);padding:2px 8px;border-radius:var(--r-pill)}
+.tiles{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.tile{border:0;text-align:start;border-radius:var(--r-tile);padding:14px 12px 12px;cursor:pointer;display:flex;flex-direction:column;gap:6px;min-height:118px;position:relative;
+  transition:transform .12s ease, box-shadow .12s ease}
+.tile:active{transform:translateY(4px)}
+.tile .ic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:rgba(255,255,255,.35)}
+.tile .ic svg{width:26px;height:26px}
+.tile b{font-family:var(--f-display);font-size:17px;line-height:1.15}
+.tile small{font-size:12px;line-height:1.5;opacity:.85}
+.t-story{background:#e6dcf5;box-shadow:var(--press) #c7b6e6;color:var(--ink)}
+.t-story:active{box-shadow:0 2px 0 #c7b6e6}
+.t-play{background:var(--anar);color:var(--on-dark);box-shadow:var(--press) var(--anar-deep);grid-column:span 2;min-height:0;flex-direction:row;align-items:center;gap:12px}
+.t-play:active{box-shadow:0 2px 0 var(--anar-deep)}
+.t-play .ic{width:56px;height:56px;border-radius:16px;background:rgba(255,255,255,.2)}
+.t-play .ic svg{width:36px;height:36px}
+.t-play .grow{flex:1;min-width:0;display:flex;flex-direction:column;gap:4px}
+.t-play b{font-size:21px}
+.t-family{background:#cdeee9;box-shadow:var(--press) #9fd9d1;color:var(--ink)}
+.t-family:active{box-shadow:0 2px 0 #9fd9d1}
+.t-stars{background:#fde3b2;box-shadow:var(--press) #f2c574;color:var(--ink)}
+.t-stars:active{box-shadow:0 2px 0 #f2c574}
+.done-chip{position:absolute;top:10px;inset-inline-end:10px;width:24px;height:24px;border-radius:50%;background:var(--leaf);display:grid;place-items:center}
+.done-chip svg{width:14px;height:14px}
+.days{display:flex;gap:6px;align-items:center;margin-top:2px}
+.day{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;background:rgba(0,0,0,.18);font-size:12px;font-weight:700}
+.day.lit{background:var(--saffron);color:var(--ink)}
+.day.today{box-shadow:0 0 0 2px var(--on-dark)}
+.locked-manzil{opacity:.55;filter:saturate(.4)}
+.lock-note{display:flex;gap:10px;align-items:center;background:var(--paper-2);border-radius:16px;padding:12px;font-size:13px;line-height:1.6;color:var(--ink-soft)}
+.lock-note svg{width:22px;height:22px;flex:0 0 auto}
+
+/* ---------- exercise ---------- */
+.ex{display:flex;flex-direction:column;min-height:100%;background:linear-gradient(#2a3b8f, var(--lapis) 40%)}
+.steps{display:flex;gap:6px;justify-content:center;padding:4px 0 6px}
+.steps i{width:34px;height:8px;border-radius:var(--r-pill);background:rgba(255,247,230,.2)}
+.steps i.on{background:var(--saffron)}
+.steps i.cur{background:var(--on-dark)}
+.scene{margin:6px 16px 0;border-radius:28px;background:var(--paper);height:250px;position:relative;overflow:hidden;box-shadow:0 6px 0 var(--paper-2)}
+.scene svg{position:absolute;inset:0;width:100%;height:100%}
+.sway{transform-origin:100px 200px;animation:sway 2.8s ease-in-out infinite}
+.instr{padding:14px 20px 4px;font-size:17px;line-height:1.8;font-weight:500;text-wrap:balance;text-align:center}
+.instr small{display:block;font-size:12px;color:#c9cdf0;font-weight:400;margin-top:4px}
+.counter{display:flex;flex-direction:column;align-items:center;gap:10px;padding:10px 16px 18px;margin-top:auto}
+.ring{width:150px;height:150px;position:relative;display:grid;place-items:center}
+.ring svg{position:absolute;inset:0;transform:rotate(-90deg);pointer-events:none}
+.ring button{width:116px;height:116px;border-radius:50%;border:0;cursor:pointer;background:var(--saffron);color:var(--ink);box-shadow:0 8px 0 var(--saffron-deep);
+  font-family:var(--f-display);font-size:42px;line-height:1;display:flex;flex-direction:column;align-items:center;justify-content:center;transition:transform .1s}
+.ring button small{font-family:var(--f-body);font-size:12px;font-weight:700}
+.ring button:active{transform:translateY(6px);box-shadow:0 2px 0 var(--saffron-deep)}
+.ring button.pop{animation:pop .25s ease}
+.hint{font-size:13px;color:#c9cdf0;text-align:center;min-height:20px}
+
+.feel{position:absolute;inset:0;background:rgba(23,33,90,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:24px;z-index:10;text-align:center}
+.feel h3{font-family:var(--f-display);font-size:26px;margin:0}
+.feel p{margin:0;color:#c9cdf0;font-size:14px}
+.faces{display:flex;gap:14px}
+.faces button{width:84px;height:84px;border-radius:24px;border:0;cursor:pointer;background:var(--paper);box-shadow:var(--press) var(--paper-2);display:grid;place-items:center}
+.faces button:active{transform:translateY(4px);box-shadow:0 2px 0 var(--paper-2)}
+.faces svg{width:56px;height:56px}
+
+/* ---------- reward ---------- */
+.reward{position:absolute;inset:0;z-index:20;background:radial-gradient(circle at 50% 35%, #33459e 0, var(--lapis-deep) 70%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;padding:24px;text-align:center}
+.reward canvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.reward h3{font-family:var(--f-display);font-size:32px;margin:0;color:var(--saffron)}
+.reward p{margin:0;font-size:15px;line-height:1.8;max-width:30ch}
+.big-torches{display:flex;gap:18px;align-items:flex-end}
+.big-torches svg{width:44px;height:72px}
+.big-torches .new{animation:ignite .9s ease both .3s}
+.xp{width:100%;max-width:260px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:#c9cdf0}
+.xp .bar{height:14px;border-radius:var(--r-pill);background:rgba(255,247,230,.15);overflow:hidden}
+.xp .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--saffron),#ffd27a);border-radius:inherit;transition:width 1.2s cubic-bezier(.2,.8,.2,1) .5s}
+
+.cta{border:0;cursor:pointer;border-radius:var(--r-pill);padding:14px 28px;font-family:var(--f-display);font-size:20px;background:var(--fayruz);color:#fff;box-shadow:var(--press) var(--fayruz-deep);min-height:52px}
+.cta:active{transform:translateY(4px);box-shadow:0 2px 0 var(--fayruz-deep)}
+.cta.gold{background:var(--saffron);color:var(--ink);box-shadow:var(--press) var(--saffron-deep)}
+.cta.gold:active{box-shadow:0 2px 0 var(--saffron-deep)}
+
+/* ---------- family ---------- */
+.fam-intro{font-size:14px;line-height:1.9;color:var(--ink);margin:0 0 14px}
+.circle{position:relative;width:100%;max-width:300px;aspect-ratio:1;margin:6px auto 14px}
+.circle .rug{position:absolute;inset:14%;border-radius:50%;background:repeating-radial-gradient(circle,#f0d39a 0 10px,#e9c47d 10px 20px);box-shadow:inset 0 0 0 6px var(--anar),inset 0 0 0 12px #f0d39a}
+.player{position:absolute;width:76px;transform:translate(50%,-50%);display:flex;flex-direction:column;align-items:center;gap:2px;font-size:13px;font-weight:700;color:var(--ink);transition:transform .3s}
+.player .face{width:54px;height:54px;border-radius:50%;background:#fff;display:grid;place-items:center;box-shadow:0 4px 0 var(--paper-2);border:3px solid transparent}
+.player .face svg{width:44px;height:44px}
+.player.hold .face{border-color:var(--anar)}
+.player.hit{transform:translate(50%,-50%) scale(1.18)}
+.player.hit .face{border-color:var(--saffron);box-shadow:0 0 0 6px rgba(243,165,48,.35)}
+.tissue{position:absolute;width:30px;height:30px;transform:translate(50%,-50%);transition:inset-inline-end .5s ease, top .5s ease;z-index:2;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
+.fam-ctrl{display:flex;flex-direction:column;align-items:center;gap:10px}
+.callout{background:var(--lapis);color:var(--on-dark);border-radius:20px;padding:14px 16px;font-size:15px;line-height:1.8;text-align:center;width:100%}
+.callout b{color:var(--saffron);font-family:var(--f-display);font-size:19px}
+.callout small{display:block;color:#c9cdf0;font-size:12px}
+
+/* ---------- parents ---------- */
+.p-sum{display:flex;gap:10px;margin-bottom:16px}
+.p-sum div{flex:1;background:#fff8ea;border-radius:18px;padding:12px;box-shadow:0 3px 0 var(--paper-2)}
+.p-sum b{display:block;font-family:var(--f-display);font-size:28px;color:var(--lapis);line-height:1.1}
+.p-sum span{font-size:12px;color:var(--ink-soft)}
+.p-h{font-family:var(--f-display);font-size:19px;margin:18px 0 8px}
+.cal{width:100%;border-collapse:separate;border-spacing:0 6px;font-size:13px}
+.cal th{font-weight:500;color:var(--ink-soft);font-size:12px;padding:0 4px}
+.cal td{background:#fff8ea;padding:8px 6px;text-align:center}
+.cal td:first-child{text-align:start;border-radius:0 14px 14px 0;font-size:12.5px;line-height:1.5;width:46%}
+.cal td:last-child{border-radius:14px 0 0 14px}
+.cal svg{width:28px;height:28px;vertical-align:middle}
+.cal .empty{display:inline-block;width:24px;height:24px;border-radius:50%;border:2px dashed #d8c69e}
+.beh{display:flex;align-items:center;gap:10px;background:#fff8ea;border-radius:16px;padding:10px 12px;margin-bottom:8px;box-shadow:0 3px 0 var(--paper-2)}
+.beh p{margin:0;flex:1;font-size:13.5px;line-height:1.6}
+.beh .stars{display:flex;gap:2px}
+.beh .stars svg{width:18px;height:18px}
+.seal{border:0;cursor:pointer;border-radius:12px;background:var(--lapis);color:var(--on-dark);font-size:12px;font-weight:700;padding:8px 10px;min-height:44px;box-shadow:0 4px 0 var(--lapis-deep)}
+.seal:active{transform:translateY(3px);box-shadow:0 1px 0 var(--lapis-deep)}
+.tips{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:8px}
+.tips li{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.7}
+.tips li::before{content:"";flex:0 0 10px;height:10px;margin-top:8px;border-radius:3px;transform:rotate(45deg);background:var(--fayruz)}
+.src{font-size:11px;color:var(--ink-soft);margin-top:6px}
+
+/* ---------- treasure ---------- */
+.stages{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.stage-c{background:#fff8ea;border-radius:18px;padding:10px 6px;text-align:center;font-size:12px;box-shadow:0 3px 0 var(--paper-2)}
+.stage-c svg{width:100%;height:70px}
+.stage-c b{display:block;font-family:var(--f-display);font-size:15px}
+.stage-c.off{opacity:.45;filter:grayscale(.8)}
+.stage-c.cur{box-shadow:0 0 0 3px var(--saffron),0 3px 0 var(--paper-2)}
+.medals{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.m{aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:var(--paper-2);position:relative}
+.m svg{width:55%;height:55%}
+.m.got{background:var(--saffron);box-shadow:0 4px 0 var(--saffron-deep)}
+.m.off svg{opacity:.35}
+
+/* ---------- notes column ---------- */
+.notes{width:min(340px,100%);flex:0 1 340px;display:flex;flex-direction:column;gap:14px;padding-top:8px}
+.notes h1{font-family:var(--f-display);font-size:40px;margin:0;line-height:1;color:var(--lapis);direction:rtl;text-align:right}
+.notes .lead{direction:rtl;text-align:right;font-size:14px;line-height:1.9;margin:0;color:var(--page-ink)}
+.note-card{direction:rtl;text-align:right;background:#f7efdc;border-radius:20px;padding:16px;box-shadow:0 4px 0 #d9c79f}
+.note-card h4{margin:0 0 8px;font-family:var(--f-display);font-size:19px;color:var(--anar)}
+.note-card dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 10px;font-size:13px;line-height:1.7}
+.note-card dt{font-weight:700;color:var(--lapis);white-space:nowrap}
+.note-card dd{margin:0}
+.legend{direction:rtl;text-align:right;font-size:12.5px;line-height:1.8;color:var(--page-ink)}
+.legend ol{margin:6px 0 0;padding-inline-start:18px}
+
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes bob{50%{transform:translate(50%,calc(-50% - 6px))}}
+@keyframes sway{0%,100%{transform:rotate(-2.5deg)}50%{transform:rotate(2.5deg)}}
+@keyframes pop{50%{transform:scale(1.08)}}
+@keyframes ignite{0%{transform:scale(.6);filter:grayscale(1) brightness(.6)}60%{transform:scale(1.15)}100%{transform:scale(1);filter:none}}
+@keyframes flick{0%,100%{transform:scaleY(1)}50%{transform:scaleY(1.12) translateY(-1px)}}
+.flame{transform-origin:50% 100%;animation:flick .5s ease-in-out infinite}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+@media (max-width:860px){.stage{gap:24px;padding-block:16px}.phone{height:780px}.notes h1{font-size:32px}}
+@media (max-width:430px){.stage{padding-inline:8px}.phone{border-radius:34px;padding:6px;height:760px}.app{border-radius:28px}}
+</style>
+
+<div class="stage">
+  <div class="phone" aria-label="پیش‌نمایش برنامه روی گوشی">
+    <div class="app" id="app">
+
+      <!-- ===== MAP ===== -->
+      <section class="screen lattice" id="s-map" aria-label="نقشهٔ سفر">
+        <div class="topbar">
+          <div class="avatar" aria-hidden="true"><svg viewBox="0 0 100 100" data-yuzi="1"></svg></div>
+          <div class="who"><b>سارا</b><small>همسفر: یوزی · توله‌یوز</small></div>
+          <div class="torches" aria-label="مشعل‌های این هفته" id="topTorches"></div>
+        </div>
+        <div class="map" id="map">
+          <div class="map-title">هفت‌خوانِ حرکت<small>از پایین شروع کن و تا قله برو</small></div>
+        </div>
+      </section>
+
+      <!-- ===== KHAN ===== -->
+      <section class="screen" id="s-khan" hidden aria-label="خوان سوم">
+        <div class="hdr">
+          <button class="back" data-go="map" aria-label="برگشت به نقشه"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <h2>خوان سوم: پلِ لرزان<small>منزل ۵ و ۶ کتاب · تعادل، زندگی فعال</small></h2>
+        </div>
+        <div class="guard">
+          <svg viewBox="0 0 120 140" aria-hidden="true" id="stork"></svg>
+          <div class="bubble">من <b>لک‌لکِ نگهبانِ پل</b>ام. ساعت‌ها روی یک پا می‌ایستم! اگر تو هم تعادل یاد بگیری، از پل رد می‌شوی.</div>
+        </div>
+        <div class="sheet">
+          <div class="manzil">
+            <h3>منزل ۵ · تعادل <span class="tag">کتاب، ص ۳۳ تا ۳۷</span></h3>
+            <div class="tiles">
+              <button class="tile t-play" data-go="ex">
+                <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round"><circle cx="20" cy="7" r="4"/><path d="M20 12v13M20 25v12M20 25l9-5M10 18l10-3 10 3"/></svg></span>
+                <span class="grow"><b>برویم بازی!</b><small>سه تمرین تعادل · امروز روز دومِ هفته است</small>
+                  <span class="days" id="khanDays"></span></span>
+              </button>
+              <button class="tile t-story" data-note="story">
+                <span class="done-chip"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12l5 5 9-10"/></svg></span>
+                <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#5d4f72" stroke-width="3" stroke-linecap="round"><path d="M6 10c6-3 10-3 14 0v22c-4-3-8-3-14 0zM34 10c-6-3-10-3-14 0v22c4-3 8-3 14 0z"/></svg></span>
+                <b>قصهٔ حرکت</b><small>گوش کن و هر جا «تعادل» شنیدی، روی یک پا بایست</small>
+              </button>
+              <button class="tile t-family" data-go="family">
+                <span class="ic"><svg viewBox="0 0 40 40" fill="none" stroke="#0c7a73" stroke-width="3" stroke-linecap="round"><circle cx="12" cy="11" r="4"/><circle cx="28" cy="11" r="4"/><circle cx="20" cy="22" r="3"/><path d="M5 34c0-7 4-11 7-11s5 2 6 4M35 34c0-7-4-11-7-11s-5 2-6 4M15 36c0-4 2-7 5-7s5 3 5 7"/></svg></span>
+                <b>بازی خانوادگی</b><small>دستمال‌بازی روی یک پا، با آهنگ</small>
+              </button>
+              <button class="tile t-stars" data-go="parents" style="grid-column:span 2;min-height:0">
+                <span style="display:flex;align-items:center;gap:12px">
+                  <span class="ic"><svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="#f3a530" stroke="#c87a0c" stroke-width="1.5" stroke-linejoin="round"/></svg></span>
+                  <span style="display:flex;flex-direction:column;gap:2px"><b>ستاره‌های رفتار</b><small>بزرگترت هر بار که رفتار خوبت را دید، ستاره را مُهر می‌زند</small></span>
+                </span>
+              </button>
+            </div>
+          </div>
+          <div class="manzil locked-manzil" aria-disabled="true">
+            <h3>منزل ۶ · زندگی فعال <span class="tag">کتاب، ص ۳۹ تا ۴۳</span></h3>
+            <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+              وقتی سه مشعلِ تعادل روشن شود، این منزل باز می‌شود.</div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== EXERCISE ===== -->
+      <section class="screen" id="s-ex" hidden aria-label="تمرین">
+        <div class="ex">
+          <div class="hdr">
+            <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+            <h2 id="exTitle">تمرین ۱ از ۳<small>تعادل · روز دوم</small></h2>
+          </div>
+          <div class="steps" id="exSteps" aria-hidden="true"><i></i><i></i><i></i></div>
+          <div class="scene" id="scene"><svg viewBox="0 0 320 250" id="sceneSvg" aria-hidden="true"></svg></div>
+          <p class="instr" id="exInstr"></p>
+          <div class="counter">
+            <div class="ring">
+              <svg viewBox="0 0 150 150" aria-hidden="true"><circle cx="75" cy="75" r="68" fill="none" stroke="rgba(255,247,230,.15)" stroke-width="10"/>
+                <circle id="ringArc" cx="75" cy="75" r="68" fill="none" stroke="#f3a530" stroke-width="10" stroke-linecap="round" stroke-dasharray="427" stroke-dashoffset="427" style="transition:stroke-dashoffset .3s"/></svg>
+              <button id="tap" aria-live="polite"><span id="tapNum">۰</span><small id="tapUnit">از ۵ کیسه</small></button>
+            </div>
+            <div class="hint" id="hint">هر بار یکی را انجام دادی، دکمه را بزن</div>
+          </div>
+          <div class="feel" id="feel" hidden>
+            <h3>این بازی چطور بود؟</h3>
+            <p>یکی از صورتک‌ها را انتخاب کن</p>
+            <div class="faces">
+              <button data-feel="2" aria-label="خیلی خوب بود"><svg viewBox="0 0 60 60" data-face="2"></svg></button>
+              <button data-feel="1" aria-label="معمولی بود"><svg viewBox="0 0 60 60" data-face="1"></svg></button>
+              <button data-feel="0" aria-label="سخت بود"><svg viewBox="0 0 60 60" data-face="0"></svg></button>
+            </div>
+          </div>
+        </div>
+        <div class="reward" id="reward" hidden>
+          <canvas id="confetti"></canvas>
+          <svg viewBox="0 0 100 100" style="width:120px;height:120px" data-yuzi="2" aria-hidden="true"></svg>
+          <h3>آفرین پهلوان!</h3>
+          <div class="big-torches" id="bigTorches" aria-hidden="true"></div>
+          <p id="rewardText">مشعل روز دوم روشن شد. یک روز دیگر تا گذشتن از پلِ لرزان.</p>
+          <div class="xp"><span>یوزی دارد بزرگ می‌شود · ۷۰ از ۱۰۰</span><div class="bar"><i id="xpBar" style="width:40%"></i></div></div>
+          <button class="cta gold" data-go="khan">برگرد به خوان</button>
+        </div>
+      </section>
+
+      <!-- ===== FAMILY ===== -->
+      <section class="screen lattice" id="s-family" hidden aria-label="بازی خانوادگی">
+        <div class="hdr">
+          <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
+          <h2>دستمال‌بازی<small>بازی خانوادگی منزل ۵ · کتاب، ص ۳۶</small></h2>
+        </div>
+        <div class="sheet">
+          <p class="fam-intro">دست هم را بگیرید و <b>روی یک پا</b> حلقه بزنید. دستمال جلوی یک نفر روی زمین است. با آهنگ، هر کس دستمال را <b>با انگشت‌های پای دیگرش</b> برمی‌دارد و جلوی نفر بعدی می‌گذارد. آهنگ که قطع شد، صاحب دستمال یک حرکت تعادلی انجام می‌دهد.</p>
+          <div class="circle" id="circle"><div class="rug"></div></div>
+          <div class="fam-ctrl">
+            <div class="callout" id="famCall"><b>گوشی داور است</b><small>آهنگ را پخش کن؛ گوشی خودش یک جای غافلگیرکننده آهنگ را قطع می‌کند</small></div>
+            <button class="cta" id="music">پخش آهنگ</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ===== TREASURE ===== -->
+      <section class="screen lattice" id="s-treasure" hidden aria-label="گنجینه">
+        <div class="hdr"><h2>گنجینه<small>یوزی و نشان‌های خوان‌ها</small></h2></div>
+        <div class="sheet">
+          <div class="p-h" style="margin-top:4px">یوزی چطور بزرگ می‌شود</div>
+          <div class="stages" id="stages"></div>
+          <div class="p-h">نشان‌های هفت خوان</div>
+          <div class="medals" id="medals"></div>
+        </div>
+      </section>
+
+      <!-- ===== PARENTS ===== -->
+      <section class="screen" id="s-parents" hidden aria-label="بخش والدین">
+        <div class="hdr"><h2>برای پدر و مادر<small>هفتهٔ تعادل · منزل ۵</small></h2></div>
+        <div class="sheet">
+          <div class="p-sum">
+            <div><b id="pDays">۱ از ۳</b><span>روزِ تمرینِ این هفته</span></div>
+            <div><b id="pStars">۲</b><span>ستارهٔ رفتار</span></div>
+            <div><b>۲ از ۷</b><span>خوانِ گذشته</span></div>
+          </div>
+          <div class="p-h">تقویم هفتگی</div>
+          <table class="cal">
+            <thead><tr><th scope="col" style="text-align:start">تمرین</th><th scope="col">روز اول</th><th scope="col">روز دوم</th><th scope="col">روز سوم</th></tr></thead>
+            <tbody id="calBody"></tbody>
+          </table>
+          <p class="src">صورتک‌ها را خودِ کودک بعد از هر تمرین انتخاب کرده است، مثل جدول «روز اول، دوم، سوم» در کتاب.</p>
+          <div class="p-h">ستاره‌های رفتار را شما مُهر بزنید</div>
+          <div id="behList"></div>
+          <div class="p-h">از «سخنی با والدین» کتاب</div>
+          <ul class="tips">
+            <li>لطفاً فقط ناظر نباشید. با آن‌ها هم‌بازی شوید.</li>
+            <li>از ایمنی فضای بازی و فعالیت کودک اطمینان حاصل کنید.</li>
+            <li>وسایل موردنیاز برای بازی را فراهم و آماده‌سازی نمایید.</li>
+            <li>زمانی منظم و ثابت در طول هفته را به بازی و فعالیت‌های آن اختصاص دهید.</li>
+          </ul>
+        </div>
+      </section>
+
+      <nav class="nav" aria-label="بخش‌ها">
+        <button data-go="map" aria-current="page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/></svg>نقشه</button>
+        <button data-go="family"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="8" cy="7" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M2 20c0-4 3-7 6-7s6 3 6 7M14 20c0-3 1.5-5 3-5s4 2 4 5"/></svg>خانواده</button>
+        <button data-go="treasure"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linejoin="round"><path d="M3 10h18v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M3 10l2-5h14l2 5M10 14h4"/></svg>گنجینه</button>
+        <button data-go="parents"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="4" y="4" width="16" height="17" rx="2"/><path d="M8 9h8M8 13h8M8 17h5"/></svg>والدین</button>
+      </nav>
+    </div>
+  </div>
+
+  <aside class="notes" aria-label="یادداشت‌های طراحی">
+    <h1>هفت‌خوانِ حرکت</h1>
+    <p class="lead">پیش‌نمایشِ رابطِ اختصاصی برای «کتاب کار حرکت و بازی، اول دبستان». دوازده درسِ کتاب در هفت خوان چیده شده و یوزپلنگِ خودِ کتاب، همسفرِ کودک است که با هر روزِ تمرین بزرگ‌تر می‌شود.</p>
+    <div class="note-card" id="noteCard"></div>
+    <div class="legend">
+      <b>چیدمانِ دوازده درس در هفت خوان</b>
+      <ol id="legend"></ol>
+    </div>
+  </aside>
+</div>
+
+<script>
+(function(){
+const fa = n => String(n).replace(/\d/g, d => '۰۱۲۳۴۵۶۷۸۹'[d]);
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const store = {
+  get(k, d){ try{ const v = localStorage.getItem('hk.'+k); return v ? JSON.parse(v) : d; }catch(e){ return d; } },
+  set(k, v){ try{ localStorage.setItem('hk.'+k, JSON.stringify(v)); }catch(e){} }
+};
+
+/* ---------- data from the book ---------- */
+const KHANS = [
+  {name:'بیدارِ بدن', lessons:['درک حرکت','وضعیت‌های بدنی درست'], icon:'sun'},
+  {name:'دشتِ تیزپاها', lessons:['راه رفتن، دویدن، پریدن','بدن قوی'], icon:'run'},
+  {name:'پلِ لرزان', lessons:['تعادل','زندگی فعال'], icon:'bridge'},
+  {name:'بیشهٔ بید', lessons:['بدن نرم','هماهنگی'], icon:'willow'},
+  {name:'درهٔ پرتاب', lessons:['پرتاب و دریافت','کار با پا'], icon:'ball'},
+  {name:'چشمهٔ دل', lessons:['قلب قوی'], icon:'heart'},
+  {name:'جشنِ سرزمین', lessons:['بازی‌های بومی‌محلی'], icon:'flag'}
+];
+const CURRENT = 2; // khan index in progress (0-based)
+const MOVES = [
+  {t:'روی یک پا بایست و با پای دیگر کیسه‌های شن را داخل سبد بگذار.', goal:5, unit:'کیسه', prop:'bags'},
+  {t:'روی یک پا بایست و با پای دیگر دایره‌های رنگی را لمس کن.', goal:4, unit:'دایره', prop:'dots'},
+  {t:'روی یک پا بایست و با یک دست لیوان‌های پلاستیکی را روی هم بچین.', goal:6, unit:'لیوان', prop:'cups'}
+];
+const BEHAVIORS = [
+  {t:'من موقع بازی کردن، مواظب وسایل اطرافم هستم.', n:1},
+  {t:'من قانون بازی را رعایت می‌کنم.', n:1}
+];
+
+/* ---------- shared drawings ---------- */
+const C = {ink:'#2b2140', saffron:'#f3a530', sd:'#c87a0c', anar:'#d6404c', paper:'#fbf1dc', fay:'#16a39a', lapis:'#22327a'};
+function yuzi(stage){ // stage 1 cub, 2 young, 3 grown — the book's cheetah, made Asiatic (tear lines)
+  const scarf = stage>=2 ? `<path d="M24 82 Q50 96 76 82 L74 90 Q50 102 26 90Z" fill="${C.anar}"/><path d="M66 88l8 12-10-3z" fill="${C.anar}"/>` : '';
+  const crown = stage>=3 ? `<path d="M34 22l6 8 10-12 10 12 6-8 2 12H32z" fill="${C.saffron}" stroke="${C.sd}" stroke-width="1.5"/>` : '';
+  return `
+    <path d="M22 34 L18 14 L38 24Z" fill="#f0b24a" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>
+    <path d="M78 34 L82 14 L62 24Z" fill="#f0b24a" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>
+    <ellipse cx="50" cy="54" rx="34" ry="31" fill="#f4bb55" stroke="${C.ink}" stroke-width="2"/>
+    <ellipse cx="50" cy="68" rx="17" ry="12" fill="#fff4de"/>
+    <g fill="${C.ink}" opacity=".75"><circle cx="34" cy="34" r="2.2"/><circle cx="44" cy="30" r="1.8"/><circle cx="58" cy="31" r="2"/><circle cx="67" cy="36" r="2.2"/><circle cx="24" cy="54" r="2"/><circle cx="77" cy="55" r="2"/><circle cx="27" cy="64" r="1.6"/><circle cx="73" cy="65" r="1.6"/></g>
+    <circle cx="38" cy="49" r="5.5" fill="${C.ink}"/><circle cx="62" cy="49" r="5.5" fill="${C.ink}"/>
+    <circle cx="39.8" cy="47" r="1.8" fill="#fff"/><circle cx="63.8" cy="47" r="1.8" fill="#fff"/>
+    <path d="M36 55 Q37 63 42 70M64 55 Q63 63 58 70" stroke="${C.ink}" stroke-width="2.6" fill="none" stroke-linecap="round"/>
+    <path d="M45 62 h10 l-5 5z" fill="#5a3030"/>
+    <path d="M50 67 v3 M45 72 q5 4 10 0" stroke="#5a3030" stroke-width="2" fill="none" stroke-linecap="round"/>
+    ${scarf}${crown}`;
+}
+const ICONS = {
+  sun:`<circle cx="24" cy="24" r="8" fill="${C.anar}"/><g stroke="${C.anar}" stroke-width="3.5" stroke-linecap="round"><path d="M24 6v5M24 37v5M6 24h5M37 24h5M11 11l3.5 3.5M33.5 33.5L37 37M11 37l3.5-3.5M33.5 14.5L37 11"/></g>`,
+  run:`<g fill="none" stroke="${C.lapis}" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="29" cy="8" r="4" fill="${C.lapis}"/><path d="M27 14l-5 11 7 5-2 11M22 25l-9 2M27 14l6 7 7-2M29 30l-9 9"/></g>`,
+  bridge:`<g fill="none" stroke="#fff7e6" stroke-width="3.5" stroke-linecap="round"><path d="M4 30 Q24 16 44 30"/><path d="M4 30v10M44 30v10M12 25v15M20 22v18M28 22v18M36 25v15"/><path d="M2 40h44"/></g>`,
+  willow:`<g fill="none" stroke="${C.fay}" stroke-width="3.2" stroke-linecap="round"><path d="M24 44V20"/><path d="M24 20 Q14 18 10 34M24 20 Q34 18 38 34M24 18 Q18 24 18 38M24 18 Q30 24 30 38M24 14 Q20 6 24 4 Q28 6 24 14"/></g>`,
+  ball:`<circle cx="30" cy="16" r="8" fill="${C.anar}"/><path d="M6 40 Q14 18 26 20" fill="none" stroke="${C.lapis}" stroke-width="3" stroke-dasharray="3 5" stroke-linecap="round"/>`,
+  heart:`<path d="M24 41 C8 30 4 21 9 14 C13 9 20 10 24 16 C28 10 35 9 39 14 C44 21 40 30 24 41Z" fill="${C.anar}"/><path d="M10 25h8l3-5 4 9 3-4h10" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>`,
+  flag:`<path d="M12 44V6" stroke="${C.lapis}" stroke-width="3.5" stroke-linecap="round"/><path d="M13 7h24l-6 7 6 7H13z" fill="${C.fay}"/><circle cx="12" cy="5" r="3" fill="${C.saffron}"/>`
+};
+const LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="#c9cdf0" stroke-width="2.6" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`;
+function torch(lit, cls=''){
+  return `<svg class="torch ${cls}" viewBox="0 0 22 36" aria-hidden="true">
+    ${lit ? `<g class="flame"><path d="M11 2 C16 8 17 12 11 17 C5 12 6 8 11 2Z" fill="${C.anar}"/><path d="M11 7 C14 10 14 13 11 16 C8 13 8 10 11 7Z" fill="${C.saffron}"/></g>`
+          : `<path d="M11 6 C14 10 14 13 11 16 C8 13 8 10 11 6Z" fill="none" stroke="#6e7bc9" stroke-width="1.5" stroke-dasharray="2 2"/>`}
+    <path d="M5 17h12l-3 5H8z" fill="${lit ? C.saffron : '#6e7bc9'}"/>
+    <rect x="9" y="22" width="4" height="13" rx="2" fill="${lit ? '#8a5a2b' : '#4a56a8'}"/></svg>`;
+}
+function face(v){
+  const fill = ['#e2574c','#f2c230','#4fb35a'][v];
+  const mouth = v===2 ? 'M19 36 Q30 46 41 36' : v===1 ? 'M20 38 H40' : 'M19 42 Q30 32 41 42';
+  return `<circle cx="30" cy="30" r="26" fill="${fill}" stroke="${C.ink}" stroke-width="2.5"/><circle cx="21" cy="24" r="3.5" fill="${C.ink}"/><circle cx="39" cy="24" r="3.5" fill="${C.ink}"/><path d="${mouth}" stroke="${C.ink}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
+}
+const STAR = (on) => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?C.saffron:'none'}" stroke="${on?C.sd:'#c9b583'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+
+/* ---------- state ---------- */
+let state = store.get('state', null) || {
+  days:[[2,2,1], null, null],   // day 1 done with feelings per move
+  stars:[1,1],
+  today:1
+};
+function save(){ store.set('state', state); }
+const doneDays = () => state.days.filter(Boolean).length;
+
+/* ---------- map ---------- */
+function drawMap(){
+  const map = $('#map');
+  const H = 1180, W = 360;
+  const pts = [ [180,1080], [90,930], [250,780], [110,630], [250,480], [110,330], [190,180] ]; // bottom → top
+  let d = `M${pts[0][0]} ${pts[0][1]+80}`;
+  pts.forEach((p,i)=>{ if(i===0){ d += ` L${p[0]} ${p[1]}`; return; } const q = pts[i-1]; const my = (p[1]+q[1])/2; d += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; });
+  const doneLen = CURRENT; // segments completed
+  let dDone = `M${pts[0][0]} ${pts[0][1]+80} L${pts[0][0]} ${pts[0][1]}`;
+  for(let i=1;i<=doneLen;i++){ const p=pts[i], q=pts[i-1], my=(p[1]+q[1])/2; dDone += ` C${q[0]} ${my}, ${p[0]} ${my}, ${p[0]} ${p[1]}`; }
+  let stars=''; for(let i=0;i<40;i++){ stars += `<circle cx="${(i*97)%W}" cy="${(i*233)%H}" r="${1+(i%3)*.6}" fill="#fff7e6" opacity="${.25+(i%4)*.12}"/>`; }
+  const svg = `<svg class="path" viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" aria-hidden="true">${stars}
+     <path d="M0 ${H} Q60 1100 120 ${H}Z M220 ${H} Q300 1080 ${W} ${H}Z" fill="#1b2867"/>
+     <path d="${d}" fill="none" stroke="#17215a" stroke-width="30" stroke-linecap="round"/>
+     <path d="${d}" fill="none" stroke="#3b4aa0" stroke-width="22" stroke-linecap="round"/>
+     <path d="${d}" fill="none" stroke="#6e7bc9" stroke-width="3" stroke-dasharray="2 12" stroke-linecap="round"/>
+     <path d="${dDone}" fill="none" stroke="${C.saffron}" stroke-width="10" stroke-linecap="round"/>
+     <path d="M150 70 l40 -40 l40 40z M120 90 l30 -30 l30 30z" fill="#3b4aa0" opacity=".6"/></svg>`;
+  map.insertAdjacentHTML('beforeend', svg);
+  KHANS.forEach((k,i)=>{
+    const [x,y] = pts[i];
+    const cls = i<CURRENT ? 'done' : i===CURRENT ? 'now' : 'locked';
+    const b = document.createElement('button');
+    b.className = 'khan '+cls;
+    b.style.right = `${(1 - x/W)*100}%`;
+    b.style.top = `${y/H*100}%`;
+    const status = i<CURRENT ? 'گذشته' : i===CURRENT ? 'خوانِ امروز' : 'هنوز بسته';
+    b.setAttribute('aria-label', `خوان ${fa(i+1)}: ${k.name} — ${status}`);
+    b.innerHTML = `<span class="medal"><span class="num">${fa(i+1)}</span><svg viewBox="0 0 48 48">${ICONS[k.icon]}</svg>${i>CURRENT?`<span class="lock">${LOCK}</span>`:''}</span>
+      <span class="label">${k.name}</span><span class="sub">${k.lessons.join(' · ')}</span>`;
+    if(i===CURRENT) b.addEventListener('click', ()=>go('khan'));
+    else b.addEventListener('click', ()=>flashNote(i));
+    map.appendChild(b);
+  });
+  const y = document.createElement('div');
+  y.className='yuzi-on-map';
+  const [cx,cy] = pts[CURRENT];
+  y.style.right = `${(1 - (cx+62)/W)*100}%`; y.style.top = `${(cy-30)/H*100}%`;
+  y.innerHTML = `<svg viewBox="0 0 100 100">${yuzi(1)}</svg>`;
+  map.appendChild(y);
+}
+function renderTorches(){
+  $('#topTorches').innerHTML = [0,1,2].map(i=>torch(!!state.days[i])).join('') + `<span>${fa(doneDays())} از ۳</span>`;
+  $('#khanDays').innerHTML = ['روز ۱','روز ۲','روز ۳'].map((t,i)=>`<span class="day ${state.days[i]?'lit':''} ${i===state.today&&!state.days[i]?'today':''}" title="${t}">${fa(i+1)}</span>`).join('');
+  $('#pDays').textContent = `${fa(doneDays())} از ۳`;
+}
+
+/* ---------- navigation ---------- */
+const NAV_OF = {map:'map', khan:'map', ex:'map', family:'family', treasure:'treasure', parents:'parents'};
+function go(name){
+  $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
+  $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
+  $('.nav').hidden = (name==='ex');
+  if(name==='ex') startExercise();
+  if(name==='parents') renderParents();
+  if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
+  stopMusic();
+  showNote(name);
+}
+document.addEventListener('click', e=>{
+  const t = e.target.closest('[data-go]'); if(t){ go(t.dataset.go); return; }
+  const n = e.target.closest('[data-note]'); if(n){ showNote(n.dataset.note); }
+});
+
+/* ---------- exercise ---------- */
+let mi = 0, count = 0;
+function sceneFor(m, c){
+  const child = `<g class="sway">
+      <ellipse cx="100" cy="206" rx="34" ry="6" fill="#e3cf9f"/>
+      <path d="M100 150 L100 204" stroke="#2f6fb5" stroke-width="13" stroke-linecap="round"/>
+      <path d="M100 150 L128 168 L150 160" stroke="#2f6fb5" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+      <ellipse cx="96" cy="206" rx="10" ry="5" fill="${C.anar}"/><ellipse cx="156" cy="160" rx="9" ry="5" fill="${C.anar}" transform="rotate(-20 156 160)"/>
+      <rect x="80" y="96" width="40" height="62" rx="18" fill="${C.fay}"/>
+      <path d="M84 108 L48 98" stroke="#f1c9a5" stroke-width="10" stroke-linecap="round"/>
+      <path d="M116 108 L${m.prop==='cups'?'156 116':'152 98'}" stroke="#f1c9a5" stroke-width="10" stroke-linecap="round"/>
+      <circle cx="100" cy="72" r="24" fill="#f1c9a5"/>
+      <path d="M76 70 Q78 44 100 44 Q124 44 124 70 Q118 56 100 56 Q84 56 76 70Z" fill="#4a3226"/>
+      <circle cx="92" cy="74" r="3" fill="${C.ink}"/><circle cx="108" cy="74" r="3" fill="${C.ink}"/>
+      <path d="M93 84 Q100 90 107 84" stroke="${C.ink}" stroke-width="2.5" fill="none" stroke-linecap="round"/>
+      <circle cx="86" cy="82" r="4" fill="#f29b8f" opacity=".6"/><circle cx="114" cy="82" r="4" fill="#f29b8f" opacity=".6"/>
+    </g>`;
+  let props = '';
+  if(m.prop==='bags'){
+    props += `<path d="M232 176 h64 l-8 34 h-48z" fill="#c9893f" stroke="#8a5a2b" stroke-width="2"/><path d="M236 186h56M238 196h52" stroke="#8a5a2b" stroke-width="2"/>`;
+    for(let i=0;i<m.goal;i++){
+      const inB = i < c;
+      const x = inB ? 244 + (i%3)*16 : 168 + i*14, y = inB ? 166 - Math.floor(i/3)*10 : 204;
+      props += `<rect x="${x}" y="${y}" width="16" height="11" rx="4" fill="${['#e2574c','#f2c230','#4fb35a','#3b82c4','#a35bc4'][i]}" stroke="${C.ink}" stroke-width="1.5"/>`;
+    }
+  } else if(m.prop==='dots'){
+    const cols = ['#e2574c','#f2c230','#4fb35a','#3b82c4'];
+    for(let i=0;i<m.goal;i++){
+      const x = 190 + (i%2)*56, y = 150 + Math.floor(i/2)*44;
+      props += `<ellipse cx="${x}" cy="${y+30}" rx="22" ry="9" fill="${cols[i]}" opacity="${i<c?1:.35}" stroke="${i<c?C.ink:'none'}" stroke-width="2"/>`;
+      if(i<c) props += `<path d="M${x-6} ${y+30} l4 4 l8 -8" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/>`;
+    }
+  } else {
+    for(let i=0;i<m.goal;i++){
+      const stacked = i < c;
+      const row = [0,0,0,1,1,2][i], pos=[0,1,2,0,1,0][i];
+      const x = stacked ? 220 + pos*26 + row*13 : 180 + i*20, y = stacked ? 186 - row*24 : 214;
+      props += `<path d="M${x} ${y} h20 l-3 22 h-14z" fill="${['#e2574c','#3b82c4','#4fb35a','#f2c230','#a35bc4','#e2574c'][i]}" opacity="${stacked?1:.5}" stroke="${C.ink}" stroke-width="1.5" transform="${stacked?'':`translate(0 -10)`}"/>`;
+    }
+  }
+  return `<rect width="320" height="250" fill="${C.paper}"/>
+    <path d="M0 214 H320 V250 H0Z" fill="#efdcb0"/>
+    <g opacity=".5" fill="none" stroke="#e8d3a3" stroke-width="2"><path d="M20 30 l10 10 l10 -10 l-10 -10z M280 40 l10 10 l10 -10 l-10 -10z"/></g>
+    ${props}${child}`;
+}
+function startExercise(){ mi = 0; count = 0; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
+function renderMove(){
+  const m = MOVES[mi];
+  $('#exTitle').innerHTML = `تمرین ${fa(mi+1)} از ۳<small>تعادل · روز ${['اول','دوم','سوم'][state.today]}</small>`;
+  $$('#exSteps i').forEach((el,i)=> el.className = i<mi ? 'on' : i===mi ? 'cur' : '');
+  $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن · جای بازی را خلوت کن</small>`;
+  renderCount();
+}
+function renderCount(){
+  const m = MOVES[mi];
+  $('#sceneSvg').innerHTML = sceneFor(m, count);
+  $('#tapNum').textContent = fa(count);
+  $('#tapUnit').textContent = `از ${fa(m.goal)} ${m.unit}`;
+  $('#ringArc').style.strokeDashoffset = 427 * (1 - count/m.goal);
+  const half = Math.ceil(m.goal/2);
+  $('#hint').textContent = count===0 ? 'هر بار یکی را انجام دادی، دکمه را بزن'
+    : count===half ? 'حالا پایت را عوض کن!' : count<m.goal ? `${fa(m.goal-count)} تای دیگر` : 'تمام شد!';
+}
+$('#tap').addEventListener('click', ()=>{
+  const m = MOVES[mi]; if(count>=m.goal) return;
+  count++; renderCount();
+  const b = $('#tap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
+  try{ navigator.vibrate && navigator.vibrate(12); }catch(e){}
+  if(count>=m.goal) setTimeout(()=>{ $('#feel').hidden = false; $('#feel button').focus(); }, 450);
+});
+let feelings = [];
+$$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
+  feelings[mi] = +b.dataset.feel;
+  $('#feel').hidden = true;
+  if(mi < MOVES.length-1){ mi++; count=0; renderMove(); }
+  else finishDay();
+}));
+function finishDay(){
+  const d = state.today;
+  state.days[d] = feelings.slice(0,3);
+  if(state.today < 2) state.today++;
+  save(); renderTorches();
+  const lit = doneDays();
+  $('#bigTorches').innerHTML = [0,1,2].map(i=> torch(i<lit, i===lit-1 ? 'new' : '').replace('class="torch','class="torch')).join('');
+  $('#rewardText').textContent = lit>=3 ? 'هر سه مشعل روشن شد! پلِ لرزان را رد کردی و منزلِ «زندگی فعال» باز شد.'
+                                        : `مشعل روز ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روز دیگر':'دو روز دیگر'} تا گذشتن از پلِ لرزان.`;
+  $('#reward').hidden = false;
+  $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = lit>=3 ? '100%' : '70%'));
+  confetti();
+}
+function confetti(){
+  const cv = $('#confetti'); const ctx = cv.getContext('2d');
+  if(matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const r = cv.getBoundingClientRect(); cv.width = r.width*devicePixelRatio; cv.height = r.height*devicePixelRatio; ctx.scale(devicePixelRatio, devicePixelRatio);
+  const cols = [C.saffron, C.anar, C.fay, '#fff7e6', '#7c8be0'];
+  const ps = Array.from({length:70}, ()=>({x:r.width/2, y:r.height*.35, vx:(Math.random()-.5)*9, vy:-Math.random()*9-3, s:4+Math.random()*6, c:cols[Math.random()*5|0], a:Math.random()*6, t:0, diamond:Math.random()<.5}));
+  let f=0;(function tick(){ ctx.clearRect(0,0,r.width,r.height);
+    ps.forEach(p=>{ p.vy+=.25; p.x+=p.vx; p.y+=p.vy; p.a+=.15; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.a); ctx.fillStyle=p.c;
+      if(p.diamond){ ctx.beginPath(); ctx.moveTo(0,-p.s); ctx.lineTo(p.s*.6,0); ctx.lineTo(0,p.s); ctx.lineTo(-p.s*.6,0); ctx.fill(); } else ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2);
+      ctx.restore(); });
+    if(++f<150) requestAnimationFrame(tick); else ctx.clearRect(0,0,r.width,r.height); })();
+}
+
+/* ---------- family: the phone is the music referee ---------- */
+const PLAYERS = [{n:'بابا',c:'#3b82c4'},{n:'سارا',c:C.anar},{n:'مادربزرگ',c:'#a35bc4'},{n:'آرش',c:C.fay},{n:'مامان',c:'#e08a2c'}];
+const CHALLENGES = ['مثل لک‌لک روی یک پا بایست و تا ده بشمار','روی یک پا بایست و دست‌هایت را مثل بال باز کن','روی یک پا بایست و چشم‌هایت را تا پنج ببند','روی پنجهٔ پا سه قدمِ آرام بردار'];
+let holder = 0, playing = false, stepT = null, stopT = null, actx = null, noteT = null;
+function circlePos(i){ const a = Math.PI/2 + i*2*Math.PI/PLAYERS.length; return {x:50 + 42*Math.cos(a), y:50 + 42*Math.sin(a)}; }
+function drawCircle(){
+  const el = $('#circle');
+  el.querySelectorAll('.player,.tissue').forEach(n=>n.remove());
+  PLAYERS.forEach((p,i)=>{ const {x,y} = circlePos(i);
+    el.insertAdjacentHTML('beforeend', `<div class="player" data-i="${i}" style="right:${x}%;top:${y}%"><span class="face"><svg viewBox="0 0 44 44"><circle cx="22" cy="22" r="20" fill="${p.c}"/><circle cx="16" cy="19" r="2.6" fill="#fff"/><circle cx="28" cy="19" r="2.6" fill="#fff"/><path d="M15 27 Q22 33 29 27" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg></span>${p.n}</div>`); });
+  el.insertAdjacentHTML('beforeend', `<svg class="tissue" id="tissue" viewBox="0 0 30 30" aria-hidden="true"><path d="M4 8 Q15 2 26 8 L24 24 Q15 28 6 24Z" fill="#fff" stroke="${C.anar}" stroke-width="2"/><path d="M9 12 Q15 9 21 12" stroke="${C.anar}" stroke-width="1.6" fill="none"/></svg>`);
+  placeTissue();
+}
+function placeTissue(){
+  const {x,y} = circlePos(holder); const t = $('#tissue');
+  t.style.right = `${50 + (x-50)*.62}%`; t.style.top = `${50 + (y-50)*.62}%`;
+  $$('.player').forEach(p=> p.classList.toggle('hold', +p.dataset.i===holder));
+}
+const MELODY = [523,587,659,784,659,587,523,440,523,659,784,880,784,659,587,523];
+function playMelody(){
+  try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ return; }
+  let k=0; const tick = ()=>{ if(!playing) return;
+    const o = actx.createOscillator(), g = actx.createGain(); o.type='triangle'; o.frequency.value = MELODY[k++%MELODY.length];
+    g.gain.setValueAtTime(.0001, actx.currentTime); g.gain.exponentialRampToValueAtTime(.18, actx.currentTime+.02); g.gain.exponentialRampToValueAtTime(.0001, actx.currentTime+.28);
+    o.connect(g).connect(actx.destination); o.start(); o.stop(actx.currentTime+.3); noteT = setTimeout(tick, 300); };
+  tick();
+}
+function stopMusic(){ playing=false; clearInterval(stepT); clearTimeout(stopT); clearTimeout(noteT); const b=$('#music'); if(b) b.textContent='پخش آهنگ'; }
+$('#music').addEventListener('click', ()=>{
+  if(playing){ stopMusic(); return; }
+  $$('.player').forEach(p=>p.classList.remove('hit'));
+  playing = true; $('#music').textContent = 'آهنگ در حال پخش…';
+  $('#famCall').innerHTML = '<b>دستمال را با پا رد کنید!</b><small>روی یک پا · هر کس نوبتش شد، دستمال را جلوی نفر بعدی بگذارد</small>';
+  playMelody();
+  stepT = setInterval(()=>{ holder = (holder+1)%PLAYERS.length; placeTissue(); }, 1500);
+  stopT = setTimeout(()=>{
+    stopMusic();
+    const p = PLAYERS[holder]; const ch = CHALLENGES[Math.random()*CHALLENGES.length|0];
+    $(`.player[data-i="${holder}"]`).classList.add('hit');
+    $('#famCall').innerHTML = `<b>آهنگ قطع شد! نوبتِ ${p.n}</b>${ch}<small>پیشنهاد گوشی است؛ هم‌بازی‌ها می‌توانند حرکت دیگری پیشنهاد بدهند</small>`;
+    $('#music').textContent = 'دور بعد';
+  }, 6000 + Math.random()*7000);
+});
+
+/* ---------- parents ---------- */
+function renderParents(){
+  $('#calBody').innerHTML = MOVES.map((m,mIdx)=>`<tr><td>${m.t}</td>${[0,1,2].map(d=>{
+      const v = state.days[d] && state.days[d][mIdx];
+      return `<td>${v===undefined||v===null ? '<span class="empty" aria-label="هنوز نه"></span>' : `<svg viewBox="0 0 60 60" role="img" aria-label="${['سخت بود','معمولی بود','خیلی خوب بود'][v]}">${face(v)}</svg>`}</td>`; }).join('')}</tr>`).join('');
+  $('#behList').innerHTML = BEHAVIORS.map((b,i)=>`<div class="beh"><p>${b.t}</p><span class="stars" aria-label="${fa(state.stars[i])} ستاره">${[0,1,2].map(k=>STAR(k<state.stars[i])).join('')}</span>
+      <button class="seal" data-seal="${i}" ${state.stars[i]>=3?'disabled':''}>${state.stars[i]>=3?'کامل':'مُهر بزن'}</button></div>`).join('');
+  $('#pStars').textContent = fa(state.stars.reduce((a,b)=>a+b,0));
+}
+document.addEventListener('click', e=>{ const s = e.target.closest('[data-seal]'); if(!s) return; const i=+s.dataset.seal; if(state.stars[i]<3){ state.stars[i]++; save(); renderParents(); } });
+
+/* ---------- treasure ---------- */
+function renderTreasure(){
+  const st = [['توله‌یوز','از خوان ۱'],['یوزِ جوان','از خوان ۴'],['یوزِ تیزپا','بعد از خوان ۷']];
+  $('#stages').innerHTML = st.map((s,i)=>`<div class="stage-c ${i===0?'cur':'off'}"><svg viewBox="0 0 100 100">${yuzi(i+1)}</svg><b>${s[0]}</b>${s[1]}</div>`).join('');
+  $('#medals').innerHTML = KHANS.map((k,i)=>`<div class="m ${i<CURRENT?'got':'off'}" title="${k.name}"><svg viewBox="0 0 48 48">${ICONS[k.icon]}</svg></div>`).join('') + `<div class="m off"><svg viewBox="0 0 100 100">${yuzi(3)}</svg></div>`;
+}
+
+/* ---------- stork guardian ---------- */
+$('#stork').innerHTML = `
+  <path d="M60 128 L60 92" stroke="#e0703a" stroke-width="4" stroke-linecap="round"/>
+  <path d="M60 128 l-8 4 M60 128 l8 4" stroke="#e0703a" stroke-width="3" stroke-linecap="round"/>
+  <path d="M60 98 L74 88 L62 82" stroke="#e0703a" stroke-width="4" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+  <ellipse cx="58" cy="72" rx="26" ry="20" fill="#fff"/>
+  <path d="M34 70 Q40 90 70 86 Q58 80 50 66Z" fill="#2b2140"/>
+  <path d="M74 64 Q80 40 72 26" stroke="#fff" stroke-width="10" fill="none" stroke-linecap="round"/>
+  <circle cx="70" cy="22" r="11" fill="#fff"/>
+  <circle cx="73" cy="19" r="2.6" fill="#2b2140"/>
+  <path d="M79 20 L106 30 L79 26Z" fill="#e0703a"/>
+  <path d="M60 14 Q66 4 74 12" stroke="${C.anar}" stroke-width="4" fill="none" stroke-linecap="round"/>`;
+
+/* ---------- notes column ---------- */
+const NOTES = {
+  map:{h:'نقشهٔ سفر', d:[['در کتاب','فهرستِ ص ۶ و ۷: دوازده درس، جدا از هم'],['در برنامه','یک راهِ پیوسته از پایین به قله؛ هر خوان یک یا دو درس'],['چرا','کتاب داستانِ کلانی ندارد؛ نقشه به هر روز تمرین معنا می‌دهد'],['مشعل‌ها','همان «سه بار در هفته» که مقدمهٔ کتاب می‌خواهد']]},
+  khan:{h:'صفحهٔ خوان', d:[['در کتاب','هر درس پنج بخش دارد: آغاز، حرکت و خلاقیت، برویم بازی، بازی خانوادگی، بازی کن ستاره بگیر'],['در برنامه','همین بخش‌ها، به‌صورت کاشی‌هایی که زیر انگشت فرو می‌روند'],['نگهبان','هر خوان یک نگهبانِ دوست دارد؛ لک‌لک برای تعادل، چون روی یک پا می‌ایستد'],['باز شدن','منزلِ بعد با سه روز تمرین باز می‌شود، نه با یک بار']]},
+  ex:{h:'برویم بازی!', d:[['در کتاب','ص ۳۴: سه حرکتِ تعادلی با کیسهٔ شن، دایرهٔ رنگی و لیوان'],['در برنامه','یک حرکت در هر صفحه، با شمارنده‌ای که کودک خودش می‌زند'],['صورتک‌ها','همان سه صورتکِ تقویم هفتگیِ کتاب؛ بعد از هر حرکت'],['پاداش','روشن شدنِ مشعلِ امروز و بزرگ شدنِ یوزی']]},
+  family:{h:'بازی خانوادگی', d:[['در کتاب','ص ۳۶: دستمال‌بازی روی یک پا با آهنگ'],['در برنامه','گوشی داور می‌شود: آهنگ پخش می‌کند و یک جای غیرمنتظره قطعش می‌کند'],['چرا','در کتاب یک نفر باید آهنگ را قطع کند و از بازی جا می‌ماند؛ این‌جا همه بازی می‌کنند']]},
+  treasure:{h:'گنجینه', d:[['یوزی','یوزپلنگِ کتاب، با خط‌های اشکیِ یوزِ ایرانی؛ در سه مرحله بزرگ می‌شود'],['نشان‌ها','برای هر خوانِ گذشته یک نشان']]},
+  parents:{h:'بخش والدین', d:[['در کتاب','جدولِ کاغذیِ «روز اول، دوم، سوم» و ستاره‌هایی که خودِ کودک رنگ می‌کند'],['در برنامه','صورتک‌ها را کودک انتخاب می‌کند، اما ستارهٔ رفتار را بزرگتر مُهر می‌زند'],['پیام‌ها','جمله‌های یوزپلنگ در کتاب، مثل «من قانون بازی را رعایت می‌کنم»، این‌جا رفتارهای قابلِ ستاره‌اند']]},
+  story:{h:'قصهٔ حرکت', d:[['در کتاب','بخش «حرکت و خلاقیت»: قصه‌ای که بزرگتر می‌خواند و کودک کلمهٔ کلیدی را پیدا می‌کند'],['در برنامه','قصه پخش می‌شود و هر جا کلمهٔ «تعادل» آمد، کودک روی یک پا می‌ایستد'],['وضعیت','در این نمونه انجام‌شده نشان داده شده؛ در پیش‌نمایش ساخته نشده']]}
+};
+function showNote(k){ const n = NOTES[k]; if(!n) return; $('#noteCard').innerHTML = `<h4>${n.h}</h4><dl>${n.d.map(([a,b])=>`<dt>${a}</dt><dd>${b}</dd>`).join('')}</dl>`; }
+function flashNote(i){ const k = KHANS[i]; $('#noteCard').innerHTML = `<h4>خوان ${fa(i+1)}: ${k.name}</h4><dl><dt>درس‌ها</dt><dd>${k.lessons.join('، ')}</dd><dt>وضعیت</dt><dd>${i<CURRENT?'گذشته؛ نشانش در گنجینه است':'هنوز بسته؛ بعد از خوانِ قبلی باز می‌شود'}</dd></dl>`; }
+let ln = 1;
+$('#legend').innerHTML = KHANS.map((k,i)=>`<li><b>${k.name}</b>: ${k.lessons.map(l=>`${fa(ln++)}. ${l}`).join('، ')}</li>`).join('');
+
+/* ---------- boot ---------- */
+$$('[data-yuzi]').forEach(s=> s.innerHTML = yuzi(+s.dataset.yuzi));
+$$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
+drawMap(); renderTorches(); drawCircle(); renderTreasure(); go('map');
+})();
+</script>
