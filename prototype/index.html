@@ -354,7 +354,29 @@ button{font:inherit;color:inherit}
 
 /* ---------- camera ---------- */
 .cambox{position:relative;width:100%;height:100%;overflow:hidden;background:#101a4a;border-radius:inherit}
-.cambox video,.cambox canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cambox video,.cambox canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transform:scaleX(-1)}
+.cambox.full{position:fixed;inset:0;z-index:90;width:100vw;height:100vh;height:100dvh;border-radius:0;background:#0d1440;padding:env(safe-area-inset-top) 0 env(safe-area-inset-bottom)}
+html.camfull-on body{overflow:hidden}
+.cambox.fit{box-shadow:inset 0 0 0 6px #2fbf71}
+.camfull{position:absolute;top:10px;left:10px;z-index:4;width:44px;height:44px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0}
+.camfull svg{width:22px;height:22px}
+.cambox .camchip{left:62px;right:10px;z-index:3}
+.cambox.full .camchip{top:calc(12px + env(safe-area-inset-top));font-size:clamp(14px,4vw,20px);padding:10px 16px}
+.cambox.full .camfull{top:calc(12px + env(safe-area-inset-top))}
+.camguide{position:absolute;top:10%;bottom:6%;left:50%;width:34%;transform:translateX(-50%);z-index:1;opacity:.75;pointer-events:none}
+.camguide svg{width:100%;height:100%}
+.camfit{position:absolute;left:50%;bottom:18%;transform:translateX(-50%);z-index:3;width:max-content;max-width:88%;background:#fff;color:var(--ink);border:3px solid var(--ink);border-radius:22px;padding:8px 18px;text-align:center;box-shadow:0 5px 0 var(--ink)}
+.camfit b{display:block;font-family:var(--f-display);font-size:20px;line-height:1.3}
+.camfit small{display:block;font-size:13px;font-weight:700;color:var(--ink-soft)}
+.camfit.ok{background:#2fbf71;color:#fff}.camfit.ok small{color:#eafff2}
+.cambox.full .camfit b{font-size:clamp(24px,7.5vw,40px)}.cambox.full .camfit small{font-size:clamp(14px,4vw,20px)}
+.camcount{position:absolute;bottom:12px;right:12px;z-index:3;min-width:84px;background:var(--saffron);color:var(--ink);border:4px solid var(--ink);border-radius:22px;padding:2px 14px 6px;text-align:center;box-shadow:0 5px 0 var(--ink)}
+.camcount b{display:block;font-family:var(--f-display);font-size:34px;line-height:1.15}
+.camcount small{display:block;font-weight:800;font-size:12px}
+.camcount.done{background:#2fbf71;color:#fff}
+.cambox.full .camcount{bottom:calc(18px + env(safe-area-inset-bottom));right:18px;min-width:120px}
+.cambox.full .camcount b{font-size:clamp(48px,14vw,84px)}.cambox.full .camcount small{font-size:clamp(13px,3.6vw,18px)}
+.camwait .placetip{width:min(240px,70%);height:auto}
 .camchip{position:absolute;top:10px;inset-inline:10px;display:flex;align-items:center;gap:8px;justify-content:center;background:rgba(23,33,90,.82);color:var(--on-dark);border-radius:var(--r-pill);padding:7px 12px;font-size:13.5px;font-weight:700;text-align:center;line-height:1.5}
 .camchip.on{background:var(--saffron);color:var(--ink)}
 .camchip i{width:10px;height:10px;border-radius:50%;background:#7c8be0;flex:0 0 auto}
@@ -484,6 +506,20 @@ button{font:inherit;color:inherit}
 .grbody{display:flex;flex-direction:column;gap:12px}
 .grbody .rec-stage{margin:0 16px}
 .tally{display:flex;flex-direction:column;gap:8px;width:100%}
+.numin.stepper{gap:10px}.numin.stepper output{font-family:var(--f-display);font-size:40px;min-width:48px;text-align:center}.numin.stepper button{width:48px;height:48px;font-size:24px;padding:0}
+.cam-note{display:block;text-align:center;font-size:12.5px;font-weight:700;color:var(--ink-soft);line-height:1.7;margin:-4px 8px 0}
+.team{background:#fff;border:var(--bw) solid var(--ink);border-radius:20px;padding:10px 10px 8px;margin:0 0 12px;text-align:center}
+.team > b{display:block;font-size:15px;margin-bottom:6px}
+.tms{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:flex-start}
+.tm{border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;padding:1px;width:50px;color:var(--ink);opacity:.45;filter:grayscale(.8)}
+.tm.on{opacity:1;filter:none}
+.tm .tav{width:42px;height:42px;border-radius:50%;overflow:hidden;background:#fff;border:3px solid var(--paper-2);display:block}
+.tm.on .tav{border-color:var(--teal, #1ba39c)}
+.tm img{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block}
+.tm small{font-size:11.5px;font-weight:800;line-height:1.3}
+.tm[disabled]{cursor:default}
+.team .warn,.team .elder{display:block;margin-top:6px;font-size:12.5px;font-weight:700;line-height:1.7}
+.team .warn{color:#b4362b}.team .elder{color:var(--ink-soft)}
 .tally div{display:flex;align-items:center;gap:10px;background:#fff8ea;border-radius:16px;padding:6px 10px;box-shadow:0 3px 0 var(--paper-2)}
 .tally .tav{width:44px;height:44px;flex:0 0 44px;border-radius:50%;overflow:hidden;background:#fff;border:2px solid var(--ink);display:block}
 .tally img{width:100%;height:100%;display:block;object-fit:cover;object-position:50% 20%}
@@ -875,6 +911,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
           <h2>دستمال‌بازی<small>بازی خانوادگی منزل ۵، کتاب، ص ۳۶</small></h2>
         </div>
         <div class="sheet">
+          <div id="famTeam"></div>
           <p class="fam-intro">دست هم را بگیرید و <b>روی یک پا</b> حلقه بزنید. دستمال جلوی یک نفر روی زمین است. با آهنگ، هر کس دستمال را <b>با انگشت‌های پای دیگرش</b> برمی‌دارد و جلوی نفر بعدی می‌گذارد. آهنگ که قطع شد، صاحب دستمال یک حرکت تعادلی انجام می‌دهد.</p>
           <div class="circle" id="circle"><div class="rug"></div></div>
           <div class="fam-ctrl">
@@ -1378,6 +1415,7 @@ function go(name){
   if(name==='map'){ drawMap(); renderTop(); }
   if(name==='khan' && state.cur !== 5){ state.cur = 5; save(); }
   if(name==='treasure') renderTreasure();
+  if(name==='family' && !playing){ holder = 0; drawCircle(); }
   if(window.HKX) HKX.enter(name);
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic(); bgSync();
@@ -1507,13 +1545,36 @@ function confetti(){
 }
 
 /* ---------- family: the phone is the music referee ---------- */
-const PLAYERS = [{n:'بابا',img:'dad'},{n:'قهرمان',img:'girl-idle',kid:1},{n:'مادربزرگ',img:'grandma'},{n:'پدربزرگ',img:'grandpa'},{n:'آرش',img:'sibling'},{n:'مامان',img:'mom'}];
-function syncPlayers(){ PLAYERS[1].n = kidName(); PLAYERS[1].img = `${kid()}-idle`; }
+/* Who plays the family games is the family's choice: not every home has grandparents or a sibling.
+   PLAYERS is rebuilt in place (other code holds this same array): the child first, then whoever was picked. */
+const FAMILY = [{k:'mom',n:'مامان',img:'mom'},{k:'dad',n:'بابا',img:'dad'},{k:'sib',n:'خواهر یا برادر',img:'sibling'},
+                {k:'grandma',n:'مادربزرگ',img:'grandma',elder:1},{k:'grandpa',n:'پدربزرگ',img:'grandpa',elder:1}];
+const PLAYERS = [];
+const team = () => { if(!Array.isArray(state.team)) state.team = ['mom','dad']; return state.team; };
+function syncPlayers(){
+  PLAYERS.length = 0; PLAYERS.push({k:'kid', n:kidName(), img:`${kid()}-idle`, kid:1});
+  FAMILY.forEach(f => { if(team().includes(f.k)) PLAYERS.push(Object.assign({}, f)); });
+}
+const hasElder = () => PLAYERS.some(p => p.elder);
+/* the "who is playing?" row at the top of every family game; elderNote is that game's advice for grandparents */
+function teamHTML(elderNote){
+  syncPlayers();
+  const face = (p, on, fixed) => `<button class="tm ${on?'on':''}" ${fixed?'disabled':''} data-k="${p.k}" aria-pressed="${on}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${p.n}</small></button>`;
+  const few = PLAYERS.length < 2;
+  return `<div class="team"><b>چه کسانی بازی می‌کنند؟</b><div class="tms">${face(PLAYERS[0], true, true)}${FAMILY.map(f => face(f, team().includes(f.k))).join('')}</div>
+    ${few ? '<small class="warn">دست‌کم یک نفرِ دیگر را انتخاب کن؛ این بازی چندنفره است.</small>' : hasElder() && elderNote ? `<small class="elder">${elderNote}</small>` : ''}</div>`;
+}
+function wireTeam(root, after){
+  root.querySelectorAll('.tm[data-k]:not([disabled])').forEach(b => b.addEventListener('click', ()=>{
+    const k = b.dataset.k, t = team(); state.team = t.includes(k) ? t.filter(x => x !== k) : t.concat(k);
+    save(); syncPlayers(); sfx('click'); after && after(); }));
+}
 const CHALLENGES = ['مثل لک‌لک روی یک پا بایست و تا ده بشمار','روی یک پا بایست و دست‌هایت را مثل بال باز کن','روی یک پا بایست و چشم‌هایت را تا پنج ببند','روی پنجهٔ پا سه قدمِ آرام بردار'];
 let holder = 0, playing = false, stepT = null, stopT = null, noteT = null;
 function circlePos(i){ const a = Math.PI/2 + i*2*Math.PI/PLAYERS.length; return {x:50 + 42*Math.cos(a), y:50 + 42*Math.sin(a)}; }
 function drawCircle(){
   syncPlayers();
+  const tm = $('#famTeam'); if(tm){ tm.innerHTML = teamHTML('پدربزرگ و مادربزرگ اگر روی یک پا ایستادن سخت است، کنارِ حلقه روی صندلی بنشینند و دستمال را با دست بدهند.'); wireTeam(tm, ()=>{ holder = 0; drawCircle(); }); }
   const el = $('#circle');
   el.querySelectorAll('.player,.tissue').forEach(n=>n.remove());
   PLAYERS.forEach((p,i)=>{ const {x,y} = circlePos(i);
@@ -1605,7 +1666,9 @@ function renderStory(i){
     if(sc.pose){
       $('#cnt').addEventListener('click', ()=> countdown());
       $('#storyCam').addEventListener('click', ()=>{ CAM.storyOn = !CAM.storyOn; if(!CAM.storyOn){ CAM.hint = null; camStop(); } renderStory(page); });
-      if(CAM.storyOn){ CAM.onFrame = null; CAM.hint = storyHint; const slot = $('#camSlot'); slot.scrollIntoView({block:'center', behavior:'smooth'}); camStart(slot).then(ok=>{ if(ok && page===i) countdown(); }); }
+      if(CAM.storyOn){ CAM.onFrame = null; CAM.hint = storyHint; const slot = $('#camSlot'); slot.scrollIntoView({block:'center', behavior:'smooth'}); CAM.storyDone = false;
+        CAM.count = () => { const c = $('#cnt'); return c ? {big:c.textContent, small:'از ۵ ثانیه', done:CAM.storyDone} : null; };
+        camStart(slot, {full:true}).then(ok=>{ if(ok && page===i) countdown(); }); }
     }
   } else {
     found = new Set();
@@ -1634,7 +1697,7 @@ function countdown(){
     clearInterval(countT); b.textContent = '۰'; let acc = 0, last = performance.now();
     countT = setInterval(()=>{ const now = performance.now(), dt = now-last; last = now;
       if(CAM.state==='oneLeg' && CAM.kind === STORY[page].pose){ acc += dt; state.cam.poseSec += dt/1000; const k = Math.floor(acc/1000); if(k>n){ n = k; b.textContent = fa(n); n<5 ? sfx('tick') : null; } }
-      if(n>=5){ clearInterval(countT); sfx('done'); save(); b.classList.remove('run'); b.disabled = false;
+      if(n>=5){ clearInterval(countT); sfx('done'); save(); b.classList.remove('run'); b.disabled = false; CAM.storyDone = true;
         const a = $('#after'); if(a) a.hidden = false;
         const nx = $('#stNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; } }, 100);
     return;
@@ -1712,15 +1775,73 @@ function loadPose(){
 function camBox(){
   if(CAM.box) return CAM.box;
   const box = document.createElement('div'); box.className = 'cambox';
-  box.innerHTML = `<video playsinline muted></video><canvas></canvas><div class="camwait"><div class="spin"></div><span>یوزی دارد چشم‌هایش را باز می‌کند…</span></div><div class="camchip" hidden><i></i><span></span></div>`;
+  box.innerHTML = `<video playsinline muted autoplay></video><canvas></canvas>
+    <div class="camguide" hidden aria-hidden="true"><svg viewBox="0 0 100 200" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" stroke-dasharray="9 8"><circle cx="50" cy="22" r="15"/><path d="M50 38v70M50 52l-26 34M50 52l26 34M50 108l-18 82M50 108l18 82"/></svg></div>
+    <div class="camwait"><div class="spin"></div><span>یوزی دارد چشم‌هایش را باز می‌کند…</span></div>
+    <div class="camchip" hidden><i></i><span></span></div>
+    <div class="camfit" hidden role="status"><b></b><small></small></div>
+    <div class="camcount" hidden aria-live="polite"><b></b><small></small></div>
+    <button class="camfull" type="button" aria-label="تمام‌صفحه"></button>`;
   CAM.box = box; CAM.video = box.querySelector('video'); CAM.canvas = box.querySelector('canvas');
+  box.querySelector('.camfull').addEventListener('click', ()=>{ sfx('click'); camFull(!CAM.full); });
   return box;
 }
+/* the mirror: on a phone the child stands two or three steps away, so the camera takes the whole screen */
+const FULL_IC = {on:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>',
+                 off:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 6l12 12M18 6L6 18"/></svg>'};
+function camFull(on){
+  const box = CAM.box; if(!box) return; CAM.full = !!on;
+  if(on){ document.body.appendChild(box); } else if(CAM.slot && box.parentNode !== CAM.slot){ CAM.slot.appendChild(box); }
+  box.classList.toggle('full', CAM.full); document.documentElement.classList.toggle('camfull-on', CAM.full);
+  const b = box.querySelector('.camfull'); b.innerHTML = CAM.full ? FULL_IC.off : FULL_IC.on; b.setAttribute('aria-label', CAM.full ? 'کوچک کردنِ تصویر' : 'تمام‌صفحه');
+  if(CAM.video && CAM.stream) CAM.video.play().catch(()=>{});
+}
+const phoneSize = () => matchMedia('(max-width: 699px)').matches;
+/* Is the whole child in the picture? Coordinates are of the whole camera frame, which is exactly what
+   the box shows (object-fit: contain), so what Yuzi needs and what the child sees agree. */
+function fitOf(lm){
+  if(!lm) return 'nobody';
+  const v = i => lm[i] && (lm[i].visibility ?? 1) > .5;
+  if(!(v(11) && v(12))) return 'nobody';
+  const headIn = v(0) && lm[0].y > .02, feetIn = v(27) && v(28) && Math.max(lm[27].y, lm[28].y) < .985;
+  if(!headIn && !feetIn) return 'far';
+  if(!feetIn) return 'feet';
+  if(!headIn) return 'head';
+  return Math.max(lm[27].y, lm[28].y) - lm[0].y < .38 ? 'closer' : 'ok';
+}
+const FIT_TEXT = {nobody:['یوزی تو را نمی‌بیند','جلوی گوشی بایست و آن‌قدر عقب برو که از سر تا پا در تصویر باشی'], far:['دو قدم عقب برو','باید از سر تا پا دیده شوی'],
+  feet:['کمی عقب برو','پاهایت دیده نمی‌شود'], head:['سرت دیده نمی‌شود','کمی عقب برو، یا گوشی را بالاتر بگذار'], closer:['کمی جلوتر بیا','خیلی دور ایستاده‌ای'], ok:['عالی! همین‌جا بمان','از سر تا پا دیده می‌شوی']};
+function showFit(f, now){
+  const box = CAM.box, el = box.querySelector('.camfit'), ok = f === 'ok';
+  box.classList.toggle('fit', ok); box.querySelector('.camguide').hidden = ok || f === 'far';
+  el.classList.toggle('ok', ok); el.querySelector('b').textContent = FIT_TEXT[f][0]; el.querySelector('small').textContent = FIT_TEXT[f][1];
+  el.hidden = false; clearTimeout(CAM.fitT);
+  if(ok){ if(!CAM.wasFit) sfx('done'); CAM.wasFit = true; CAM.fitT = setTimeout(()=>{ el.hidden = true; }, 1400); }
+}
+function showCount(){
+  const el = CAM.box.querySelector('.camcount'), c = CAM.count && CAM.count();
+  const key = c ? `${c.big}|${c.small}|${c.done}` : '';
+  if(key === CAM.countKey) return; CAM.countKey = key;
+  el.hidden = !c; if(!c) return;
+  el.querySelector('b').textContent = c.big; el.querySelector('small').textContent = c.small || ''; el.classList.toggle('done', !!c.done);
+  if(c.done && CAM.full){ clearTimeout(CAM.doneT); CAM.doneT = setTimeout(()=>{ if(CAM.full) camFull(false); }, 1800); }   // the reward is on the page underneath
+}
 function camMessage(html, wait=true){ const w = CAM.box.querySelector('.camwait'); w.hidden = false; w.innerHTML = (wait?'<div class="spin"></div>':'<img src="img/yuzi-1-comfort.webp" alt="">') + `<span>${html}</span>`; }
-async function camStart(slot){
-  slot.appendChild(camBox());
-  if(CAM.stream){ return true; }
-  camMessage('یوزی دارد چشم‌هایش را باز می‌کند…');
+const PLACE_TIP = `<svg class="placetip" viewBox="0 0 220 120" aria-hidden="true" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+  <path d="M6 112h208" opacity=".5"/><rect x="18" y="52" width="28" height="50" rx="5" fill="#ffffff22"/><circle cx="32" cy="58" r="2.5" fill="#fff"/><path d="M46 100l12 12"/>
+  <path d="M66 70h70" stroke-dasharray="6 7"/><path d="M128 63l9 7-9 7"/>
+  <circle cx="178" cy="22" r="9"/><path d="M178 31v38M178 42l-16 18M178 42l16 18M178 69l-11 41M178 69l11 41"/></svg>`;
+function camPlaceMsg(){ camMessage(`${PLACE_TIP}<b style="display:block;font-size:16px;margin:6px 0 2px">گوشی را ایستاده به چیزی تکیه بده و دو سه قدم عقب برو</b>تا از سر تا پا در تصویر باشی. یوزی دارد چشم‌هایش را باز می‌کند…`); }
+/* opts.full: a game the child plays alone, from a distance — on a phone the mirror takes the whole screen.
+   Family games leave it off: there the phone is also the music player and the scoreboard. */
+async function camStart(slot, opts={}){
+  CAM.slot = slot; const box = camBox();
+  if(!CAM.full) slot.appendChild(box);
+  if(CAM.stream){ if(opts.full && phoneSize() && !CAM.full) camFull(true); return true; }
+  CAM.wasFit = false; CAM.fitRaw = ''; CAM.fit = ''; CAM.countKey = null;
+  box.querySelector('.camfit').hidden = true; box.querySelector('.camcount').hidden = true; box.querySelector('.camguide').hidden = true;
+  camFull(!!opts.full && phoneSize());
+  camPlaceMsg();
   try{
     if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nocam');
     const [stream, pose] = await Promise.all([navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:{ideal:640}, height:{ideal:480}}, audio:false}), loadPose()]);
@@ -1733,7 +1854,9 @@ async function camStart(slot){
   }
 }
 function camStop(keepBox){
-  cancelAnimationFrame(CAM.raf); CAM.raf = 0;
+  cancelAnimationFrame(CAM.raf); CAM.raf = 0; clearTimeout(CAM.doneT); clearTimeout(CAM.fitT);
+  if(CAM.full) camFull(false);
+  CAM.count = null;
   if(CAM.stream){ CAM.stream.getTracks().forEach(t=>t.stop()); CAM.stream = null; }
   if(CAM.video) CAM.video.srcObject = null;
   CAM.state = 'off'; CAM.listeners.forEach(f=>f('off'));
@@ -1792,6 +1915,10 @@ function loop(){
       if(CAM.onFrame) CAM.onFrame(ctx, lm, cv);
     }
     const now = performance.now();
+    const f = fitOf(lm);
+    if(f !== CAM.fitRaw){ CAM.fitRaw = f; CAM.fitSince = now; }
+    if(f !== CAM.fit && now - CAM.fitSince > 400){ CAM.fit = f; showFit(f, now); }
+    showCount();
     if(raw !== rawLast){ rawLast = raw; rawSince = now; }
     const held = now - rawSince;
     let next = CAM.state;
@@ -1905,7 +2032,8 @@ $('#exCam').addEventListener('click', async ()=>{
   const b = $('#exCam'); b.setAttribute('aria-pressed','true'); b.querySelector('span').textContent = 'خاموش کردنِ دوربین';
   $('#scene').classList.add('cam');
   $('#hint').textContent = 'جلوی دوربین بایست؛ از سر تا پا باید دیده شوی.';
-  await camStart($('#scene'));
+  CAM.count = () => { const m = MOVES[mi]; return {big:fa(count), small:`از ${fa(m.goal)} ${m.unit}`, done: count >= m.goal}; };
+  await camStart($('#scene'), {full:true});
 });
 
 const POSE_TIPS = {tree:'دست‌ها را بالای سر به هم بچسبان، مثلِ شاخه‌های درخت', stork:'دست‌ها را مثلِ بال باز کن و زانو را بالا بیاور', angel:'به پهلو بایست، کمرت را خم کن و یک پا را صاف به عقب ببر'};
@@ -1929,7 +2057,8 @@ $('#recCam').addEventListener('click', async ()=>{
   CAM.recOn = true; btn.setAttribute('aria-pressed','true'); btn.querySelector('span').textContent = 'خاموش کردنِ دوربین';
   stage.classList.add('cam'); stage.querySelectorAll('img').forEach(i=>i.hidden=true);
   $('#recMsg').textContent = 'جلوی دوربین بایست. یوزی خودش زمان را می‌گیرد؛ تصویر از این دستگاه بیرون نمی‌رود.';
-  await camStart(stage);
+  CAM.count = () => ({big: watchT ? secs((performance.now()-watchStart)/1000) : '۰', small:'ثانیه روی یک پا'});
+  await camStart(stage, {full:true});
 });
 
 /* ---------- treasure ---------- */
@@ -1993,7 +2122,7 @@ $('#musicBtn').addEventListener('click', ()=>{ musicOn = !musicOn; store.set('mu
 renderMusic();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
 /* what khans.js (khans 1 and 2) needs from this page */
-window.HK = { ICON, paintIcons, voiceLater, hush, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
+window.HK = { ICON, paintIcons, voiceLater, hush, camFull, phoneSize, teamHTML, wireTeam, hasElder, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
   fig: n => fig(n), kid, kidName, yz, go, CAM, camStart, camStop, readPose, face, torch, STAR, confetti, dayNum, LOCK,
   PLAYERS, syncPlayers, lessonOpen, lessonDone, daysOf, KHANS, GUARD_NAMES, renderTop, drawMap, PREVIEW,
   newLesson };

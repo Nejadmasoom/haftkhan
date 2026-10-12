@@ -200,13 +200,14 @@ const LESSONS = {
        t:'کمی که جلوتر رفتند، تاپ‌تاپو زمین بازی را دید. فوری دوید. به تاب رسید. توی تاب نشست. مامان، تاپ‌تاپو را هل داد و گفت: <q>تاب، تاب، عباسی. خدا جانم! تاپ‌تاپو را نیندازی.</q>'}],
       asks:['مامان و تاپ‌تاپو تا وقتی که به زمین بازی برسند، چه کار کردند؟']},
     play:{src:'ص ۱۱', rule:'به شکل بازی‌ها نگاه کن. یک روز درمیان یکی از آن‌ها را انجام بده.', pick:1,
-      need:'یک یا دو بادکنک', yuzi:['careful','من موقع بازی کردن، مواظب وسایل اطرافم هستم.'],
+      need:'یک یا دو بادکنک (با دوربین، بادکنکِ روی صفحه هم کافی است)', yuzi:['careful','من موقع بازی کردن، مواظب وسایل اطرافم هستم.'],
       games:[
         {name:'بادکنک با سر', t:'با سرت، پشت‌سرهم به یک بادکنک ضربه بزن.', kind:'balloon', parts:['head'], balls:1, goal:10, unit:'ضربه', figs:['m1-hitHead','stand']},
         {name:'بادکنک با دست و پا', t:'با دست‌ها و پاهایت، پشت‌سرهم به یک بادکنک ضربه بزن.', kind:'balloon', parts:['hand','foot','knee'], balls:1, goal:10, unit:'ضربه', figs:['m1-hitHand','m1-hitFoot']},
         {name:'دو بادکنک', t:'با همه اندام‌هایت، پشت‌سرهم به دو بادکنک ضربه بزن.', kind:'balloon', parts:['head','hand','knee','foot'], balls:2, goal:12, unit:'ضربه', figs:['m1-hitAll','m1-hitKnee']}]},
     family:{kind:'osta', title:'اوستا', src:'ص ۱۲', yuzi:['rules','من قانون بازی را رعایت می‌کنم.'],
       intro:'دایره بزنید. یک نفر <b>اوستا</b> می‌شود و با توپ وسط می‌ایستد. اوستا فرمان می‌دهد، مثلِ «بنشین‌وپاشو»، «دست روی بینی»، «پای چپ بالا»، و بقیه انجام می‌دهند. هر کس اشتباه کند، اوستا توپ را به طرفش می‌اندازد؛ اگر توپ به او نخورد، او اوستا می‌شود.',
+      elder:'برای پدربزرگ و مادربزرگ: «بنشین‌وپاشو» را نیم‌خیز یا با تکیه به صندلی انجام دهند؛ اگر خواستند خودشان اوستا شوند.',
       cmds:[{k:'squatUp', t:'بنشین‌وپاشو', fig:'m1-squat'}, {k:'nose', t:'دست روی بینی', fig:'m1-nose'}, {k:'legL', t:'پای چپ بالا', fig:'m1-legL'},
             {k:'legR', t:'پای راست بالا', fig:'m1-legR'}, {k:'armU', t:'دست‌ها بالا', fig:'m1-armU'}, {k:'armS', t:'دست‌ها پهلو', fig:'m1-armS'}]},
     star:{kind:'cards', title:'رفتارهای درست', src:'ص ۱۳',
@@ -240,6 +241,7 @@ const LESSONS = {
         {name:'چوب و بادکنک', t:'چوب سبکی را پشت شانه‌ات قرار بده، با دست‌هایت چوب را بگیر، حالا با سر و پاها به بادکنک ضربه بزن.', kind:'balloon', parts:['head','knee','foot'], need:'stick', balls:1, goal:10, unit:'ضربه', figs:['m2-stickKick','m2-stick']}]},
     family:{kind:'chairs', title:'صندلی‌بازی', src:'ص ۱۸', yuzi:['listen','من در وقت مناسب بازی می‌کنم.'],
       intro:'صندلی‌ها را دایره‌وار بچینید و یکی را علامت بزنید. با شروعِ آهنگ، همه آرام دورِ صندلی‌ها راه می‌روند. آهنگ که قطع شد، همه باید <b>به‌درستی</b> روی صندلی‌ها بنشینند. هر کس روی صندلیِ علامت‌دار نشست، یک حرکتِ نمایشی یا شیرین‌کاری اجرا می‌کند.',
+      elder:'بزرگترها آرام راه بروند و روی صندلیِ محکم بنشینند؛ اگر خواستند آهنگ را آن‌ها پخش کنند.',
       tricks:['مثلِ خروس بانگ بزن و روی یک پا بایست','سه بار دست بزن و یک دور بچرخ','مثلِ گربه کش و قوس بیا','یک شعرِ کوتاه بخوان','مثلِ ربات چند قدم راه برو','با چشمِ بسته تا پنج بشمار']},
     star:{kind:'posture', title:'درست بایست، درست بنشین', src:'ص ۱۹',
       t:'به شکل‌ها نگاه کن. در طول هفته، هر روزی که مانند آن‌ها درست ایستادی، درست نشستی، درست کوله‌پشتی‌ات را حمل کردی و درست مداد در دست گرفتی و نوشتی، یکی از ستاره‌ها را رنگ کن.',
@@ -267,6 +269,7 @@ const LESSONS = {
         {name:'مثل مار', t:'روی شکم بخز.', kind:'manual', goal:10, unit:'بار', figs:['m3-snake-a','m3-snake-b'], art:'animal-snake'}]},
     family:{kind:'charades', title:'حدسِ حیوان', src:'ص ۲۴', yuzi:['listen','من موقع صحبت کردن هم‌بازی‌ها، به حرف آن‌ها گوش می‌کنم.'],
       intro:'دانش‌آموز به‌عنوان شروع‌کننده‌ی بازی، حرکت یک حیوان را نشان می‌دهد و هم‌بازی‌ها باید نام حیوان را حدس بزنند. با مشخص شدن حیوان، همگی با تقلید صدای حیوان، حرکت را تکرار می‌کنند. فردی که قشنگ‌ترین نمایش را دارد، دور بعدی بازی را اجرا می‌کند.',
+      elder:'هر کس حیوانی را نمایش دهد که برایش راحت است؛ پدربزرگ و مادربزرگ می‌توانند نشسته نمایش دهند.',
       animals:[['کانگورو','animal-kangaroo'],['قورباغه','story-frog'],['مرغ','animal-hen'],['گوریل','animal-gorilla'],['گربه','animal-cat'],['مار','animal-snake'],
                ['خروس','rooster-greet'],['آهو','gazelle-greet'],['لک‌لک','stork-greet'],['اسب','rakhsh-greet'],['بزِ کوهی','ibex-greet'],['خرگوش','story-rabbit']]},
     star:{kind:'jump', title:'پرشِ جفت', src:'ص ۲۵', fig:['m3-roo-a','m3-roo-b'], yuzi:['warmup','من قبل از اینکه بپرم، درجا می‌زنم تا بدنم را گرم کنم.'],
@@ -296,6 +299,7 @@ const LESSONS = {
         {name:'لیوان‌ها با یک دست', t:'با یک دست لیوان‌های پلاستیکی را روی‌هم بچین.', kind:'manual', goal:6, unit:'لیوان', figs:['m4-plank-a','m4-plank-b'], prop:'cups'},
         {name:'چرخیدن روی دست‌ها', t:'با دست‌هایت روی زمین، دور خودت بچرخ.', kind:'manual', goal:2, unit:'دور', figs:['m4-spin-a','m4-spin-b']}]},
     family:{kind:'feet', title:'بالای سر با پا', src:'ص ۳۰', yuzi:['careful','من موقع بازی کردن، مواظب هم‌بازی‌هایم هستم.'],
+      elder:'این بازی روی زمین و با پاهاست؛ پدربزرگ و مادربزرگ داور شوند: آهنگ را پخش کنند و اشیا را بشمارند.',
       intro:'اشیای سبک را کنار هم بگذارید: عروسک، توپ‌های پارچه‌ای، جوراب یا لباسِ گلوله‌شده. همه با تکیه بر دست‌ها و پاهای صاف روی زمین دورِ اشیا حلقه بزنید. با پخشِ آهنگ، هر کس با پاهایش اشیا را یکی‌یکی برمی‌دارد و با کمکِ دست‌ها بالای سرش می‌گذارد. آهنگ که تمام شد، کسی که بیشترین شیء را بالای سر گذاشته تشویق می‌شود.'},
     star:{kind:'timer', title:'خرچنگی راه برو', src:'ص ۳۱', fig:['m4-crab-a','m4-crab-b'],
       t:'به شکل نگاه کن. در طول هفته، هرروز مثل او خرچنگی راه برو، هر بار که بیشتر خرچنگی راه رفتی، یکی از ستاره‌ها را رنگ کن.'}
@@ -519,13 +523,20 @@ function startGame(){
 function startOne(){
   const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.det = g.det ? detector(g.det) : null; resetBase();
   $('#gxTitle').innerHTML = `${g.name}<small>منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}، کتاب، ${LESSONS[n].play.src}</small>`;
-  $('#gxInstr').innerHTML = `${g.t}${g.need==='stick' ? '<small>چوب پشتِ شانه‌ها بماند</small>' : g.kind==='manual' ? '<small>این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند</small>' : '<small>جای بازی را خلوت کن، با دوربین، یوزی خودش می‌شمارد</small>'}`;
+  instr(g);
   $('#gxCam').parentElement.hidden = g.kind === 'manual';
   if(g.kind === 'manual' && X.camOn) gxCamOff();
   flipFigs($('#gxFig'), g.figs);
   voice(`g${n}-${X.q[X.qi]+1}`);
-  if(X.camOn) armCam();
+  if(X.camOn){ armCam(); if(H.phoneSize() && !H.CAM.full) H.camFull(true); }   // the second move of the day: back to the mirror
   renderCount();
+}
+/* a balloon game is played with a real balloon, or — with the camera on — with the one Yuzi floats on the screen */
+function instr(g){
+  const sub = g.kind === 'manual' ? 'این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند'
+    : g.kind === 'balloon' ? (X.camOn ? 'بادکنک روی صفحه است؛ بادکنکِ واقعی لازم نیست. جای بازی را خلوت کن.' : 'با بادکنکِ واقعی بازی کن و بزرگترت بشمارد؛ یا دوربین را روشن کن تا یوزی یک بادکنکِ روی صفحه بیاورد و خودش بشمارد.')
+    : g.need === 'stick' ? 'چوب پشتِ شانه‌ها بماند' : 'جای بازی را خلوت کن، با دوربین، یوزی خودش می‌شمارد';
+  $('#gxInstr').innerHTML = `${g.t}<small>${sub}</small>`;
 }
 function sceneSVG(g, c){
   let props = '';
@@ -613,6 +624,7 @@ function armCam(){
   const CAM = H.CAM, g = curGame();
   CAM.onFrame = (ctx, lm, cv) => gameFrame(ctx, lm, cv);
   CAM.hint = () => gameHint();
+  CAM.count = () => { const g = curGame(); return g ? {big:fa(X.count), small:`از ${fa(g.goal)} ${g.unit}`, done: X.count >= g.goal} : null; };
   CAM.chipOn = () => performance.now() - X.lastSeen < 600;
 }
 function gameHint(){
@@ -658,15 +670,15 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
     ctx.restore();
   });
 }
-function gxCamOff(){ X.camOn = false; camOff(); $('#gxScene').classList.remove('cam');
+function gxCamOff(){ X.camOn = false; camOff(); $('#gxScene').classList.remove('cam'); if(curGame()) instr(curGame());
   const b = $('#gxCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent = 'یوزی با دوربین ببیند'; }
 $('#gxCam').addEventListener('click', async ()=>{
   if(X.camOn){ gxCamOff(); renderCount(); return; }
   X.camOn = true; resetBase(); X.balls = []; armCam();
   const b = $('#gxCam'); b.setAttribute('aria-pressed','true'); b.querySelector('span').textContent = 'خاموش کردنِ دوربین';
-  $('#gxScene').classList.add('cam'); renderCount();
+  $('#gxScene').classList.add('cam'); renderCount(); instr(curGame());
   $('#gxHint').textContent = 'جلوی دوربین بایست؛ از سر تا پا باید دیده شوی.';
-  const ok = await H.camStart($('#gxScene')); if(!ok){ X.camOn = false; }
+  const ok = await H.camStart($('#gxScene'), {full:true}); if(!ok){ X.camOn = false; }
 });
 
 /* ===================================================================== story */
@@ -747,7 +759,8 @@ function wireTask(t){
   }
   const goal = t.type === 'seq' ? t.reps : t.type === 'reps' ? t.goal : t.sec;
   const show = v => { cnt.firstChild.nodeValue = fa(v); };
-  const add = byCam => { if(k >= goal) return; k++; show(t.type==='hold' ? goal - k : k); if(byCam) bumpCam(n, t.type==='seq' ? `seq:${t.steps[0][0]}` : t.type==='hold' ? t.check : t.det); sfx(k < goal ? 'tick' : 'hit'); if(k >= goal) taskDone(); };
+  const add = byCam => { if(k >= goal) return; k++; show(t.type==='hold' ? goal - k : k); if(byCam) bumpCam(n, t.type==='seq' ? `seq:${t.steps[0][0]}` : t.type==='hold' ? t.check : t.det); sfx(k < goal ? 'tick' : 'hit');
+    if(k >= goal){ taskDone(); if(byCam) autoNext(); } };
   if(t.type === 'seq') markChip(t, 0);
   if(!Y.camOn){
     cnt.addEventListener('click', ()=>{
@@ -777,12 +790,21 @@ function wireTask(t){
     if(t.type === 'hold'){ if(PRED[t.check](b)){ seen = now; holdAcc += dt; const s = Math.floor(holdAcc/1000); while(k < s && k < goal) add(true); } }
     if(t.type === 'reps' && det && det.step(b, now)){ seen = now; add(true); }
   };
-  H.camStart(slot).then(ok => { if(!ok){ Y.camOn = false; } });
+  CAM.count = () => ({big: fa(t.type==='hold' ? goal - k : k), small: t.type==='seq' ? `از ${fa(goal)} دور` : t.type==='hold' ? 'ثانیه مانده' : `از ${fa(goal)}`, done: k >= goal});
+  H.camStart(slot, {full:true}).then(ok => { if(!ok){ Y.camOn = false; } });
+}
+/* With the camera on the child is across the room. When the next page is another camera move, go on by
+   ourselves instead of making them walk back to press "next" (book p.28: four moves in a row). */
+function autoNext(){
+  const pages = LESSONS[G.n].story.pages, nx = pages[Y.page + 1], here = Y.page;
+  if(!(Y.camOn && nx && nx.task && ['seq','hold','reps'].includes(nx.task.type))) return;
+  H.CAM.hint = () => 'آفرین! حرکتِ بعدی…';
+  clearTimeout(Y.auto); Y.auto = setTimeout(()=>{ const b = $('#gsNext'); if(Y.page === here && b && !b.disabled && !$('#s-gstory').hidden) b.click(); }, 2600);
 }
 function markChip(t, i){ $$('#tkChips span').forEach(s => { const k = +s.dataset.k; s.classList.toggle('on', k === i); s.classList.toggle('ok', k < i); }); }
 
 /* ===================================================================== family games */
-const F = {t:null, t2:null, playing:false, camOn:false, round:0, performer:1, tally:null, osta:null};
+const F = {t:null, t2:null, playing:false, camOn:false, round:0, performer:0, tally:null, osta:null};
 function famStop(){ clearTimeout(F.t); clearInterval(F.t2); clearTimeout(F.t3); F.playing = false; stopTune(); }
 /* game music lives in music.js: a march for walking round the chairs, a bouncy tune for the feet game */
 function playTune(name){ stopTune(); if(!H.ac() || H.muted || !window.HKMusic) return; HKMusic.play(name, {ctx: H.ac()}); }
@@ -791,15 +813,16 @@ function renderFamily(){
   const n = G.n = S().cur, Ld = LESSONS[n], fm = Ld.family; famStop(); H.syncPlayers();
   $('#gfTitle').innerHTML = `${fm.title}<small>بازی خانوادگی منزل ${fa(n)}، کتاب، ${fm.src}</small>`;
   const say = `<div class="rec-say" style="padding:0 0 12px"><img src="${yuziArt(fm.yuzi[0])}" alt=""><div class="bubble">${fm.yuzi[1]}</div></div>`;
-  const intro = `<p class="fam-intro">${fm.intro}</p>${say}`;
+  const intro = `${H.teamHTML(fm.elder)}<p class="fam-intro">${fm.intro}</p>${say}`;
   if(fm.kind === 'osta') famOsta(fm, intro);
   if(fm.kind === 'chairs') famChairs(fm, intro);
   if(fm.kind === 'charades') famCharades(fm, intro);
   if(fm.kind === 'feet') famFeet(fm, intro);
+  const tm = $('#gfBody .team'); if(tm) H.wireTeam(tm, ()=>{ F.tally = null; F.performer = 0; renderFamily(); });
 }
 const famDone = () => { const n = G.n; if(!LS(n).family){ LS(n).family = true; H.save(); } };
 function famCam(slotSel, onLabel){
-  return `${camBtn('fCam', F.camOn, onLabel, true)}<div class="famcam" id="fSlot" ${F.camOn?'':'hidden'}></div>`;
+  return `${camBtn('fCam', F.camOn, onLabel, true)}<small class="cam-note">یوزی فقط یک نفر را می‌بیند: گوشی را رو به ${esc(H.kidName())} بگذارید و بقیه پشتِ سرش نایستند.</small><div class="famcam" id="fSlot" ${F.camOn?'':'hidden'}></div>`;
 }
 function wireFamCam(after){
   $('#fCam').addEventListener('click', async ()=>{
@@ -828,7 +851,7 @@ function famOsta(fm, intro){
       if(c.k === 'squatUp'){ if(PRED.squat(b)) sawSquat = true; else if(sawSquat && PRED.stand(b)) ok = true; }
       else if(want(b)){ seen = seen || performance.now(); if(performance.now() - seen > 250) ok = true; } else seen = 0;
       if(ok){ sfx('star'); bumpCam(G.n, 'osta'); $('#oCall').innerHTML = `<b>آفرین ${esc(H.kidName())}!</b>«${c.t}» را درست انجام دادی؛ یوزی دید.`; } };
-    clearTimeout(F.t3); F.t3 = setTimeout(()=>{ if(!ok){ sfx('miss'); $('#oCall').innerHTML = `<b>توپ! اوستا توپ را انداخت</b>${esc(H.kidName())}، «${c.t}» را یوزی ندید. دفعهٔ بعد زودتر!`; } CAM.onFrame = null; }, c.k === 'squatUp' ? 4500 : 3500);
+    clearTimeout(F.t3); F.t3 = setTimeout(()=>{ if(!ok){ sfx('miss'); $('#oCall').innerHTML = `<b>یوزی ندید!</b>${esc(H.kidName())}، «${c.t}» را یوزی ندید. اگر اشتباه کردی، کسی که توپ دستش است آن را آرام به طرفت بیندازد!`; } CAM.onFrame = null; }, c.k === 'squatUp' ? 4500 : 3500);
   };
   const next = () => {
     let i; do{ i = Math.random()*fm.cmds.length|0; } while(i === last && fm.cmds.length > 1); last = i; const c = fm.cmds[i];
@@ -870,7 +893,7 @@ function famChairs(fm, intro){
 }
 /* حدسِ حیوان: a secret animal card for the performer, then everyone copies it with the sound */
 function famCharades(fm, intro){
-  const P = H.PLAYERS;
+  const P = H.PLAYERS; if(F.performer >= P.length) F.performer = 0;
   const faces = () => P.map((p,i)=>`<button class="player-pick" data-i="${i}" style="border:0;background:none;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;font-weight:700;color:var(--ink)">
       <span style="width:52px;height:52px;border-radius:50%;overflow:hidden;background:#fff;box-shadow:0 3px 0 var(--paper-2);border:3px solid ${i===F.performer?'var(--anar)':'transparent'}"><img src="img/${p.img}.webp" alt="" style="width:100%;height:100%;object-fit:cover;object-position:50% 20%;${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span>${p.n}</button>`).join('');
   let secret = null, shown = false, stage = 'pick';
@@ -899,7 +922,7 @@ function famCharades(fm, intro){
 }
 /* بالای سر با پا: music for a set time, then a tally of what each player lifted overhead */
 function famFeet(fm, intro){
-  const P = H.PLAYERS; F.tally = F.tally && F.tally.length === P.length ? F.tally : P.map(()=>0);
+  const P = H.PLAYERS.filter(p => !p.elder); F.tally = F.tally && F.tally.length === P.length ? F.tally : P.map(()=>0);
   const draw = (left) => {
     const best = Math.max(...F.tally);
     $('#gfBody').innerHTML = `${intro}
@@ -922,7 +945,7 @@ function famFeet(fm, intro){
 }
 
 /* ===================================================================== play and earn a star */
-const R = {watchT:null, start:0, camOn:false, mode:'cam'};
+const R = {watchT:null, start:0, camOn:false, mode:'feet', feet:3};
 function renderStar(){
   const n = G.n = S().cur, Ld = LESSONS[n], sk = Ld.star, st = LS(n);
   clearInterval(R.watchT); R.watchT = null;
@@ -980,21 +1003,26 @@ function starPosture(sk, book){
     CAM.onFrame = (ctx, lm, cv) => { if(ok) return; const bd = bodyOf(lm, cv.width, cv.height), now = performance.now();
       if(bd && PRED[c[3]](bd)){ acc += now - last; } last = now;
       if(acc > 3000){ ok = true; P0.on[k] = true; bumpCam(G.n, c[3]); H.save(); sfx('star'); setTimeout(()=>{ camOff(); starPosture(sk, book); done(); }, 900); } };
-    await H.camStart(slot);
+    CAM.count = () => ({big: fa(Math.min(3, Math.floor(acc/1000))), small:'از ۳ ثانیه', done: ok});
+    await H.camStart(slot, {full:true});
   }));
 }
 function starRecord(sk, book){
   const st = LS(G.n), jump = sk.kind === 'jump';
   const recs = st.rec.filter(r => !jump || r.m === R.mode);
-  const unit = jump ? 'سانتی‌متر' : 'ثانیه', show = v => jump ? fa(Math.round(v)) : secs(v);
-  const off = Math.max(0, recs.length-7), last = recs.slice(off), top = Math.max(jump ? 20 : 10, ...last.map(r=>r.v));
+  /* the book asks for a jump FORWARD. Counting your own foot-lengths needs no tape; the camera can only
+     see height, so it measures a different jump and is kept as a separate record */
+  const unit = jump ? (R.mode === 'feet' ? 'کفِ پا' : 'سانتی‌متر') : 'ثانیه', show = v => jump ? fa(Math.round(v)) : secs(v);
+  const off = Math.max(0, recs.length-7), last = recs.slice(off), top = Math.max(jump ? (R.mode === 'feet' ? 6 : 20) : 10, ...last.map(r=>r.v));
   const bars = last.map((r,k)=>{ const prev = off+k>0 ? recs[off+k-1].v : null; return `<div>${show(r.v)}<i class="${prev!==null && r.v>prev ? 'up':''}" style="height:${Math.max(6, r.v/top*100)}%"></i></div>`; }).join('');
   const fig = `<div class="rec-stage" id="rsStage"><img id="rsFig" src="" alt=""><img src="img/${jump ? 'gazelle-challenge' : 'gazelle-challenge'}.webp" alt=""></div>`;
-  const modes = jump ? `<div class="modes"><button data-m="cam" aria-pressed="${R.mode==='cam'}">بلندیِ پرش با دوربین</button><button data-m="tape" aria-pressed="${R.mode==='tape'}">طولِ پرش با متر</button></div>` : '';
+  const modes = jump ? `<div class="modes"><button data-m="feet" aria-pressed="${R.mode==='feet'}">با کفِ پا</button><button data-m="tape" aria-pressed="${R.mode==='tape'}">با متر</button><button data-m="cam" aria-pressed="${R.mode==='cam'}">پرشِ درجا با دوربین</button></div>` : '';
   let ctrl;
   if(jump && R.mode === 'cam') ctrl = `<div style="display:flex;justify-content:center">${camBtn('rsCam', R.camOn, 'یوزی با دوربین اندازه بگیرد', false)}</div>
       <div class="watch"><div class="time" id="rsVal">${recs.length ? show(recs[recs.length-1].v) : '۰'}<small>${unit}</small></div></div>
       <p class="rec-msg" id="rsMsg">${R.camOn ? 'جفت‌پا درجا بپر؛ یوزی بلندیِ پرش را اندازه می‌گیرد.' : 'دوربین را روشن کن و از سر تا پا در کادر بایست. بعد جفت‌پا بپر!'}</p>`;
+  else if(jump && R.mode === 'feet') ctrl = `<div class="watch"><div class="numin stepper"><button class="ghost" id="rsMinus" aria-label="کمتر">−</button><output id="rsFeet">${fa(R.feet)}</output><button class="ghost" id="rsPlus" aria-label="بیشتر">+</button><span style="color:var(--ink-soft);font-weight:700">کفِ پا</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
+      <p class="rec-msg" id="rsMsg">پشتِ یک خط بایست و جفت‌پا به جلو بپر. از خطِ شروع تا پاشنه‌ات، پاشنه‌به‌پنجه قدم بزن و بشمار چند کفِ پاست. متر لازم نیست!</p>`;
   else if(jump) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ۸۵" aria-label="طولِ پرش به سانتی‌متر"><span style="color:var(--ink-soft);font-weight:700">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
       <p class="rec-msg" id="rsMsg">مثلِ شکل جفت‌پا به جلو بپر. بزرگترت از خطِ شروع تا پاشنه را با متر اندازه بگیرد و این‌جا بنویسد.</p>`;
   else ctrl = `<div class="watch"><div class="time" id="rsVal">۰<small>ثانیه</small></div><button class="cta gold" id="rsBtn">شروع</button></div>
@@ -1012,6 +1040,11 @@ function starRecord(sk, book){
     else { sfx('soft'); msg = `<b>${show(v)} ${unit}</b>. دفعهٔ قبل ${show(prev)} بود. دوباره امتحان کن!`; }
     return msg;
   };
+  if(jump && R.mode === 'feet'){
+    const setF = d => { R.feet = Math.max(1, Math.min(15, R.feet + d)); $('#rsFeet').textContent = fa(R.feet); sfx('tap', R.feet); };
+    $('#rsMinus').addEventListener('click', ()=>setF(-1)); $('#rsPlus').addEventListener('click', ()=>setF(1));
+    $('#rsSave').addEventListener('click', ()=>{ const m = record(R.feet); starRecord(sk, book); $('#rsMsg').innerHTML = m; });
+  }
   if(jump && R.mode === 'tape'){
     $('#rsSave').addEventListener('click', ()=>{ const v = parseFloat(($('#rsIn').value||'').replace(/[۰-۹]/g, d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫,]/g,'.'));
       if(!(v > 0 && v < 400)){ sfx('miss'); $('#rsMsg').textContent = 'یک عدد بنویس، مثلاً ۸۵.'; return; }
@@ -1038,11 +1071,12 @@ function starRecord(sk, book){
         else if(air){ top = Math.min(top, b.hip.y);
           if(!airborne(b)){ air = false; lastJump = now;
             /* a 7-year-old's leg (hip to ankle) is about 55 cm; good enough to compare one jump with the next */
-            const cm = Math.max(1, (hip0 - top)/b.leg * 55);
+            const cm = Math.max(1, (hip0 - top)/b.leg * 55); R.lastCm = cm;
             bumpCam(G.n, 'jump'); const m = record(Math.round(cm));
             $('#rsVal').innerHTML = `${fa(Math.round(cm))}<small>سانتی‌متر</small>`; $('#rsMsg').innerHTML = m + '<br><small style="color:var(--ink-soft)">اندازه تقریبی است؛ هر پرش با پرشِ قبلیِ خودت مقایسه می‌شود.</small>';
             $('#grStars').innerHTML = Array.from({length:7}, (_,k)=>H.STAR(k < st.stars)).join(''); } } };
-      H.camStart(stage).then(ok => { if(!ok) R.camOn = false; });
+      CAM.count = () => ({big: fa(Math.round(R.lastCm || 0)), small:'سانتی‌متر، آخرین پرش'});
+      H.camStart(stage, {full:true}).then(ok => { if(!ok) R.camOn = false; });
     }
   }
 }
