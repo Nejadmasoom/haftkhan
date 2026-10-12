@@ -509,6 +509,7 @@ function startOne(){
   $('#gxCam').parentElement.hidden = g.kind === 'manual';
   if(g.kind === 'manual' && X.camOn) gxCamOff();
   flipFigs($('#gxFig'), g.figs);
+  voice(`g${n}-${X.q[X.qi]+1}`);
   if(X.camOn) armCam();
   renderCount();
 }
@@ -669,6 +670,7 @@ function renderStory(i){
       <div class="st-art"><span class="who-says">${pg.who}</span>${pg.art.map(a=>`<img src="${artSrc(a)}" alt="">`).join('')}</div>
       <p class="st-text">${pg.t}</p>${pg.task ? taskHTML(pg.task) : ''}
       <div class="st-nav">${i>0?'<button class="ghost" id="gsPrev">قبلی</button>':''}<button class="cta" id="gsNext" ${pg.task?'disabled style="opacity:.5"':''}>${pg.task ? 'اول انجامش بده' : 'بعدی'}</button></div>`;
+    voice(`k${n}-s${i+1}`);
     if(pg.task) wireTask(pg.task);
     else if(Y.camOn && H.CAM.stream) H.camStop();
   } else {
@@ -683,11 +685,12 @@ function renderStory(i){
       <div class="ask" id="gsAsk" hidden><b>حالا با هم حرف بزنید</b><ul class="asks">${st.asks.map(a=>`<li>${a}</li>`).join('')}</ul></div>
       <div class="st-nav"><button class="ghost" id="gsPrev">قبلی</button><button class="cta" id="gsNext" disabled style="opacity:.5">پیدا کن تا تمام شود</button></div>`;
     $$('#gsBody .w').forEach(b => b.addEventListener('click', ()=>{
-      if(clean(b.textContent) === Ld.word){ sfx(Y.found.has(b.dataset.k) ? 'click' : 'hit'); Y.found.add(b.dataset.k); b.classList.add('hit'); $('#gsFound').textContent = fa(Y.found.size);
+      if(clean(b.textContent) === Ld.word){  sfx(Y.found.has(b.dataset.k) ? 'click' : 'hit'); Y.found.add(b.dataset.k); b.classList.add('hit'); $('#gsFound').textContent = fa(Y.found.size);
         if(Y.found.size === Ld.count){ setTimeout(()=>sfx('fanfare'), 250); const nx = $('#gsNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'تمام! برگرد به خوان'; $('#gsAsk').hidden = false; LS(n).story = true; H.save(); vib([20,40,20]); } }
       else { sfx('miss'); b.classList.remove('miss'); void b.offsetWidth; b.classList.add('miss'); }
     }));
     if(H.CAM.stream) H.camStop();
+    voice(`find-${n}`);
   }
   const prev = $('#gsPrev'); if(prev) prev.addEventListener('click', ()=>renderStory(Y.page - 1));
   $('#gsNext').addEventListener('click', ()=>{ if(Y.page < st.pages.length) renderStory(Y.page + 1); else H.go('gkhan'); });
@@ -818,7 +821,7 @@ function famOsta(fm, intro){
     let i; do{ i = Math.random()*fm.cmds.length|0; } while(i === last && fm.cmds.length > 1); last = i; const c = fm.cmds[i];
     $('#oCmd').innerHTML = `<img src="${figSrc(c.fig)}" alt=""><b>${c.t}!</b><small>اوستا می‌گوید</small>`;
     $('#oCall').innerHTML = `<b>${c.t}</b>همه با هم! هر کس اشتباه کند، اوستا توپ را به طرفش می‌اندازد.`;
-    sfx('start'); vib(20); F.round++; if(F.round >= 3) famDone(); check(c);
+    sfx('start'); voice(`osta-${c.k}`); vib(20); F.round++; if(F.round >= 3) famDone(); check(c);
   };
   $('#oNext').addEventListener('click', next);
   $('#oAuto').addEventListener('click', e => { auto = !auto; e.currentTarget.setAttribute('aria-pressed', auto); e.currentTarget.textContent = auto ? 'توقفِ خودکار' : 'خودکار'; clearInterval(F.t2); if(auto){ next(); F.t2 = setInterval(next, 5000); } });
@@ -1069,7 +1072,9 @@ function renderParentsTabs(){
 window.HKX = {
   openKhan,
   enter(name){
-    if(name === 'gkhan'){ if(S().cur <= 4) G.khan = LESSONS[S().cur].khan; renderKhan(); }
+    if(name === 'gkhan'){ if(S().cur <= 4) G.khan = LESSONS[S().cur].khan; renderKhan();
+      if(!['gchoose','gex','gstory','gfam','gstar'].includes(G.at)) voice(`guard-${KHAN_INFO[G.khan].guard}`); }
+    G.at = name;
     if(name === 'gchoose') renderChoose();
     if(name === 'gex') startGame();
     if(name === 'gstory'){ Y.camOn = false; renderStory(0); }
