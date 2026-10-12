@@ -812,7 +812,7 @@ const yuziStage = () => khansPassed() >= 7 ? 3 : khansPassed() >= 3 ? 2 : 1;
 const YUZI_NAMES = ['','توله‌یوز','یوزِ جوان','یوزِ تیزپا'];
 /* Movement figures for the chosen hero. Add a name here when its boy image is in img/
    (prompts 17 and 18); until then the boy's games show the girl's frames. */
-const BOY_READY = new Set([]);
+const BOY_READY = new Set(['m5-1a','m5-1b','m5-2a','m5-2b','m5-3a','m5-3b','tree','angel']);
 const fig = name => `img/${kid()==='boy' && BOY_READY.has(name) ? 'boy' : 'girl'}-${name}.webp`;
 const yz = pose => `img/yuzi-${['idle','cheer','talk','comfort'].includes(pose) ? yuziStage() : 1}-${pose}.webp`;
 const doneDays = () => state.days.filter(Boolean).length;
