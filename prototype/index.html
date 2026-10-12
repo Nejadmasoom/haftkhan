@@ -345,6 +345,24 @@ button{font:inherit;color:inherit}
 .rec-say img{width:64px;height:64px;object-fit:contain;flex:0 0 auto}
 .rec-say .bubble{font-size:13px}
 
+/* ---------- camera ---------- */
+.cambox{position:relative;width:100%;height:100%;overflow:hidden;background:#101a4a;border-radius:inherit}
+.cambox video,.cambox canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.camchip{position:absolute;top:10px;inset-inline:10px;display:flex;align-items:center;gap:8px;justify-content:center;background:rgba(23,33,90,.82);color:var(--on-dark);border-radius:var(--r-pill);padding:7px 12px;font-size:13.5px;font-weight:700;text-align:center;line-height:1.5}
+.camchip.on{background:var(--saffron);color:var(--ink)}
+.camchip i{width:10px;height:10px;border-radius:50%;background:#7c8be0;flex:0 0 auto}
+.camchip.on i{background:var(--anar);animation:pop .8s ease infinite}
+.camwait{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;color:var(--on-dark);font-size:14px;text-align:center;padding:16px}
+.camwait img{width:90px;height:90px;object-fit:contain}
+.spin{width:28px;height:28px;border-radius:50%;border:4px solid rgba(255,247,230,.25);border-top-color:var(--saffron);animation:spin 1s linear infinite}
+.camtoggle{border:0;cursor:pointer;display:inline-flex;align-items:center;gap:8px;border-radius:var(--r-pill);padding:10px 16px;min-height:44px;background:rgba(255,247,230,.14);color:var(--on-dark);font-weight:700;font-size:14px}
+.camtoggle svg{width:20px;height:20px}
+.camtoggle[aria-pressed="true"]{background:var(--fayruz)}
+.rec-stage.cam{height:300px;padding:0;background:#101a4a}
+.pose .camslot{width:100%;height:200px;border-radius:16px;overflow:hidden;margin-top:10px}
+.pose.withcam{flex-wrap:wrap}
+.private{font-size:11.5px;color:#c9cdf0;text-align:center;margin:-4px 0 0}
+
 /* ---------- daily rest + comfort ---------- */
 .t-play.rest{background:#3b4aa0;box-shadow:var(--press) #2a3785}
 .t-play.rest .ic{background:rgba(255,255,255,.12)}
@@ -488,7 +506,8 @@ button{font:inherit;color:inherit}
             <h2>رکوردِ لک‌لک<small>بازی کن و ستاره بگیر · کتاب، ص ۳۷</small></h2>
           </div>
           <div class="rec-stars" id="recStars" role="img"></div>
-          <div class="rec-stage"><img src="img/girl-m5-2a.webp" alt="دختری مثل لک‌لک روی یک پا ایستاده"><img src="img/stork-challenge.webp" alt="لک‌لک"></div>
+          <div class="rec-stage" id="recStage"><img src="img/girl-m5-2a.webp" alt="دختری مثل لک‌لک روی یک پا ایستاده"><img src="img/stork-challenge.webp" alt="لک‌لک"></div>
+          <div style="display:flex;justify-content:center;padding-top:12px"><button class="camtoggle" id="recCam" aria-pressed="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg><span>یوزی با دوربین ببیند</span></button></div>
           <div class="watch">
             <div class="time" id="recTime" aria-live="off">۰٫۰<small>ثانیه</small></div>
             <button class="cta gold" id="recBtn">شروع</button>
@@ -766,6 +785,7 @@ function go(name){
   if(name==='record') renderRecord();
   if(name==='khan') renderTorches();
   if(name!=='record') stopWatch(false);
+  if(name!=='record' && name!=='story' && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic();
   if(name!=='ex') flip(false);
@@ -945,13 +965,18 @@ function renderStory(i){
   if(i < STORY.length){
     const sc = STORY[i];
     const art = (sc.art||[]).map(a=>`<img src="img/${a}.webp" alt="">`).join('');
-    const poseBox = sc.pose ? `<div class="pose"><button class="cnt" id="cnt" aria-label="شروعِ شمارش">۵</button><p><b>${sc.name} بایست</b>دکمه را بزن و تا پنج بشمارید. بعد پایت را عوض کن و یک بارِ دیگر.</p></div>` : '';
+    const poseBox = sc.pose ? `<div class="pose${CAM.storyOn?' withcam':''}"><button class="cnt" id="cnt" aria-label="شروعِ شمارش">۵</button><p><b>${sc.name} بایست</b>${CAM.storyOn ? 'روی یک پا بایست؛ یوزی هر ثانیه‌ای که نیفتی را می‌شمارد.' : 'دکمه را بزن و تا پنج بشمارید. بعد پایت را عوض کن و یک بارِ دیگر.'}</p>${CAM.storyOn?'<div class="camslot" id="camSlot"></div>':''}</div>
+      <div style="display:flex;justify-content:center"><button class="camtoggle" id="storyCam" aria-pressed="${CAM.storyOn?'true':'false'}" style="background:${CAM.storyOn?'':'var(--paper-2)'};color:${CAM.storyOn?'':'var(--ink)'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg>${CAM.storyOn?'خاموش کردنِ دوربین':'یوزی با دوربین بشمارد'}</button></div>` : '';
     $('#storyBody').innerHTML = `<div class="st-steps">${steps}</div>${i===0?readNote:''}
       <div class="st-art"><span class="who-says">${sc.who}</span>${art}</div>
       <p class="st-text">${sc.t}</p>${poseBox}
       ${sc.after ? `<p class="st-text" id="after" hidden>${sc.after}</p>` : ''}
       <div class="st-nav">${i>0?'<button class="ghost" id="stPrev">قبلی</button>':''}<button class="cta" id="stNext" ${sc.pose?'disabled style="opacity:.5"':''}>${sc.pose?'اول بایست و بشمار':'بعدی'}</button></div>`;
-    if(sc.pose) $('#cnt').addEventListener('click', ()=> countdown());
+    if(sc.pose){
+      $('#cnt').addEventListener('click', ()=> countdown());
+      $('#storyCam').addEventListener('click', ()=>{ CAM.storyOn = !CAM.storyOn; if(!CAM.storyOn) camStop(); renderStory(page); });
+      if(CAM.storyOn){ const slot = $('#camSlot'); slot.scrollIntoView({block:'center', behavior:'smooth'}); camStart(slot).then(ok=>{ if(ok && page===i) countdown(); }); }
+    }
   } else {
     found = new Set();
     const words = STORY_WORDS.split(' ');
@@ -974,6 +999,15 @@ function renderStory(i){
 }
 function countdown(){
   const b = $('#cnt'); let n = 0; b.classList.add('run'); b.disabled = true;
+  if(CAM.storyOn && CAM.stream){ // counts only the seconds spent on one leg
+    clearInterval(countT); b.textContent = '۰'; let acc = 0, last = performance.now();
+    countT = setInterval(()=>{ const now = performance.now(), dt = now-last; last = now;
+      if(CAM.state==='oneLeg'){ acc += dt; const k = Math.floor(acc/1000); if(k>n){ n = k; b.textContent = fa(n); n<5 ? sfx('tick') : null; } }
+      if(n>=5){ clearInterval(countT); sfx('done'); b.classList.remove('run'); b.disabled = false;
+        const a = $('#after'); if(a) a.hidden = false;
+        const nx = $('#stNext'); nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; } }, 100);
+    return;
+  }
   const say = ['یک','دو','سه','چهار','پنج'];
   b.textContent = '';
   sfx('tick');
@@ -1017,6 +1051,120 @@ $('#recBtn').addEventListener('click', ()=>{
   $('#recBtn').textContent = 'پایم زمین خورد'; $('#recBtn').classList.add('stop');
   $('#recMsg').textContent = 'مثل لک‌لک بایست و نیفتی!';
   watchT = setInterval(()=>{ $('#recTime').innerHTML = `${secs((performance.now()-watchStart)/1000)}<small>ثانیه</small>`; }, 100);
+});
+
+/* ---------- camera: Yuzi watches the child stand on one leg ----------
+   MediaPipe Pose runs entirely in the browser; no image leaves the device.
+   The library, wasm and model ship as classic scripts (pose/*.js) so the
+   page works when opened by double-click, where fetch() of files is refused. */
+const CAM = { pose:null, stream:null, video:null, canvas:null, box:null, raf:0, state:'off', since:0, listeners:new Set(), loading:null };
+function loadScript(src){ return new Promise((ok, no)=>{ const el = document.createElement('script'); el.src = src; el.onload = ok; el.onerror = ()=>no(new Error('load '+src)); document.head.appendChild(el); }); }
+const b64bytes = b64 => { const bin = atob(b64), out = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i); return out; };
+function loadPose(){
+  if(CAM.loading) return CAM.loading;
+  CAM.loading = (async ()=>{
+    for(const f of ['vision','loader','wasm','model']) await loadScript(`pose/${f}.js`);
+    const loaderUrl = URL.createObjectURL(new Blob([window.HK_POSE_LOADER], {type:'text/javascript'}));
+    const wasmUrl = URL.createObjectURL(new Blob([b64bytes(window.HK_POSE_WASM)], {type:'application/wasm'}));
+    const model = b64bytes(window.HK_POSE_MODEL);
+    delete window.HK_POSE_WASM; delete window.HK_POSE_MODEL; delete window.HK_POSE_LOADER;
+    const files = {wasmLoaderPath:loaderUrl, wasmBinaryPath:wasmUrl};
+    const opts = d => ({baseOptions:{modelAssetBuffer:model, delegate:d}, runningMode:'VIDEO', numPoses:1});
+    try{ return await HKVision.PoseLandmarker.createFromOptions(files, opts('GPU')); }
+    catch(e){ return await HKVision.PoseLandmarker.createFromOptions(files, opts('CPU')); }
+  })();
+  CAM.loading.catch(()=>{ CAM.loading = null; });
+  return CAM.loading;
+}
+function camBox(){
+  if(CAM.box) return CAM.box;
+  const box = document.createElement('div'); box.className = 'cambox';
+  box.innerHTML = `<video playsinline muted></video><canvas></canvas><div class="camwait"><div class="spin"></div><span>یوزی دارد چشم‌هایش را باز می‌کند…</span></div><div class="camchip" hidden><i></i><span></span></div>`;
+  CAM.box = box; CAM.video = box.querySelector('video'); CAM.canvas = box.querySelector('canvas');
+  return box;
+}
+function camMessage(html, wait=true){ const w = CAM.box.querySelector('.camwait'); w.hidden = false; w.innerHTML = (wait?'<div class="spin"></div>':'<img src="img/yuzi-1-comfort.webp" alt="">') + `<span>${html}</span>`; }
+async function camStart(slot){
+  slot.appendChild(camBox());
+  if(CAM.stream){ return true; }
+  camMessage('یوزی دارد چشم‌هایش را باز می‌کند…');
+  try{
+    if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) throw new Error('nocam');
+    const [stream, pose] = await Promise.all([navigator.mediaDevices.getUserMedia({video:{facingMode:'user', width:{ideal:640}, height:{ideal:480}}, audio:false}), loadPose()]);
+    CAM.stream = stream; CAM.pose = pose; CAM.video.srcObject = stream; await CAM.video.play();
+    CAM.box.querySelector('.camwait').hidden = true; CAM.box.querySelector('.camchip').hidden = false;
+    CAM.state = 'nobody'; setCamState('nobody'); loop(); return true;
+  }catch(e){
+    camMessage('دوربین در دسترس نیست. اگر صفحه را از لینکِ آنلاین باز کرده‌اید، نسخهٔ دانلودی را روی لپ‌تاپ یا تبلت باز کنید و اجازهٔ دوربین را بدهید.', false);
+    camStop(true); return false;
+  }
+}
+function camStop(keepBox){
+  cancelAnimationFrame(CAM.raf); CAM.raf = 0;
+  if(CAM.stream){ CAM.stream.getTracks().forEach(t=>t.stop()); CAM.stream = null; }
+  if(CAM.video) CAM.video.srcObject = null;
+  CAM.state = 'off'; CAM.listeners.forEach(f=>f('off'));
+  if(!keepBox && CAM.box) CAM.box.remove();
+}
+const BONES = [[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28],[27,31],[28,32]];
+/* One leg: one ankle (or knee) clearly higher than the other, measured against leg length so it
+   works near or far from the camera. Hysteresis + short holds stop the timer flickering. */
+function readPose(lm){
+  const v = i => lm[i] && (lm[i].visibility ?? 1) > .45;
+  if(!(v(23)&&v(24)&&v(27)&&v(28))) return 'nobody';
+  const hip = (lm[23].y+lm[24].y)/2, ank = (lm[27].y+lm[28].y)/2, leg = ank - hip;
+  if(leg < .12) return 'nobody';
+  const lift = Math.max(Math.abs(lm[27].y-lm[28].y), v(25)&&v(26) ? Math.abs(lm[25].y-lm[26].y)*1.2 : 0) / leg;
+  return lift > .22 ? 'up' : lift < .12 ? 'down' : 'between';
+}
+let rawSince = 0, rawLast = '';
+function loop(){
+  const vid = CAM.video, cv = CAM.canvas;
+  if(!CAM.stream) return;
+  if(vid.readyState >= 2){
+    if(cv.width !== vid.videoWidth){ cv.width = vid.videoWidth; cv.height = vid.videoHeight; }
+    const res = CAM.pose.detectForVideo(vid, performance.now());
+    const lm = res.landmarks && res.landmarks[0];
+    const ctx = cv.getContext('2d'); ctx.clearRect(0,0,cv.width,cv.height);
+    let raw = 'nobody';
+    if(lm){
+      raw = readPose(lm);
+      const col = CAM.state==='oneLeg' ? C.saffron : '#9fb0ff';
+      ctx.lineWidth = Math.max(4, cv.width/90); ctx.lineCap = 'round'; ctx.strokeStyle = col;
+      BONES.forEach(([a,b])=>{ if((lm[a].visibility??1)>.45 && (lm[b].visibility??1)>.45){ ctx.beginPath(); ctx.moveTo(lm[a].x*cv.width, lm[a].y*cv.height); ctx.lineTo(lm[b].x*cv.width, lm[b].y*cv.height); ctx.stroke(); } });
+      ctx.fillStyle = col; [0,15,16,27,28].forEach(i=>{ if((lm[i].visibility??1)>.45){ ctx.beginPath(); ctx.arc(lm[i].x*cv.width, lm[i].y*cv.height, i===0? cv.width/28 : cv.width/70, 0, 7); ctx.fill(); } });
+    }
+    const now = performance.now();
+    if(raw !== rawLast){ rawLast = raw; rawSince = now; }
+    const held = now - rawSince;
+    let next = CAM.state;
+    if(raw==='nobody' && held > 700) next = 'nobody';
+    else if(raw==='up' && held > 250) next = 'oneLeg';
+    else if(raw==='down' && held > 450) next = 'twoFeet';
+    if(next !== CAM.state){ CAM.state = next; setCamState(next); }
+  }
+  CAM.raf = requestAnimationFrame(loop);
+}
+function setCamState(st){
+  const chip = CAM.box && CAM.box.querySelector('.camchip'); if(!chip) return;
+  chip.classList.toggle('on', st==='oneLeg');
+  chip.querySelector('span').textContent = st==='nobody' ? 'از سر تا پایت را در کادر بیاور' : st==='twoFeet' ? 'حالا مثلِ لک‌لک یک پایت را بالا ببر' : 'روی یک پا ایستادی!';
+  CAM.listeners.forEach(f=>f(st));
+}
+
+/* record screen: the timer runs exactly while Yuzi sees one leg */
+CAM.listeners.add(st=>{
+  if($('#s-record').hidden || !CAM.recOn) return;
+  if(st==='oneLeg' && !watchT) $('#recBtn').click();
+  else if(st!=='oneLeg' && watchT) stopWatch(true);
+});
+$('#recCam').addEventListener('click', async ()=>{
+  const btn = $('#recCam'), stage = $('#recStage');
+  if(CAM.recOn){ CAM.recOn = false; camStop(); stage.classList.remove('cam'); stage.querySelectorAll('img').forEach(i=>i.hidden=false); btn.setAttribute('aria-pressed','false'); btn.querySelector('span').textContent = 'یوزی با دوربین ببیند'; return; }
+  CAM.recOn = true; btn.setAttribute('aria-pressed','true'); btn.querySelector('span').textContent = 'خاموش کردنِ دوربین';
+  stage.classList.add('cam'); stage.querySelectorAll('img').forEach(i=>i.hidden=true);
+  $('#recMsg').textContent = 'جلوی دوربین بایست. یوزی خودش زمان را می‌گیرد؛ تصویر از این دستگاه بیرون نمی‌رود.';
+  await camStart(stage);
 });
 
 /* ---------- treasure ---------- */
