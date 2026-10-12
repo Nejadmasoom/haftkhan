@@ -21,7 +21,9 @@ const READY = new Set([          // girl move frames, without the "girl-" prefix
   'm3-cat-a', 'm3-cat-b', 'm3-snake-a', 'm3-snake-b', 'm4-circle-a', 'm4-circle-b', 'm4-toe-a', 'm4-toe-b', 'm4-hug-a', 'm4-hug-b',
   'm4-lunge-a', 'm4-lunge-b', 'm4-plank-a', 'm4-plank-b', 'm4-crab-a', 'm4-crab-b', 'm4-spin-a', 'm4-spin-b', 'm4-feetStack', 'm4-feetUp']);
 const READY_BOY = new Set([]);    // the same for the boy
-const READY_ART = new Set([]);    // story-mom, story-aunt, story-rabbit, story-frog, story-uncle, animal-*, yuzi-1-careful …
+const READY_ART = new Set([       // other img/ names: story characters, animals, Yuzi's new poses
+  'story-mom','story-aunt','story-rabbit','story-frog','story-uncle','animal-gorilla','animal-hen','animal-kangaroo','animal-snake',
+  'yuzi-1-careful','yuzi-1-rules','yuzi-1-drink','yuzi-1-listen','yuzi-1-warmup','yuzi-1-tidy']);
 
 /* stand-in figures: a stick child in the hero's colours, one pose per frame name */
 const B = {h:[60,22],n:[60,34],s1:[49,39],s2:[71,39],e1:[45,58],e2:[75,58],w1:[44,76],w2:[76,76],p1:[53,80],p2:[67,80],k1:[53,109],k2:[67,109],f1:[52,140],f2:[68,140]};
