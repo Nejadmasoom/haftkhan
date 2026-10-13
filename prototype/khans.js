@@ -571,9 +571,9 @@ function renderChoose(){
       <small class="free-note">${X.who !== 'kid' ? `${esc(whoName())} هم بازی می‌کند و رکورد و سطحِ خودش را دارد؛ مشعل فقط مالِ ${esc(H.kidName())} است.` : kidFree ? 'امروز مشعل روشن نمی‌شود، ولی بازی آزاد باز است: سطح و رکوردت جلو می‌رود.' : 'بازی کن تا مشعلِ امروز روشن شود.'}${BAND[X.who]==='senior' ? ' برای پدربزرگ و مادربزرگ، پرش‌ها و حرکت‌های روی زمین نسخهٔ آرام‌تری دارند.' : ''}</small></div>`;
   const did = gi => LS(n).days.findIndex(x => x && (x.moves||[]).includes(gi));
   $('#gcChoices').innerHTML = pl.games.map((g0,i)=>{ const dd = did(i), g = effGame(n, i, X.who);
-    return `<button class="choice" data-g="${i}"><img src="${figSrc(g.figs[0])}" alt=""><span><b>${g.name} <span class="lv">سطحِ ${fa(g.lv)}: ${fa(g.goal)} ${g.unit}</span></b><small>${g.t}</small></span>
+    return `<button class="choice" data-g="${i}"><img src="${figSrc(g.figs[0])}" alt=""><span><b>${g.name} <span class="lv">سطحِ ${fa(g.lv)}: ${fa(g.goal)} ${g.unit}</span></b><small>${g.t}</small>
       ${dd>=0?`<em class="did" style="font-style:normal">روزِ ${DAYW[dd]} بازی کردی</em>`:''}
-      <em class="eye ${g.kind==='manual'?'hand':''}" style="font-style:normal">${g.kind==='manual' ? 'بزرگتر تأیید می‌کند' : 'یوزی با دوربین می‌شمارد'}</em></button>`; }).join('');
+<em class="eye ${g.kind==='manual'?'hand':''}" style="font-style:normal">${g.kind==='manual' ? 'بزرگ‌تر تأیید می‌کند' : 'یوزی با دوربین می‌شمارد'}</em></span></button>`; }).join('');
   $('#gcGo').innerHTML = pl.pick===2 ? `<button class="cta gold" id="gcStart" style="width:100%;margin-top:14px;opacity:.5" disabled>دو حرکت را انتخاب کن</button>` : '';
   $$('#gcRule .tm[data-who]').forEach(b => b.addEventListener('click', ()=>{ X.who = b.dataset.who; sfx('click'); renderChoose(); }));
   $$('#gcChoices .choice').forEach(b => b.addEventListener('click', ()=>{
@@ -582,7 +582,7 @@ function renderChoose(){
     picked = picked.includes(gi) ? picked.filter(x=>x!==gi) : picked.concat(gi).slice(-2);
     $$('#gcChoices .choice').forEach(c => { const on = picked.includes(+c.dataset.g); c.classList.toggle('picked', on);
       const m = c.querySelector('.pickmark'); if(m) m.remove(); if(on) c.insertAdjacentHTML('beforeend', `<em class="pickmark" style="font-style:normal">${fa(picked.indexOf(+c.dataset.g)+1)}</em>`); });
-    const go = $('#gcStart'); const ok = picked.length === 2; go.disabled = !ok; go.style.opacity = ok ? '' : '.5'; go.textContent = ok ? 'شروع کن!' : picked.length ? 'یکی دیگر هم انتخاب کن' : 'دو حرکت را انتخاب کن';
+    const go = $('#gcStart'); const ok = picked.length === 2; go.disabled = !ok; go.style.opacity = ok ? '' : picked.length ? '.8' : '.5'; go.textContent = ok ? 'شروع کن!' : picked.length ? 'یکی دیگر هم انتخاب کن' : 'دو حرکت را انتخاب کن';
   }));
   const go = $('#gcStart'); if(go) go.addEventListener('click', ()=>{ if(picked.length===2){ sfx('click'); H.go('gex'); } });
 }
@@ -926,7 +926,7 @@ function taskHTML(t){
   const figs = t.figs ? `<div class="figrow one">${animFig(t.figs)}</div>` : '';
   let body = '';
   if(t.type === 'seq') body = `<div class="chips" id="tkChips">${t.steps.map((s,k)=>`<span data-k="${k}">${s[1]}</span>`).join('')}</div>`;
-  if(t.type === 'race') body = `<div class="watch" style="padding:4px 0"><div class="time" id="tkTime" style="font-size:44px">۰<small>ثانیه</small></div>
+  if(t.type === 'race') body = `<div class="watch" style="padding:4px 0"><div class="time" id="tkTime" style="font-size:44px">۰٫۰<small>ثانیه</small></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center"><button class="cta gold" id="tkWalk">راه رفتن: شروع</button><button class="cta" id="tkRun" disabled style="opacity:.5">دویدن: شروع</button></div>
       <p id="tkRes" style="margin:0;font-size:14px;line-height:1.8;text-align:center">بزرگترت «شروع» را بزند؛ وقتی به آن طرفِ اتاق رسیدی، «رسیدم».</p></div>`;
   const cnt = t.type === 'race' ? '' : `<button class="cnt" id="tkCnt" aria-live="polite">${t.type==='confirm' ? '✓' : t.type==='hold' ? fa(t.sec) : '۰'}<small>${t.type==='seq' ? `از ${fa(t.reps)} دور` : t.type==='reps' ? `از ${fa(t.goal)}` : t.type==='hold' ? 'ثانیه' : ''}</small></button>`;
@@ -1030,6 +1030,7 @@ function renderFamily(){
   if(fm.kind === 'charades') famCharades(fm, intro);
   if(fm.kind === 'feet') famFeet(fm, intro);
   const tm = $('#gfBody .team'); if(tm) H.wireTeam(tm, ()=>{ F.tally = null; F.performer = 0; renderFamily(); });
+  H.clampText($('#gfBody .fam-intro'));
 }
 const famDone = () => { const n = G.n; if(!LS(n).family){ LS(n).family = true; H.save(); } };
 function famCam(slotSel, onLabel){
@@ -1238,7 +1239,7 @@ function starRecord(sk, book){
       <p class="rec-msg" id="rsMsg">پشتِ یک خط بایست و جفت‌پا به جلو بپر. از خطِ شروع تا پاشنه‌ات، پاشنه‌به‌پنجه قدم بزن و بشمار چند کفِ پاست. متر لازم نیست!</p>`;
   else if(jump) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ۸۵" aria-label="طولِ پرش به سانتی‌متر"><span style="color:var(--ink-soft);font-weight:700">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
       <p class="rec-msg" id="rsMsg">مثلِ شکل جفت‌پا به جلو بپر. بزرگترت از خطِ شروع تا پاشنه را با متر اندازه بگیرد و این‌جا بنویسد.</p>`;
-  else ctrl = `<div class="watch"><div class="time" id="rsVal">۰<small>ثانیه</small></div><button class="cta gold" id="rsBtn">شروع</button></div>
+  else ctrl = `<div class="watch"><div class="time" id="rsVal">۰٫۰<small>ثانیه</small></div><button class="cta gold" id="rsBtn">شروع</button></div>
       <p class="rec-msg" id="rsMsg">مثلِ شکل خرچنگی راه برو. بزرگترت «شروع» را بزند و وقتی نشستی یا ایستادی، «تمام».</p>`;
   $('#grBody').innerHTML = `${book}${modes}${fig}${ctrl}<div class="bars" aria-hidden="true">${bars}</div>
     ${sk.yuzi ? `<div class="rec-say"><img src="${yuziArt(sk.yuzi[0])}" alt=""><div class="bubble">${sk.yuzi[1]}</div></div>` : ''}`;
@@ -1316,6 +1317,7 @@ function renderParentsTabs(){
   if(!ptab || !list.includes(ptab)) ptab = S().cur;
   $('#pTabs').innerHTML = list.map(n => `<button role="tab" data-n="${n}" aria-selected="${n===ptab}">منزل ${fa(n)}</button>`).join('');
   $$('#pTabs button').forEach(b => b.addEventListener('click', ()=>{ ptab = +b.dataset.n; sfx('click'); renderParentsTabs(); }));
+  const sel = $('#pTabs [aria-selected="true"]'); if(sel) requestAnimationFrame(() => sel.scrollIntoView({block:'nearest', inline:'nearest'}));   // the tab being shown is never cut off
   $('#p5').hidden = ptab !== 5; $('#pG').hidden = ptab === 5;
   if(ptab === 5){ $('#parentsTitle').innerHTML = `گزارشِ ${esc(H.kidName())}<small>هفتهٔ تعادل، منزل ۵</small>`; return; }
   const n = ptab, Ld = LESSONS[n], st = LS(n), d = doneDays(n);
@@ -1361,7 +1363,7 @@ window.HKX = { _X: X,
     if(name !== 'gex'){ X.camOn = false; $('#gxScene').classList.remove('cam'); const b = $('#gxCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent = 'یوزی با دوربین ببیند'; }
     const CAM = H.CAM; CAM.onFrame = null; CAM.hint = null; CAM.chipOn = null;
   },
-  LESSONS, POSES, figSrc, PRED, bodyOf, detector, updateBase, resetBase, airborne
+  LESSONS, POSES, figSrc, PRED, bodyOf, detector, updateBase, resetBase, airborne, _story: {renderStory, Y}
 };
 $$('#gxFeel [data-face]').forEach(s => s.innerHTML = H.face(+s.dataset.face));
 })();
