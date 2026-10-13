@@ -1711,10 +1711,7 @@ function renderParentsTabs(){
     <div class="verified">${camRows || '<div><b><small style="font-size:14px;color:var(--ink-soft)">هنوز نه</small></b><span>با دوربین بازی کنید تا این‌جا پر شود</span></div>'}</div>
     <p class="src">«حرکتی که بزرگتر تأیید کرد» برای حرکت‌های روی زمین است که دوربین خوب نمی‌بیند. تصویری ذخیره یا فرستاده نمی‌شود؛ فقط همین عددها می‌مانند.</p>
     <div class="p-h">${Ld.star.title}</div>${starLog}
-    <p class="src">کتاب، ${Ld.star.src}: «${Ld.star.t}»</p>
-    <div class="p-h">حالتِ آزمایشی</div>
-    <div class="beh"><p>${S().openAll ? 'همهٔ خوان‌های ساخته‌شده باز هستند تا همه را امتحان کنید.' : 'خوان‌ها به ترتیب باز می‌شوند: هر منزل بعد از سه مشعلِ منزلِ قبلی.'}</p><button class="seal" id="pOpen">${S().openAll ? 'ترتیبِ واقعی' : 'همه باز'}</button></div>`;
-  $('#pOpen').addEventListener('click', ()=>{ S().openAll = !S().openAll; H.save(); sfx('click'); renderParentsTabs(); });
+    <p class="src">کتاب، ${Ld.star.src}: «${Ld.star.t}»</p>`;
 }
 
 /* ===================================================================== wiring into the page */

@@ -1452,15 +1452,16 @@ const LESSONS_BUILT = [1,2,3,4,6,7,8];   // lesson 5 (balance) keeps its own scr
 const fillLessons = () => { state.L = state.L || {}; LESSONS_BUILT.forEach(n => { if(!state.L[n]) state.L[n] = newLesson(); }); };
 fillLessons();
 /* while the game is being tested, every built khan is open; the parents page can turn the real order back on */
-if(state.openAll === undefined) state.openAll = true;
 if(!state.cur) state.cur = 1;
 const daysOf = n => n === 5 ? state.days : state.L[n].days;
 const lessonDone = n => daysOf(n).filter(Boolean).length >= 3;
 const LESSON_KHAN = {1:0, 2:0, 3:1, 4:1, 5:2, 6:2, 7:3, 8:3};
 const KHAN_LESSONS = [[1,2],[3,4],[5,6],[7,8]];
 const khanPassed = i => i < BUILT && KHAN_LESSONS[i].every(lessonDone);
-const khanOpen = i => i < BUILT && (i === 0 || state.openAll || khanPassed(i-1));
-const lessonOpen = n => state.openAll || n === 1 || lessonDone(n-1);
+/* every built khan and lesson is open from the start: the child plays as much, and in whatever order, they like.
+   Torches still record the book's own rhythm, one game every other day. */
+const khanOpen = i => i < BUILT;
+const lessonOpen = n => true;
 const kid = () => (state.profile && state.profile.kid) || 'girl';
 const kidName = () => (state.profile && state.profile.name) || 'قهرمان';
 /* Yuzi grows with the journey: a cub to khan 3, young from khan 4, grown after khan 7 */
@@ -1516,7 +1517,7 @@ function drawMap(){
   KHANS.forEach((k,i)=>{
     const [x,y] = pts[i];
     const cur = curKhan(), open = khanOpen(i), passed = khanPassed(i);
-    const cls = passed ? 'done' : i===cur ? 'now' : open ? 'open' : i>=BUILT && (i===0 || khanPassed(i-1)) ? 'soon' : 'locked';
+    const cls = passed ? 'done' : i===cur ? 'now' : open ? 'open' : i>=BUILT ? 'soon' : 'locked';
     const b = document.createElement('button');
     b.className = 'khan '+cls;
     b.style.right = `${(1 - x/W)*100}%`;
@@ -2380,7 +2381,7 @@ $$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
 window.HKfig = fig;
 for(let m=1;m<=3;m++) for(const f of 'ab'){ const im = new Image(); im.src = fig(`m5-${m}${f}`); }
 $('#nextDay').addEventListener('click', ()=>{ state.off++; save(); renderTorches(); go('khan'); });
-$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); state.L = null; fillLessons(); state.openAll = true; state.cur = 1; save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
+$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); state.L = null; fillLessons(); state.cur = 1; save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
 let pickKid = 'girl';
 $$('.pick button').forEach(b=> b.addEventListener('click', ()=>{ pickKid = b.dataset.kid; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x===b ? 'true' : 'false')); sfx('click'); }));
 $('#helloGo').addEventListener('click', ()=>{
