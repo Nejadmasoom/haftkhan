@@ -1203,7 +1203,36 @@ const SFX = {
     const end = (n.length-1)*d; [0,4,7].forEach(k=> brass(step(k)/4, end, .9, .05));
     noiseT(end, 1.1, .05, 'highpass', 6000); bellT(step(14), end+.05, .08, 1.2); tone(131, 0, end+.8, 'sine', .07);
     if(big) [0,.12,.24].forEach(x=> noiseT(end+.3+x, .12, .06, 'bandpass', 1700, null, .8)); },
-  swish: ()=> noiseT(0, .22, .035, 'bandpass', 900, 2600, 1.2)
+  swish: ()=> noiseT(0, .22, .035, 'bandpass', 900, 2600, 1.2),
+  // arena games
+  coin:  n => { const f = 1568*Math.pow(2, ((n||0)%5)/12); tone(f, 0, .09, 'square', .05); tone(f*1.335, .07, .28, 'square', .05); bellT(f*2, .07, .05, .4); },  // a two-note game coin
+  fuel:  ()=> { [0,4,7,12].forEach((k,i)=> tone(392*Math.pow(2, k/12), i*.06, .14, 'square', .045)); noiseT(0, .4, .03, 'bandpass', 600, 2400, 2); },  // glug-up
+  land:  hard => { tone(110, 0, .18, 'sine', hard ? .3 : .18, 50); noiseT(0, .2, hard ? .09 : .05, 'lowpass', 500, 120); },   // suspension thud
+  crash: ()=> { noiseT(0, .7, .14, 'lowpass', 2200, 150, .7); tone(140, 0, .5, 'sawtooth', .08, 40); [0, .09, .2].forEach(x => noiseT(.05 + x, .12, .06, 'bandpass', 2600, 1200, 3)); },  // metal and clatter
+  air:   ()=> noiseT(0, .45, .05, 'bandpass', 500, 1800, 1.4),                                                 // whoosh into the air
+  flag:  ()=> { [0,4,7].forEach((k,i)=> mallet(step(k + 7), i*.07, .14)); },
+  wall:  dur => noiseT(0, dur || 2, .06, 'bandpass', 160, 900, 1.2),                                           // the wall rumbling closer
+  pass:  ()=> { noiseT(0, .3, .06, 'bandpass', 1200, 4000, 1); [0,4,7,12].forEach((k,i)=> mallet(step(k + 7), .05 + i*.06, .16)); },
+  smash: ()=> { tone(90, 0, .35, 'sine', .3, 45); noiseT(0, .6, .14, 'lowpass', 1600, 200, .8); [0, .06, .13, .22, .3].forEach(x => noiseT(.05 + x, .09, .05, 'bandpass', 900 + Math.random()*1200, null, 4)); },  // bricks falling
+  cheer: ()=> { for(let i = 0; i < 26; i++) noiseT(Math.random()*1.1, .05 + Math.random()*.05, .05 + Math.random()*.04, 'bandpass', 900 + Math.random()*1800, null, 2.5);   // a crowd clapping
+    tone(520, .05, .5, 'triangle', .05, 780); tone(660, .12, .45, 'triangle', .04, 990); },
+  turbo: ()=> { tone(110, 0, .6, 'sawtooth', .07, 440); noiseT(0, .6, .07, 'bandpass', 300, 3000, 1.2); },
+  boing: n => { tone(260 + (n||0)*18, 0, .22, 'sine', .14, 520 + (n||0)*30); tone(130, 0, .08, 'triangle', .08); }   // a balloon bump
+};
+/* the jeep's engine: two detuned saws and a sub through a filter, chugging at a rate that follows the revs.
+   It is a continuous sound, so it has a start, a live setting and a stop — never left running off-screen. */
+const ENGINE = { n:null,
+  start(){ const out = bus(); if(!out || this.n) return; const c = actx, t = c.currentTime;
+    const fl = c.createBiquadFilter(), g = c.createGain(), chug = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    fl.type = 'lowpass'; fl.frequency.value = 500; fl.Q.value = 3; g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.05, t + .3);
+    lfo.type = 'square'; lfo.frequency.value = 12; lg.gain.value = .35; chug.gain.value = .65; lfo.connect(lg).connect(chug.gain);
+    const os = [['sawtooth', 1], ['sawtooth', 1.012], ['square', .5]].map(([ty, m]) => { const o = c.createOscillator(); o.type = ty; o.frequency.value = 50*m; o.m = m; o.connect(fl); o.start(t); return o; });
+    fl.connect(chug).connect(g).connect(out); lfo.start(t); this.n = {os, fl, g, lfo}; },
+  set(gas, speed){ const n = this.n; if(!n || !actx) return; const t = actx.currentTime, rpm = 46 + Math.abs(speed)*7 + gas*28;
+    n.os.forEach(o => o.frequency.setTargetAtTime(rpm*o.m, t, .12)); n.lfo.frequency.setTargetAtTime(rpm/4, t, .12);
+    n.fl.frequency.setTargetAtTime(380 + gas*1500 + Math.abs(speed)*40, t, .1); n.g.gain.setTargetAtTime(.035 + gas*.05, t, .15); },
+  stop(){ const n = this.n; if(!n) return; this.n = null; const t = actx.currentTime; n.g.gain.setTargetAtTime(.0001, t, .08);
+    setTimeout(() => { n.os.forEach(o => { try{ o.stop(); }catch(e){} }); try{ n.lfo.stop(); }catch(e){} }, 400); }
 };
 function sfx(name, arg){ try{ SFX[name] && SFX[name](arg); }catch(e){} }
 /* Background music: a quiet theme under the map and menus, with its own on/off switch. Game songs (chairs,
@@ -2301,7 +2330,7 @@ $('#musicBtn').addEventListener('click', ()=>{ musicOn = !musicOn; store.set('mu
 renderMusic();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
 /* what khans.js (khans 1 and 2) needs from this page */
-window.HK = { objImg, drawObj, ICON, paintIcons, voiceLater, hush, whenQuiet, speaking, camFull, phoneSize, fitOf, teamHTML, wireTeam, hasElder, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
+window.HK = { ENGINE, objImg, drawObj, ICON, paintIcons, voiceLater, hush, whenQuiet, speaking, camFull, phoneSize, fitOf, teamHTML, wireTeam, hasElder, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
   fig: n => fig(n), kid, kidName, yz, go, CAM, camStart, camStop, readPose, face, torch, STAR, confetti, dayNum, LOCK,
   PLAYERS, syncPlayers, lessonOpen, lessonDone, daysOf, KHANS, GUARD_NAMES, renderTop, drawMap, PREVIEW,
   newLesson };

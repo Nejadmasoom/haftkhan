@@ -431,7 +431,7 @@ function runner(first, then, hold=180){
       return false; } };
 }
 /* detectors for counted games: step(b, now) returns true once per repetition */
-function detector(det){
+function detector(det, opt = {}){
   if(det === 'squat') return runner(PRED.squat, PRED.stand);
   if(det === 'jump') return runner(b => airborne(b), b => b.feet && !airborne(b), 60);
   if(det === 'frog') return runner(PRED.deep, b => airborne(b) || PRED.stand(b), 120);
@@ -440,10 +440,10 @@ function detector(det){
   if(det === 'hug') return runner(PRED.stand, PRED.hug, 250);
   if(det === 'lunge') return runner(b => PRED.stand(b) && !PRED.lunge(b), PRED.lunge, 250);
   if(det === 'run' || det === 'walk'){
-    const thr = det === 'run' ? .13 : .07;
+    const thr = opt.thr || (det === 'run' ? .13 : .07), gap = opt.thr ? .04 : .06;   // the arena asks for a lighter step
     return {last:null, step(b){ if(!b.feet || !BASE.floor) return false;
       const lL = (BASE.floor - b.aL.y)/b.leg, lR = (BASE.floor - b.aR.y)/b.leg;
-      const side = lL > thr && lL > lR + .06 ? 'L' : lR > thr && lR > lL + .06 ? 'R' : null;
+      const side = lL > thr && lL > lR + gap ? 'L' : lR > thr && lR > lL + gap ? 'R' : null;
       if(side && side !== this.last){ this.last = side; return true; } return false; } };
   }
   /* tiptoe: the toes stay on the floor while the shoulders rise, so measure shoulders against toes —
@@ -822,7 +822,9 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
       const steps = Math.max(1, Math.ceil(frame/.017)), dt = frame/steps;
       for(let st = 0; st < steps; st++){
         o.vy += Gp*dt;
-        o.vx += Math.sin(now/650 + o.ph)*.35*T*dt;     // a little drift in the room's air
+        o.vx += Math.sin(now/650 + o.ph)*.25*T*dt;     // a little drift in the room's air
+        // a game's kindness a real balloon lacks: it drifts gently back toward the child, never out of reach
+        o.vx += Math.max(-1, Math.min(1, (b.sh.x - o.x)/(2*sw)))*.9*T*dt;
         const sp = Math.hypot(o.vx, o.vy), f = Math.max(0, 1 - drag*sp*dt); o.vx *= f; o.vy *= f;
         o.x += o.vx*dt; o.y += o.vy*dt;
         if(o.x < r){ o.x = r; o.vx = Math.abs(o.vx)*.5; } if(o.x > W - r){ o.x = W - r; o.vx = -Math.abs(o.vx)*.5; }
@@ -833,10 +835,11 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
         const into = v.vx*n.x + v.vy*n.y, un = into - (o.vx*n.x + o.vy*n.y);    // closing speed along the contact
         o.x += n.x*(r + pr - d); o.y += n.y*(r + pr - d);
         if(un <= 0) continue;
-        o.vx += n.x*(1 + BAL.E)*un; o.vy += n.y*(1 + BAL.E)*un;
+        o.vx += n.x*(1 + BAL.E)*un*.55; o.vy += n.y*(1 + BAL.E)*un;            // a hit sends it up more than sideways
         const sp = Math.hypot(o.vx, o.vy), cap = BAL.VMAX*T; if(sp > cap){ o.vx *= cap/sp; o.vy *= cap/sp; }
         const strike = into > BAL.STRIKE*sw && Math.hypot(v.vx, v.vy) > BAL.STRIKE*sw;
-        if(strike && ready && now - o.hit > 300){ o.hit = now; X.lastSeen = now; sfx('hit'); addRep(true); }
+        if(strike && ready && now - o.hit > 300){ o.hit = now; X.lastSeen = now; sfx('boing', X.count); sfx('hit'); addRep(true); if(X.count && X.count % 5 === 0) sfx('cheer'); }
+        else if(now - (o.bump || 0) > 250 && un > .5*sw){ o.bump = now; sfx('boing', 0); }
         else if(Math.hypot(o.vx, o.vy) < .4*T) o.vx += (n.x >= 0 ? 1 : -1)*BAL.REST*T*.1;   // resting on a still head: it rolls off
         break; }
       if(o.y + r >= floor){ o.y = floor - r; o.down = now; o.vx = 0; o.vy = 0;
@@ -854,6 +857,9 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
     ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(tilt); ctx.lineWidth = W/150; ctx.strokeStyle = C.ink;
     // the drawn balloon (string included); for a moment after a hit, its squashed twin with motion lines
     const hitArt = now - o.hit < 200, art = H.objImg(hitArt ? 'balloon-hit' : 'balloon', o.col);
+    if(now - o.hit < 350){ const q = (now - o.hit)/350; ctx.save(); ctx.globalAlpha = 1 - q; ctx.strokeStyle = '#ffd93d'; ctx.lineWidth = W/90;   // a ring of light on a counted hit
+      ctx.beginPath(); ctx.arc(0, 0, r*(1.1 + q*1.2), 0, 7); ctx.stroke(); ctx.fillStyle = '#fff3a8';
+      for(let i = 0; i < 6; i++){ const an = i*Math.PI/3 + q; ctx.beginPath(); ctx.arc(Math.cos(an)*r*(1.3 + q*1.5), Math.sin(an)*r*(1.3 + q*1.5), W/140, 0, 7); ctx.fill(); } ctx.restore(); }
     if(art.naturalWidth){ const w = r*(hitArt ? 2.5 : 1.85), h = w*art.naturalHeight/art.naturalWidth;
       ctx.drawImage(art, -w*(hitArt ? .45 : .5), -h*(hitArt ? .47 : .323), w, h); ctx.restore(); return; }
     ctx.beginPath(); ctx.moveTo(0, r*1.05); ctx.quadraticCurveTo(-r*.35 - tilt*r, r*1.7, r*.1 - tilt*r*1.4, r*2.5); ctx.stroke();

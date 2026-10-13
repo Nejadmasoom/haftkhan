@@ -12,7 +12,7 @@ const hz = n => 440 * Math.pow(2, (n-69)/12);
 function parse(str){ let t = 0; const out = [];
   str.trim().split(/\s+/).forEach(tok => { const [n, d] = tok.split(':'); const len = (+d)/2; if(n !== '-') out.push([t, len, midi(n)]); t += len; });
   return {notes:out, beats:t}; }
-const CHORD = {C:[0,4,7], Dm:[2,5,9], Em:[4,7,11], F:[5,9,0], G:[7,11,2], Am:[9,0,4], D:[2,6,9], D7:[2,6,9,0], C7:[0,4,7,10], A7:[9,1,4,7], E:[4,8,11]};
+const CHORD = {C:[0,4,7], Dm:[2,5,9], Em:[4,7,11], F:[5,9,0], G:[7,11,2], Am:[9,0,4], D:[2,6,9], D7:[2,6,9,0], C7:[0,4,7,10], A7:[9,1,4,7], E:[4,8,11], A:[9,1,4]};
 
 /* ---------------------------------------------------------------- the songs */
 /* William Tell overture, finale (Rossini, 1829 — public domain). The 32-beat main theme, note for note from the
@@ -34,6 +34,16 @@ const SONGS = {
     melody: parse(`G4:2 G4:1 A4:1 B4:2 G4:2  C5:2 B4:2 A4:4  A4:2 A4:1 B4:1 C5:2 A4:2  D5:2 C5:2 B4:4
                    E5:2 D5:1 C5:1 B4:2 A4:2  G4:2 A4:2 B4:2 G4:2  A4:2 D5:2 C5:2 A4:2  G4:6 -:2`).notes,
     beats: 32, chords: bars(4, 'G C D G C G D G'.split(' ')) },
+  /* original, for the hill race (awaiting the user's listen): a revving "da-da-da-DUM" up the D major chord */
+  rally: { title:'مسابقهٔ تپه', bpm:132, key:'D', lead:'bright', groove:'bounce', beats:32,
+    melody: parse(`D5:1 D5:1 F#5:1 A5:1 D6:2 A5:2  B5:1 A5:1 G5:1 F#5:1 E5:4  D5:1 D5:1 F#5:1 A5:1 D6:2 A5:2  B5:1 C#6:1 D6:2 A5:4
+                   G5:2 B5:2 A5:2 F#5:2  E5:1 F#5:1 G5:1 A5:1 B5:4  A5:2 F#5:2 G5:2 E5:2  D5:4 -:2 A5:1 A5:1`).notes,
+    chords: bars(4, 'D A D D G G A D'.split(' ')) },
+  /* original, for the shape walls (awaiting the user's listen): a stepping tune that climbs as a wall comes */
+  walls: { title:'دیوارهای شکل', bpm:120, key:'G', lead:'bright', groove:'march', beats:32,
+    melody: parse(`G4:1 B4:1 D5:1 B4:1 G4:2 -:2  A4:1 C5:1 E5:1 C5:1 A4:2 -:2  B4:1 D5:1 G5:1 D5:1 B4:1 D5:1 G5:2  F#5:2 E5:2 D5:4
+                   E5:1 E5:1 D5:1 C5:1 B4:2 C5:2  D5:1 D5:1 C5:1 B4:1 A4:4  B4:1 C5:1 D5:1 E5:1 F#5:2 A5:2  G5:4 -:2 D5:1 D5:1`).notes,
+    chords: bars(4, 'G Am G D C Am D G'.split(' ')) },
   /* original: the quiet, sunny theme under the map and menus — A A′ B A″, sixteen bars so it does not tire */
   theme: { title:'سفرِ یوزی', bpm:112, key:'C', lead:'soft', groove:'stroll', beats:64,
     melody: parse(`C5:2 E5:2 G5:3 E5:1  F5:2 A5:2 G5:4  E5:2 C5:1 D5:1 E5:2 G5:2  D5:6 -:2
@@ -119,14 +129,17 @@ function play(name, {ctx, loop=true, vol=.8, fade=0} = {}){
   const spb = 60/song.bpm, ev = events(song), loopLen = song.beats*spb;
   P.ctx = ctx; P.name = name; P.vol = vol; P.ducked = false; P.master = mixer(ctx, ctx.destination, fade ? .0001 : vol);
   if(fade) P.master.gain.linearRampToValueAtTime(vol, ctx.currentTime + fade);
-  let start = ctx.currentTime + .08, idx = 0, pass = 0;
+  /* the clock is an anchor (a beat and the moment it sounds) plus a rate, so a game can speed the song up
+     or slow it down live (HKMusic.rate) without it skipping */
+  let anchorT = ctx.currentTime + .08, anchorB = 0, idx = 0, pass = 0; P.rate = 1;
+  P.setRate = r => { const now = ctx.currentTime; anchorB += Math.max(0, now - anchorT)*P.rate/spb; anchorT = Math.max(now, anchorT); P.rate = r; };
   const tick = () => {
     const ahead = ctx.currentTime + .25;
     while(true){
       if(idx >= ev.length){ if(!loop) return; idx = 0; pass++; }
-      const t = start + pass*loopLen + ev[idx][0]*spb;
+      const t = anchorT + (pass*song.beats + ev[idx][0] - anchorB)*spb/P.rate;
       if(t > ahead) break;
-      if(t >= ctx.currentTime - .02) ev[idx][1](ctx, P.master, t, spb);
+      if(t >= ctx.currentTime - .02) ev[idx][1](ctx, P.master, t, spb/P.rate);
       idx++;
     }
   };
@@ -145,5 +158,6 @@ async function render(name, passes=2, rate=44100){
   for(let p=0;p<passes;p++) ev.forEach(([b, f]) => f(ctx, m, .05 + (p*song.beats + b)*spb, spb));
   return ctx.startRendering();
 }
-window.HKMusic = {play, stop, duck, render, SONGS, playing: () => !!P.timer, current: () => P.timer ? P.name : null};
+const rate = r => { if(P.timer && P.setRate && Math.abs(r - P.rate) > .01) P.setRate(Math.max(.6, Math.min(1.6, r))); };
+window.HKMusic = {play, stop, duck, rate, render, SONGS, playing: () => !!P.timer, current: () => P.timer ? P.name : null};
 })();

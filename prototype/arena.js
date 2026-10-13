@@ -95,7 +95,7 @@ function hud(html, bot=''){ const h = $('#plHud'), b = $('#plBot'); if(h.innerHT
 
 async function startPlay(){
   size(); A.phase = 'cal'; B.cal = null; B.calT = 0; B.steps = []; B.b = null; X.resetBase();
-  B.det = X.detector(SENIOR(A.who) ? 'walk' : 'run');
+  B.det = X.detector(SENIOR(A.who) ? 'walk' : 'run', {thr: SENIOR(A.who) ? .05 : .085});   // running in place, not knees-up sprinting
   const g = GAMES[A.game];
   msg(`<h3>${g.name}</h3><p>${SENIOR(A.who) ? g.howSenior : g.how}</p><p style="color:var(--ink-soft)">اول صاف بایست تا یوزی اندازه‌ات را بگیرد…</p>`);
   hud('');
@@ -105,7 +105,12 @@ async function startPlay(){
   if(A.game === 'hill') hillReset(); else wallReset();
   cancelAnimationFrame(A.raf); A.last = performance.now(); A.raf = requestAnimationFrame(tick);
 }
-function stopPlay(){ cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }
+/* each game has its tune (approved ones), and the tune follows the action: faster as the jeep speeds up or
+   the walls come quicker. It steps back while the game waits for the player. */
+const MUS = {hill:'galop', wall:'hop'};
+function musicOn(){ if(H.muted || !window.HKMusic) return; const c = H.ac(); if(c && HKMusic.current() !== MUS[A.game]) HKMusic.play(MUS[A.game], {ctx:c, vol:.42}); }
+function musicOff(){ if(window.HKMusic && Object.values(MUS).includes(HKMusic.current())) HKMusic.stop(); }
+function stopPlay(){ musicOff(); H.ENGINE.stop(); cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }
 function tick(now){
   const dt = Math.min(.05, (now - A.last)/1000); A.last = now;
   if(cv().clientWidth !== W || cv().clientHeight !== Hh) size();
@@ -114,15 +119,15 @@ function tick(now){
     const left = 3 - Math.floor((now - A.countT)/1000);
     if(left !== A.lastLeft){ A.lastLeft = left; if(left > 0) sfx('tick'); }
     msg(left > 0 ? `<h3 style="font-size:64px">${fa(left)}</h3><p>آماده!</p>` : '');
-    if(left <= 0){ A.phase = 'run'; A.runT = now; sfx('start'); }
+    if(left <= 0){ A.phase = 'run'; A.runT = now; sfx('start'); musicOn(); pop(W/2, Hh*.4, 'برو!', '#ffd93d', 64); }
   }
-  if(A.phase === 'run' && !seen){ A.paused = true; msg('<h3>یوزی تو را نمی‌بیند</h3><p>جلوی گوشی بایست؛ بازی منتظرت است.</p>'); }
-  else if(A.phase === 'run' && A.paused){ A.paused = false; msg(''); }
+  if(A.phase === 'run' && !seen){ if(!A.paused && window.HKMusic) HKMusic.duck(true); A.paused = true; msg('<h3>یوزی تو را نمی‌بیند</h3><p>جلوی گوشی بایست؛ بازی منتظرت است.</p>'); }
+  else if(A.phase === 'run' && A.paused){ A.paused = false; msg(''); if(window.HKMusic) HKMusic.duck(false); }
   if(A.game === 'hill') hillFrame(dt, now, A.phase === 'run' && !A.paused); else wallFrame(dt, now, A.phase === 'run' && !A.paused);
   if(A.phase !== 'off') A.raf = requestAnimationFrame(tick);
 }
 function gameOver(score, why){
-  A.phase = 'over'; const g = GAMES[A.game], prev = best(A.game, A.who), isRec = score > prev;
+  H.ENGINE.stop(); musicOff(); A.phase = 'over'; const g = GAMES[A.game], prev = best(A.game, A.who), isRec = score > prev;
   if(isRec){ rec()[A.game][A.who] = score; H.save(); }
   sfx(isRec ? 'fanfare' : 'soft', isRec); if(isRec) H.voiceLater('record', 600);
   const who = H.PLAYERS.find(p => p.k === A.who) || {n:''};
@@ -137,55 +142,113 @@ function gameOver(score, why){
    side lean turns it, and a landing more than ~60° off the slope rolls it over. Fuel runs down; cans keep
    the run going. Units: metres and seconds. */
 const HL = {};
-function terrain(x){ const amp = 1.5 + Math.min(5.5, Math.max(0, x)/150);
+/* hills start gentle and grow slowly; the steepest stays climbable at full gas */
+function terrain(x){ const amp = 1.2 + Math.min(4.2, Math.max(0, x)/220);
   return amp*(.55*Math.sin(x/9) + .3*Math.sin(x/4.3 + 1.3) + .25*Math.sin(x/17 + 2.1)) + .4*Math.sin(x/37); }
 const slope = x => (terrain(x + .05) - terrain(x - .05))/.1;
 const curv = x => (terrain(x + .1) - 2*terrain(x) + terrain(x - .1))/.01;
 function hillReset(){
   Object.assign(HL, {camY:null, x:2, v:0, y:terrain(2), vy:0, vx:0, phi:Math.atan(slope(2)), air:false, fuel:100, coins:0, far:2, emptyT:0,
-    cans:[], coinsAt:[], next:30, dead:false});
-  for(let k = 0; k < 8; k++) HL.cans.push(70 + k*150 + Math.random()*40);
-  for(let x = 12; x < 2000; x += 11 + Math.random()*8) HL.coinsAt.push({x, got:false});
-  B.steps = [];
+    cans:[], coinsAt:[], next:30, dead:false, gas:0, airT:0, shake:0, flagAt:50, lowBeep:0, turbo:false, fastT:0, combo:0, coinT:0, flew:false,
+    best:best('hill', A.who), recDone:false});
+  for(let k = 0; k < 10; k++) HL.cans.push(60 + k*120 + Math.random()*30);
+  for(let x = 12; x < 2000; x += 9 + Math.random()*7) HL.coinsAt.push({x, got:false});
+  B.steps = []; FX.length = 0;
 }
+/* effects shared by both games: particles in screen space, and short texts that float up */
+const FX = [];
+function burst(x, y, n, cols, sp = 260, life = .9, kind = 'dot'){
+  for(let i = 0; i < n; i++){ const a = Math.random()*Math.PI*2, v = sp*(.4 + Math.random()*.6);
+    FX.push({x, y, vx:Math.cos(a)*v, vy:Math.sin(a)*v - sp*.4, g:sp*1.6, life, max:life, col:cols[i % cols.length], kind, r:3 + Math.random()*4, rot:Math.random()*6}); } }
+function pop(x, y, text, col = '#fff', size = 30){
+  // texts that would land on top of one another stack upward instead, so each stays readable
+  const near = FX.filter(f => f.kind === 'text' && Math.abs(f.x - x) < 140 && Math.abs(f.y - y) < 50).length; y -= near*(size + 8);
+  FX.push({x, y, vx:0, vy:-70, g:0, life:1.1, max:1.1, text, col, size, kind:'text'}); }
+function drawFX(dt){
+  for(let i = FX.length - 1; i >= 0; i--){ const f = FX[i]; f.life -= dt; if(f.life <= 0){ FX.splice(i, 1); continue; }
+    f.vy += f.g*dt; f.x += f.vx*dt; f.y += f.vy*dt; const a = Math.min(1, f.life/f.max*1.6);
+    ctx.save(); ctx.globalAlpha = a;
+    if(f.kind === 'text'){ ctx.font = `900 ${f.size}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.direction = /^[+×]/.test(f.text) ? 'ltr' : 'rtl'; ctx.lineWidth = 5; ctx.strokeStyle = INK; ctx.fillStyle = f.col;
+      const sc = 1 + .3*Math.max(0, (f.life - f.max + .15)/.15); ctx.translate(f.x, f.y); ctx.scale(sc, sc); ctx.strokeText(f.text, 0, 0); ctx.fillText(f.text, 0, 0); }
+    else if(f.kind === 'brick'){ ctx.translate(f.x, f.y); ctx.rotate(f.rot += dt*6); ctx.fillStyle = f.col; ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.fillRect(-f.r*2, -f.r, f.r*4, f.r*2); ctx.strokeRect(-f.r*2, -f.r, f.r*4, f.r*2); }
+    else if(f.kind === 'star'){ ctx.translate(f.x, f.y); ctx.rotate(f.rot += dt*4); ctx.fillStyle = f.col; ctx.beginPath();
+      for(let k = 0; k < 10; k++){ const r = k % 2 ? f.r*.45 : f.r*1.3, an = k*Math.PI/5; ctx.lineTo(Math.cos(an)*r, Math.sin(an)*r); } ctx.closePath(); ctx.fill(); }
+    else { ctx.fillStyle = f.col; ctx.beginPath(); ctx.arc(f.x, f.y, f.r, 0, 7); ctx.fill(); }
+    ctx.restore(); }
+}
+const CONF = ['#ffc93c', '#e2574c', '#3b82c4', '#4fb35a', '#a35bc4', '#fff'];
 function hillFrame(dt, now, live){
   const senior = SENIOR(A.who);
-  B.steps = B.steps.filter(t => now - t < 2000);
-  const cadence = B.steps.length/2;                               // steps per second
-  const gas = live && HL.fuel > 0 ? Math.max(0, Math.min(1, (cadence - (senior ? .3 : .6))/(senior ? 1.4 : 2.2))) : 0;
+  /* gas = running in place. The step rate over the last 1.4 s sets the target; the revs climb to it fast and
+     fall slowly, so a stride or two of hesitation does not stall the jeep. Full gas at ~1.9 steps a second
+     (about 1.4 for grandparents walking). */
+  B.steps = B.steps.filter(t => now - t < 1400);
+  const cadence = B.steps.length/1.4;
+  const target = live && HL.fuel > 0 ? Math.max(0, Math.min(1, (cadence - (senior ? .25 : .4))/(senior ? 1.15 : 1.7))) : 0;
+  HL.gas += (target - HL.gas)*Math.min(1, dt*(target > HL.gas ? 7 : 1.8));
+  const gas = HL.gas < .02 ? 0 : HL.gas;
+  /* turbo: a real sprint (about 2.8 steps a second for over a second) unlocks more power and a higher top
+     speed, with a flame from the exhaust. It is the exciting reward for the hardest exercise in the game. */
+  const fast = live && cadence >= (senior ? 2.0 : 2.8);
+  HL.fastT = fast ? (HL.fastT || now) : 0;
+  if(!HL.turbo && HL.fastT && now - HL.fastT > 1100 && HL.fuel > 0){ HL.turbo = true; sfx('turbo'); pop(W/2, Hh*.3, 'توربو! 🔥', '#ff9b3d', 46); HL.shake = 6; }
+  if(HL.turbo && (cadence < (senior ? 1.6 : 2.3) || !live)) HL.turbo = false;
+  const boost = HL.turbo ? 1.45 : 1, top = HL.turbo ? 22 : 18;
+  if(window.HKMusic && A.phase === 'run') HKMusic.rate(.85 + .3*Math.min(1, Math.abs(HL.v)/16) + (HL.turbo ? .1 : 0));
   const lean = live && B.b ? Math.max(-1, Math.min(1, leanOf(B.b)/.22)) : 0;
   if(A.phase === 'run' && !HL.dead){
+    if(live) H.ENGINE.start(); else H.ENGINE.stop();
+    H.ENGINE.set(gas, HL.v);
     const G = 9.8, steps = 3, h = dt/steps;
     for(let i = 0; i < steps; i++){
       if(!HL.air){
-        const th = Math.atan(slope(HL.x)), engine = gas*(senior ? 5.5 : 6.5);
-        const a = engine - G*Math.sin(th) - .25*HL.v - (Math.abs(HL.v) > .05 ? .6*Math.sign(HL.v) : 0);
-        HL.v = Math.max(-6, Math.min(14, HL.v + a*h));          // ~50 km/h at most
-        if(gas === 0 && Math.abs(HL.v) < .08 && Math.abs(Math.sin(th)) < .06) HL.v = 0;
+        const th = Math.atan(slope(HL.x)), engine = gas*boost*(senior ? 8 : 9.5)*(1 + .6*Math.max(0, Math.sin(th)));   // more pull uphill, as low gear
+        let a = engine - .75*G*Math.sin(th) - .1*HL.v - (Math.abs(HL.v) > .05 ? .35*Math.sign(HL.v) : 0);
+        if(HL.v < 0) a += 4;                                                  // the brakes hold it: it barely rolls back
+        HL.v = Math.max(-1.5, Math.min(top, HL.v + a*h));                   // top ~65 km/h, ~80 with turbo
+        if(gas === 0 && Math.abs(HL.v) < .15 && Math.abs(Math.sin(th)) < .25) HL.v = 0;
         HL.x += HL.v*Math.cos(th)*h; HL.y = terrain(HL.x); HL.phi += (th - HL.phi)*Math.min(1, 12*h);
         const k = -curv(HL.x)/Math.pow(1 + slope(HL.x)**2, 1.5);           // convex crest
-        if(HL.v > 4 && k*HL.v*HL.v > G*Math.cos(th)*1.05){ HL.air = true; HL.vx = HL.v*Math.cos(th); HL.vy = HL.v*Math.sin(th); HL.w = 0; }
+        if(HL.v > 5 && k*HL.v*HL.v > G*Math.cos(th)*1.05){ HL.air = true; HL.airT = now; HL.vx = HL.v*Math.cos(th); HL.vy = HL.v*Math.sin(th); sfx('air'); }
       } else {
         HL.vy -= G*h; HL.x += HL.vx*h; HL.y += HL.vy*h;
-        HL.w = -lean*(senior ? 1.6 : 2.4) + .35;                         // a little nose-up drift: the player must act
-        HL.phi += HL.w*h;
+        if(!HL.flew && now - HL.airT > 750){ HL.flew = true; pop(W/2, Hh*.26, 'پرواز! ✈', '#fff', 40); }
+        // the body's lean turns the jeep; it also settles a little toward the ground's angle by itself
+        const want = Math.atan(slope(HL.x + HL.vx*.3));
+        HL.phi += (-lean*(senior ? 1.8 : 2.4) + .2 + (want - HL.phi)*.9)*h;
         const ground = terrain(HL.x);
         if(HL.y <= ground){ const th = Math.atan(slope(HL.x)); let d = HL.phi - th; d = Math.atan2(Math.sin(d), Math.cos(d));
-          HL.y = ground; HL.air = false;
-          if(Math.abs(d) > 1.05){ HL.dead = true; sfx('miss'); gameOver(Math.round(HL.far), 'ماشین وارونه شد!'); return; }
-          HL.v = Math.hypot(HL.vx, HL.vy)*Math.max(.4, Math.cos(d))*(HL.vx >= 0 ? 1 : -1); HL.phi = th; sfx(Math.abs(d) < .3 ? 'hit' : 'tap', 2); }
+          HL.y = ground; HL.air = false; HL.flew = false; const hang = (now - HL.airT)/1000, fall = -HL.vy;
+          if(Math.abs(d) > 1.3){ HL.dead = true; HL.shake = 18; H.ENGINE.stop(); sfx('crash'); vib([60, 40, 90]);
+            const p = scr(HL.x, HL.y); burst(p.x, p.y - 20, 22, ['#c8352a', '#3d3550', '#a9a4b8', '#c48745'], 300, 1.2, 'brick');
+            gameOver(Math.round(HL.far), 'ماشین وارونه شد!'); return; }
+          HL.v = Math.min(18, Math.hypot(HL.vx, HL.vy)*Math.max(.5, Math.cos(d)))*(HL.vx >= 0 ? 1 : -1); HL.phi = th;
+          const p = scr(HL.x, HL.y); sfx('land', fall > 6); HL.shake = Math.min(12, fall*1.2);
+          burst(p.x, p.y, 10, ['rgba(190,150,110,.9)', 'rgba(160,120,80,.9)'], 160, .6);
+          if(Math.abs(d) < .25 && hang > .5){ HL.coins += 2; sfx('flag'); pop(p.x, p.y - 90, 'فرودِ عالی! +۲', '#ffd93d', 26); burst(p.x, p.y - 60, 14, CONF, 260, 1, 'star'); } }
       }
     }
     HL.far = Math.max(HL.far, HL.x);
-    HL.fuel = Math.max(0, HL.fuel - dt*(senior ? 3 : 4)*(gas > 0 ? 1 : .5));
-    HL.cans = HL.cans.filter(cx => { if(Math.abs(cx - HL.x) < 1.6 && Math.abs(terrain(cx) - HL.y) < 2.5){ HL.fuel = 100; sfx('star'); return false; } return true; });
-    if(HL.cans.length < 6){ const last = Math.max(...HL.cans, HL.x); HL.cans.push(last + 140 + Math.random()*60); }
-    HL.coinsAt.forEach(c => { if(!c.got && Math.abs(c.x - HL.x) < 1.2 && HL.y + 1.4 > terrain(c.x) + .6){ c.got = true; HL.coins++; sfx('hit'); } });
-    if(HL.coinsAt.length && HL.coinsAt[HL.coinsAt.length - 1].x < HL.x + 200){ const lx = HL.coinsAt[HL.coinsAt.length - 1].x; for(let x = lx + 12; x < lx + 400; x += 11 + Math.random()*8) HL.coinsAt.push({x, got:false}); }
-    if(HL.fuel <= 0 && Math.abs(HL.v) < .3 && !HL.air){ HL.emptyT = HL.emptyT || now; if(now - HL.emptyT > 1500){ HL.dead = true; gameOver(Math.round(HL.far), 'بنزین تمام شد!'); return; } } else HL.emptyT = 0;
+    HL.fuel = Math.max(0, HL.fuel - dt*(senior ? 2.2 : 3)*(gas > 0 ? 1 : .4));
+    if(HL.fuel < 20 && HL.fuel > 0 && now - HL.lowBeep > 1800){ HL.lowBeep = now; tone2(); }
+    HL.cans = HL.cans.filter(cx => { if(Math.abs(cx - HL.x) < 1.8 && Math.abs(terrain(cx) - HL.y) < 2.5){ HL.fuel = 100; sfx('fuel'); const p = scr(cx, terrain(cx) + 1);
+      pop(p.x, p.y - 30, 'بنزین پُر شد!', '#7cf29c', 26); burst(p.x, p.y, 14, ['#7cf29c', '#fff', '#ffd93d'], 220, .8, 'star'); return false; } return true; });
+    if(HL.cans.length < 6){ const last = Math.max(...HL.cans, HL.x); HL.cans.push(last + 110 + Math.random()*40); }
+    HL.coinsAt.forEach(c => { if(!c.got && Math.abs(c.x - HL.x) < 1.4 && HL.y + 1.6 > terrain(c.x) + .5){ c.got = true; HL.coins++;
+      HL.combo = now - HL.coinT < 1500 ? HL.combo + 1 : 1; HL.coinT = now; sfx('coin', HL.combo);      // a run of coins climbs in pitch
+      const p = scr(c.x, terrain(c.x) + 1.35); burst(p.x, p.y, 8, ['#ffd93d', '#fff3a8', '#fff'], 180, .5, 'star');
+      pop(p.x, p.y - 20, HL.combo >= 3 ? `×${fa(HL.combo)}` : '+۱', HL.combo >= 5 ? '#ff9b3d' : '#ffd93d', HL.combo >= 3 ? 30 : 24); } });
+    if(HL.coinsAt.length && HL.coinsAt[HL.coinsAt.length - 1].x < HL.x + 200){ const lx = HL.coinsAt[HL.coinsAt.length - 1].x; for(let x = lx + 10; x < lx + 400; x += 9 + Math.random()*7) HL.coinsAt.push({x, got:false}); }
+    if(HL.best > 20 && !HL.recDone && HL.far > HL.best){ HL.recDone = true; sfx('cheer'); sfx('fanfare', true); burst(W/2, Hh*.35, 40, CONF, 460, 1.6, 'star'); pop(W/2, Hh*.34, 'رکورد را شکستی! 🏆', '#ffd93d', 38); }
+    if(HL.far >= HL.flagAt){ const p = scr(HL.flagAt, terrain(HL.flagAt)); sfx('flag'); if(HL.flagAt % 100 === 0) sfx('cheer'); burst(p.x, p.y - 60, 18, CONF, 280, 1.1, 'star'); pop(W/2, Hh*.32, `${fa(HL.flagAt)} متر!`, '#fff', 34); HL.flagAt += 50; }
+    if(HL.fuel <= 0 && Math.abs(HL.v) < .3 && !HL.air){ HL.emptyT = HL.emptyT || now; if(now - HL.emptyT > 1500){ HL.dead = true; H.ENGINE.stop(); gameOver(Math.round(HL.far), 'بنزین تمام شد!'); return; } } else HL.emptyT = 0;
   }
-  drawHill(gas, lean, cadence);
+  drawHill(gas, lean, cadence, dt);
 }
+const tone2 = () => sfx('tick');
+const vib = p => { try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} };                // the low-fuel warning: a soft tick every two seconds
+/* world point -> screen point, with the same camera drawHill uses */
+const scr = (x, y) => { const PPM = HL.PPM || 30; return {x:(x - HL.camX)*PPM, y:Hh*.66 - (y - HL.camY)*PPM}; };
 /* ---------------------------------------------------------------- hill climb: the picture
    Everything is drawn in layers, back to front: sky and sun, clouds, far mountains and middle hills moving
    slower than the road (parallax), the road's soil and grass, flags, coins and fuel, the jeep and its dust. */
@@ -290,10 +353,12 @@ function jeep(u, spin, gas, t){
   wheel(-1.05*u, -.42*u, .5*u, spin); wheel(1.1*u, -.42*u, .5*u, spin);
 }
 const DUST = [];
-function drawHill(gas, lean, cadence){
+function drawHill(gas, lean, cadence, dt = .016){
   if(!ctx) return;
   const t = performance.now()/1000;
   const PPM = Math.max(16, Math.min(W/13, Hh/17)), camX = HL.x - (W*.3)/PPM;     // wide enough to see the next hill coming
+  HL.PPM = PPM; HL.camX = camX;
+  ctx.save(); if(HL.shake > .4){ ctx.translate((Math.random() - .5)*HL.shake, (Math.random() - .5)*HL.shake); HL.shake *= Math.pow(.02, dt); } else HL.shake = 0;
   HL.camY = HL.camY == null ? HL.y : HL.camY + (HL.y - HL.camY)*.15;
   const span = (Hh*.3)/PPM; HL.camY = Math.max(HL.y - span, Math.min(HL.y + span, HL.camY));   // the jeep never leaves the screen
   const sx = x => (x - camX)*PPM, sy = y => Hh*.66 - (y - HL.camY)*PPM;
@@ -341,22 +406,40 @@ function drawHill(gas, lean, cadence){
     ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(PPM*.42)}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.fillText(fa(m), x + PPM*.6, y - PPM*1.92); }
   const rk = ART('rock'); if(rk) for(let wx = Math.floor(camX/9)*9; wx < camX + W/PPM + 9; wx += 9){ if(hash(wx*1.7) < .55) continue;
     const rx = wx + hash(wx)*5, w = PPM*(.9 + hash(wx + 1)*.7), h = w*rk.naturalHeight/rk.naturalWidth; ctx.drawImage(rk, sx(rx) - w/2, sy(terrain(rx)) - h*.82, w, h); }
+  if(HL.best > 20 && !HL.recDone){ const x = sx(HL.best); if(x > -60 && x < W + 60){ const y = sy(terrain(HL.best)), tr = ART('trophy');
+      ctx.strokeStyle = INK; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - PPM*3.6); ctx.stroke();
+      ctx.fillStyle = '#ffc93c'; ctx.beginPath(); ctx.moveTo(x, y - PPM*3.6); ctx.lineTo(x + PPM*2.2, y - PPM*3.1); ctx.lineTo(x, y - PPM*2.6); ctx.closePath(); ctx.fill(); ctx.stroke();
+      if(tr) ctx.drawImage(tr, x - PPM*.7, y - PPM*5.1, PPM*1.4, PPM*1.4);
+      ctx.save(); ctx.font = `900 ${Math.round(PPM*.5)}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.direction = 'rtl'; ctx.lineWidth = 4; ctx.strokeStyle = '#fff'; ctx.fillStyle = INK;
+      ctx.strokeText('رکورد', x + PPM*.9, y - PPM*3.05); ctx.fillText('رکورد', x + PPM*.9, y - PPM*3.05); ctx.restore(); } }
   HL.coinsAt.forEach(c => { if(c.got) return; const x = sx(c.x); if(x < -20 || x > W + 20) return; coin(x, sy(terrain(c.x) + 1.35 + .12*Math.sin(t*3 + c.x)), PPM*.48, t); });
   HL.cans.forEach(cx => { const x = sx(cx); if(x < -30 || x > W + 30) return; fuelCan(x, sy(terrain(cx)), PPM); });
-  // dust from the back wheel while the engine pulls on the ground
-  if(gas > .1 && !HL.air && Math.random() < .5 + gas*.5) DUST.push({x:HL.x - 1.4, y:HL.y + .3, vx:-1 - Math.random()*2, vy:.6 + Math.random(), life:1});
-  for(let i = DUST.length - 1; i >= 0; i--){ const d = DUST[i]; d.x += d.vx*.016; d.y += d.vy*.016; d.life -= .025; if(d.life <= 0){ DUST.splice(i, 1); continue; }
-    ctx.fillStyle = `rgba(190,150,110,${d.life*.5})`; ctx.beginPath(); ctx.arc(sx(d.x), sy(d.y), PPM*(.25 + (1 - d.life)*.5), 0, 7); ctx.fill(); }
+  // dust from the back wheel while the engine pulls, and exhaust puffs from the pipe
+  if(gas > .1 && !HL.air && Math.random() < .5 + gas*.5) DUST.push({x:HL.x - 1.4, y:HL.y + .3, vx:-1 - Math.random()*2 - HL.v*.15, vy:.6 + Math.random(), life:1, c:'190,150,110'});
+  if(gas > .05 && Math.random() < .3 + gas*.5){ const c = Math.cos(HL.phi), s2 = Math.sin(HL.phi); DUST.push({x:HL.x - 2.0*c - .8*s2, y:HL.y + .8*c - 2.0*s2, vx:-1.5 - Math.random(), vy:.8 + Math.random()*.6, life:.8, c:'120,115,135'}); }
+  for(let i = DUST.length - 1; i >= 0; i--){ const d = DUST[i]; d.x += d.vx*dt; d.y += d.vy*dt; d.life -= dt*1.5; if(d.life <= 0){ DUST.splice(i, 1); continue; }
+    ctx.fillStyle = `rgba(${d.c},${d.life*.5})`; ctx.beginPath(); ctx.arc(sx(d.x), sy(d.y), PPM*(.22 + (1 - d.life)*.5), 0, 7); ctx.fill(); }
+  // speed lines once the jeep is really moving
+  if(HL.v > 9){ const k = Math.min(1, (HL.v - 9)/6 + (HL.turbo ? .4 : 0)); ctx.strokeStyle = `rgba(255,255,255,${.55*k})`; ctx.lineWidth = 3; ctx.lineCap = 'round';
+    for(let i = 0; i < 9; i++){ const y = Hh*(.12 + hash(i)*.55), x = ((hash(i + 3)*W - t*HL.v*90) % W + W) % W, len = 40 + 70*k*hash(i + 7);
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + len, y); ctx.stroke(); } }
   // shadow under the jeep, then the jeep
   const gy = sy(terrain(HL.x)); ctx.fillStyle = 'rgba(43,33,64,.18)'; ctx.beginPath(); ctx.ellipse(sx(HL.x), gy + 2, PPM*1.8*Math.max(.4, 1 - (HL.y - terrain(HL.x))*.15), PPM*.22, 0, 0, 7); ctx.fill();
-  HL.spin = (HL.spin || 0) + (HL.air ? 0 : HL.v*.016/.5);
-  ctx.save(); ctx.translate(sx(HL.x), sy(HL.y)); ctx.rotate(-HL.phi); jeep(PPM, HL.spin, gas, t); ctx.restore();
+  HL.spin = (HL.spin || 0) + (HL.air ? HL.v*dt/.56*.3 : HL.v*dt/.56);
+  ctx.save(); ctx.translate(sx(HL.x), sy(HL.y)); ctx.rotate(-HL.phi);
+  if(HL.turbo){ for(let i = 0; i < 3; i++){ const L = PPM*(1 + Math.random()*.9), y0 = -.85*PPM;                       // a flame from the exhaust
+      const fg = ctx.createLinearGradient(-2.1*PPM, 0, -2.1*PPM - L, 0); fg.addColorStop(0, 'rgba(255,240,140,.95)'); fg.addColorStop(.5, 'rgba(255,140,40,.8)'); fg.addColorStop(1, 'rgba(255,60,30,0)');
+      ctx.fillStyle = fg; ctx.beginPath(); ctx.moveTo(-2.0*PPM, y0 - PPM*.18); ctx.quadraticCurveTo(-2.1*PPM - L*.6, y0 - PPM*.3*Math.random(), -2.1*PPM - L, y0); ctx.quadraticCurveTo(-2.1*PPM - L*.6, y0 + PPM*.3, -2.0*PPM, y0 + PPM*.18); ctx.fill(); } }
+  jeep(PPM, HL.spin, gas, t); ctx.restore();
+  drawFX(dt);
+  if(HL.fuel < 20 && HL.fuel > 0 && Math.sin(t*8) > 0){ ctx.strokeStyle = 'rgba(226,87,76,.55)'; ctx.lineWidth = 14; ctx.strokeRect(0, 0, W, Hh); }   // low fuel: the edges blink red
+  ctx.restore();
   // what the body is doing, so the player sees cause and effect
   const m = Math.round(HL.far), fuel = Math.round(HL.fuel/5)*5;
   hud(`<span>🚩 ${fa(m)} <b>متر</b></span><span><img src="img/obj/coin.webp" alt=""> ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('hill', A.who))}</span>` : ''}`,
     `<span><img src="img/obj/jerrycan.webp" alt=""><i class="meter" style="background:linear-gradient(90deg,${fuel < 25 ? '#e2574c' : '#2fbf71'} ${fuel}%,#fff ${fuel}%)"></i></span>`
     + (HL.air ? `<span>${Math.abs(lean) > .3 ? (lean > 0 ? 'کج به راست ↘' : 'کج به چپ ↙') : 'بدنت را کج کن!'}</span>`
-              : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`));
+              : HL.turbo ? `<span style="background:#ffe1b8">🔥 توربو!</span>` : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`));
 }
 
 /* ================================================================ game 2: shape walls
@@ -386,12 +469,14 @@ function liftedSide(b, c){ if(Math.abs(b.aL.y - b.aR.y) < .2*c.leg) return null;
   return up.x > down.x ? 'L' : 'R'; }
 const POOL = {kid:['up', 'wings', 'star', 'squat', 'storkL', 'storkR', 'leanL', 'leanR'], senior:['up', 'wings', 'half', 'leanL', 'leanR']};
 const WL = {};
-function wallReset(){ Object.assign(WL, {score:0, hearts:3, wall:null, gapT:0, flash:0, flashOk:false}); }
+function wallReset(){ Object.assign(WL, {score:0, hearts:3, wall:null, gapT:0, flash:0, flashOk:false, combo:0, shake:0}); FX.length = 0; }
 function newWall(now){
   const pool = SENIOR(A.who) ? POOL.senior : POOL.kid; let k;
   do { k = pool[Math.random()*pool.length|0]; } while(WL.last === k && pool.length > 1);
-  WL.last = k; const dur = SENIOR(A.who) ? Math.max(3.6, 7 - .12*WL.score) : Math.max(2.3, 5.6 - .16*WL.score);
+  // the first walls come slowly; they speed up a little with every wall passed
+  WL.last = k; const dur = SENIOR(A.who) ? Math.max(4.5, 8 - .12*WL.score) : Math.max(3.2, 6.6 - .13*WL.score);
   WL.wall = {k, t0:now, dur:dur*1000, held:0, lastOk:0};
+  sfx('wall', dur*.9);
   if(POSES[k].v) voice(POSES[k].v, 'step');
 }
 function wallFrame(dt, now, live){
@@ -400,13 +485,23 @@ function wallFrame(dt, now, live){
     if(!WL.wall && now > WL.gapT) newWall(now);
     const w = WL.wall;
     if(w){
+      /* the pose counts once it has been held a quarter of a second while the wall is on its way (the second
+         half of its approach), and is still held, or was a moment ago, when it arrives */
       const p = (now - w.t0)/w.dur, okNow = !!(B.b && c && POSES[w.k].ok(B.b, c));
-      if(p > .55 && okNow){ w.held += dt*1000; w.lastOk = now; }
+      w.okNow = okNow;
+      if(p > .78 && now - (w.tickT || 0) > (p > .9 ? 160 : 300)){ w.tickT = now; sfx('tick'); }          // tick-tick-tick as it arrives
+      if(p > .4 && okNow){ if(!w.held) sfx('tap', 3); w.held += dt*1000; w.lastOk = now; }
       if(p >= 1){
-        const pass = w.held >= 300 && now - w.lastOk < 700;
+        const pass = w.held >= 250 && now - w.lastOk < 900;
         WL.flash = now; WL.flashOk = pass;
-        if(pass){ WL.score++; sfx('hit'); } else { WL.hearts--; sfx('miss'); }
-        WL.wall = null; WL.gapT = now + 900;
+        if(pass){ WL.score++; WL.combo++; sfx('pass'); burst(W/2, Hh*.55, 30, CONF, 420, 1.2, 'star');
+          const rb = best('wall', A.who); if(rb > 0 && WL.score === rb + 1){ sfx('cheer'); pop(W/2, Hh*.28, 'رکورد را شکستی! 🏆', '#ffd93d', 36); }
+          else if(WL.score % 5 === 0){ sfx('fanfare'); pop(W/2, Hh*.28, 'تندتر! ⚡', '#7cd3ff', 42); }
+          if(window.HKMusic) HKMusic.rate(1 + Math.min(.3, WL.score*.03));
+          pop(W/2, Hh*.4, WL.combo >= 3 ? `عالی! ×${fa(WL.combo)}` : ['آفرین!', 'عالی!', 'رد شدی!'][WL.score % 3], '#ffd93d', 40); }
+        else { WL.hearts--; WL.combo = 0; WL.shake = 16; sfx('smash'); vib([50, 30, 70]); burst(W/2, Hh*.5, 26, ['#d9774b', '#cf6a40', '#e0855a', '#f0d6b4'], 380, 1.4, 'brick');
+          pop(W/2, Hh*.4, 'اوه! دیوار خورد', '#ff8a7a', 32); }
+        WL.wall = null; WL.gapT = now + 1100;
         if(WL.hearts <= 0){ gameOver(WL.score, 'دیوار به تو خورد!'); }
       }
     }
@@ -456,8 +551,10 @@ function stage(now, moving){
 const BRICK = ['#d9774b', '#cf6a40', '#e0855a', '#c96339', '#d77350'];
 function drawWall(now, c){
   if(!ctx) return;
+  const dt = Math.min(.05, (now - (WL.drawT || now))/1000); WL.drawT = now;
+  ctx.save(); if(WL.shake > .4){ ctx.translate((Math.random() - .5)*WL.shake, (Math.random() - .5)*WL.shake); WL.shake *= Math.pow(.02, dt); } else WL.shake = 0;
   const floorY = Hh*.9, w = WL.wall, hz = stage(now, !!w);
-  if(!c){ hud(''); return; }
+  if(!c){ ctx.restore(); hud(''); return; }
   const k = (Hh*.62)/c.height, cx = W/2;
   // the player's own body, live, in the plane the wall arrives at — so they see whether they fit
   const drawSelf = () => { const b = B.b; if(!b || performance.now() - B.t > 900) return;
@@ -513,8 +610,11 @@ function drawWall(now, c){
     ctx.fillStyle = 'rgba(255,255,255,.3)'; rr(-tw/2 + 6, -th/2 + 5, tw - 12, th*.22, th*.1); ctx.fill(); }
     ctx.fillStyle = '#fff'; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(43,33,64,.6)'; ctx.strokeText(name, 0, 2); ctx.fillText(name, 0, 2); ctx.restore();
   } else drawSelf();
+  if(w && w.okNow){ ctx.strokeStyle = `rgba(47,191,113,${.45 + .25*Math.sin(now/90)})`; ctx.lineWidth = 16; ctx.strokeRect(0, 0, W, Hh); }   // fitting: the edges glow green
   if(WL.flash && now - WL.flash < 700){ ctx.fillStyle = WL.flashOk ? 'rgba(47,191,113,.28)' : 'rgba(226,87,76,.32)'; ctx.fillRect(0, 0, W, Hh); }
-  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span><span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < WL.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('wall', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('wall', A.who))}</span>` : ''}`);
+  drawFX(dt);
+  ctx.restore();
+  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span>${WL.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(WL.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < WL.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('wall', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('wall', A.who))}</span>` : ''}`);
 }
 
 /* ================================================================ hooks */
