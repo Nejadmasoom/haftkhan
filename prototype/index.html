@@ -127,7 +127,7 @@ button{font:inherit;color:inherit}
 .star-dot{position:absolute;width:3px;height:3px;border-radius:50%;background:var(--on-dark);opacity:.6}
 
 /* ---------- bottom nav ---------- */
-.nav{display:grid;grid-template-columns:repeat(4,1fr);background:var(--lapis-deep);padding:8px 8px calc(10px + env(safe-area-inset-bottom,0px));gap:4px;flex:0 0 auto;border-top:2px solid rgba(243,165,48,.35)}
+.nav{display:grid;grid-template-columns:repeat(5,1fr);background:var(--lapis-deep);padding:8px 8px calc(10px + env(safe-area-inset-bottom,0px));gap:4px;flex:0 0 auto;border-top:2px solid rgba(243,165,48,.35)}
 .nav button{border:0;background:none;display:flex;flex-direction:column;align-items:center;gap:2px;font-size:12px;color:#aeb4e6;padding:6px 0;border-radius:14px;cursor:pointer;min-height:52px}
 .nav button svg{width:26px;height:26px}
 .nav button[aria-current="page"]{color:var(--saffron);background:rgba(243,165,48,.12)}
@@ -524,6 +524,30 @@ html.camfull-on body{overflow:hidden}
 .free-note{display:block;margin-top:6px;font-size:12.5px;font-weight:700;line-height:1.7;color:var(--ink-soft)}
 .seenrow{display:flex;gap:10px;justify-content:center;margin-top:8px}
 .chal{display:block;margin-top:8px;font-size:14px;font-weight:700;line-height:1.8}
+.play-stage{position:fixed;inset:0;background:#8fd6ff;overflow:hidden;z-index:40}
+.play-stage canvas#plCanvas{position:absolute;inset:0;width:100%;height:100%}
+.pl-cam{position:absolute;top:calc(10px + env(safe-area-inset-top));left:10px;width:min(32vw,190px);aspect-ratio:3/4;border-radius:16px;overflow:hidden;border:3px solid var(--ink);box-shadow:0 4px 0 var(--ink);background:#0d1440;z-index:2}
+.pl-cam .cambox{border-radius:0}.pl-cam .camchip,.pl-cam .camfull,.pl-cam .camcount{display:none}
+.pl-cam .camfit{bottom:6px;padding:4px 8px;max-width:94%}.pl-cam .camfit b{font-size:13px}.pl-cam .camfit small{font-size:10px}
+.pl-hud{position:absolute;top:calc(10px + env(safe-area-inset-top));right:64px;left:calc(min(32vw,190px) + 22px);display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;z-index:2}
+.pl-hud span{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:2px 10px;font-weight:800;font-size:clamp(14px,3.6vw,20px);box-shadow:0 3px 0 var(--ink)}
+.pl-hud b{font-family:var(--f-display);font-size:clamp(18px,5vw,30px)}
+.pl-bot{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));left:10px;right:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;z-index:2;pointer-events:none}
+.pl-bot span{background:rgba(255,255,255,.92);border:3px solid var(--ink);border-radius:16px;padding:4px 12px;font-weight:800;font-size:clamp(15px,4vw,22px);box-shadow:0 3px 0 var(--ink)}
+.pl-bot .meter{display:inline-block;vertical-align:middle;width:clamp(60px,18vw,120px);height:14px;border:2px solid var(--ink);border-radius:7px;margin-inline-start:6px}
+.pl-exit{position:absolute;top:calc(10px + env(safe-area-inset-top));right:10px;width:46px;height:46px;border-radius:50%;border:3px solid var(--ink);background:#fff;color:var(--ink);display:grid;place-items:center;z-index:3;cursor:pointer}
+.pl-exit svg{width:22px;height:22px}
+.pl-msg{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:min(92%,460px);background:#fff;border:4px solid var(--ink);border-radius:26px;box-shadow:0 7px 0 var(--ink);padding:18px;text-align:center;z-index:4}
+.pl-msg h3{font-family:var(--f-display);font-size:clamp(22px,6vw,34px);margin:0 0 6px}
+.pl-msg p{margin:4px 0 12px;font-weight:700;line-height:1.8}
+.pl-msg .row{display:flex;gap:10px;justify-content:center;flex-wrap:wrap}
+.ar-card{display:flex;gap:12px;align-items:center;background:#fff;border:var(--bw) solid var(--ink);border-radius:22px;box-shadow:0 5px 0 var(--ink);padding:12px;margin:0 0 14px;width:100%;text-align:start;cursor:pointer;font:inherit;color:var(--ink)}
+.ar-card svg{width:92px;height:92px;flex:0 0 auto}
+.ar-card b{display:block;font-family:var(--f-display);font-size:21px}
+.ar-card small{display:block;font-size:13px;line-height:1.7;color:var(--ink-soft);font-weight:600}
+.ar-card .rec{display:inline-block;margin-top:4px;background:var(--saffron);border:2px solid var(--ink);border-radius:999px;padding:0 10px;font-weight:800;font-size:13px;color:var(--ink)}
+.ar-board{background:#fff8ea;border:var(--bw) solid var(--ink);border-radius:18px;padding:8px 12px;margin-bottom:14px}
+.ar-board h4{margin:2px 0 6px;font-size:15px}.ar-board table{width:100%;border-collapse:collapse;font-size:14px}.ar-board td{padding:3px 4px;border-top:1px dashed #e2cfa3}.ar-board td:not(:first-child){text-align:center;font-weight:800}
 .team{background:#fff;border:var(--bw) solid var(--ink);border-radius:20px;padding:10px 10px 8px;margin:0 0 12px;text-align:center}
 .team > b{display:block;font-size:15px;margin-bottom:6px}
 .tms{display:flex;flex-wrap:wrap;gap:3px;justify-content:center;align-items:flex-start}
@@ -946,6 +970,18 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       </section>
 
       <!-- ===== TREASURE ===== -->
+      <!-- ===== ARENA: endless body games with records ===== -->
+      <section class="screen lattice" id="s-arena" hidden aria-label="میدان">
+        <div class="hdr"><button class="back" data-go="map" aria-label="برگشت به نقشه"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2>میدانِ بازی<small>بازی‌های بی‌پایان؛ هر بار رکوردت را بشکن!</small></h2></div>
+        <div class="sheet" id="arBody"></div>
+      </section>
+      <section class="screen" id="s-play" hidden aria-label="بازیِ میدان">
+        <div class="play-stage" id="plStage"><canvas id="plCanvas"></canvas><div class="pl-cam" id="plCam"></div>
+          <div class="pl-hud" id="plHud"></div><div class="pl-bot" id="plBot"></div>
+          <button class="pl-exit" data-go="arena" aria-label="بیرون رفتن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+          <div class="pl-msg" id="plMsg" hidden></div>
+        </div>
+      </section>
       <section class="screen lattice" id="s-treasure" hidden aria-label="گنجینه">
         <div class="hdr"><h2>گنجینه<small>یوزی و نشان‌های خوان‌ها</small></h2></div>
         <div class="sheet">
@@ -1072,6 +1108,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       <nav class="nav" aria-label="بخش‌ها">
         <button data-go="map" aria-current="page"><span class="nic" data-ic="nav-map"></span>نقشه</button>
         <button data-go="family"><span class="nic" data-ic="nav-family"></span>خانواده</button>
+        <button data-go="arena"><span class="nic" data-ic="nav-arena"></span>میدان</button>
         <button data-go="treasure"><span class="nic" data-ic="nav-treasure"></span>گنجینه</button>
         <button data-go="parents"><span class="nic" data-ic="nav-parents"></span>والدین</button>
       </nav>
@@ -1284,6 +1321,7 @@ const ICON = {
   star: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l5.6 11.6 12.7 1.8-9.2 8.9 2.2 12.6L24 34l-11.3 5.9 2.2-12.6-9.2-8.9 12.7-1.8z" fill="#ffc93c" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 11l3.4 7 6.6 1" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".8"/><circle cx="20" cy="24" r="1.8" fill="${IK}"/><circle cx="28" cy="24" r="1.8" fill="${IK}"/><path d="M20.5 28.5q3.5 3 7 0" fill="none" stroke="${IK}" stroke-width="2" stroke-linecap="round"/><path d="M41 6l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1zM7 34l.8 1.8 1.8.8-1.8.8L7 39.2l-.8-1.8-1.8-.8 1.8-.8z" fill="#f3a530"/></svg>`,
   'nav-map': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 12l12-5 14 5 12-5v29l-12 5-14-5-12 5z" fill="#bfe6a0" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M17 7v29M31 12v29" stroke="${IK}" stroke-width="2"/><path d="M17 7l14 5v29l-14-5z" fill="#8fd6ff"/><path d="M9 32c4-2 6-8 11-8s7 6 12 2 6-10 9-12" fill="none" stroke="#f3a530" stroke-width="3" stroke-dasharray="1 4.5" stroke-linecap="round"/><path d="M37 8a5 5 0 0 1 5 5c0 4-5 9-5 9s-5-5-5-9a5 5 0 0 1 5-5z" fill="#d6404c" stroke="${IK}" stroke-width="2.2"/><circle cx="37" cy="13" r="1.8" fill="#fff"/></svg>`,
   'nav-family': () => ICON.family(),
+  'nav-arena': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h20v12a10 10 0 0 1-20 0z" fill="#ffc93c" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M14 10H7a7 7 0 0 0 8 9M34 10h7a7 7 0 0 1-8 9" fill="none" stroke="${IK}" stroke-width="2.6" stroke-linecap="round"/><path d="M24 28v6M16 42h16l-2-8H18z" fill="#e0a95a" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M21 12l3 6 3-6" fill="none" stroke="#d6404c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
   'nav-treasure': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 20h36v20a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" fill="#c9893f" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 20a9 9 0 0 1 9-9h18a9 9 0 0 1 9 9z" fill="#e0a95a" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 26h36" stroke="${IK}" stroke-width="2.4"/><rect x="20" y="22" width="8" height="10" rx="2" fill="#ffc93c" stroke="${IK}" stroke-width="2.2"/><path d="M14 11v32M34 11v32" stroke="#f3a530" stroke-width="3"/><circle cx="12" cy="7" r="2.4" fill="#16a39a"/><circle cx="24" cy="5" r="2.8" fill="#d6404c"/><circle cx="36" cy="7" r="2.4" fill="#ffc93c"/></svg>`,
   'nav-parents': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="7" width="30" height="37" rx="4" fill="#fff" stroke="${IK}" stroke-width="2.6"/><rect x="17" y="4" width="14" height="7" rx="3" fill="#a35bc4" stroke="${IK}" stroke-width="2.2"/><rect x="14" y="30" width="5" height="9" rx="1.5" fill="#16a39a" stroke="${IK}" stroke-width="1.6"/><rect x="21.5" y="25" width="5" height="14" rx="1.5" fill="#f3a530" stroke="${IK}" stroke-width="1.6"/><rect x="29" y="20" width="5" height="19" rx="1.5" fill="#3b82c4" stroke="${IK}" stroke-width="1.6"/><path d="M24 22c-6-4-6-9-3-10 1.6-.6 2.6.4 3 1.4.4-1 1.4-2 3-1.4 3 1-1 6-3 10z" fill="#d6404c" stroke="${IK}" stroke-width="1.6" transform="translate(-5 -6) scale(.9)"/></svg>`
 };
@@ -1442,14 +1480,15 @@ function renderTop(){
 
 /* ---------- navigation ---------- */
 const NAV_OF = {choose:'map', hello:'map', map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents',
-  gkhan:'map', gchoose:'map', gex:'map', gstory:'map', gfam:'family', gstar:'map'};
+  gkhan:'map', gchoose:'map', gex:'map', gstory:'map', gfam:'family', gstar:'map', arena:'arena', play:'arena'};
 function go(name){
   if(name==='family' && state.cur !== 5 && window.HKX) name = 'gfam';   // the family tab opens the current lesson's game
   hush(); bgScreen = name; document.documentElement.dataset.screen = name;
   if(window.HKX) HKX.leave(name);
+  if(window.HKA) HKA.leave(name);
   $$('.screen').forEach(s=> s.hidden = s.id !== 's-'+name);
   $$('.nav button').forEach(b=>{ if(b.dataset.go===NAV_OF[name]) b.setAttribute('aria-current','page'); else b.removeAttribute('aria-current'); });
-  $('.nav').hidden = ['ex','story','record','hello','gex','gstory','gstar'].includes(name);
+  $('.nav').hidden = ['ex','story','record','hello','gex','gstory','gstar','play'].includes(name);
   if(name==='choose') renderChoose();
   if(name==='ex') startExercise();
   if(name==='parents') renderParents();
@@ -1459,12 +1498,13 @@ function go(name){
   if(name!=='record') stopWatch(false);
   if(name!=='ex' && CAM.exOn) exCamOff();
   if(name!=='family' && CAM.famOn) famCamOff();
-  if(!['record','story','ex','family','gex','gstory','gfam','gstar'].includes(name) && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
+  if(!['record','story','ex','family','gex','gstory','gfam','gstar','play'].includes(name) && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
   if(name==='map'){ drawMap(); renderTop(); prefetchSoon(); }
   if(name==='khan' && state.cur !== 5){ state.cur = 5; save(); }
   if(name==='treasure') renderTreasure();
   if(name==='family' && !playing){ holder = 0; drawCircle(); }
   if(window.HKX) HKX.enter(name);
+  if(window.HKA) HKA.enter(name);
   if(name==='map') requestAnimationFrame(()=>{ const s=$('#s-map'); const n=$('.khan.now'); if(n) s.scrollTop = n.offsetTop - s.clientHeight/2 + 60; });
   stopMusic(); bgSync();
   if(name!=='ex') flip(false);
@@ -1935,8 +1975,8 @@ function camPlaceMsg(){ camMessage(`${PLACE_TIP}<b style="display:block;font-siz
 async function camStart(slot, opts={}){
   CAM.slot = slot; const box = camBox();
   if(!CAM.full) slot.appendChild(box);
-  if(CAM.stream){ CAM.solo = !!opts.full; if(opts.full && phoneSize() && !CAM.full) camFull(true); return true; }
-  CAM.wasFit = false; CAM.fitRaw = ''; CAM.fit = ''; CAM.countKey = null; CAM.solo = !!opts.full; CAM.saidAt = 0;
+  if(CAM.stream){ CAM.solo = !!(opts.full || opts.solo); if(opts.full && phoneSize() && !CAM.full) camFull(true); return true; }
+  CAM.wasFit = false; CAM.fitRaw = ''; CAM.fit = ''; CAM.countKey = null; CAM.solo = !!(opts.full || opts.solo); CAM.saidAt = 0;
   if(CAM.solo) voiceLater('place', 600);
   box.querySelector('.camfit').hidden = true; box.querySelector('.camcount').hidden = true; box.querySelector('.camguide').hidden = true;
   camFull(!!opts.full && phoneSize());
@@ -2241,3 +2281,4 @@ drawMap(); renderProfile(); renderTorches(); drawCircle(); renderTreasure(); go(
 })();
 </script>
 <script src="khans.js"></script>
+<script src="arena.js"></script>
