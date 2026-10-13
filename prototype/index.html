@@ -218,7 +218,7 @@ button{font:inherit;color:inherit}
 .reward h3{font-family:var(--f-display);font-size:32px;margin:0;color:var(--saffron)}
 .reward p{margin:0;font-size:15px;line-height:1.8;max-width:30ch}
 .big-torches{display:flex;gap:18px;align-items:flex-end}
-.big-torches svg{width:44px;height:72px}
+.big-torches svg{width:44px;height:80px}
 .big-torches .new{animation:ignite .9s ease both .3s}
 .xp{width:100%;max-width:260px;display:flex;flex-direction:column;gap:6px;font-size:12px;color:#c9cdf0}
 .xp .bar{height:14px;border-radius:var(--r-pill);background:rgba(255,247,230,.15);overflow:hidden}
@@ -240,6 +240,9 @@ button{font:inherit;color:inherit}
 .player.hold .face{border-color:var(--anar)}
 .player.hit{transform:translate(50%,-50%) scale(1.18)}
 .player.hit .face{border-color:var(--saffron);box-shadow:0 0 0 6px rgba(243,165,48,.35)}
+.propstrip{display:flex;justify-content:center;align-items:flex-end;gap:12px;flex-wrap:wrap;margin:2px 0}
+.propstrip img{height:48px;width:auto}
+.propstrip img.mark{height:56px;filter:drop-shadow(0 0 6px rgba(243,165,48,.8))}
 .tissue{position:absolute;width:44px;height:auto;transform:translate(50%,-50%);transition:inset-inline-end .5s ease, top .5s ease;z-index:2;filter:drop-shadow(0 3px 2px rgba(0,0,0,.2))}
 .fam-ctrl{display:flex;flex-direction:column;align-items:center;gap:10px}
 .callout{background:var(--lapis);color:var(--on-dark);border-radius:20px;padding:14px 16px;font-size:15px;line-height:1.8;text-align:center;width:100%}
@@ -1306,18 +1309,15 @@ const ICONS = {
 };
 const LOCK = `<svg viewBox="0 0 24 24" fill="none" stroke="#c9cdf0" stroke-width="2.6" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>`;
 function torch(lit, cls=''){
-  return `<svg class="torch ${cls}" viewBox="0 0 22 36" aria-hidden="true">
-    ${lit ? `<g class="flame"><path d="M11 2 C16 8 17 12 11 17 C5 12 6 8 11 2Z" fill="${C.anar}"/><path d="M11 7 C14 10 14 13 11 16 C8 13 8 10 11 7Z" fill="${C.saffron}"/></g>`
-          : `<path d="M11 6 C14 10 14 13 11 16 C8 13 8 10 11 6Z" fill="none" stroke="#6e7bc9" stroke-width="1.5" stroke-dasharray="2 2"/>`}
-    <path d="M5 17h12l-3 5H8z" fill="${lit ? C.saffron : '#6e7bc9'}"/>
-    <rect x="9" y="22" width="4" height="13" rx="2" fill="${lit ? '#8a5a2b' : '#4a56a8'}"/></svg>`;
+  // the drawn torch (object sheet 2); the unlit one is dimmed so the three read as "how many are lit"
+  return `<svg class="torch ${cls}" viewBox="0 0 22 36" aria-hidden="true"><image href="img/obj/torch-${lit ? 'on' : 'off'}.webp" x="0" y="0" width="22" height="36" preserveAspectRatio="xMidYMax meet"${lit ? '' : ' opacity=".55"'}/></svg>`;
 }
 function face(v){
   const fill = ['#e2574c','#f2c230','#4fb35a'][v];
   const mouth = v===2 ? 'M19 36 Q30 46 41 36' : v===1 ? 'M20 38 H40' : 'M19 42 Q30 32 41 42';
   return `<circle cx="30" cy="30" r="26" fill="${fill}" stroke="${C.ink}" stroke-width="2.5"/><circle cx="21" cy="24" r="3.5" fill="${C.ink}"/><circle cx="39" cy="24" r="3.5" fill="${C.ink}"/><path d="${mouth}" stroke="${C.ink}" stroke-width="3.5" fill="none" stroke-linecap="round"/>`;
 }
-const STAR = (on) => `<svg viewBox="0 0 24 24"><path d="M12 2.5l2.9 6 6.6.9-4.8 4.6 1.2 6.5L12 17.4l-5.9 3.1 1.2-6.5L2.5 9.4l6.6-.9z" fill="${on?C.saffron:'none'}" stroke="${on?C.sd:'#c9b583'}" stroke-width="1.6" stroke-linejoin="round"/></svg>`;
+const STAR = (on) => `<svg viewBox="0 0 24 24"><image href="img/obj/star.webp" x="0" y="0" width="24" height="24" opacity="${on ? 1 : .25}"/></svg>`;
 
 
 /* ---------- icons: pictures a 6-year-old recognises, drawn with the game's own characters ---------- */
@@ -1326,11 +1326,11 @@ const ICON = {
   play: () => `<img class="ic-img" src="img/${kid()}-cheer.webp" alt="">`,
   family: () => `<span class="faces3"><img src="img/mom.webp" alt=""><img src="img/${kid()}-idle.webp" alt="" class="kidface"><img src="img/dad.webp" alt=""></span>`,
   story: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 13c6-3 12-3 18 1 6-4 12-4 18-1v25c-6-3-12-3-18 1-6-4-12-4-18-1z" fill="#16a39a" stroke="${IK}" stroke-width="2.5" stroke-linejoin="round"/><path d="M9 12c5-2 10-1.5 15 2v23c-5-3-10-3.5-15-2z" fill="#fff7e6" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><path d="M39 12c-5-2-10-1.5-15 2v23c5-3 10-3.5 15-2z" fill="#fff" stroke="${IK}" stroke-width="2" stroke-linejoin="round"/><path d="M12 18h8M12 22h9M12 26h7M28 18h8M28 22h7" stroke="#b9a7cf" stroke-width="2" stroke-linecap="round"/><path d="M31 26l1.6 3.2 3.4.5-2.5 2.4.6 3.4-3.1-1.6-3.1 1.6.6-3.4-2.5-2.4 3.4-.5z" fill="#f3a530" stroke="${IK}" stroke-width="1.4" stroke-linejoin="round"/><path d="M34 9v9l-2.5-2-2.5 2V9" fill="#d6404c" stroke="${IK}" stroke-width="1.8" stroke-linejoin="round"/></svg>`,
-  star: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M24 5l5.6 11.6 12.7 1.8-9.2 8.9 2.2 12.6L24 34l-11.3 5.9 2.2-12.6-9.2-8.9 12.7-1.8z" fill="#ffc93c" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M24 11l3.4 7 6.6 1" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" opacity=".8"/><circle cx="20" cy="24" r="1.8" fill="${IK}"/><circle cx="28" cy="24" r="1.8" fill="${IK}"/><path d="M20.5 28.5q3.5 3 7 0" fill="none" stroke="${IK}" stroke-width="2" stroke-linecap="round"/><path d="M41 6l1 2.4 2.4 1-2.4 1-1 2.4-1-2.4-2.4-1 2.4-1zM7 34l.8 1.8 1.8.8-1.8.8L7 39.2l-.8-1.8-1.8-.8 1.8-.8z" fill="#f3a530"/></svg>`,
+  star: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><image href="img/obj/star.webp" x="2" y="2" width="44" height="44"/></svg>`,
   'nav-map': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 12l12-5 14 5 12-5v29l-12 5-14-5-12 5z" fill="#bfe6a0" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M17 7v29M31 12v29" stroke="${IK}" stroke-width="2"/><path d="M17 7l14 5v29l-14-5z" fill="#8fd6ff"/><path d="M9 32c4-2 6-8 11-8s7 6 12 2 6-10 9-12" fill="none" stroke="#f3a530" stroke-width="3" stroke-dasharray="1 4.5" stroke-linecap="round"/><path d="M37 8a5 5 0 0 1 5 5c0 4-5 9-5 9s-5-5-5-9a5 5 0 0 1 5-5z" fill="#d6404c" stroke="${IK}" stroke-width="2.2"/><circle cx="37" cy="13" r="1.8" fill="#fff"/></svg>`,
   'nav-family': () => ICON.family(),
   'nav-arena': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h20v12a10 10 0 0 1-20 0z" fill="#ffc93c" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M14 10H7a7 7 0 0 0 8 9M34 10h7a7 7 0 0 1-8 9" fill="none" stroke="${IK}" stroke-width="2.6" stroke-linecap="round"/><path d="M24 28v6M16 42h16l-2-8H18z" fill="#e0a95a" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M21 12l3 6 3-6" fill="none" stroke="#d6404c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
-  'nav-treasure': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M6 20h36v20a3 3 0 0 1-3 3H9a3 3 0 0 1-3-3z" fill="#c9893f" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 20a9 9 0 0 1 9-9h18a9 9 0 0 1 9 9z" fill="#e0a95a" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M6 26h36" stroke="${IK}" stroke-width="2.4"/><rect x="20" y="22" width="8" height="10" rx="2" fill="#ffc93c" stroke="${IK}" stroke-width="2.2"/><path d="M14 11v32M34 11v32" stroke="#f3a530" stroke-width="3"/><circle cx="12" cy="7" r="2.4" fill="#16a39a"/><circle cx="24" cy="5" r="2.8" fill="#d6404c"/><circle cx="36" cy="7" r="2.4" fill="#ffc93c"/></svg>`,
+  'nav-treasure': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><image href="img/obj/chest.webp" x="3" y="1" width="42" height="46"/></svg>`,
   'nav-parents': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="7" width="30" height="37" rx="4" fill="#fff" stroke="${IK}" stroke-width="2.6"/><rect x="17" y="4" width="14" height="7" rx="3" fill="#a35bc4" stroke="${IK}" stroke-width="2.2"/><rect x="14" y="30" width="5" height="9" rx="1.5" fill="#16a39a" stroke="${IK}" stroke-width="1.6"/><rect x="21.5" y="25" width="5" height="14" rx="1.5" fill="#f3a530" stroke="${IK}" stroke-width="1.6"/><rect x="29" y="20" width="5" height="19" rx="1.5" fill="#3b82c4" stroke="${IK}" stroke-width="1.6"/><path d="M24 22c-6-4-6-9-3-10 1.6-.6 2.6.4 3 1.4.4-1 1.4-2 3-1.4 3 1-1 6-3 10z" fill="#d6404c" stroke="${IK}" stroke-width="1.6" transform="translate(-5 -6) scale(.9)"/></svg>`
 };
 function paintIcons(root=document){ root.querySelectorAll('[data-ic]').forEach(el=>{ const f = ICON[el.dataset.ic]; if(f) el.innerHTML = f(); }); }

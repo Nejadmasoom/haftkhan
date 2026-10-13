@@ -1073,6 +1073,7 @@ function famChairs(fm, intro){
   $('#gfBody').innerHTML = `${intro}
     <div class="fam-ctrl">
       <div class="figrow one" style="width:100%">${animFig(['m3-walkA','m2-sitOk'])}</div>
+      <div class="propstrip" aria-hidden="true">${[0,1,2,3,4].map(i => `<img src="img/obj/chair${i === 2 ? '-star' : ''}.webp" alt=""${i === 2 ? ' class="mark"' : ''}>`).join('')}</div>
       ${famCam('#fSlot', `یوزی نشستنِ ${esc(H.kidName())} را ببیند`)}
       <div class="callout" id="cCall"><b>گوشی آهنگ پخش می‌کند</b><small>و یک جای غافلگیرکننده قطعش می‌کند</small></div>
       <button class="cta" id="cMusic">پخش آهنگ</button>
@@ -1133,6 +1134,7 @@ function famFeet(fm, intro){
     $('#gfBody').innerHTML = `${intro}
       <div class="fam-ctrl">
         <div class="figrow one" style="width:100%">${animFig(['m4-feetUp','m4-feetStack'])}</div>
+        <div class="propstrip" aria-hidden="true">${['doll','sock','fabric-ball','cushion-2'].map(n => `<img src="img/obj/${n}.webp" alt="">`).join('')}</div>
         <div class="callout" id="fCall">${left!=null ? `<b>${fa(left)} ثانیه</b>با پا بردار، با دست بالای سر بگذار!` : '<b>گوشی آهنگ پخش می‌کند</b><small>تا آهنگ تمام شود، هر کس هر چه می‌تواند بالای سرش بگذارد</small>'}</div>
         <button class="cta" id="fMusic">${F.playing ? 'توقف' : 'پخش آهنگ (۳۰ ثانیه)'}</button>
         <div class="tally">${P.map((p,i)=>`<div class="${best>0 && F.tally[i]===best ? 'lead' : ''}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><b>${esc(p.n)}</b><button data-i="${i}" data-d="-1" aria-label="کم کن">−</button><output>${fa(F.tally[i])}</output><button data-i="${i}" data-d="1" aria-label="اضافه کن">+</button></div>`).join('')}</div>
@@ -1174,7 +1176,7 @@ const CARD_ICONS = {
   trash: `<path d="M20 24h24l-3 30H23z" fill="#16a39a" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><rect x="17" y="18" width="30" height="7" rx="3" fill="#0c7a73" stroke="${C.ink}" stroke-width="2.4"/><path d="M27 36l3-5 3 5M37 40l-3 5h-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 4l6 3-2 6-6-1z" fill="#fff" stroke="${C.ink}" stroke-width="1.8" stroke-linejoin="round"/><path d="M45 14q-2 4-4 2" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="2 2"/><g transform="translate(13 40) scale(.6)">${BOYF(0,0,C.saffron)}</g>`,
   outside: `<rect width="64" height="60" rx="10" fill="#c8ecff"/><circle cx="52" cy="12" r="7" fill="#ffd45a" stroke="#f3a530" stroke-width="2"/><path d="M0 46q16-8 32 0t32 0v14H0z" fill="#8fd270"/><path d="M14 20l12-8 4 12z" fill="${C.anar}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M26 22q-2 10 6 20" fill="none" stroke="${C.ink}" stroke-width="1.4"/>${KIDF(36,36,C.fay,.85)}<g transform="translate(10 44)"><rect x="-1.5" width="3" height="8" fill="#8a5a2b"/><circle cy="-2" r="6" fill="#3fa34d" stroke="${C.ink}" stroke-width="1.6"/></g>`
 };
-const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp'};
+const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp', trash:'img/obj/bin.webp'};
 function starCards(sk, book){
   const st = LS(G.n); st.log.cards = st.log.cards || {};
   $('#grBody').innerHTML = `${book}<div class="cards">${sk.cards.map(([k,t])=>`<button class="card" data-k="${k}">${st.log.cards[k]?`<span class="n">${fa(st.log.cards[k])}</span>`:''}${CARD_IMG[k] ? `<img src="${CARD_IMG[k]}" alt="" class="card-img">` : `<svg viewBox="0 0 64 60">${CARD_ICONS[k]}</svg>`}${t}</button>`).join('')}</div>

@@ -109,7 +109,7 @@ function gameOver(score, why){
   if(isRec){ rec()[A.game][A.who] = score; H.save(); }
   sfx(isRec ? 'fanfare' : 'soft', isRec); if(isRec) H.voiceLater('record', 600);
   const who = H.PLAYERS.find(p => p.k === A.who) || {n:''};
-  msg(`<h3>${why}</h3><p style="font-size:22px"><b>${fa(score)} ${g.unit}</b>${isRec ? `<br>رکوردِ تازهٔ ${who.n}! 🎉` : prev ? `<br>رکوردِ ${who.n}: ${fa(prev)} ${g.unit}` : ''}</p>
+  msg(`${isRec ? '<img src="img/obj/medal.webp" alt="" style="height:84px;display:block;margin:0 auto 4px">' : ''}<h3>${why}</h3><p style="font-size:22px"><b>${fa(score)} ${g.unit}</b>${isRec ? `<br>رکوردِ تازهٔ ${who.n}! 🎉` : prev ? `<br>رکوردِ ${who.n}: ${fa(prev)} ${g.unit}` : ''}</p>
     <div class="row"><button class="cta gold" id="plAgain">دوباره</button><button class="ghost" data-go="arena">برگشت</button></div>`);
   $('#plAgain').addEventListener('click', () => { sfx('start'); if(A.game === 'hill') hillReset(); else wallReset(); msg(''); A.phase = 'count'; A.countT = performance.now(); A.lastLeft = null; });
 }
