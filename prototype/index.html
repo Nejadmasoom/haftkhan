@@ -1821,17 +1821,18 @@ function fitOf(lm){
   if(!headIn && !feetIn) return 'far';
   if(!feetIn) return 'feet';
   if(!headIn) return 'head';
+  if(CAM.headroom && lm[0].y < .2) return 'room';       // balloon games: whole body in, but no space above the head
   return Math.max(lm[27].y, lm[28].y) - lm[0].y < .38 ? 'closer' : 'ok';
 }
 const FIT_TEXT = {nobody:['یوزی تو را نمی‌بیند','جلوی گوشی بایست و آن‌قدر عقب برو که از سر تا پا در تصویر باشی'], far:['دو قدم عقب برو','باید از سر تا پا دیده شوی'],
-  feet:['کمی عقب برو','پاهایت دیده نمی‌شود'], head:['سرت دیده نمی‌شود','کمی عقب برو، یا گوشی را بالاتر بگذار'], closer:['کمی جلوتر بیا','خیلی دور ایستاده‌ای'], ok:['عالی! همین‌جا بمان','از سر تا پا دیده می‌شوی']};
+  feet:['کمی عقب برو','پاهایت دیده نمی‌شود'], head:['سرت دیده نمی‌شود','کمی عقب برو، یا گوشی را بالاتر بگذار'], closer:['کمی جلوتر بیا','خیلی دور ایستاده‌ای'], room:['کمی عقب‌تر برو','بالای سرت برای بادکنک جا نیست'], ok:['عالی! همین‌جا بمان','از سر تا پا دیده می‌شوی']};
 /* the child is across the room and may not read yet: Yuzi says it too, without talking over the narrator
    and at most once every few seconds */
 function sayFit(f){
   if(!CAM.solo || (f === 'ok' && CAM.wasFit)) return;
   const now = performance.now(), busy = voiceEl && !voiceEl.paused && !voiceEl.ended && !/\/(fit-|place)/.test(voiceEl.src);
   if(busy || now - (CAM.saidAt || 0) < 3500) return;
-  CAM.saidAt = now; voice(`fit-${f}`);
+  CAM.saidAt = now; voice(f === 'room' ? 'fit-far' : `fit-${f}`);
 }
 function showFit(f, now){
   const box = CAM.box, el = box.querySelector('.camfit'), ok = f === 'ok';
@@ -1879,7 +1880,7 @@ async function camStart(slot, opts={}){
 function camStop(keepBox){
   cancelAnimationFrame(CAM.raf); CAM.raf = 0; clearTimeout(CAM.doneT); clearTimeout(CAM.fitT);
   if(CAM.full) camFull(false);
-  CAM.count = null;
+  CAM.count = null; CAM.headroom = false;
   if(CAM.stream){ CAM.stream.getTracks().forEach(t=>t.stop()); CAM.stream = null; }
   if(CAM.video) CAM.video.srcObject = null;
   CAM.state = 'off'; CAM.listeners.forEach(f=>f('off'));
@@ -2145,7 +2146,7 @@ $('#musicBtn').addEventListener('click', ()=>{ musicOn = !musicOn; store.set('mu
 renderMusic();
 window.hkTest = {readPose, poseKind, last: ()=>CAM.lastLm};
 /* what khans.js (khans 1 and 2) needs from this page */
-window.HK = { ICON, paintIcons, voiceLater, hush, camFull, phoneSize, teamHTML, wireTeam, hasElder, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
+window.HK = { ICON, paintIcons, voiceLater, hush, camFull, phoneSize, fitOf, teamHTML, wireTeam, hasElder, get state(){ return state; }, save, sfx, voice, tone, ac, get muted(){ return muted; }, fa, secs, $, $$, C,
   fig: n => fig(n), kid, kidName, yz, go, CAM, camStart, camStop, readPose, face, torch, STAR, confetti, dayNum, LOCK,
   PLAYERS, syncPlayers, lessonOpen, lessonDone, daysOf, KHANS, GUARD_NAMES, renderTop, drawMap, PREVIEW,
   newLesson };

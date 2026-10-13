@@ -453,7 +453,7 @@ let flipT = null;
 function flipFigs(img, figs, ms=900){ clearInterval(flipT); if(!img || !figs) return; let k = 0; img.src = figSrc(figs[0]);
   if(figs.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
   flipT = setInterval(()=>{ k = 1-k; img.src = figSrc(figs[k]); }, ms); }
-function camOff(){ const CAM = H.CAM; CAM.onFrame = null; CAM.hint = null; CAM.chipOn = null; if(CAM.stream) H.camStop(); }
+function camOff(){ const CAM = H.CAM; CAM.onFrame = null; CAM.hint = null; CAM.chipOn = null; CAM.headroom = false; if(CAM.stream) H.camStop(); }
 function vib(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
 
 /* ===================================================================== khan screen */
@@ -708,6 +708,7 @@ function armCam(){
   const CAM = H.CAM, g = curGame();
   CAM.onFrame = (ctx, lm, cv) => gameFrame(ctx, lm, cv);
   CAM.hint = () => gameHint();
+  CAM.headroom = g.kind === 'balloon';        // balloons need space above the head in the picture
   CAM.count = () => { const g = curGame(); return g ? {big:fa(X.count), small:`از ${fa(g.goal)} ${g.unit}`, done: X.count >= g.goal} : null; };
   CAM.chipOn = () => performance.now() - X.lastSeen < 600;
 }
@@ -732,8 +733,14 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
   const W = cv.width, Hh = cv.height, T = b.torso, dt = Math.min(.05, (now - (X.lastT || now))/1000); X.lastT = now;
   const floor = BASE.floor || (b.hip.y + b.leg);
   const cols = [C.anar, '#3b82c4'];
-  while(X.balls.length < (g.balls||1)){ const k = X.balls.length;
-    X.balls.push({x: b.sh.x + (k ? .9 : -.9)*b.sw, y: Math.max(T*.6, b.nose.y - T*1.1), vx:0, vy:0, r:T*.32, col:cols[k], hit:0}); }
+  /* Where a balloon appears depends on the room in the picture, not on a fixed offset: a small child has
+     space above the head, a tall adult who fills the frame has none — there it would appear on the face. */
+  const spawn = (o, k) => { const r = T*.32, above = b.nose.y - T*1.1;
+    if(above >= r*1.2){ o.x = b.sh.x + (k ? .9 : -.9)*b.sw + (k === null ? (Math.random()-.5)*b.sw : 0); o.y = above; }
+    else { const side = (k === null ? (Math.random() < .5 ? -1 : 1) : k ? 1 : -1);
+      o.x = Math.min(W - r, Math.max(r, b.sh.x + side*(1.3*b.sw + r))); o.y = Math.max(r*1.2, b.nose.y - T*.25); }
+    o.vx = 0; o.vy = 0; };
+  while(X.balls.length < (g.balls||1)){ const k = X.balls.length, o = {r:T*.32, col:cols[k], hit:0}; spawn(o, k); X.balls.push(o); }
   /* A hit is a strike: the body part has to be moving, fast, toward the balloon. A balloon that just lands
      on a still head or hand slides off and falls — otherwise a child who stands still "wins". Speeds are in
      shoulder-widths per second and smoothed, so the camera's own jitter never looks like a strike. */
@@ -760,7 +767,7 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
       o.x += nx*over; o.y += Math.min(0, ny)*over*.2;
       o.vx = (Math.abs(nx) > .15 ? Math.sign(nx) : (Math.random() < .5 ? -1 : 1)) * .55*T; o.vy = Math.max(o.vy, .12*T);
       break; }
-    if(o.y - o.r > floor){ X.dropped = now; sfx('miss'); o.y = Math.max(T*.6, b.nose.y - T*1.1); o.x = b.sh.x + (Math.random()-.5)*b.sw; o.vy = 0; o.vx = 0; }
+    if(o.y - o.r > floor){ X.dropped = now; sfx('miss'); spawn(o, null); }
     const pop = now - o.hit < 200 ? 1.12 : 1;
     ctx.save(); ctx.lineWidth = W/150; ctx.strokeStyle = C.ink;
     ctx.beginPath(); ctx.moveTo(o.x, o.y + o.r*1.1); ctx.quadraticCurveTo(o.x - o.r*.3, o.y + o.r*1.7, o.x + o.r*.1, o.y + o.r*2.4); ctx.stroke();
