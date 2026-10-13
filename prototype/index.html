@@ -304,7 +304,12 @@ button{font:inherit;color:inherit}
 .st-steps i.on{background:var(--saffron)}
 .st-steps i.cur{background:var(--anar)}
 .st-art{height:170px;border-radius:24px;background:#fff8ea;display:flex;align-items:flex-end;justify-content:center;gap:8px;padding:8px;position:relative;box-shadow:0 4px 0 var(--paper-2)}
-.st-art img{height:100%;width:auto;max-width:48%;object-fit:contain}
+.st-art img{height:100%;width:auto;max-width:48%;object-fit:contain;object-position:50% 100%}
+.st-art img.kid-sm{height:68%}
+#gxScene.balscene .fig{right:50%;transform:translateX(50%);height:80%}
+.balov{position:absolute;pointer-events:none}
+.balov .gb{position:absolute;right:auto;bottom:auto;width:24%;height:auto;transform:translate(-50%,-37%);transition:left .45s cubic-bezier(.3,1.5,.5,1),top .45s cubic-bezier(.3,1.5,.5,1)}
+.scene.cam > .balov{display:none}
 .st-art svg{height:100%;width:auto}
 .st-art .who-says{position:absolute;top:10px;inset-inline-start:12px;background:var(--lapis);color:var(--on-dark);font-size:12px;font-weight:700;padding:3px 10px;border-radius:var(--r-pill)}
 .st-text{margin:0;font-size:16.5px;line-height:2.05;color:var(--ink)}
@@ -1669,7 +1674,8 @@ function renderStory(i){
   const readNote = `<div class="read-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2" stroke-linecap="round"><path d="M4 6c3-2 5-2 8 0v13c-3-2-5-2-8 0zM20 6c-3-2-5-2-8 0v13c3-2 5-2 8 0z"/></svg>این قصه را بزرگترت برایت بلند بخواند.</div>`;
   if(i < STORY.length){
     const sc = STORY[i];
-    const art = (sc.art||[]).map(a=>`<img src="${a.startsWith('kid:') ? fig(a.slice(4)) : `img/${a}.webp`}" alt="">`).join('');
+    const big = (sc.art||[]).some(a => /^story-(mom|aunt|uncle|tree)$/.test(a));     // a child next to a tree or a grown-up is smaller
+    const art = (sc.art||[]).map(a=>`<img src="${a.startsWith('kid:') ? fig(a.slice(4)) : `img/${a}.webp`}" alt="" class="${big && a.startsWith('kid:') ? 'kid-sm' : ''}">`).join('');
     const poseBox = sc.pose ? `<div class="pose${CAM.storyOn?' withcam':''}"><button class="cnt" id="cnt" aria-label="شروعِ شمارش">۵</button><p><b>${sc.name} بایست</b>${CAM.storyOn ? 'روی یک پا بایست؛ یوزی هر ثانیه‌ای که نیفتی را می‌شمارد.' : 'دکمه را بزن و تا پنج بشمارید. بعد پایت را عوض کن و یک بارِ دیگر.'}</p>${CAM.storyOn?'<div class="camslot" id="camSlot"></div>':''}</div>
       <div style="display:flex;justify-content:center"><button class="camtoggle" id="storyCam" aria-pressed="${CAM.storyOn?'true':'false'}" style="background:${CAM.storyOn?'':'var(--paper-2)'};color:${CAM.storyOn?'':'var(--ink)'}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l2-3h8l2 3h3v13H3z"/><circle cx="12" cy="13" r="4"/></svg>${CAM.storyOn?'خاموش کردنِ دوربین':'یوزی با دوربین بشمارد'}</button></div>` : '';
     $('#storyBody').innerHTML = `<div class="st-steps">${steps}</div>${i===0?readNote:''}

@@ -168,6 +168,14 @@ function artSrc(name){
   const a = name.startsWith('story-') || name.startsWith('animal-') ? animalSVG(name.split('-')[1]) : null;
   return a || `img/${name}.webp`;
 }
+/* In a story picture every drawing is the same size, so a child came out as tall as her mother. Next to a
+   grown-up (or the tree) the child is drawn at about two thirds of their height. */
+const BIG_ART = /^(story-(mom|aunt|uncle|tree)|mom|dad|grandma|grandpa)$/;
+function artRow(art, src){
+  const big = art.some(a => BIG_ART.test(a));
+  return art.map(a => `<img src="${src(a)}" alt="" class="${big && a.startsWith('kid:') ? 'kid-sm' : ''}">`).join('');
+}
+H.artRow = artRow;
 function figSrc(name){
   const boy = H.kid() === 'boy';
   if(name === 'stand') return `img/${H.kid()}-idle.webp`;
@@ -450,9 +458,38 @@ const canPlay = n => doneDays(n) < 3 && !practicedToday(n) && !restDay(n);
 function bumpCam(n, key, by=1){ const c = LS(n).cam; c[key] = (c[key]||0) + by; H.save(); }
 let G = {n:1, khan:0};       // what is on screen now
 let flipT = null;
-function flipFigs(img, figs, ms=900){ clearInterval(flipT); if(!img || !figs) return; let k = 0; img.src = figSrc(figs[0]);
+function flipFigs(img, figs, ms=900, onFlip=null){ clearInterval(flipT); if(!img || !figs) return; let k = 0; img.src = figSrc(figs[0]); onFlip && onFlip(img.src);
   if(figs.length < 2 || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-  flipT = setInterval(()=>{ k = 1-k; img.src = figSrc(figs[k]); }, ms); }
+  flipT = setInterval(()=>{ k = 1-k; img.src = figSrc(figs[k]); onFlip && onFlip(img.src); }, ms); }
+/* Where the balloon is in each drawing, in % of the picture: touching the head, the raised hand, the kicking
+   foot or the knee in a "hit" frame, floating higher above in a rest frame — so the guide shows HOW to play,
+   the balloon bouncing off the body, instead of a child on one side and a balloon on the other. Read off the
+   drawings themselves (docs: tools/ grid sheets). One entry per balloon. */
+const BAL_AT = {
+  'girl-m1-hitHead':[[49,-1]], 'girl-idle':[[49,-12]], 'boy-m1-hitHead':[[47,-1]], 'boy-idle':[[48,-12]],
+  'girl-m1-hitHand':[[69,-3]], 'boy-m1-hitHand':[[71,-3]],
+  'girl-m1-hitFoot':[[27,58]], 'boy-m1-hitFoot':[[28,60]],
+  'girl-m1-hitAll':[[30,3],[71,10]], 'boy-m1-hitAll':[[32,6],[60,-6]],
+  'girl-m1-hitKnee':[[33,46],[56,-8]], 'boy-m1-hitKnee':[[33,47],[58,-6]],
+  'girl-m2-stickKick':[[20,57]], 'boy-m2-stickKick':[[20,58]],
+  'girl-m2-stick':[[51,-10]], 'boy-m2-stick':[[52,-12]]
+};
+const balKey = src => (src.match(/img\/([^/.]+)\.webp/) || [])[1];
+function balloonGuide(g){
+  const sc = $('#gxScene'); let ov = $('#gxBal');
+  sc.classList.toggle('balscene', g.kind === 'balloon');
+  if(g.kind !== 'balloon'){ if(ov) ov.remove(); return null; }
+  if(!ov){ ov = document.createElement('div'); ov.id = 'gxBal'; ov.className = 'balov'; ov.setAttribute('aria-hidden', 'true'); sc.appendChild(ov); }
+  const cols = [C.anar, '#3b82c4'];
+  ov.innerHTML = Array.from({length:g.balls||1}, (_, k) => `<svg class="gb" viewBox="0 0 60 92"><path d="M30 70 q-7 10 3 20" stroke="${C.ink}" stroke-width="2" fill="none"/><ellipse cx="30" cy="34" rx="25" ry="31" fill="${cols[k]}" stroke="${C.ink}" stroke-width="3"/><ellipse cx="21" cy="22" rx="5" ry="9" fill="#fff" opacity=".45"/><path d="M26 64h8l-4 7z" fill="${cols[k]}" stroke="${C.ink}" stroke-width="2"/></svg>`).join('');
+  /* the overlay is laid exactly over the square the drawing occupies inside its <img> (object-fit: contain),
+     measured on screen, so it matches whatever size and place the figure has on this screen */
+  const fit = () => { const f = $('#gxFig'), s = sc.getBoundingClientRect(), r = f.getBoundingClientRect(); if(!r.width) return;
+    const side = Math.min(r.width, r.height);
+    Object.assign(ov.style, {left:(r.left - s.left + (r.width - side)/2) + 'px', top:(r.top - s.top + (r.height - side)/2) + 'px', width:side + 'px', height:side + 'px'}); };
+  return src => { fit(); requestAnimationFrame(fit); const at = BAL_AT[balKey(src)] || [[50,-10],[70,0]];
+    $$('#gxBal .gb').forEach((el, k) => { const [x, y] = at[k] || at[0]; el.style.left = x + '%'; el.style.top = y + '%'; }); };
+}
 function camOff(){ const CAM = H.CAM; CAM.onFrame = null; CAM.hint = null; CAM.chipOn = null; CAM.headroom = false; if(CAM.stream) H.camStop(); }
 function vib(p){ try{ navigator.vibrate && navigator.vibrate(p); }catch(e){} }
 
@@ -569,7 +606,7 @@ function startOne(){
   instr(g);
   $('#gxCam').parentElement.hidden = g.kind === 'manual';
   if(g.kind === 'manual' && X.camOn) gxCamOff();
-  flipFigs($('#gxFig'), g.figs);
+  flipFigs($('#gxFig'), g.figs, 900, balloonGuide(g));
   if(!g.easyOn) voice(`g${n}-${X.q[X.qi]+1}`);
   if(X.camOn){ armCam(); if(H.phoneSize() && !H.CAM.full) H.camFull(true); }   // the second move of the day: back to the mirror
   renderCount();
@@ -583,11 +620,7 @@ function instr(g){
 }
 function sceneSVG(g, c){
   let props = '';
-  if(g.kind === 'balloon'){
-    const cols = [C.anar, '#3b82c4'];
-    for(let k=0;k<(g.balls||1);k++){ const x = 70 + k*70, y = 60 + k*22;
-      props += `<g class="sway" style="transform-origin:${x}px ${y+40}px"><path d="M${x} ${y+34} q-6 20 4 40" stroke="${C.ink}" stroke-width="1.5" fill="none"/><ellipse cx="${x}" cy="${y}" rx="24" ry="30" fill="${cols[k]}" stroke="${C.ink}" stroke-width="2.5"/><ellipse cx="${x-8}" cy="${y-10}" rx="5" ry="8" fill="#fff" opacity=".45"/><path d="M${x-4} ${y+30}h8l-4 6z" fill="${cols[k]}" stroke="${C.ink}" stroke-width="2"/></g>`; }
-  }
+  // balloon games: the balloons are drawn over the figure by balloonGuide(), where the body touches them
   const shown = (max) => { const k = Math.min(g.goal, max); return {k, on: Math.floor(c * k / g.goal)}; };
   if(g.prop === 'cups'){ const S6 = shown(6); for(let i=0;i<S6.k;i++){ const row = [0,0,0,1,1,2][i], pos = [0,1,2,0,1,0][i], on = i < S6.on;
     const x = on ? 22 + pos*26 + row*13 : 20 + i*22, y = on ? 186 - row*24 : 214;
@@ -826,7 +859,7 @@ function renderStory(i){
   if(i < st.pages.length){
     const pg = st.pages[i];
     $('#gsBody').innerHTML = `<div class="st-steps">${steps}</div>${i===0?readNote:''}
-      <div class="st-art"><span class="who-says">${pg.who}</span>${pg.art.map(a=>`<img src="${artSrc(a)}" alt="">`).join('')}</div>
+      <div class="st-art"><span class="who-says">${pg.who}</span>${artRow(pg.art, artSrc)}</div>
       <p class="st-text">${pg.t}</p>${pg.task ? taskHTML(pg.task) : ''}
       <div class="st-nav">${i>0?'<button class="ghost" id="gsPrev">قبلی</button>':''}<button class="cta" id="gsNext" ${pg.task?'disabled style="opacity:.5"':''}>${pg.task ? 'اول انجامش بده' : 'بعدی'}</button></div>`;
     voice(`k${n}-s${i+1}`);
