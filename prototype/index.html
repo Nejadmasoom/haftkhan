@@ -1423,7 +1423,7 @@ function go(name){
   if(name!=='ex' && CAM.exOn) exCamOff();
   if(name!=='family' && CAM.famOn) famCamOff();
   if(!['record','story','ex','family','gex','gstory','gfam','gstar'].includes(name) && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
-  if(name==='map'){ drawMap(); renderTop(); }
+  if(name==='map'){ drawMap(); renderTop(); prefetchSoon(); }
   if(name==='khan' && state.cur !== 5){ state.cur = 5; save(); }
   if(name==='treasure') renderTreasure();
   if(name==='family' && !playing){ holder = 0; drawCircle(); }
@@ -1770,9 +1770,43 @@ $('#recBtn').addEventListener('click', ()=>{
 const CAM = { pose:null, stream:null, video:null, canvas:null, box:null, raf:0, state:'off', since:0, listeners:new Set(), loading:null };
 function loadScript(src){ return new Promise((ok, no)=>{ const el = document.createElement('script'); el.src = src; el.onload = ok; el.onerror = ()=>no(new Error('load '+src)); document.head.appendChild(el); }); }
 const b64bytes = b64 => { const bin = atob(b64), out = new Uint8Array(bin.length); for(let i=0;i<bin.length;i++) out[i] = bin.charCodeAt(i); return out; };
+/* Online, the engine (9 MB) and the body model (5.6 MB) come as the original binary files: a quarter smaller
+   than the text copies, fetched with progress, and fetched early — in the background while the child is still
+   on the map — so the camera is usually ready the moment it is switched on. Opened from a file (double-click),
+   browsers refuse fetch(), so the text copies in pose/*.js are used instead. */
+const POSE_BIN = {wasm:['pose/vision_wasm_internal.wasm', 9423986], model:['pose/pose_landmarker_lite.task', 5777746]};
+const POSE_DL = {got:{wasm:0, model:0}, p:null};
+function poseProgress(){ const t = POSE_BIN.wasm[1] + POSE_BIN.model[1]; return Math.min(99, Math.floor(100*(POSE_DL.got.wasm + POSE_DL.got.model)/t)); }
+async function fetchBin(key){
+  const res = await fetch(POSE_BIN[key][0]); if(!res.ok) throw new Error('fetch ' + key);
+  if(!res.body || !res.body.getReader){ const buf = new Uint8Array(await res.arrayBuffer()); POSE_DL.got[key] = buf.length; return buf; }
+  const rd = res.body.getReader(), parts = []; let n = 0;
+  for(;;){ const {done, value} = await rd.read(); if(done) break; parts.push(value); n += value.length; POSE_DL.got[key] = n; }
+  const out = new Uint8Array(n); let o = 0; parts.forEach(v => { out.set(v, o); o += v.length; }); return out;
+}
+function prefetchPose(){
+  if(POSE_DL.p || !/^https?:/.test(location.protocol)) return POSE_DL.p;
+  POSE_DL.p = Promise.all([fetchBin('wasm'), fetchBin('model')]); POSE_DL.p.catch(()=>{ POSE_DL.p = null; });
+  return POSE_DL.p;
+}
+/* start early, quietly, unless the phone asked to save data */
+function prefetchSoon(){ try{ if(navigator.connection && navigator.connection.saveData) return; }catch(e){}
+  const go = () => prefetchPose(); ('requestIdleCallback' in window) ? requestIdleCallback(go, {timeout:4000}) : setTimeout(go, 2500); }
 function loadPose(){
   if(CAM.loading) return CAM.loading;
   CAM.loading = (async ()=>{
+    let bins = null;
+    if(/^https?:/.test(location.protocol)){ try{ bins = await prefetchPose(); }catch(e){ bins = null; } }
+    if(bins){
+      for(const f of ['vision','loader']) await loadScript(`pose/${f}.js`);
+      const loaderUrl = URL.createObjectURL(new Blob([window.HK_POSE_LOADER], {type:'text/javascript'}));
+      const wasmUrl = URL.createObjectURL(new Blob([bins[0]], {type:'application/wasm'}));
+      delete window.HK_POSE_LOADER;
+      const files = {wasmLoaderPath:loaderUrl, wasmBinaryPath:wasmUrl};
+      const opts = d => ({baseOptions:{modelAssetBuffer:bins[1], delegate:d}, runningMode:'VIDEO', numPoses:1});
+      try{ return await HKVision.PoseLandmarker.createFromOptions(files, opts('GPU')); }
+      catch(e){ return await HKVision.PoseLandmarker.createFromOptions(files, opts('CPU')); }
+    }
     for(const f of ['vision','loader','wasm','model']) await loadScript(`pose/${f}.js`);
     const loaderUrl = URL.createObjectURL(new Blob([window.HK_POSE_LOADER], {type:'text/javascript'}));
     const wasmUrl = URL.createObjectURL(new Blob([b64bytes(window.HK_POSE_WASM)], {type:'application/wasm'}));
@@ -1854,7 +1888,9 @@ const PLACE_TIP = `<svg class="placetip" viewBox="0 0 220 120" aria-hidden="true
   <path d="M6 112h208" opacity=".5"/><rect x="18" y="52" width="28" height="50" rx="5" fill="#ffffff22"/><circle cx="32" cy="58" r="2.5" fill="#fff"/><path d="M46 100l12 12"/>
   <path d="M66 70h70" stroke-dasharray="6 7"/><path d="M128 63l9 7-9 7"/>
   <circle cx="178" cy="22" r="9"/><path d="M178 31v38M178 42l-16 18M178 42l16 18M178 69l-11 41M178 69l11 41"/></svg>`;
-function camPlaceMsg(){ camMessage(`${PLACE_TIP}<b style="display:block;font-size:16px;margin:6px 0 2px">گوشی را ایستاده به چیزی تکیه بده و دو سه قدم عقب برو</b>تا از سر تا پا در تصویر باشی. یوزی دارد چشم‌هایش را باز می‌کند…`); }
+function camPlaceMsg(){ camMessage(`${PLACE_TIP}<b style="display:block;font-size:16px;margin:6px 0 2px">گوشی را ایستاده به چیزی تکیه بده و دو سه قدم عقب برو</b>تا از سر تا پا در تصویر باشی. یوزی دارد چشم‌هایش را باز می‌کند… <b class="poseprog"></b>`);
+  clearInterval(CAM.progT); CAM.progT = setInterval(()=>{ const el = CAM.box && CAM.box.querySelector('.poseprog');
+    if(!el || CAM.stream){ clearInterval(CAM.progT); return; } const p = poseProgress(); if(p > 0) el.textContent = fa(p) + '٪'; }, 300); }
 /* opts.full: a game the child plays alone, from a distance — on a phone the mirror takes the whole screen.
    Family games leave it off: there the phone is also the music player and the scoreboard. */
 async function camStart(slot, opts={}){
