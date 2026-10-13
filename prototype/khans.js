@@ -503,8 +503,7 @@ function balloonGuide(g){
   sc.classList.toggle('balscene', g.kind === 'balloon');
   if(g.kind !== 'balloon'){ if(ov) ov.remove(); return null; }
   if(!ov){ ov = document.createElement('div'); ov.id = 'gxBal'; ov.className = 'balov'; ov.setAttribute('aria-hidden', 'true'); sc.appendChild(ov); }
-  const cols = [C.anar, '#3b82c4'];
-  ov.innerHTML = Array.from({length:g.balls||1}, (_, k) => `<svg class="gb" viewBox="0 0 60 92"><path d="M30 70 q-7 10 3 20" stroke="${C.ink}" stroke-width="2" fill="none"/><ellipse cx="30" cy="34" rx="25" ry="31" fill="${cols[k]}" stroke="${C.ink}" stroke-width="3"/><ellipse cx="21" cy="22" rx="5" ry="9" fill="#fff" opacity=".45"/><path d="M26 64h8l-4 7z" fill="${cols[k]}" stroke="${C.ink}" stroke-width="2"/></svg>`).join('');
+  ov.innerHTML = Array.from({length:g.balls||1}, (_, k) => `<img class="gb" src="img/obj/balloon${k ? '-b' : ''}.webp" alt="">`).join('');
   /* the overlay is laid exactly over the square the drawing occupies inside its <img> (object-fit: contain),
      measured on screen, so it matches whatever size and place the figure has on this screen */
   const fit = () => { const f = $('#gxFig'), s = sc.getBoundingClientRect(), r = f.getBoundingClientRect(); if(!r.width) return;
@@ -647,9 +646,10 @@ function sceneSVG(g, c){
   const shown = (max) => { const k = Math.min(g.goal, max); return {k, on: Math.floor(c * k / g.goal)}; };
   if(g.prop === 'cups'){ const S6 = shown(6); for(let i=0;i<S6.k;i++){ const row = [0,0,0,1,1,2][i], pos = [0,1,2,0,1,0][i], on = i < S6.on;
     const x = on ? 22 + pos*26 + row*13 : 20 + i*22, y = on ? 186 - row*24 : 214;
-    props += `<path d="M${x} ${y} h20 l-3 22 h-14z" fill="${['#e2574c','#3b82c4','#4fb35a','#f2c230','#a35bc4','#e2574c'][i]}" opacity="${on?1:.45}" stroke="${C.ink}" stroke-width="1.5"/>`; } }
+    props += `<image href="img/obj/cup${['','-b','-g','-y','-p',''][i]}.webp" x="${x-1}" y="${y-2}" width="22" height="27" opacity="${on?1:.5}"/>`; } }
   if(g.prop === 'cushions'){ const S5 = shown(5); for(let i=0;i<S5.k;i++){ const on = i < S5.on, x = on ? 60 : 24 + i*30, y = on ? 200 - i*16 : 220;
-    props += `<ellipse cx="${x}" cy="${y}" rx="${on?30:13}" ry="${on?9:6}" fill="${['#a35bc4','#f2c230','#4fb35a','#3b82c4','#e2574c'][i]}" opacity="${on?1:.5}" stroke="${C.ink}" stroke-width="2"/>`; } }
+    const cw = on ? 64 : 28, ch = on ? 26 : 22;     // a stacked cushion lies flat, so it is drawn squashed
+    props += `<image href="img/obj/cushion${i ? '-' + i : ''}.webp" x="${x - cw/2}" y="${y - ch/2}" width="${cw}" height="${ch}" preserveAspectRatio="none" opacity="${on?1:.55}"/>`; } }
   return `<rect width="320" height="250" fill="${C.paper}"/><path d="M0 214 H320 V250 H0Z" fill="#efdcb0"/>
     <g opacity=".5" fill="none" stroke="#e8d3a3" stroke-width="2"><path d="M20 30 l10 10 l10 -10 l-10 -10z M280 40 l10 10 l10 -10 l-10 -10z"/></g>${props}`;
 }
@@ -852,6 +852,10 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
     // the balloon leans into its motion; the string trails behind
     const pop = now - o.hit < 200 ? 1.12 : 1, tilt = Math.max(-.5, Math.min(.5, (o.vx || 0)/(4*T)));
     ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(tilt); ctx.lineWidth = W/150; ctx.strokeStyle = C.ink;
+    // the drawn balloon (string included); for a moment after a hit, its squashed twin with motion lines
+    const hitArt = now - o.hit < 200, art = H.objImg(hitArt ? 'balloon-hit' : 'balloon', o.col);
+    if(art.naturalWidth){ const w = r*(hitArt ? 2.5 : 1.85), h = w*art.naturalHeight/art.naturalWidth;
+      ctx.drawImage(art, -w*(hitArt ? .45 : .5), -h*(hitArt ? .47 : .323), w, h); ctx.restore(); return; }
     ctx.beginPath(); ctx.moveTo(0, r*1.05); ctx.quadraticCurveTo(-r*.35 - tilt*r, r*1.7, r*.1 - tilt*r*1.4, r*2.5); ctx.stroke();
     ctx.fillStyle = o.col; ctx.beginPath(); ctx.ellipse(0, 0, r*.85*pop, r*pop, 0, 0, 7); ctx.fill(); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(-r*.09, r*.98); ctx.lineTo(r*.09, r*.98); ctx.lineTo(0, r*1.1); ctx.closePath(); ctx.fill(); ctx.stroke();
