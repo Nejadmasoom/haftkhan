@@ -10,7 +10,7 @@ const {fa, $, $$, sfx, voice, C} = H;
 const S = () => H.state;
 const SENIOR = k => k === 'grandma' || k === 'grandpa';
 const GAMES = {
-  hill: {name:'تپه‌نوردیِ یوزی', unit:'متر', how:'درجا بدو تا ماشین برود؛ هر چه تندتر، تندتر! روی تپه که پرید، بدنت را کج کن تا صاف فرود بیاید.',
+  hill: {name:'تپه‌نوردی یوزی', unit:'متر', how:'درجا بدو تا ماشین برود؛ هر چه تندتر، تندتر! روی تپه که پرید، بدنت را کج کن تا صاف فرود بیاید.',
          howSenior:'درجا قدم بزن تا ماشین برود؛ روی تپه که پرید، بدنت را آرام کج کن تا صاف فرود بیاید.'},
   wall: {name:'دیوارِ شکل‌ها', unit:'دیوار', how:'دیوار با سوراخی به شکلِ یک حالت می‌آید. تا برسد، همان شکل را با بدنت بساز تا از آن رد شوی!',
          howSenior:'دیوار با سوراخی به شکلِ یک حالت می‌آید؛ آرام همان شکل را بساز. حالت‌های پرشی و نشستنِ عمیق برای شما نیست.'}
@@ -21,17 +21,34 @@ const best = (g, who) => rec()[g][who] || 0;
 
 /* ================================================================ the arena screen */
 function icon(g){
-  return g === 'hill'
-    ? `<svg viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="20" fill="#bfe8ff"/><path d="M0 70 Q24 40 48 58 T96 50 V96 H0Z" fill="#6cc04a" stroke="#2b2140" stroke-width="3"/><g transform="translate(30 36) rotate(-12)"><rect x="0" y="6" width="34" height="14" rx="5" fill="#e2574c" stroke="#2b2140" stroke-width="3"/><path d="M8 6 l4-8 h12 l4 8" fill="#ffc93c" stroke="#2b2140" stroke-width="3" stroke-linejoin="round"/><circle cx="8" cy="22" r="6" fill="#3d3550" stroke="#2b2140" stroke-width="3"/><circle cx="27" cy="22" r="6" fill="#3d3550" stroke="#2b2140" stroke-width="3"/></g></svg>`
-    : `<svg viewBox="0 0 96 96" aria-hidden="true"><rect width="96" height="96" rx="20" fill="#ffe9c2"/><rect x="12" y="10" width="72" height="76" rx="6" fill="#d9774b" stroke="#2b2140" stroke-width="3"/><g stroke="#b85c34" stroke-width="2"><path d="M12 28h72M12 46h72M12 64h72M36 10v18M60 28v18M36 46v18M60 64v22"/></g><g fill="#ffe9c2" stroke="#2b2140" stroke-width="2.5"><circle cx="48" cy="24" r="7"/><path d="M48 31v22M48 36l-16-12M48 36l16-12M48 53l-10 22M48 53l10 22" stroke-width="9" stroke-linecap="round" fill="none"/></g></svg>`;
+  const O = n => `img/obj/${n}.webp`, frame = `<rect x="1.5" y="1.5" width="93" height="93" rx="20" fill="none" stroke="#2b2140" stroke-width="3"/>`;
+  const sky = `<linearGradient id="sky-${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ec0ff"/><stop offset="1" stop-color="#d6f1ff"/></linearGradient><clipPath id="cl-${g}"><rect width="96" height="96" rx="20"/></clipPath>`;
+  if(g === 'hill'){
+    // the jeep sits on its wheels exactly as in the game: arches at 86 and 248 of the 334-wide drawing
+    const k = 52/334, wr = 6.8, car = `<image href="${O('wheel')}" x="${86*k - wr}" y="${192*k - wr}" width="${2*wr}" height="${2*wr}"/><image href="${O('wheel')}" x="${248*k - wr}" y="${192*k - wr}" width="${2*wr}" height="${2*wr}"/><image href="${O('jeep')}" width="52" height="${206*k}"/>`;
+    return `<svg viewBox="0 0 96 96" aria-hidden="true"><defs>${sky}</defs><g clip-path="url(#cl-${g})"><rect width="96" height="96" fill="url(#sky-${g})"/>
+      <circle cx="80" cy="16" r="8" fill="#ffd93d" stroke="#2b2140" stroke-width="2"/><path d="M0 52 Q20 36 40 46 T96 40 V96 H0Z" fill="#9fdc7c"/>
+      <image href="${O('pine')}" x="66" y="22" width="18" height="25"/><image href="${O('tree')}" x="4" y="24" width="18" height="21"/>
+      <path d="M-2 78 Q26 54 54 66 T98 58 V98 H-2Z" fill="#a96a33" stroke="#2b2140" stroke-width="2.5"/><path d="M-2 78 Q26 54 54 66 T98 58" fill="none" stroke="#4fae3a" stroke-width="6"/>
+      <image href="${O('coin')}" x="72" y="38" width="13" height="13"/><image href="${O('jerrycan')}" x="80" y="45" width="10" height="11"/>
+      <g transform="translate(14 39) rotate(-14 26 16)">${car}</g></g>${frame}</svg>`;
+  }
+  // a brick wall with a star-shaped hole, and the child showing through it
+  const pose = 'M48 30 L48 58 M48 38 L34 24 M48 38 L62 24 M48 58 L38 80 M48 58 L58 80';
+  return `<svg viewBox="0 0 96 96" aria-hidden="true"><defs>${sky}<pattern id="br-${g}" width="49" height="25.5" patternUnits="userSpaceOnUse"><image href="${O('brick-tile')}" width="49" height="25.5"/></pattern>
+    <mask id="hole-${g}"><rect width="96" height="96" fill="#000"/><g stroke="#fff" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="${pose}"/></g><circle cx="48" cy="21" r="8" fill="#fff"/></mask></defs>
+    <g clip-path="url(#cl-${g})"><rect width="96" height="96" fill="url(#br-${g})"/><rect y="0" width="96" height="6" fill="#b9b2c8"/>
+    <g stroke="#4a2414" stroke-width="13" stroke-linecap="round" stroke-linejoin="round" fill="none"><path d="${pose}"/></g><circle cx="48" cy="21" r="10.5" fill="#4a2414"/>
+    <g mask="url(#hole-${g})"><rect width="96" height="96" fill="url(#sky-${g})"/><image href="img/${H.kid()}-cheer.webp" x="22" y="8" width="52" height="80"/></g></g>${frame}</svg>`;
 }
 function renderArena(){
+  ['jeep', 'wheel', 'coin', 'jerrycan', 'flag', 'tree', 'pine', 'rock', 'brick-tile', 'ribbon'].forEach(n => H.objImg(n));   // ready before the first frame
   H.syncPlayers(); if(!H.PLAYERS.some(p => p.k === A.who)) A.who = 'kid';
   const P = H.PLAYERS, who = P.find(p => p.k === A.who), senior = SENIOR(A.who);
   const card = g => `<button class="ar-card" data-game="${g}">${icon(g)}<span><b>${GAMES[g].name}</b><small>${senior ? GAMES[g].howSenior : GAMES[g].how}</small>
     <span class="rec">رکوردِ ${who.n}: ${best(g, A.who) ? fa(best(g, A.who)) + ' ' + GAMES[g].unit : 'هنوز نه'}</span></span></button>`;
   const board = P.length > 1 ? `<div class="ar-board"><h4>تابلوی رکوردهای خانواده</h4><table>${P.map(p => `<tr><td>${p.n}</td><td>${best('hill', p.k) ? fa(best('hill', p.k)) + ' متر' : '–'}</td><td>${best('wall', p.k) ? fa(best('wall', p.k)) + ' دیوار' : '–'}</td></tr>`).join('')}</table></div>` : '';
-  $('#arBody').innerHTML = `<div class="who" style="margin:0 0 12px"><b>کی بازی می‌کند؟</b><div class="tms">${P.map(p => `<button class="tm ${p.k===A.who?'on':''}" data-who="${p.k}" aria-pressed="${p.k===A.who}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${p.n}</small></button>`).join('')}</div></div>
+  $('#arBody').innerHTML = `<div class="who" style="margin:0 0 12px"><b>چه کسی بازی می‌کند؟</b><div class="tms">${P.map(p => `<button class="tm ${p.k===A.who?'on':''}" data-who="${p.k}" aria-pressed="${p.k===A.who}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${p.n}</small></button>`).join('')}</div></div>
     ${card('hill')}${card('wall')}${board}
     <p class="free-note" style="text-align:center">گوشی را ایستاده به چیزی تکیه بده و دو سه قدم عقب برو. جای بازی را خلوت کن.</p>`;
   $$('#arBody [data-who]').forEach(b => b.addEventListener('click', () => { A.who = b.dataset.who; sfx('click'); renderArena(); }));
@@ -200,6 +217,8 @@ function ridge(camX, PPM, par, base, amp1, f1, amp2, f2, fill, edge, trees){
   if(trees){ const step = 5; for(let wx = Math.floor(off/step)*step; wx < off + W/PPM + step; wx += step){ if(hash(wx) < .55) continue;
       const px = (wx - off)*PPM, y = yAt(px), h = 18 + hash(wx + 3)*14;
       ctx.fillStyle = '#7a5230'; ctx.fillRect(px - 2, y - h*.5, 4, h*.5);
+      const tr = ART(hash(wx + 11) < .5 ? 'pine' : 'tree');
+      if(tr){ const th = h*1.7, tw = th*tr.naturalWidth/tr.naturalHeight; ctx.drawImage(tr, px - tw/2, y - th + h*.12, tw, th); continue; }
       ctx.strokeStyle = INK; ctx.lineWidth = 2;
       if(hash(wx + 11) < .5){ ctx.fillStyle = '#2f8a3a'; ctx.beginPath(); ctx.moveTo(px, y - h*1.25); ctx.lineTo(px + h*.36, y - h*.35); ctx.lineTo(px - h*.36, y - h*.35); ctx.closePath(); ctx.fill(); ctx.stroke(); }  // pine
       else { ctx.fillStyle = hash(wx + 7) < .5 ? '#4fae3a' : '#3f9a35'; ctx.beginPath(); ctx.arc(px, y - h*.6, h*.42, 0, 7); ctx.fill(); ctx.stroke();
@@ -207,6 +226,7 @@ function ridge(camX, PPM, par, base, amp1, f1, amp2, f2, fill, edge, trees){
 }
 function coin(x, y, r, t){
   const sq = Math.abs(Math.cos(t*3 + x*.01)); ctx.save(); ctx.translate(x, y); ctx.scale(.35 + .65*sq, 1);
+  const art = ART('coin'); if(art){ ctx.drawImage(art, -r, -r, 2*r, 2*r); ctx.restore(); return; }
   const g = ctx.createRadialGradient(-r*.3, -r*.3, r*.1, 0, 0, r); g.addColorStop(0, '#fff3a8'); g.addColorStop(.5, '#ffc93c'); g.addColorStop(1, '#e09a12');
   ctx.fillStyle = g; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill(); ctx.stroke();
   ctx.strokeStyle = '#c47d0a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, r*.68, 0, 7); ctx.stroke();
@@ -214,6 +234,7 @@ function coin(x, y, r, t){
   ctx.restore();
 }
 function fuelCan(x, y, u){
+  const art = ART('jerrycan'); if(art){ const w = 1.05*u, h = w*art.naturalHeight/art.naturalWidth; ctx.drawImage(art, x - w/2, y - h, w, h); return; }
   ctx.save(); ctx.translate(x, y); ctx.lineJoin = 'round';
   const g = ctx.createLinearGradient(-.45*u, 0, .45*u, 0); g.addColorStop(0, '#ff7a6b'); g.addColorStop(1, '#c9372b');
   ctx.fillStyle = g; ctx.strokeStyle = INK; ctx.lineWidth = 3; rr(-.42*u, -1.25*u, .84*u, 1.2*u, .12*u); ctx.fill(); ctx.stroke();
@@ -222,7 +243,9 @@ function fuelCan(x, y, u){
   ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-.25*u, -.35*u); ctx.lineTo(.25*u, -1.0*u); ctx.moveTo(-.25*u, -1.0*u); ctx.lineTo(.25*u, -.35*u); ctx.stroke();
   ctx.restore();
 }
+const ART = n => { const im = H.objImg(n); return im.complete && im.naturalWidth ? im : null; };
 function wheel(x, y, r, spin){
+  const art = ART('wheel'); if(art){ ctx.save(); ctx.translate(x, y); ctx.rotate(spin); ctx.drawImage(art, -r, -r, 2*r, 2*r); ctx.restore(); return; }
   ctx.save(); ctx.translate(x, y);
   ctx.fillStyle = '#2f2a3a'; ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill(); ctx.stroke();
   ctx.rotate(spin); ctx.strokeStyle = '#4a4458'; ctx.lineWidth = r*.16;
@@ -234,7 +257,17 @@ function wheel(x, y, r, spin){
   ctx.restore();
 }
 function jeep(u, spin, gas, t){
-  const bob = Math.sin(t*18)*u*.03*(gas > .05 ? 1 : 0);
+  const bob = Math.sin(t*18)*u*.03*(gas > .05 ? 1 : 0), body = ART('jeep');
+  const yz = A.yz || (A.yz = Object.assign(new Image(), {src:'img/yuzi-1-cheer.webp'}));
+  if(body && ART('wheel')){
+    /* the drawn jeep (object sheet 4) is placed by its wheel arches, measured on the drawing: centres at x 86 and
+       248, y 192, of 334 x 206 — so the arches sit on the physics wheels at -1.05u and +1.1u */
+    const k = 2.15*u/162, left = -1.05*u - 86*k, top = -.5*u - 192*k;
+    if(yz.complete && yz.naturalWidth) ctx.drawImage(yz, -.4*u - .85*u, -3.0*u + bob, 1.7*u, 1.7*u);   // Yuzi in the seat, behind the door
+    wheel(-1.05*u, -.5*u, .56*u, spin); wheel(1.1*u, -.5*u, .56*u, spin);
+    ctx.drawImage(body, left, top + bob, 334*k, 206*k);
+    return;
+  }
   ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   // body
   ctx.translate(0, bob);
@@ -251,7 +284,6 @@ function jeep(u, spin, gas, t){
   ctx.strokeStyle = '#3d3550'; ctx.lineWidth = .11*u; ctx.beginPath(); ctx.moveTo(-1.35*u, -1.42*u); ctx.lineTo(-1.15*u, -2.35*u); ctx.lineTo(.15*u, -2.35*u); ctx.lineTo(.55*u, -1.42*u); ctx.stroke();
   ctx.fillStyle = 'rgba(170,225,255,.55)'; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(.42*u, -1.45*u); ctx.lineTo(.12*u, -2.2*u); ctx.lineTo(.25*u, -2.2*u); ctx.lineTo(.62*u, -1.45*u); ctx.closePath(); ctx.fill(); ctx.stroke();
   // Yuzi at the wheel
-  const yz = A.yz || (A.yz = Object.assign(new Image(), {src:'img/yuzi-1-cheer.webp'}));
   if(yz.complete && yz.naturalWidth){ ctx.save(); ctx.beginPath(); ctx.rect(-1.6*u, -3.4*u, 2.3*u, 2.05*u); ctx.clip(); ctx.drawImage(yz, -1.25*u, -3.25*u, 1.75*u, 1.75*u); ctx.restore(); }
   ctx.fillStyle = '#3d3550'; rr(-1.0*u, -1.5*u, .9*u, .14*u, .06*u); ctx.fill();                          // seat edge
   ctx.restore();
@@ -301,9 +333,14 @@ function drawHill(gas, lean, cadence){
     ctx.beginPath(); ctx.moveTo(px - 3, py); ctx.lineTo(px - 5, py - PPM*.35); ctx.moveTo(px, py); ctx.lineTo(px, py - PPM*.45); ctx.moveTo(px + 3, py); ctx.lineTo(px + 6, py - PPM*.32); ctx.stroke(); }
   // distance flags
   for(let m = Math.ceil(camX/50)*50; m < camX + W/PPM; m += 50){ if(m <= 0) continue; const x = sx(m), y = sy(terrain(m));
+    const fl = ART('flag'); if(fl){ const h = PPM*2.8, w = h*fl.naturalWidth/fl.naturalHeight; ctx.drawImage(fl, x - w*.08, y - h, w, h);
+      ctx.save(); ctx.font = `900 ${Math.round(PPM*.5)}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.lineWidth = 3; ctx.strokeStyle = INK; ctx.fillStyle = '#fff';
+      ctx.strokeText(fa(m), x + w*.42, y - h*.66); ctx.fillText(fa(m), x + w*.42, y - h*.66); ctx.restore(); continue; }
     ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - PPM*2.4); ctx.stroke();
     ctx.fillStyle = m % 100 ? '#3b82c4' : '#e2574c'; ctx.beginPath(); ctx.moveTo(x, y - PPM*2.4); ctx.lineTo(x + PPM*1.5, y - PPM*2.05); ctx.lineTo(x, y - PPM*1.7); ctx.closePath(); ctx.fill(); ctx.stroke();
     ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(PPM*.42)}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.fillText(fa(m), x + PPM*.6, y - PPM*1.92); }
+  const rk = ART('rock'); if(rk) for(let wx = Math.floor(camX/9)*9; wx < camX + W/PPM + 9; wx += 9){ if(hash(wx*1.7) < .55) continue;
+    const rx = wx + hash(wx)*5, w = PPM*(.9 + hash(wx + 1)*.7), h = w*rk.naturalHeight/rk.naturalWidth; ctx.drawImage(rk, sx(rx) - w/2, sy(terrain(rx)) - h*.82, w, h); }
   HL.coinsAt.forEach(c => { if(c.got) return; const x = sx(c.x); if(x < -20 || x > W + 20) return; coin(x, sy(terrain(c.x) + 1.35 + .12*Math.sin(t*3 + c.x)), PPM*.48, t); });
   HL.cans.forEach(cx => { const x = sx(cx); if(x < -30 || x > W + 30) return; fuelCan(x, sy(terrain(cx)), PPM); });
   // dust from the back wheel while the engine pulls on the ground
@@ -316,8 +353,8 @@ function drawHill(gas, lean, cadence){
   ctx.save(); ctx.translate(sx(HL.x), sy(HL.y)); ctx.rotate(-HL.phi); jeep(PPM, HL.spin, gas, t); ctx.restore();
   // what the body is doing, so the player sees cause and effect
   const m = Math.round(HL.far), fuel = Math.round(HL.fuel/5)*5;
-  hud(`<span>🚩 ${fa(m)} <b>متر</b></span><span>🪙 ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span>🏆 ${fa(best('hill', A.who))}</span>` : ''}`,
-    `<span>⛽<i class="meter" style="background:linear-gradient(90deg,${fuel < 25 ? '#e2574c' : '#2fbf71'} ${fuel}%,#fff ${fuel}%)"></i></span>`
+  hud(`<span>🚩 ${fa(m)} <b>متر</b></span><span><img src="img/obj/coin.webp" alt=""> ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('hill', A.who))}</span>` : ''}`,
+    `<span><img src="img/obj/jerrycan.webp" alt=""><i class="meter" style="background:linear-gradient(90deg,${fuel < 25 ? '#e2574c' : '#2fbf71'} ${fuel}%,#fff ${fuel}%)"></i></span>`
     + (HL.air ? `<span>${Math.abs(lean) > .3 ? (lean > 0 ? 'کج به راست ↘' : 'کج به چپ ↙') : 'بدنت را کج کن!'}</span>`
               : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`));
 }
@@ -440,8 +477,10 @@ function drawWall(now, c){
     wallCv.width = Math.max(1, Math.round(ww*DPR)); wallCv.height = Math.max(1, Math.round(wh*DPR)); const x = wallCv.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
     // bricks, each its own shade, with mortar and a light top edge
     x.fillStyle = '#f0d6b4'; x.fillRect(0, 0, ww, wh);
-    const bh = 30*s, bw = 66*s, gap = Math.max(1, 3*s);
-    for(let r = 0; r*bh < wh; r++) for(let q = (r % 2 ? -bw/2 : 0); q < ww; q += bw){
+    const bh = 30*s, bw = 66*s, gap = Math.max(1, 3*s), tile = ART('brick-tile');
+    let pat = null; if(tile){ try { pat = x.createPattern(tile, 'repeat'); pat.setTransform(new DOMMatrix().scale(.62*s)); } catch(e){ pat = null; } }
+    if(pat){ x.fillStyle = pat; x.fillRect(0, 0, ww, wh); }
+    else for(let r = 0; r*bh < wh; r++) for(let q = (r % 2 ? -bw/2 : 0); q < ww; q += bw){
       const id = r*31 + Math.round(q/bw); x.fillStyle = BRICK[Math.floor(hash(id + w.t0 % 97)*BRICK.length)];
       x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, bh - gap);
       x.fillStyle = 'rgba(255,255,255,.18)'; x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, Math.max(1, 4*s));
@@ -466,14 +505,16 @@ function drawWall(now, c){
     ctx.save(); ctx.direction = 'rtl'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `900 ${Math.round(Math.min(W, Hh)*.07)}px Vazirmatn, sans-serif`;
     const tw = ctx.measureText(name).width + 48, th = Math.min(W, Hh)*.11, pop = 1 + .12*Math.max(0, 1 - (now - w.t0)/250);
     ctx.translate(cx, ty); ctx.scale(pop, pop);
-    ctx.fillStyle = '#c8352a'; ctx.strokeStyle = INK; ctx.lineWidth = 3;
+    const rib = ART('ribbon');
+    if(rib){ const rw = tw*1.45, rh = rw*rib.naturalHeight/rib.naturalWidth; ctx.drawImage(rib, -rw/2, -rh*.42, rw, rh); }
+    else { ctx.fillStyle = '#c8352a'; ctx.strokeStyle = INK; ctx.lineWidth = 3;
     [-1, 1].forEach(d => { ctx.beginPath(); ctx.moveTo(d*tw/2, -th*.32); ctx.lineTo(d*(tw/2 + th*.5), -th*.32); ctx.lineTo(d*(tw/2 + th*.3), th*.08); ctx.lineTo(d*(tw/2 + th*.5), th*.48); ctx.lineTo(d*tw/2, th*.48); ctx.closePath(); ctx.fill(); ctx.stroke(); });
     ctx.fillStyle = '#ff6f5e'; rr(-tw/2, -th/2, tw, th, th*.22); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,.3)'; rr(-tw/2 + 6, -th/2 + 5, tw - 12, th*.22, th*.1); ctx.fill();
+    ctx.fillStyle = 'rgba(255,255,255,.3)'; rr(-tw/2 + 6, -th/2 + 5, tw - 12, th*.22, th*.1); ctx.fill(); }
     ctx.fillStyle = '#fff'; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(43,33,64,.6)'; ctx.strokeText(name, 0, 2); ctx.fillText(name, 0, 2); ctx.restore();
   } else drawSelf();
   if(WL.flash && now - WL.flash < 700){ ctx.fillStyle = WL.flashOk ? 'rgba(47,191,113,.28)' : 'rgba(226,87,76,.32)'; ctx.fillRect(0, 0, W, Hh); }
-  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span><span>${'❤️'.repeat(Math.max(0, WL.hearts))}${'🤍'.repeat(Math.max(0, 3 - WL.hearts))}</span>${best('wall', A.who) ? `<span>🏆 ${fa(best('wall', A.who))}</span>` : ''}`);
+  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span><span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < WL.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('wall', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('wall', A.who))}</span>` : ''}`);
 }
 
 /* ================================================================ hooks */

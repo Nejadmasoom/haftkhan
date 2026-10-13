@@ -1,7 +1,7 @@
 /* هفت‌خوانِ حرکت — خوان‌های ۱ و ۲: درس‌های ۱ تا ۴ کتاب (ص ۹ تا ۳۱).
    این فایل بعد از index.html بار می‌شود و از window.HK استفاده می‌کند. هر درس داده است (LESSONS)
-   و چند صفحهٔ مشترک آن را نشان می‌دهند: صفحهٔ خوان، انتخابِ بازیِ امروز، بازی، قصه، بازیِ خانوادگی
-   و «بازی کن و ستاره بگیر». خوانِ ۳ (تعادل) همان صفحه‌های قدیمیِ index.html را دارد. */
+   و چند صفحهٔ مشترک آن را نشان می‌دهند: صفحهٔ خوان، انتخابِ بازی امروز، بازی، قصه، بازی خانوادگی
+   و «بازی کن و ستاره بگیر». خوانِ ۳ (تعادل) همان صفحه‌های قدیمی index.html را دارد. */
 (function(){
 const H = window.HK; if(!H) return;
 const {fa, secs, $, $$, sfx, voice, C} = H;
@@ -271,8 +271,8 @@ const LESSONS = {
           easy:{t:'چوب پشتِ شانه، کتاب روی سر؛ روی صندلی بنشین و آرام بلند شو. سعی کن کتاب نیفتد.'}},
         {name:'چوب و بادکنک', t:'چوب سبکی را پشت شانه‌ات قرار بده، با دست‌هایت چوب را بگیر، حالا با سر و پاها به بادکنک ضربه بزن.', kind:'balloon', parts:['head','knee','foot'], need:'stick', balls:1, goal:10, unit:'ضربه', figs:['m2-stickKick','m2-stick']}]},
     family:{kind:'chairs', title:'صندلی‌بازی', src:'ص ۱۸', yuzi:['listen','من در وقت مناسب بازی می‌کنم.'],
-      intro:'صندلی‌ها را دایره‌وار بچینید و یکی را علامت بزنید. با شروعِ آهنگ، همه آرام دورِ صندلی‌ها راه می‌روند. آهنگ که قطع شد، همه باید <b>به‌درستی</b> روی صندلی‌ها بنشینند. هر کس روی صندلیِ علامت‌دار نشست، یک حرکتِ نمایشی یا شیرین‌کاری اجرا می‌کند.',
-      elder:'بزرگترها آرام راه بروند و روی صندلیِ محکم بنشینند؛ اگر خواستند آهنگ را آن‌ها پخش کنند.',
+      intro:'صندلی‌ها را دایره‌وار بچینید و یکی را علامت بزنید. با شروعِ آهنگ، همه آرام دورِ صندلی‌ها راه می‌روند. آهنگ که قطع شد، همه باید <b>به‌درستی</b> روی صندلی‌ها بنشینند. هر کس روی صندلی علامت‌دار نشست، یک حرکتِ نمایشی یا شیرین‌کاری اجرا می‌کند.',
+      elder:'بزرگترها آرام راه بروند و روی صندلی محکم بنشینند؛ اگر خواستند آهنگ را آن‌ها پخش کنند.',
       tricks:['مثلِ خروس بانگ بزن و روی یک پا بایست','سه بار دست بزن و یک دور بچرخ','مثلِ گربه کش و قوس بیا','یک شعرِ کوتاه بخوان','مثلِ ربات چند قدم راه برو','با چشمِ بسته تا پنج بشمار']},
     star:{kind:'posture', title:'درست بایست، درست بنشین', src:'ص ۱۹',
       t:'به شکل‌ها نگاه کن. در طول هفته، هر روزی که مانند آن‌ها درست ایستادی، درست نشستی، درست کوله‌پشتی‌ات را حمل کردی و درست مداد در دست گرفتی و نوشتی، یکی از ستاره‌ها را رنگ کن.',
@@ -293,7 +293,7 @@ const LESSONS = {
       need:'جای خلوت؛ برای مار و گربه یک زیرانداز', yuzi:['drink','من موقع بازی کردن، وقتی تشنه می‌شوم، حتماً آب می‌خورم.'],
       games:[
         {name:'مثل کانگورو', t:'جفت‌پا درجا بپر.', kind:'reps', det:'jump', goal:10, unit:'پرش', figs:['m3-roo-a','m3-roo-b'], art:'animal-kangaroo',
-          easy:{t:'به‌جای پرش: دست به پشتیِ صندلی، روی پنجه‌ها بلند شو و آرام پایین بیا.', det:'toe', unit:'بار'}},
+          easy:{t:'به‌جای پرش: دست به پشتی صندلی، روی پنجه‌ها بلند شو و آرام پایین بیا.', det:'toe', unit:'بار'}},
         {name:'مثل قورباغه', t:'بنشین، دست‌ها روی زمین، بعد بپر.', kind:'reps', det:'frog', goal:10, unit:'پرش', figs:['m3-frog-a','m3-frog-b'], art:'story-frog',
           easy:{t:'به‌جای پرشِ قورباغه: روی صندلی بنشین و بدونِ کمکِ دست بلند شو.', det:'squat', unit:'بار'}},
         {name:'مثل مرغ', t:'آرنج‌ها را مثل بال بالا و پایین ببر و راه برو.', kind:'reps', det:'hen', goal:10, unit:'بار', figs:['m3-hen-a','m3-hen-b'], art:'animal-hen'},
@@ -538,9 +538,9 @@ function manzilHTML(n){
   if(!open) return `<div class="manzil locked-manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
     <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ «${LESSONS[n-1].title}» روشن شود، این منزل باز می‌شود.</div></div>`;
   const rest = !canPlay(n), today = practicedToday(n), resting = restDay(n);
-  const title = d>=3 ? 'هر سه مشعل روشن است' : today ? 'بازیِ امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
-  const sub = d>=3 ? 'این منزل را گذراندی. بازیِ آزاد و سطح‌های سخت‌تر همیشه باز است.' : today ? 'مشعلِ امروز روشن شد؛ مشعلِ بعدی پس‌فردا. تا آن موقع بازیِ آزاد باز است.'
-    : resting ? 'دیروز بازی کردی؛ مشعلِ بعدی فردا. امروز بازیِ آزاد باز است.'
+  const title = d>=3 ? 'هر سه مشعل روشن است' : today ? 'بازی امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
+  const sub = d>=3 ? 'این منزل را گذراندی. بازی آزاد و سطح‌های سخت‌تر همیشه باز است.' : today ? 'مشعلِ امروز روشن شد؛ مشعلِ بعدی پس‌فردا. تا آن موقع بازی آزاد باز است.'
+    : resting ? 'دیروز بازی کردی؛ مشعلِ بعدی فردا. امروز بازی آزاد باز است.'
     : `${Ld.play.pick===2 ? 'دو تا از شش حرکت را انتخاب کن' : 'یکی از سه بازی را انتخاب کن'}، روزِ ${DAYW[d]}`;
   const ic = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : H.ICON.play();
   const starSub = LS(n).stars ? `ستاره ${fa(LS(n).stars)} از ۷` : starIntro(n);
@@ -563,12 +563,12 @@ const starIntro = n => ({cards:'هر کارِ درست یک ستاره', posture
 let picked = [];
 function renderChoose(){
   const n = G.n = S().cur, Ld = LESSONS[n], pl = Ld.play; picked = [];
-  $('#gcTitle').innerHTML = `${pl.pick===2 ? 'دو حرکتِ امروز را انتخاب کن' : 'بازیِ امروز را انتخاب کن'}<small>برویم بازی!، منزل ${fa(n)}، کتاب، ${pl.src}</small>`;
+  $('#gcTitle').innerHTML = `${pl.pick===2 ? 'دو حرکتِ امروز را انتخاب کن' : 'بازی امروز را انتخاب کن'}<small>برویم بازی!، منزل ${fa(n)}، کتاب، ${pl.src}</small>`;
   H.syncPlayers(); if(!H.PLAYERS.some(p => p.k === X.who)) X.who = 'kid';
   const kidFree = !canPlay(n) && X.who === 'kid';
   $('#gcRule').innerHTML = `کتاب می‌گوید: «${pl.rule}»<br><small style="color:var(--ink-soft)">وسیله: ${pl.need}</small>`
-    + `<div class="who"><b>کی بازی می‌کند؟</b><div class="tms">${H.PLAYERS.map(p => `<button class="tm ${p.k===X.who?'on':''}" data-who="${p.k}" aria-pressed="${p.k===X.who}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${esc(p.n)}</small></button>`).join('')}</div>
-      <small class="free-note">${X.who !== 'kid' ? `${esc(whoName())} هم بازی می‌کند و رکورد و سطحِ خودش را دارد؛ مشعل فقط مالِ ${esc(H.kidName())} است.` : kidFree ? 'امروز مشعل روشن نمی‌شود، ولی بازیِ آزاد باز است: سطح و رکوردت جلو می‌رود.' : 'بازی کن تا مشعلِ امروز روشن شود.'}${BAND[X.who]==='senior' ? ' برای پدربزرگ و مادربزرگ، پرش‌ها و حرکت‌های روی زمین نسخهٔ آرام‌تری دارند.' : ''}</small></div>`;
+    + `<div class="who"><b>چه کسی بازی می‌کند؟</b><div class="tms">${H.PLAYERS.map(p => `<button class="tm ${p.k===X.who?'on':''}" data-who="${p.k}" aria-pressed="${p.k===X.who}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${esc(p.n)}</small></button>`).join('')}</div>
+      <small class="free-note">${X.who !== 'kid' ? `${esc(whoName())} هم بازی می‌کند و رکورد و سطحِ خودش را دارد؛ مشعل فقط مالِ ${esc(H.kidName())} است.` : kidFree ? 'امروز مشعل روشن نمی‌شود، ولی بازی آزاد باز است: سطح و رکوردت جلو می‌رود.' : 'بازی کن تا مشعلِ امروز روشن شود.'}${BAND[X.who]==='senior' ? ' برای پدربزرگ و مادربزرگ، پرش‌ها و حرکت‌های روی زمین نسخهٔ آرام‌تری دارند.' : ''}</small></div>`;
   const did = gi => LS(n).days.findIndex(x => x && (x.moves||[]).includes(gi));
   $('#gcChoices').innerHTML = pl.games.map((g0,i)=>{ const dd = did(i), g = effGame(n, i, X.who);
     return `<button class="choice" data-g="${i}"><img src="${figSrc(g.figs[0])}" alt=""><span><b>${g.name} <span class="lv">سطحِ ${fa(g.lv)}: ${fa(g.goal)} ${g.unit}</span></b><small>${g.t}</small></span>
@@ -624,7 +624,7 @@ function startGame(){
 function startOne(){
   const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.vel = null; X.velT = 0; X.best = 0; X.dropped = 0; X.lastT = 0; X.tapped = false; X.lastTap = 0; X.det = g.det ? detector(g.det) : null; resetBase();
   const best = bestOf(X.who, g.id), bestT = best && best.t;
-  $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازیِ آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
+  $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازی آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
   instr(g);
   $('#gxCam').parentElement.hidden = g.kind === 'manual';
   if(g.kind === 'manual' && X.camOn) gxCamOff();
@@ -722,7 +722,7 @@ function finishDay(){
   $('#gxRewardTitle').textContent = passed ? `از خوانِ ${K.name} گذشتی!` : doneL ? `منزلِ ${LESSONS[n].title} تمام شد!` : 'آفرین پهلوان!';
   $('#gxRewardText').textContent = passed ? `${H.GUARD_NAMES[K.guard]} به تو افتخار می‌کند. حالا منزلِ ${nextName} منتظرت است.`
     : doneL ? `هر سه مشعل روشن شد. منزلِ ${nextName} باز شد!`
-    : `مشعلِ روزِ ${DAYW[lit-1]} روشن شد. ${lit===2 ? 'یک روزِ دیگر' : 'دو روزِ دیگر'} تا تمام شدنِ این منزل. مشعلِ بعدی پس‌فردا؛ تا آن موقع بازیِ آزاد و سطح‌های سخت‌تر باز است.`;
+    : `مشعلِ روزِ ${DAYW[lit-1]} روشن شد. ${lit===2 ? 'یک روزِ دیگر' : 'دو روزِ دیگر'} تا تمام شدنِ این منزل. مشعلِ بعدی پس‌فردا؛ تا آن موقع بازی آزاد و سطح‌های سخت‌تر باز است.`;
   $('#gxRewardText').insertAdjacentHTML('beforeend', challengeLine());
   $('#gxReward').hidden = false; H.renderTop();
   sfx('fanfare', doneL); H.voiceLater(X.times.some(t => t.rec) ? 'record' : 'cheer', 900);
@@ -744,7 +744,7 @@ function finishFree(){
   const p = H.PLAYERS.find(q => q.k === X.who) || H.PLAYERS[0];
   $('#gxRewardKid').src = p.kid ? `img/${H.kid()}-cheer.webp` : `img/${p.img}.webp`;
   $('#gxRewardTitle').textContent = `آفرین ${whoName()}!`;
-  $('#gxRewardText').innerHTML = `${X.who === 'kid' && doneDays(G.n) < 3 ? 'این بازیِ آزاد بود؛ مشعل در روزِ بازی روشن می‌شود. ' : ''}${challengeLine()}`;
+  $('#gxRewardText').innerHTML = `${X.who === 'kid' && doneDays(G.n) < 3 ? 'این بازی آزاد بود؛ مشعل در روزِ بازی روشن می‌شود. ' : ''}${challengeLine()}`;
   $('#gxReward').hidden = false;
   sfx('fanfare'); H.voiceLater(X.times.some(t => t.rec) ? 'record' : X.lvd > 0 ? 'level-up' : 'cheer', 900);
   confettiOn($('#gxConfetti'));
@@ -1087,7 +1087,7 @@ function famChairs(fm, intro){
     F.t = setTimeout(()=>{
       famStop(); $('#cMusic').textContent = 'دور بعد'; sfx('fanfare'); vib([30,40,30]); voice('chairs-sit');
       const tr = fm.tricks[Math.random()*fm.tricks.length|0];
-      $('#cCall').innerHTML = `<b>بنشینید! درست و صاف</b>هر کس روی صندلیِ علامت‌دار نشست: ${tr}<small>پیشنهادِ گوشی است؛ خودتان هم شیرین‌کاری بسازید</small>`;
+      $('#cCall').innerHTML = `<b>بنشینید! درست و صاف</b>هر کس روی صندلی علامت‌دار نشست: ${tr}<small>پیشنهادِ گوشی است؛ خودتان هم شیرین‌کاری بسازید</small>`;
       famDone();
       if(F.camOn && CAM.stream){ let ok = false, t0 = 0;
         CAM.chipOn = () => ok; CAM.hint = () => ok ? 'آفرین! درست نشستی' : 'زود بنشین، کمر صاف!';
@@ -1227,7 +1227,7 @@ function starRecord(sk, book){
   let ctrl;
   if(jump && R.mode === 'cam') ctrl = `<div style="display:flex;justify-content:center">${camBtn('rsCam', R.camOn, 'یوزی با دوربین اندازه بگیرد', false)}</div>
       <div class="watch"><div class="time" id="rsVal">${recs.length ? show(recs[recs.length-1].v) : '۰'}<small>${unit}</small></div></div>
-      <p class="rec-msg" id="rsMsg">${R.camOn ? 'جفت‌پا درجا بپر؛ یوزی بلندیِ پرش را اندازه می‌گیرد.' : 'دوربین را روشن کن و از سر تا پا در کادر بایست. بعد جفت‌پا بپر!'}</p>`;
+      <p class="rec-msg" id="rsMsg">${R.camOn ? 'جفت‌پا درجا بپر؛ یوزی بلندی پرش را اندازه می‌گیرد.' : 'دوربین را روشن کن و از سر تا پا در کادر بایست. بعد جفت‌پا بپر!'}</p>`;
   else if(jump && R.mode === 'feet') ctrl = `<div class="watch"><div class="numin stepper"><button class="ghost" id="rsMinus" aria-label="کمتر">−</button><output id="rsFeet">${fa(R.feet)}</output><button class="ghost" id="rsPlus" aria-label="بیشتر">+</button><span style="color:var(--ink-soft);font-weight:700">کفِ پا</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
       <p class="rec-msg" id="rsMsg">پشتِ یک خط بایست و جفت‌پا به جلو بپر. از خطِ شروع تا پاشنه‌ات، پاشنه‌به‌پنجه قدم بزن و بشمار چند کفِ پاست. متر لازم نیست!</p>`;
   else if(jump) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ۸۵" aria-label="طولِ پرش به سانتی‌متر"><span style="color:var(--ink-soft);font-weight:700">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
@@ -1285,7 +1285,7 @@ function starRecord(sk, book){
             /* a 7-year-old's leg (hip to ankle) is about 55 cm; good enough to compare one jump with the next */
             const cm = Math.max(1, (hip0 - top)/b.leg * 55); R.lastCm = cm;
             bumpCam(G.n, 'jump'); const m = record(Math.round(cm));
-            $('#rsVal').innerHTML = `${fa(Math.round(cm))}<small>سانتی‌متر</small>`; $('#rsMsg').innerHTML = m + '<br><small style="color:var(--ink-soft)">اندازه تقریبی است؛ هر پرش با پرشِ قبلیِ خودت مقایسه می‌شود.</small>';
+            $('#rsVal').innerHTML = `${fa(Math.round(cm))}<small>سانتی‌متر</small>`; $('#rsMsg').innerHTML = m + '<br><small style="color:var(--ink-soft)">اندازه تقریبی است؛ هر پرش با پرشِ قبلی خودت مقایسه می‌شود.</small>';
             $('#grStars').innerHTML = Array.from({length:7}, (_,k)=>H.STAR(k < st.stars)).join(''); } } };
       CAM.count = () => ({big: fa(Math.round(R.lastCm || 0)), small:'سانتی‌متر، آخرین پرش'});
       H.camStart(stage, {full:true}).then(ok => { if(!ok) R.camOn = false; });
@@ -1303,7 +1303,7 @@ document.addEventListener('click', e => {
 let ptab = null;
 const CAM_LABELS = {balloon:'ضربه به بادکنکِ مجازی', freeMove:'حرکت با چوب پشتِ شانه', squat:'بنشین‌وپاشو با چوب', jump:'پرشِ جفت', frog:'پرشِ قورباغه', hen:'بال زدنِ مرغ', drum:'مشت به سینه مثلِ گوریل',
   'seq:legL':'دورِ کاملِ حرکتِ پاها', 'seq:headR':'دورِ کاملِ حرکتِ سر و گردن', 'seq:armU':'دورِ کاملِ حرکتِ دست‌ها', standStraight:'ثانیهٔ درست ایستادن', sitStraight:'ثانیهٔ درست نشستن',
-  run:'قدمِ دویدنِ درجا', circle:'چرخشِ دست‌ها', toe:'بالا رفتن روی پنجه', hug:'بغل کردنِ زانو', lunge:'قدمِ بلند با زانوی خم', osta:'فرمانِ درست در بازیِ اوستا', chairs:'نشستنِ درست در صندلی‌بازی',
+  run:'قدمِ دویدنِ درجا', circle:'چرخشِ دست‌ها', toe:'بالا رفتن روی پنجه', hug:'بغل کردنِ زانو', lunge:'قدمِ بلند با زانوی خم', osta:'فرمانِ درست در بازی اوستا', chairs:'نشستنِ درست در صندلی‌بازی',
   adult:'حرکتی که بزرگتر تأیید کرد'};
 function renderParentsTabs(){
   const list = [1,2,3,4,5].filter(n => n === 5 ? true : H.lessonOpen(n));

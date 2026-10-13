@@ -534,6 +534,9 @@ html.camfull-on body{overflow:hidden}
 .pl-cam .camfit{bottom:6px;padding:4px 8px;max-width:94%}.pl-cam .camfit b{font-size:13px}.pl-cam .camfit small{font-size:10px}
 .pl-hud{position:absolute;top:calc(10px + env(safe-area-inset-top));right:64px;left:calc(min(32vw,190px) + 22px);display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end;z-index:2}
 .pl-hud span{background:#fff;border:3px solid var(--ink);border-radius:16px;padding:2px 10px;font-weight:800;font-size:clamp(14px,3.6vw,20px);box-shadow:0 3px 0 var(--ink)}
+.pl-hud img,.pl-bot img{height:1.25em;width:auto;vertical-align:-.28em}
+.pl-hud .hearts img{height:1.4em;margin:0 1px}
+.pl-hud .hearts img.lost{opacity:.25;filter:grayscale(1)}
 .pl-hud b{font-family:var(--f-display);font-size:clamp(18px,5vw,30px)}
 .pl-bot{position:absolute;bottom:calc(12px + env(safe-area-inset-bottom));left:10px;right:10px;display:flex;gap:8px;justify-content:center;flex-wrap:wrap;z-index:2;pointer-events:none}
 .pl-bot span{background:rgba(255,255,255,.92);border:3px solid var(--ink);border-radius:16px;padding:4px 12px;font-weight:800;font-size:clamp(15px,4vw,22px);box-shadow:0 3px 0 var(--ink)}
@@ -913,10 +916,10 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
       </section>
 
       <!-- ===== CHOOSE TODAY'S GAME ===== -->
-      <section class="screen" id="s-choose" hidden aria-label="انتخابِ بازیِ امروز">
+      <section class="screen" id="s-choose" hidden aria-label="انتخابِ بازی امروز">
         <div class="hdr">
           <button class="back" data-go="khan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button>
-          <h2>بازیِ امروز را انتخاب کن<small>برویم بازی!، کتاب، ص ۳۴</small></h2>
+          <h2>بازی امروز را انتخاب کن<small>برویم بازی!، کتاب، ص ۳۴</small></h2>
         </div>
         <div class="sheet">
           <div class="book-rule"><img src="img/yuzi-1-talk.webp" alt="">کتاب می‌گوید: «یک روز در میان یکی از بازی‌ها را انجام بده.» امروز کدام را بازی می‌کنی؟</div>
@@ -978,7 +981,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         <div class="hdr"><button class="back" data-go="map" aria-label="برگشت به نقشه"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2>میدانِ بازی<small>بازی‌های بی‌پایان؛ هر بار رکوردت را بشکن!</small></h2></div>
         <div class="sheet" id="arBody"></div>
       </section>
-      <section class="screen" id="s-play" hidden aria-label="بازیِ میدان">
+      <section class="screen" id="s-play" hidden aria-label="بازی میدان">
         <div class="play-stage" id="plStage"><canvas id="plCanvas"></canvas><div class="pl-cam" id="plCam"></div>
           <div class="pl-hud" id="plHud"></div><div class="pl-bot" id="plBot"></div>
           <button class="pl-exit" data-go="arena" aria-label="بیرون رفتن"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -1037,7 +1040,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         <div class="sheet" id="gkBody"></div>
       </section>
 
-      <section class="screen" id="s-gchoose" hidden aria-label="انتخابِ بازیِ امروز">
+      <section class="screen" id="s-gchoose" hidden aria-label="انتخابِ بازی امروز">
         <div class="hdr"><button class="back" data-go="gkhan" aria-label="برگشت به خوان"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg></button><h2 id="gcTitle"></h2></div>
         <div class="sheet"><div class="book-rule"><img src="img/yuzi-1-talk.webp" alt=""><span id="gcRule"></span></div><div class="choices" id="gcChoices"></div><div id="gcGo"></div></div>
       </section>
@@ -1329,7 +1332,7 @@ const ICON = {
   star: () => `<svg viewBox="0 0 48 48" aria-hidden="true"><image href="img/obj/star.webp" x="2" y="2" width="44" height="44"/></svg>`,
   'nav-map': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M5 12l12-5 14 5 12-5v29l-12 5-14-5-12 5z" fill="#bfe6a0" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M17 7v29M31 12v29" stroke="${IK}" stroke-width="2"/><path d="M17 7l14 5v29l-14-5z" fill="#8fd6ff"/><path d="M9 32c4-2 6-8 11-8s7 6 12 2 6-10 9-12" fill="none" stroke="#f3a530" stroke-width="3" stroke-dasharray="1 4.5" stroke-linecap="round"/><path d="M37 8a5 5 0 0 1 5 5c0 4-5 9-5 9s-5-5-5-9a5 5 0 0 1 5-5z" fill="#d6404c" stroke="${IK}" stroke-width="2.2"/><circle cx="37" cy="13" r="1.8" fill="#fff"/></svg>`,
   'nav-family': () => ICON.family(),
-  'nav-arena': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><path d="M14 6h20v12a10 10 0 0 1-20 0z" fill="#ffc93c" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M14 10H7a7 7 0 0 0 8 9M34 10h7a7 7 0 0 1-8 9" fill="none" stroke="${IK}" stroke-width="2.6" stroke-linecap="round"/><path d="M24 28v6M16 42h16l-2-8H18z" fill="#e0a95a" stroke="${IK}" stroke-width="2.6" stroke-linejoin="round"/><path d="M21 12l3 6 3-6" fill="none" stroke="#d6404c" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>`,
+  'nav-arena': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><image href="img/obj/trophy.webp" x="3" y="3" width="42" height="42"/></svg>`,
   'nav-treasure': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><image href="img/obj/chest.webp" x="3" y="1" width="42" height="46"/></svg>`,
   'nav-parents': () => `<svg viewBox="0 0 48 48" aria-hidden="true"><rect x="9" y="7" width="30" height="37" rx="4" fill="#fff" stroke="${IK}" stroke-width="2.6"/><rect x="17" y="4" width="14" height="7" rx="3" fill="#a35bc4" stroke="${IK}" stroke-width="2.2"/><rect x="14" y="30" width="5" height="9" rx="1.5" fill="#16a39a" stroke="${IK}" stroke-width="1.6"/><rect x="21.5" y="25" width="5" height="14" rx="1.5" fill="#f3a530" stroke="${IK}" stroke-width="1.6"/><rect x="29" y="20" width="5" height="19" rx="1.5" fill="#3b82c4" stroke="${IK}" stroke-width="1.6"/><path d="M24 22c-6-4-6-9-3-10 1.6-.6 2.6.4 3 1.4.4-1 1.4-2 3-1.4 3 1-1 6-3 10z" fill="#d6404c" stroke="${IK}" stroke-width="1.6" transform="translate(-5 -6) scale(.9)"/></svg>`
 };
@@ -1445,9 +1448,9 @@ function renderTorches(){
   tile.classList.toggle('rest', rest);
   tile.setAttribute('aria-disabled', rest ? 'true' : 'false');
   $('#playIc').innerHTML = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : ICON.play();
-  $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'بازیِ امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
+  $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'بازی امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
   $('#playSub').textContent = n>=3 ? 'از پلِ لرزان گذشتی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
-    : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازیِ تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
+    : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازی تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
   $('#storyDone').hidden = !state.story;
   $('#familyDone').hidden = !state.family;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
@@ -1569,7 +1572,7 @@ function renderChoose(){
 function startExercise(){ mi = chosen; count = 0; exTapped = false; exTapAt = 0; $('#seen5').hidden = true; CAM.dot = null; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
 function renderMove(){
   const m = MOVES[mi];
-  $('#exTitle').innerHTML = `بازیِ امروز<small>تعادل، روزِ ${['اول','دوم','سوم'][doneDays()]}، کتاب، ص ۳۴</small>`;
+  $('#exTitle').innerHTML = `بازی امروز<small>تعادل، روزِ ${['اول','دوم','سوم'][doneDays()]}، کتاب، ص ۳۴</small>`;
   flip(true);
   voice(`move-${mi+1}`);
   $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن، جای بازی را خلوت کن</small>`;
@@ -1735,7 +1738,7 @@ function renderParents(){
       return `<td>${v===undefined||v===null ? '<span class="empty" aria-label="هنوز نه"></span>' : `<svg viewBox="0 0 60 60" role="img" aria-label="${['سخت بود','معمولی بود','خیلی خوب بود'][v]}">${face(v)}</svg>`}</td>`; }).join('')}</tr>`).join('');
   const c = state.cam;
   $('#pCam').innerHTML = [[c.dots,'لمسِ دایره با نوکِ پا'],[c.bags,'کیسه در سبد، روی یک پا'],[c.cups,'لیوانِ چیده‌شده، روی یک پا'],[c.oneLegReps,'ضربهٔ تأییدشده روی یک پا'],
-    [c.poseSec ? secs(c.poseSec) : 0,'ثانیه حالتِ درست در قصه'],[c.recs,'رکوردِ لک‌لک با زمانِ دوربین'],[c.family,'داوریِ دستمال‌بازی']].map(([n,t])=>`<div><b>${n===0||n==='۰٫۰' ? '<small style="font-size:14px;color:var(--ink-soft)">هنوز نه</small>' : typeof n==='number'?fa(n):n}</b><span>${t}</span></div>`).join('');
+    [c.poseSec ? secs(c.poseSec) : 0,'ثانیه حالتِ درست در قصه'],[c.recs,'رکوردِ لک‌لک با زمانِ دوربین'],[c.family,'داوری دستمال‌بازی']].map(([n,t])=>`<div><b>${n===0||n==='۰٫۰' ? '<small style="font-size:14px;color:var(--ink-soft)">هنوز نه</small>' : typeof n==='number'?fa(n):n}</b><span>${t}</span></div>`).join('');
   $('#parentsTitle').innerHTML = `گزارشِ ${kidName()}<small>هفتهٔ تعادل، منزل ۵</small>`;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
   $('#pBest').textContent = secs(best);
@@ -2250,11 +2253,11 @@ function renderTreasure(){
 const NOTES = {
   map:{h:'نقشهٔ سفر', d:[['در کتاب','فهرستِ ص ۶ و ۷: دوازده درس، جدا از هم'],['در برنامه','یک راهِ پیوسته از پایین به قله؛ هر خوان یک یا دو درس'],['چرا','کتاب داستانِ کلانی ندارد؛ نقشه به هر روز تمرین معنا می‌دهد'],['مشعل‌ها','همان «سه بار در هفته» که مقدمهٔ کتاب می‌خواهد']]},
   khan:{h:'صفحهٔ خوان', d:[['در کتاب','هر درس پنج بخش دارد: آغاز، حرکت و خلاقیت، برویم بازی، بازی خانوادگی، بازی کن ستاره بگیر'],['در برنامه','همین بخش‌ها، به‌صورت کاشی‌هایی که زیر انگشت فرو می‌روند'],['نگهبان','هر خوان یک نگهبانِ دوست دارد؛ لک‌لک برای تعادل، چون روی یک پا می‌ایستد'],['باز شدن','منزلِ بعد با سه روز تمرین باز می‌شود، نه با یک بار']]},
-  choose:{h:'بازیِ امروز', d:[['در کتاب','ص ۳۴: «به شکل بازی‌ها نگاه کن. یک روز در میان یکی از آن‌ها را انجام بده.»'],['در برنامه','هر روزِ بازی، کودک یکی از سه بازی را انتخاب می‌کند؛ روزِ بعدش استراحت است'],['تقویم','در گزارشِ والدین همان بازیِ انتخاب‌شده با صورتکش علامت می‌خورد، مثلِ جدولِ کتاب']]},
-  ex:{h:'برویم بازی!', d:[['در کتاب','ص ۳۴: سه حرکتِ تعادلی با کیسهٔ شن، دایرهٔ رنگی و لیوان'],['در برنامه','یک حرکت در هر صفحه؛ با دوربین، کیسه و دایره و لیوانِ مجازی کنارِ بدنِ کودک ظاهر می‌شوند و هر حرکت واقعاً سنجیده می‌شود'],['صورتک‌ها','همان سه صورتکِ تقویم هفتگیِ کتاب؛ بعد از هر حرکت'],['پاداش','روشن شدنِ مشعلِ امروز و بزرگ شدنِ یوزی']]},
+  choose:{h:'بازی امروز', d:[['در کتاب','ص ۳۴: «به شکل بازی‌ها نگاه کن. یک روز در میان یکی از آن‌ها را انجام بده.»'],['در برنامه','هر روزِ بازی، کودک یکی از سه بازی را انتخاب می‌کند؛ روزِ بعدش استراحت است'],['تقویم','در گزارشِ والدین همان بازی انتخاب‌شده با صورتکش علامت می‌خورد، مثلِ جدولِ کتاب']]},
+  ex:{h:'برویم بازی!', d:[['در کتاب','ص ۳۴: سه حرکتِ تعادلی با کیسهٔ شن، دایرهٔ رنگی و لیوان'],['در برنامه','یک حرکت در هر صفحه؛ با دوربین، کیسه و دایره و لیوانِ مجازی کنارِ بدنِ کودک ظاهر می‌شوند و هر حرکت واقعاً سنجیده می‌شود'],['صورتک‌ها','همان سه صورتکِ تقویم هفتگی کتاب؛ بعد از هر حرکت'],['پاداش','روشن شدنِ مشعلِ امروز و بزرگ شدنِ یوزی']]},
   family:{h:'بازی خانوادگی', d:[['در کتاب','ص ۳۶: دستمال‌بازی روی یک پا با آهنگ'],['در برنامه','گوشی داور می‌شود: آهنگ پخش می‌کند و یک جای غیرمنتظره قطعش می‌کند'],['چرا','در کتاب یک نفر باید آهنگ را قطع کند و از بازی جا می‌ماند؛ این‌جا همه بازی می‌کنند']]},
-  treasure:{h:'گنجینه', d:[['یوزی','یوزپلنگِ کتاب، با خط‌های اشکیِ یوزِ ایرانی؛ در سه مرحله بزرگ می‌شود'],['نشان‌ها','برای هر خوانِ گذشته یک نشان']]},
-  parents:{h:'بخش والدین', d:[['در کتاب','جدولِ کاغذیِ «روز اول، دوم، سوم» و ستاره‌هایی که خودِ کودک رنگ می‌کند'],['در برنامه','صورتک‌ها را کودک انتخاب می‌کند؛ زمانِ ایستادن را گوشی می‌گیرد، پس ستاره واقعی است'],['پیشرفت','همهٔ رکوردهای لک‌لک به ترتیب؛ آن‌هایی که بیشتر از دفعهٔ قبل بوده‌اند پررنگ‌اند']]},
+  treasure:{h:'گنجینه', d:[['یوزی','یوزپلنگِ کتاب، با خط‌های اشکی یوزِ ایرانی؛ در سه مرحله بزرگ می‌شود'],['نشان‌ها','برای هر خوانِ گذشته یک نشان']]},
+  parents:{h:'بخش والدین', d:[['در کتاب','جدولِ کاغذی «روز اول، دوم، سوم» و ستاره‌هایی که خودِ کودک رنگ می‌کند'],['در برنامه','صورتک‌ها را کودک انتخاب می‌کند؛ زمانِ ایستادن را گوشی می‌گیرد، پس ستاره واقعی است'],['پیشرفت','همهٔ رکوردهای لک‌لک به ترتیب؛ آن‌هایی که بیشتر از دفعهٔ قبل بوده‌اند پررنگ‌اند']]},
   record:{h:'رکوردِ لک‌لک', d:[['در کتاب','ص ۳۷: هر روز مثلِ لک‌لک بایست؛ هر بار بیشتر از دفعهٔ قبل ایستادی، یکی از هفت ستاره را رنگ کن'],['در برنامه','کرنومتر: بزرگتر «شروع» و «پایم زمین خورد» را می‌زند؛ ستاره خودش رنگ می‌شود'],['مقایسه','با دفعهٔ قبل، نه با بهترین رکورد؛ همان چیزی که کتاب می‌گوید و برای کودکِ هفت‌ساله دست‌یافتنی‌تر است'],['جملهٔ یوزپلنگ','«من تلاش می‌کنم هر بار در بازی نتیجهٔ بهتری بگیرم.» از همان صفحه']]},
   hello:{h:'شروع', d:[['چرا','کودک اسمش را می‌نویسد و قهرمانش را انتخاب می‌کند؛ از این به بعد بازی با اسمِ خودش حرفش را می‌زند'],['خانواده','همین قهرمان در حلقهٔ دستمال‌بازی می‌نشیند'],['نمایش','«شروع از اول» کنارِ گوشی به همین صفحه برمی‌گردد']]},
   story:{h:'قصهٔ حرکت', d:[['در کتاب','ص ۳۴: قصهٔ تاپ‌تاپو؛ درخت، کلاغ و گنجشک سه حالتِ تعادل یادش می‌دهند و هر بار «تا پنج بشمار»'],['در برنامه','متنِ عینِ کتاب، صفحه به صفحه؛ هر حالت یک شمارشِ پنج‌ثانیه‌ای دارد و تا انجامش نشود قصه جلو نمی‌رود'],['پیدا کردنِ کلمه','کتاب می‌گوید «واژهٔ تعادل را پیدا کن و انگشتت را زیرش بگذار»؛ این‌جا رویش ضربه می‌زند'],['تصویرها','گوینده (درخت، کلاغ، گنجشک) کنارِ دختری که همان حالت را نشان می‌دهد']]}
