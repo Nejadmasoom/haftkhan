@@ -175,15 +175,18 @@ const BIG_ART = /^(story-(mom|aunt|uncle|tree)|mom|dad|grandma|grandpa)$/;
    the row runs right to left, so the first figure stands on the right and must look left, the next one stands
    on its left and must look right — then mother and child look at each other. A drawing facing the wrong way is
    mirrored, except a move whose side matters (head to the right, left leg up), which is never mirrored. */
+/* keyed by the actual drawing: the girl's and the boy's version of a pose do not always face the same way */
 const FACE = {'story-mom':'R', 'story-aunt':'R', 'story-uncle':'L', 'story-rabbit':'L', 'story-crow':'R', 'story-sparrow':'R',
-  'kid:stand':'R', 'kid:m2-standOk':'R', 'kid:m2-sitOk':'L', 'kid:m3-walkA':'R', 'kid:m3-runA':'R'};
+  'girl-idle':'L', 'boy-idle':'L', 'girl-m2-standOk':'R', 'boy-m2-standOk':'L', 'girl-m2-sitOk':'L', 'boy-m2-sitOk':'L',
+  'girl-m3-walkA':'R', 'boy-m3-walkA':'R', 'girl-m3-runA':'R', 'boy-m3-runA':'R'};
+const artFile = src => (String(src).match(/img\/([^/.]+)\.webp/) || [])[1] || '';
 const SIDED = /head[RLUD]|leg[LR]|arm[SFUD]/;
 /* two frames of one child are one child moving, not two children; a right/wrong pair stays side by side, marked */
 const OKBAD = a => /Ok$|Bad$/.test(a);
 function artRow(art, src){
   const big = art.some(a => BIG_ART.test(a)), kids = art.filter(a => a.startsWith('kid:'));
   if(art.length === 2 && kids.length === 2 && !art.every(OKBAD)) return animFig(kids.map(a => a.slice(4)), 'st-anim');
-  return art.map((a, i) => { const f = FACE[a], want = i === 0 && art.length > 1 ? 'L' : 'R';
+  return art.map((a, i) => { const f = FACE[artFile(src(a))], want = i === 0 && art.length > 1 ? 'L' : 'R';
     const flip = art.length > 1 && f && f !== want && !SIDED.test(a);
     const mark = OKBAD(a) && art.every(OKBAD) ? `<i class="okbad ${/Ok$/.test(a) ? 'ok' : 'bad'}">${/Ok$/.test(a) ? '✓' : '✗'}</i>` : '';
     return `<span class="st-fig${big && a.startsWith('kid:') ? ' kid-sm' : ''}">${mark}<img src="${src(a)}" alt="" class="${flip ? 'flip' : ''}"></span>`; }).join('');
