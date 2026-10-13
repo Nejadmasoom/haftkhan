@@ -563,7 +563,7 @@ function startGame(){
   startOne();
 }
 function startOne(){
-  const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.vel = null; X.velT = 0; X.tapped = false; X.lastTap = 0; X.det = g.det ? detector(g.det) : null; resetBase();
+  const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.vel = null; X.velT = 0; X.best = 0; X.dropped = 0; X.lastT = 0; X.tapped = false; X.lastTap = 0; X.det = g.det ? detector(g.det) : null; resetBase();
   const best = bestOf(X.who, g.id), bestT = best && best.t;
   $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازیِ آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
   instr(g);
@@ -577,7 +577,7 @@ function startOne(){
 /* a balloon game is played with a real balloon, or — with the camera on — with the one Yuzi floats on the screen */
 function instr(g){
   const sub = g.kind === 'manual' ? 'این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند'
-    : g.kind === 'balloon' ? (X.camOn ? 'بادکنک روی صفحه است؛ بادکنکِ واقعی لازم نیست. جای بازی را خلوت کن.' : 'با بادکنکِ واقعی بازی کن و بزرگترت بشمارد؛ یا دوربین را روشن کن تا یوزی یک بادکنکِ روی صفحه بیاورد و خودش بشمارد.')
+    : g.kind === 'balloon' ? (X.camOn ? 'بادکنک از بالا می‌آید؛ نگذار زمین بخورد! اگر بیفتد، از اول شمرده می‌شود. بادکنکِ واقعی لازم نیست.' : 'با بادکنکِ واقعی بازی کن و بزرگترت بشمارد؛ یا دوربین را روشن کن تا یوزی یک بادکنکِ روی صفحه بیاورد و خودش بشمارد.')
     : g.need === 'stick' ? 'چوب پشتِ شانه‌ها بماند' : 'جای بازی را خلوت کن، با دوربین، یوزی خودش می‌شمارد';
   $('#gxInstr').innerHTML = `${g.t}<small>${sub}</small>`;
 }
@@ -717,7 +717,7 @@ function gameHint(){
   if(CAM.state === 'nobody') return 'از سر تا پایت را در کادر بیاور';
   if(X.count >= g.goal) return 'آفرین! تمام شد';
   if(g.need === 'stick' && X.lastB && !PRED.stick(X.lastB)) return 'چوب را پشتِ شانه‌ها بگیر';
-  if(g.kind === 'balloon') return X.dropped && performance.now() - X.dropped < 1500 ? 'بادکنک افتاد! دوباره' : `با ${g.parts.map(p=>({head:'سر',hand:'دست',knee:'زانو',foot:'پا'})[p]).join('، ')} بزن`;
+  if(g.kind === 'balloon') return X.dropped && performance.now() - X.dropped < 1800 ? `بادکنک زمین خورد! از اول بشمار${X.best ? `؛ بهترین: ${fa(X.best)}` : ''}` : `با ${g.parts.map(p=>({head:'سر',hand:'دست',knee:'زانو',foot:'پا'})[p]).join('، ')} بزن؛ نگذار بیفتد!`;
   return performance.now() - X.lastSeen < 600 ? `${fa(X.count)} از ${fa(g.goal)}، آفرین!` : g.t;
 }
 function gameFrame(ctx, lm, cv){
@@ -729,50 +729,77 @@ function gameFrame(ctx, lm, cv){
   if(!ready) return;
   if(X.det && X.det.step(b, now)){ X.lastSeen = now; sfx('hit'); addRep(true); }
 }
+/* A real balloon. It drops once from the top and the child keeps it in the air: it is light, so it falls
+   slowly and air drag holds it near a gentle top speed; a hit sends it the way it was hit, as hard as it was
+   hit; it drifts a little in the air. The book says "again and again" (پشت‌سرهم): hits count while it stays
+   up, and if it touches the floor the count starts over and a new balloon drops from the top.
+   Units are the player's torso length T per second, so it behaves the same for a small child and a tall
+   adult. A hit is a strike — the body part moving fast into the balloon; a balloon that falls on a still
+   head bounces softly and rolls off, as a real one does, and scores nothing. */
+const BAL = {G:1.5, VT:2.1, E:.5, VMAX:4.5, STRIKE:1.6, REST:1.6};   // VMAX: a hard hit lifts it about 2.5 torso lengths (~1.2 m for a child), as a real one
 function balloonFrame(ctx, b, cv, now, g, ready=true){
-  const W = cv.width, Hh = cv.height, T = b.torso, dt = Math.min(.05, (now - (X.lastT || now))/1000); X.lastT = now;
+  const W = cv.width, Hh = cv.height, T = b.torso, sw = b.sw, frame = Math.min(.25, (now - (X.lastT || now))/1000); X.lastT = now;
+  // real elapsed time (in small steps below): on a slow phone the balloon must not float in slow motion
   const floor = BASE.floor || (b.hip.y + b.leg);
-  const cols = [C.anar, '#3b82c4'];
-  /* Where a balloon appears depends on the room in the picture, not on a fixed offset: a small child has
-     space above the head, a tall adult who fills the frame has none — there it would appear on the face. */
-  const spawn = (o, k) => { const r = T*.32, above = b.nose.y - T*1.1;
-    if(above >= r*1.2){ o.x = b.sh.x + (k ? .9 : -.9)*b.sw + (k === null ? (Math.random()-.5)*b.sw : 0); o.y = above; }
-    else { const side = (k === null ? (Math.random() < .5 ? -1 : 1) : k ? 1 : -1);
-      o.x = Math.min(W - r, Math.max(r, b.sh.x + side*(1.3*b.sw + r))); o.y = Math.max(r*1.2, b.nose.y - T*.25); }
-    o.vx = 0; o.vy = 0; };
-  while(X.balls.length < (g.balls||1)){ const k = X.balls.length, o = {r:T*.32, col:cols[k], hit:0}; spawn(o, k); X.balls.push(o); }
-  /* A hit is a strike: the body part has to be moving, fast, toward the balloon. A balloon that just lands
-     on a still head or hand slides off and falls — otherwise a child who stands still "wins". Speeds are in
-     shoulder-widths per second and smoothed, so the camera's own jitter never looks like a strike. */
+  const heavy = g.grav || 1, Gp = BAL.G*T*heavy, vt = BAL.VT*T*Math.sqrt(heavy), drag = Gp/(vt*vt);
+  const cols = [C.anar, '#3b82c4'], r = T*.32*Math.max(.7, 1 - .04*((g.lv||1) - 1));
+  const drop = (o, k) => { const side = k === null ? (Math.random() < .5 ? -1 : 1) * (.2 + Math.random()*.6) : (k ? .9 : -.9);
+    o.x = Math.min(W - r, Math.max(r, b.sh.x + side*sw)); o.y = -r; o.vx = 0; o.vy = vt*.6; o.down = 0; o.ph = Math.random()*6; };
+  while(X.balls.length < (g.balls||1)){ const k = X.balls.length, o = {col:cols[k], hit:0}; drop(o, k); X.balls.push(o); }
+
+  // the body parts that may touch the balloon, with their smoothed velocities (px/s)
   const pts = [], add = (keys, pr) => keys.forEach(k => pts.push([b[k], pr, k]));
-  if(g.parts.includes('head')) add(['nose'], .7*b.sw);
-  if(g.parts.includes('hand')) add(['wL','wR','iL','iR'], .28*b.sw);
-  if(g.parts.includes('knee')) add(['kL','kR'], .35*b.sw);
-  if(g.parts.includes('foot')) add(['aL','aR','tL','tR'], .3*b.sw);
+  if(g.parts.includes('head')) add(['nose'], .7*sw);
+  if(g.parts.includes('hand')) add(['wL','wR','iL','iR'], .28*sw);
+  if(g.parts.includes('knee')) add(['kL','kR'], .35*sw);
+  if(g.parts.includes('foot')) add(['aL','aR','tL','tR'], .3*sw);
   const V = X.vel = X.vel || {};
-  const vdt = Math.max(.008, (now - (X.velT || now))/1000); X.velT = now;     // real frame time; slow phones too
-  pts.forEach(([p, , k]) => { const o = V[k], s = vdt;
-    const vx = o ? (p.x - o.x)/s : 0, vy = o ? (p.y - o.y)/s : 0;
+  const vdt = Math.max(.008, (now - (X.velT || now))/1000); X.velT = now;
+  pts.forEach(([p, , k]) => { const o = V[k], vx = o ? (p.x - o.x)/vdt : 0, vy = o ? (p.y - o.y)/vdt : 0;
     V[k] = {x:p.x, y:p.y, vx: o ? o.vx*.5 + vx*.5 : 0, vy: o ? o.vy*.5 + vy*.5 : 0}; });
+
   X.balls.forEach(o => {
-    o.r = T*.32*Math.max(.7, 1 - .04*((g.lv||1) - 1)); o.vy = Math.min(o.vy + .9*T*dt*(g.grav||1), .65*T*(g.grav||1)); o.vx *= .985; o.x += o.vx*dt; o.y += o.vy*dt;
-    if(o.x < o.r){ o.x = o.r; o.vx = Math.abs(o.vx); } if(o.x > W - o.r){ o.x = W - o.r; o.vx = -Math.abs(o.vx); }
-    if(o.y < o.r){ o.y = o.r; o.vy = Math.abs(o.vy)*.3; }
-    if(ready) for(const [p, pr, k] of pts){ const d = dist(p, o); if(d >= o.r + pr) continue;
-      const v = V[k], speed = Math.hypot(v.vx, v.vy)/b.sw, toward = (o.x - p.x)*v.vx + (o.y - p.y)*v.vy > 0;
-      if(speed > 1.6 && (toward || v.vy < -.8*b.sw) && o.vy > -.4*T && now - o.hit > 380){
-        o.vy = -1.55*T; o.vx = (o.x - p.x)/o.r * .5*T; o.hit = now; X.lastSeen = now; sfx('hit'); addRep(true); break; }
-      // resting contact: no point — push the balloon off the body and let it keep falling
-      const nx = (o.x - p.x)/(d || 1), ny = (o.y - p.y)/(d || 1), over = o.r + pr - d;
-      o.x += nx*over; o.y += Math.min(0, ny)*over*.2;
-      o.vx = (Math.abs(nx) > .15 ? Math.sign(nx) : (Math.random() < .5 ? -1 : 1)) * .55*T; o.vy = Math.max(o.vy, .12*T);
-      break; }
-    if(o.y - o.r > floor){ X.dropped = now; sfx('miss'); spawn(o, null); }
-    const pop = now - o.hit < 200 ? 1.12 : 1;
-    ctx.save(); ctx.lineWidth = W/150; ctx.strokeStyle = C.ink;
-    ctx.beginPath(); ctx.moveTo(o.x, o.y + o.r*1.1); ctx.quadraticCurveTo(o.x - o.r*.3, o.y + o.r*1.7, o.x + o.r*.1, o.y + o.r*2.4); ctx.stroke();
-    ctx.fillStyle = o.col; ctx.beginPath(); ctx.ellipse(o.x, o.y, o.r*.85*pop, o.r*pop, 0, 0, 7); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.beginPath(); ctx.ellipse(o.x - o.r*.3, o.y - o.r*.35, o.r*.16, o.r*.28, 0, 0, 7); ctx.fill();
+    o.r = r;
+    if(o.down){                                         // lying on the floor; a new one drops shortly
+      o.y = floor - r; if(now - o.down > 1600) drop(o, null);
+    } else {
+      const steps = Math.max(1, Math.ceil(frame/.017)), dt = frame/steps;
+      for(let st = 0; st < steps; st++){
+        o.vy += Gp*dt;
+        o.vx += Math.sin(now/650 + o.ph)*.35*T*dt;     // a little drift in the room's air
+        const sp = Math.hypot(o.vx, o.vy), f = Math.max(0, 1 - drag*sp*dt); o.vx *= f; o.vy *= f;
+        o.x += o.vx*dt; o.y += o.vy*dt;
+        if(o.x < r){ o.x = r; o.vx = Math.abs(o.vx)*.5; } if(o.x > W - r){ o.x = W - r; o.vx = -Math.abs(o.vx)*.5; }
+        if(o.y < -2*Hh){ o.y = -2*Hh; o.vy = Math.max(0, o.vy); }      // the room has a ceiling somewhere
+      }
+      for(const [p, pr, k] of pts){ const d = dist(p, o); if(d >= r + pr || d === 0) continue;
+        const n = {x:(o.x - p.x)/d, y:(o.y - p.y)/d}, v = V[k];
+        const into = v.vx*n.x + v.vy*n.y, un = into - (o.vx*n.x + o.vy*n.y);    // closing speed along the contact
+        o.x += n.x*(r + pr - d); o.y += n.y*(r + pr - d);
+        if(un <= 0) continue;
+        o.vx += n.x*(1 + BAL.E)*un; o.vy += n.y*(1 + BAL.E)*un;
+        const sp = Math.hypot(o.vx, o.vy), cap = BAL.VMAX*T; if(sp > cap){ o.vx *= cap/sp; o.vy *= cap/sp; }
+        const strike = into > BAL.STRIKE*sw && Math.hypot(v.vx, v.vy) > BAL.STRIKE*sw;
+        if(strike && ready && now - o.hit > 300){ o.hit = now; X.lastSeen = now; sfx('hit'); addRep(true); }
+        else if(Math.hypot(o.vx, o.vy) < .4*T) o.vx += (n.x >= 0 ? 1 : -1)*BAL.REST*T*.1;   // resting on a still head: it rolls off
+        break; }
+      if(o.y + r >= floor){ o.y = floor - r; o.down = now; o.vx = 0; o.vy = 0;
+        if(X.count > 0 && X.count < g.goal){ X.best = Math.max(X.best || 0, X.count); X.count = 0; X.t0 = 0; renderCount(); }
+        X.dropped = now; sfx('miss'); }
+    }
+    // above the picture: a small arrow at the top edge shows where it will come back down
+    if(o.y < -r*.6){ ctx.save(); ctx.fillStyle = o.col; ctx.strokeStyle = C.ink; ctx.lineWidth = W/220; const ax = Math.min(W - 14, Math.max(14, o.x));
+      ctx.beginPath(); ctx.moveTo(ax - r*.35, 4); ctx.lineTo(ax + r*.35, 4); ctx.lineTo(ax, 4 + r*.45); ctx.closePath(); ctx.fill(); ctx.stroke(); ctx.restore(); }
+    // shadow on the floor: where it will land, bigger as it comes down
+    const hgt = Math.max(0, Math.min(1, (floor - o.y)/(floor || 1)));
+    ctx.save(); ctx.fillStyle = `rgba(20,25,60,${.28 - .18*hgt})`; ctx.beginPath(); ctx.ellipse(o.x, floor + r*.05, r*(1 - .5*hgt), r*.18*(1 - .4*hgt), 0, 0, 7); ctx.fill(); ctx.restore();
+    // the balloon leans into its motion; the string trails behind
+    const pop = now - o.hit < 200 ? 1.12 : 1, tilt = Math.max(-.5, Math.min(.5, (o.vx || 0)/(4*T)));
+    ctx.save(); ctx.translate(o.x, o.y); ctx.rotate(tilt); ctx.lineWidth = W/150; ctx.strokeStyle = C.ink;
+    ctx.beginPath(); ctx.moveTo(0, r*1.05); ctx.quadraticCurveTo(-r*.35 - tilt*r, r*1.7, r*.1 - tilt*r*1.4, r*2.5); ctx.stroke();
+    ctx.fillStyle = o.col; ctx.beginPath(); ctx.ellipse(0, 0, r*.85*pop, r*pop, 0, 0, 7); ctx.fill(); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-r*.09, r*.98); ctx.lineTo(r*.09, r*.98); ctx.lineTo(0, r*1.1); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.45)'; ctx.beginPath(); ctx.ellipse(-r*.3, -r*.35, r*.16, r*.28, 0, 0, 7); ctx.fill();
     ctx.restore();
   });
 }
