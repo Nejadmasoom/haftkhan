@@ -34,14 +34,18 @@ for(const [W, H] of VPS){
   await shot('hello');
   await p.fill('#kidName','سارا'); await p.click('#helloGo'); await p.waitForTimeout(500);
   await shot('map');
-  for(const [k, lessons] of [[0, [1, 2]], [1, [3, 4]]]){
+  for(const [k, lessons] of [[0, [1, 2]], [1, [3, 4]], [2, [6]], [3, [7, 8]]]){
     await khan(k); await shot(`gkhan${k}`);
     for(const n of lessons){
       for(const act of ['gstory', 'gfam', 'gstar']){ await khan(k); try { await p.click(`#mz${n} [data-act="${act}"]`); await p.waitForTimeout(300); await shot(`L${n}-${act}`); } catch(e){ report[`${vp} L${n}-${act}`] = {fail: e.message.slice(0, 80)}; } }
       await khan(k); await p.click(`#mz${n} [data-act="play"]`); await p.waitForTimeout(300); await shot(`L${n}-gchoose`);
       const nc = await p.$$eval('#gcChoices .choice', a => a.length);
       for(let i = 0; i < nc; i++){ await khan(k); await p.click(`#mz${n} [data-act="play"]`); await p.waitForTimeout(250);
-        await p.click(`#gcChoices .choice >> nth=${i}`); await p.waitForTimeout(300); await shot(`L${n}-gex${i}`);
+        await p.click(`#gcChoices .choice >> nth=${i}`); await p.waitForTimeout(300);
+        const pick = await p.evaluate(n => HKX.LESSONS[n].play.pick, n);
+        for(let j = 1; j < pick; j++) await p.click(`#gcChoices .choice >> nth=${(i + j) % nc}`);
+        if(pick > 1){ await p.click('#gcStart'); await p.waitForTimeout(300); }
+        await shot(`L${n}-gex${i}`);
         if(i === 0 && (!ONLY || ONLY.test(`L${n}-gex0-cam`))){ const cam = await p.$('#gxCam'); if(cam && await cam.isVisible()){ await cam.click(); await p.waitForTimeout(3500); await shot(`L${n}-gex0-cam`); await go('map'); } } }
     }
   }

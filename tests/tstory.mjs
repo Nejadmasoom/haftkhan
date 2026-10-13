@@ -16,10 +16,17 @@ const run = (mode, task, secs) => p.evaluate(async ({mode, task, secs}) => {
     armU:{15:[.56,.08],16:[.44,.08],13:[.58,.18],14:[.42,.18],19:[.56,.07],20:[.44,.07]}, armS:{15:[.82,.3],16:[.18,.3],13:[.7,.3],14:[.3,.3],19:[.84,.3],20:[.16,.3]},
     armF:{15:[.54,.31],16:[.46,.31],13:[.57,.34],14:[.43,.34],19:[.54,.31],20:[.46,.31]}, armD:{},
     sit:{23:[.55,.62],24:[.45,.62],25:[.56,.68],26:[.44,.68],27:[.56,.9],28:[.44,.9]},
+    upright:{},
+    bendL:{11:[.62,.33],12:[.46,.3],13:[.66,.45],15:[.62,.55],19:[.62,.56],14:[.46,.2],16:[.55,.12],20:[.55,.11],0:[.55,.2],7:[.58,.19],8:[.52,.19]},
+    bendR:{12:[.38,.33],11:[.54,.3],14:[.34,.45],16:[.38,.55],20:[.38,.56],13:[.54,.2],15:[.45,.12],19:[.45,.11],0:[.45,.2],7:[.48,.19],8:[.42,.19]},
+    thigh:{15:[.57,.6],19:[.57,.61],16:[.4,.3],20:[.4,.29],14:[.38,.38]}, chest:{15:[.53,.38],19:[.53,.38],16:[.4,.2],20:[.4,.19],14:[.38,.3]},
   };
   const out = {13:[.7,.3],14:[.3,.3],15:[.82,.3],16:[.18,.3],19:[.84,.3],20:[.16,.3]}, outLo = {13:[.7,.33],14:[.3,.33],15:[.82,.36],16:[.18,.36],19:[.84,.36],20:[.16,.36]}, outHi = {13:[.7,.27],14:[.3,.27],15:[.82,.24],16:[.18,.24],19:[.84,.24],20:[.16,.24]};
   const REPS = {
     run:[[P.legL, 260], [P.legR, 260]],
+    walk:[[P.legL, 450], [P.legR, 450]],
+    patT:[[{15:[.57,.6],19:[.57,.61],16:[.4,.3],20:[.4,.29],14:[.38,.38]}, 400], [{16:[.43,.6],20:[.43,.61],15:[.6,.3],19:[.6,.29],13:[.62,.38]}, 400]],
+    patC:[[{15:[.53,.38],19:[.53,.38],16:[.4,.2],20:[.4,.19],14:[.38,.3]}, 400], [{16:[.47,.38],20:[.47,.38],15:[.6,.2],19:[.6,.19],13:[.62,.3]}, 400]],
     circle:[[{...out, ...outLo}, 400], [{...out, ...outHi}, 400]],
     toe:[[shift(-.03, [31, 32]), 700], [{}, 700]],
     hug:[[{26:[.45,.5],28:[.46,.68],30:[.46,.69],32:[.46,.7],15:[.48,.52],16:[.42,.52]}, 700], [{}, 700]],
@@ -48,10 +55,10 @@ const run = (mode, task, secs) => p.evaluate(async ({mode, task, secs}) => {
 const res = []; let seqDbg; const ONLYT = process.env.T ? new RegExp(process.env.T) : null;
 for(const t of tasks){
   if(ONLYT && !ONLYT.test(`L${t.n} p${t.i}`)) continue;
-  const open = async () => { await p.evaluate(() => HK.go('map')); await p.click(`.khan >> nth=${t.n <= 2 ? 0 : 1}`); await p.click(`#mz${t.n} [data-act="gstory"]`); await p.waitForTimeout(250);
+  const open = async () => { await p.evaluate(() => HK.go('map')); await p.click(`.khan >> nth=${t.n <= 2 ? 0 : t.n <= 4 ? 1 : t.n <= 6 ? 2 : 3}`); await p.click(`#mz${t.n} [data-act="gstory"]`); await p.waitForTimeout(250);
     await p.evaluate(i => HKX._story.renderStory(i), t.i); await p.waitForTimeout(250); await p.click('#tkCam'); await p.waitForTimeout(3500); };
   await open(); const still = await run('still', t, 8);
-  await open(); const play = await run('play', t, t.type === 'seq' ? 22 : 14);
+  await open(); const play = await run('play', t, t.type === 'seq' ? 32 : 14);
   const stillMoved = t.type === 'hold' ? (still.end !== still.start) : still.end > still.start;
   const expectStill = t.key === 'standStraight';          // standing straight IS that task
   if(process.env.T) console.log('hint', await p.evaluate(() => window.__h), JSON.stringify(seqDbg = await p.evaluate(() => [HKX._story.Y.page, document.querySelector('#tkChips')?.innerHTML.slice(0,200)])));

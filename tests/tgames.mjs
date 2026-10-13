@@ -7,7 +7,7 @@ await p.goto('file:///home/user/haftkhan/prototype/index.html'); await p.fill('#
 const ONLYG = process.env.G ? new RegExp(process.env.G) : null;
 let games = await p.evaluate(() => Object.entries(HKX.LESSONS).flatMap(([n, L]) => (L.play.games || []).map((g, i) => ({n:+n, i, name:g.name, kind:g.kind, det:g.det || null, stick:g.need === 'stick'})).filter(g => g.kind === 'reps' && g.det)));
 if(ONLYG) games = games.filter(g => ONLYG.test(`L${g.n}#${g.i}`));
-const khanOf = n => n <= 2 ? 0 : 1;
+const khanOf = n => n <= 2 ? 0 : n <= 4 ? 1 : n <= 6 ? 2 : 3;
 const feed = (mode, det, secs, stick) => p.evaluate(async ({mode, det, secs, stick}) => {
   const CAM = HK.CAM, X = HKX._X, keep = CAM.stream; CAM.stream = null; await new Promise(r => setTimeout(r, 120));
   const W = 640, H = 480, cv = {width:W, height:H}, ctx = new OffscreenCanvas(W, H).getContext('2d');
@@ -25,7 +25,8 @@ const feed = (mode, det, secs, stick) => p.evaluate(async ({mode, det, secs, sti
     hen: [[{13:[.66,.31],14:[.34,.31],15:[.6,.36],16:[.4,.36]}, 700], [{}, 700]],
     drum: [[{15:[.53,.36],16:[.47,.36]}, 500], [{}, 500]],
     toe: [[shift(-.03, [31, 32]), 700], [{}, 700]],
-    run: [[legL, 260], [legR, 260]]
+    run: [[legL, 260], [legR, 260]],
+    walk: [[legL, 450], [legR, 450]]
   };
   let seed = 7; const rnd = () => { seed = (seed*16807) % 2147483647; return seed/2147483647; }; const g = () => { let u = 0; for(let i = 0; i < 6; i++) u += rnd(); return (u - 3)/1.2; };
   const J = mode === 'still' ? .01 : .003, seq = SEQ[det] || [[{}, 1000]], t0 = performance.now(); let reps = 0, last = X.count;
@@ -42,7 +43,8 @@ const feed = (mode, det, secs, stick) => p.evaluate(async ({mode, det, secs, sti
 const results = [];
 for(const gm of games){
   const open = async () => { await p.evaluate(() => HK.go('map')); await p.click(`.khan >> nth=${khanOf(gm.n)}`); await p.click(`#mz${gm.n} [data-act="play"]`); await p.click(`#gcChoices .choice >> nth=${gm.i}`); await p.waitForTimeout(300);
-    if(await p.$('#gcStart')){ await p.click(`#gcChoices .choice >> nth=${gm.i ? 0 : 1}`); await p.click('#gcStart'); await p.waitForTimeout(300); }   // two-pick lessons
+    if(await p.$('#gcStart')){ const pick = await p.evaluate(n => HKX.LESSONS[n].play.pick, gm.n), nc = await p.$$eval('#gcChoices .choice', a => a.length);   // several-pick lessons
+      for(let j = 1; j < pick; j++) await p.click(`#gcChoices .choice >> nth=${(gm.i + j) % nc}`); await p.click('#gcStart'); await p.waitForTimeout(300); }
     await p.click('#gxCam'); await p.waitForTimeout(3500); };
   await open(); const still = await feed('still', gm.det, 9, gm.stick);
   await open(); const play = await feed('play', gm.det, 14, gm.stick);

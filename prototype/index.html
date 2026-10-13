@@ -809,6 +809,52 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
 .khan.soon .medal{background:#3b4aa0;box-shadow:var(--press) #2a3785}
 .khan.soon .medal img{filter:grayscale(1) brightness(1.4);opacity:.45}
 .khan.soon .label{opacity:.7}
+
+/* ---------- lessons 6-8: quiz, held stretches, body percussion, family rules, cups, plus grid ---------- */
+.scene.quiz{height:auto;min-height:0;padding:10px;overflow:visible}
+.scene.quiz > svg,.scene.quiz > .fig{display:none}
+.quizgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.quizgrid .qi{position:relative;border:2px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink);cursor:pointer;padding:6px 4px 6px;display:flex;flex-direction:column;align-items:center;gap:2px;min-height:96px;font:inherit;box-shadow:0 4px 0 var(--ink);transition:transform .12s}
+.quizgrid .qi:active{transform:translateY(3px);box-shadow:0 1px 0 var(--ink)}
+.quizgrid .qi img{height:56px;width:auto;max-width:100%;object-fit:contain}
+.quizgrid .emo.two{font-size:30px;letter-spacing:-4px}
+.quizgrid .emo{white-space:nowrap;direction:ltr;font-size:40px;line-height:56px;height:56px;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.quizgrid .qi small{font-size:12px;font-weight:700;line-height:1.4;text-align:center}
+.quizgrid .qi.no{animation:shake .35s}
+.quizgrid .qi.ok{background:#e4f7dc}
+.quizgrid .qi.ok .qmark{position:absolute;top:4px;inset-inline-start:4px;width:26px;height:26px;border-radius:50%;background:var(--leaf);border:2px solid var(--ink)}
+.quizgrid .qi.ok .qmark::after{content:"";position:absolute;left:6px;top:6px;width:10px;height:6px;border:solid #fff;border-width:0 0 3px 3px;transform:rotate(-45deg)}
+.quizgrid.cross .qi.ok{background:#ffe4e1}
+.quizgrid.cross .qi.ok .qmark{inset:0;width:auto;height:auto;border:0;border-radius:14px;background:linear-gradient(to top left,transparent calc(50% - 3px),#e0303a calc(50% - 3px),#e0303a calc(50% + 3px),transparent calc(50% + 3px))}
+.quizgrid.cross .qi.ok .qmark::after{display:none}
+.beats{margin:10px 16px 0;display:flex;flex-wrap:wrap;gap:6px;align-items:center;justify-content:center}
+.beats .bgrp{background:#fff;border:2px solid var(--ink);border-radius:14px;padding:3px 8px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.beats .bgrp b{font-size:12px;line-height:1.3}
+.beats .bgrp span{display:flex;gap:4px}
+.beats i{width:13px;height:13px;border-radius:50%;border:2px solid var(--ink);background:#fff;transition:transform .1s,background .1s}
+.beats i.on{background:var(--saffron);transform:scale(1.35)}
+.beats i.ok{background:var(--leaf)}
+.beats .beatbtn{border:2px solid var(--ink);background:#fff;color:var(--ink);border-radius:var(--r-pill);min-height:44px;min-width:44px;padding:4px 12px;font:inherit;font-size:13px;font-weight:700;cursor:pointer}
+.beats .beatbtn[aria-pressed="true"]{background:var(--saffron)}
+.agree{display:flex;flex-direction:column;gap:8px;width:100%}
+.agr{display:flex;align-items:center;gap:10px;text-align:start;border:2px solid var(--ink);border-radius:16px;background:#fff;color:var(--ink);font:inherit;font-size:14px;font-weight:700;padding:8px 12px;min-height:48px;cursor:pointer}
+.agr i{flex:none;width:24px;height:24px;border-radius:50%;border:2px solid var(--ink);background:#fff;position:relative}
+.agr.on i{background:var(--leaf)}
+.agr.on i::after{content:"";position:absolute;left:5px;top:5px;width:9px;height:5px;border:solid #fff;border-width:0 0 3px 3px;transform:rotate(-45deg)}
+.rg-ans{display:flex;align-items:center;gap:10px;width:100%;border:var(--bw) solid var(--ink);border-radius:20px;padding:10px;font-size:14px;line-height:1.7;background:#fff}
+.rg-ans img{width:84px;height:84px;object-fit:contain;flex:none}
+.rg-ans b{display:block;font-family:var(--f-display);font-size:20px}
+.rg-ans small{display:block;font-size:12px;color:var(--ink-soft)}
+.rg-ans.ok{background:#e4f7dc}.rg-ans.ok b{color:#2e7d32}
+.rg-ans.no{background:#ffe4e1}.rg-ans.no b{color:#c62828}
+.cupsteps{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.cupsteps span{border:2px solid var(--ink);background:#fff;border-radius:14px;padding:4px 10px;font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;transition:transform .1s}
+.cupsteps span b{font-size:18px;font-family:var(--f-display)}
+.cupsteps span.on{background:var(--saffron);transform:scale(1.1)}
+.gridwrap{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin:0 16px}
+.gridwrap svg{width:min(62vw,220px);height:auto}
+.gridwrap .gsq.on rect{fill:var(--saffron)}
+.gridrules{margin:0;padding-inline-start:20px;font-size:13.5px;line-height:1.8;max-width:330px}
 </style>
 
 <script>document.documentElement.classList.add(/[?&]preview\b/.test(location.search) ? 'preview' : 'play');</script>
@@ -857,7 +903,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
           <div class="bubble">من <b>لک‌لکِ نگهبانِ پل</b>ام. ساعت‌ها روی یک پا می‌ایستم! اگر تو هم تعادل یاد بگیری، از پل رد می‌شوی.</div>
         </div>
         <div class="sheet">
-          <div class="manzil">
+          <div class="manzil" id="m5">
             <h3>منزل ۵: تعادل <span class="tag">کتاب، ص ۳۳ تا ۳۷</span></h3>
             <div class="tiles">
               <button class="tile t-play" id="playTile">
@@ -883,10 +929,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
               </button>
             </div>
           </div>
-          <div class="manzil" id="m6">
-            <h3>منزل ۶: زندگی فعال <span class="tag">کتاب، ص ۳۹ تا ۴۳</span></h3>
-            <div class="lock-note" id="m6note"></div>
-          </div>
+          <div id="m6"></div>
         </div>
       </section>
 
@@ -1322,7 +1365,7 @@ const KHANS = [
   {name:'چشمهٔ دل', lessons:['قلب قوی'], icon:'heart', guard:'rakhsh'},
   {name:'جشنِ سرزمین', lessons:['بازی‌های بومی‌محلی'], icon:'flag', guard:'simorgh'}
 ];
-const BUILT = 3; // khans 1..3 have playable lessons; the rest are on the map but not built yet
+const BUILT = 4; // khans 1..4 have playable lessons; the rest are on the map but not built yet
 const MOVES = [
   {t:'روی یک پا بایست و با پای دیگر کیسه‌های شن را داخل سبد بگذار.', goal:5, unit:'کیسه', prop:'bags'},
   {t:'روی یک پا بایست و با پای دیگر دایره‌های رنگی را لمس کن.', goal:4, unit:'دایره', prop:'dots'},
@@ -1404,14 +1447,16 @@ function save(){ store.set(SKEY, state); }
 if(!state.cam) state.cam = {dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0};
 /* lessons 1-4 (khans 1 and 2) — the engine for them lives in khans.js */
 const newLesson = () => ({days:[null,null,null], story:false, family:false, stars:0, rec:[], log:{}, cam:{}});
-if(!state.L){ state.L = {1:newLesson(), 2:newLesson(), 3:newLesson(), 4:newLesson()}; }
+const LESSONS_BUILT = [1,2,3,4,6,7,8];   // lesson 5 (balance) keeps its own screens below
+const fillLessons = () => { state.L = state.L || {}; LESSONS_BUILT.forEach(n => { if(!state.L[n]) state.L[n] = newLesson(); }); };
+fillLessons();
 /* while the game is being tested, every built khan is open; the parents page can turn the real order back on */
 if(state.openAll === undefined) state.openAll = true;
 if(!state.cur) state.cur = 1;
 const daysOf = n => n === 5 ? state.days : state.L[n].days;
 const lessonDone = n => daysOf(n).filter(Boolean).length >= 3;
-const LESSON_KHAN = {1:0, 2:0, 3:1, 4:1, 5:2};
-const KHAN_LESSONS = [[1,2],[3,4],[5]];   // lesson 6 (khan 3) is not built yet
+const LESSON_KHAN = {1:0, 2:0, 3:1, 4:1, 5:2, 6:2, 7:3, 8:3};
+const KHAN_LESSONS = [[1,2],[3,4],[5,6],[7,8]];
 const khanPassed = i => i < BUILT && KHAN_LESSONS[i].every(lessonDone);
 const khanOpen = i => i < BUILT && (i === 0 || state.openAll || khanPassed(i-1));
 const lessonOpen = n => state.openAll || n === 1 || lessonDone(n-1);
@@ -1500,17 +1545,13 @@ function renderTorches(){
   tile.setAttribute('aria-disabled', rest ? 'true' : 'false');
   $('#playIc').innerHTML = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : ICON.play();
   $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'بازی امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
-  $('#playSub').textContent = n>=3 ? 'از پلِ لرزان گذشتی. آفرین!' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
+  $('#playSub').textContent = n>=3 ? 'منزلِ تعادل را گذراندی. آفرین! منزلِ ۶ باز است.' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
     : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازی تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
   $('#storyDone').hidden = !state.story;
   $('#familyDone').hidden = !state.family;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
   $('#recSub').textContent = state.rec.length ? `بهترین: ${secs(best)} ثانیه، ستاره ${fa(state.recStars)} از ۷` : 'هنوز رکوردی نداری، مثلِ لک‌لک بایست!';
-  const open6 = n>=3;
-  $('#m6').classList.toggle('locked-manzil', !open6);
-  $('#m6note').innerHTML = open6
-    ? `<img src="img/stork-proud.webp" alt="" style="width:44px;height:44px;object-fit:contain">باز شد! تمرین‌های این منزل در نسخهٔ بعدی ساخته می‌شوند.`
-    : `<svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ تعادل روشن شود، این منزل باز می‌شود.`;
+  if(window.HKX) HKX.mountManzil(6, $('#m6'));   // lesson 6 is built by khans.js, under lesson 5 on this page
   $('#toolDay').textContent = `روزِ پیش‌نمایش: ${state.off ? `${fa(state.off)} روز بعد از امروز` : 'امروز'}`;
 }
 $('#playTile').addEventListener('click', ()=>{
@@ -1544,6 +1585,8 @@ function renderTop(){
 const NAV_OF = {choose:'map', hello:'map', map:'map', khan:'map', ex:'map', story:'map', record:'map', family:'family', treasure:'treasure', parents:'parents',
   gkhan:'map', gchoose:'map', gex:'map', gstory:'map', gfam:'family', gstar:'map', arena:'arena', play:'arena'};
 function go(name){
+  if(name==='gkhan' && LESSON_KHAN[state.cur] === 2) name = 'khan';   // lesson 6 sits on khan 3's own page, under lesson 5
+  if(['choose','ex','story','record'].includes(name) && state.cur !== 5){ state.cur = 5; save(); }   // lesson 5's own screens
   if(name==='family' && state.cur !== 5 && window.HKX) name = 'gfam';   // the family tab opens the current lesson's game
   hush(); bgScreen = name; document.documentElement.dataset.screen = name;
   if(window.HKX) HKX.leave(name);
@@ -1562,7 +1605,7 @@ function go(name){
   if(name!=='family' && CAM.famOn) famCamOff();
   if(!['record','story','ex','family','gex','gstory','gfam','gstar','play'].includes(name) && CAM.stream){ camStop(); CAM.recOn = false; const st=$('#recStage'); st.classList.remove('cam'); st.querySelectorAll('img').forEach(i=>i.hidden=false); const b=$('#recCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent='یوزی با دوربین ببیند'; }
   if(name==='map'){ drawMap(); renderTop(); prefetchSoon(); }
-  if(name==='khan' && state.cur !== 5){ state.cur = 5; save(); }
+  if(name==='khan' && LESSON_KHAN[state.cur] !== 2){ state.cur = 5; save(); }
   if(name==='treasure') renderTreasure();
   if(name==='family' && !playing){ holder = 0; drawCircle(); }
   if(window.HKX) HKX.enter(name);
@@ -1573,7 +1616,7 @@ function go(name){
   showNote(name);
 }
 document.addEventListener('click', e=>{
-  const t = e.target.closest('[data-go]'); if(t){ sfx('click'); go(t.dataset.go); return; }
+  const t = e.target.closest('[data-go]'); if(t){ sfx('click'); if(t.closest('#m5') && state.cur !== 5){ state.cur = 5; save(); } go(t.dataset.go); return; }
   const n = e.target.closest('[data-note]'); if(n){ showNote(n.dataset.note); }
 });
 
@@ -1671,17 +1714,18 @@ function finishDay(){
   if(CAM.exOn) exCamOff();
   state.days[doneDays()] = {d:dayNum(), move:mi, feel:feelings[mi]};
   save(); renderTorches();
-  const lit = doneDays(), crossed = lit>=3;
+  const lit = doneDays(), doneL = lit>=3, crossed = doneL && lessonDone(6);   // the bridge is crossed once lesson 6 is done too
   $('#bigTorches').innerHTML = [0,1,2].map(i=> torch(i<lit, i===lit-1 ? 'new' : '')).join('');
   $('#rewardImg').src = crossed ? 'img/stork-proud.webp' : yz('cheer');
   $('#rewardKid').src = `img/${kid()}-cheer.webp`;
-  $('#rewardTitle').textContent = crossed ? 'از پلِ لرزان گذشتی!' : 'آفرین پهلوان!';
-  $('#rewardText').textContent = crossed ? 'هر سه مشعل روشن شد. لک‌لک به تو افتخار می‌کند و منزلِ «زندگی فعال» باز شد.'
-    : `مشعلِ روزِ ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روزِ دیگر':'دو روزِ دیگر'} تا گذشتن از پلِ لرزان. فردا روزِ استراحت است؛ پس‌فردا بیا!`;
+  $('#rewardTitle').textContent = crossed ? 'از پلِ لرزان گذشتی!' : doneL ? 'منزلِ تعادل تمام شد!' : 'آفرین پهلوان!';
+  $('#rewardText').textContent = crossed ? 'هر سه مشعل روشن شد. لک‌لک به تو افتخار می‌کند و خوانِ «بیشهٔ بید» باز شد.'
+    : doneL ? 'هر سه مشعل روشن شد. منزلِ «زندگی فعال» باز شد!'
+    : `مشعلِ روزِ ${['اول','دوم','سوم'][lit-1]} روشن شد. ${lit===2?'یک روزِ دیگر':'دو روزِ دیگر'} تا تمام شدنِ منزلِ تعادل. فردا روزِ استراحت است؛ پس‌فردا بیا!`;
   $('#reward').hidden = false;
   $('#xpText').textContent = crossed ? 'یوزی آمادهٔ خوانِ بعدی است' : `یوزی دارد بزرگ می‌شود، ${fa(lit)} از ۳ مشعل`;
   $('#xpBar').style.width = '40%'; requestAnimationFrame(()=> requestAnimationFrame(()=> $('#xpBar').style.width = crossed ? '100%' : `${40+lit*15}%`));
-  sfx('fanfare', crossed); voiceLater(crossed ? 'crossed' : 'cheer', 900);
+  sfx('fanfare', doneL); voiceLater(crossed ? 'crossed' : 'cheer', 900);
   confetti();
 }
 function confetti(){
@@ -2332,7 +2376,7 @@ $$('[data-face]').forEach(s=> s.innerHTML = face(+s.dataset.face));
 window.HKfig = fig;
 for(let m=1;m<=3;m++) for(const f of 'ab'){ const im = new Image(); im.src = fig(`m5-${m}${f}`); }
 $('#nextDay').addEventListener('click', ()=>{ state.off++; save(); renderTorches(); go('khan'); });
-$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); state.L = {1:newLesson(), 2:newLesson(), 3:newLesson(), 4:newLesson()}; state.openAll = true; state.cur = 1; save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
+$('#resetAll').addEventListener('click', ()=>{ state.off = 0; state = seed(); state.L = null; fillLessons(); state.openAll = true; state.cur = 1; save(); renderProfile(); renderTorches(); drawCircle(); go('hello'); });
 let pickKid = 'girl';
 $$('.pick button').forEach(b=> b.addEventListener('click', ()=>{ pickKid = b.dataset.kid; $$('.pick button').forEach(x=> x.setAttribute('aria-pressed', x===b ? 'true' : 'false')); sfx('click'); }));
 $('#helloGo').addEventListener('click', ()=>{

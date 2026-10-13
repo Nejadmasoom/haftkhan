@@ -19,7 +19,9 @@ const READY = new Set([          // girl move frames, without the "girl-" prefix
   'm2-standOk', 'm2-standBad', 'm2-sitOk', 'm2-sitBad', 'm2-bagOk', 'm2-bagBad', 'm2-writeOk', 'm2-writeBad', 'm3-walkA', 'm3-walkB',
   'm3-runA', 'm3-runB', 'm3-roo-a', 'm3-roo-b', 'm3-frog-a', 'm3-frog-b', 'm3-hen-a', 'm3-hen-b', 'm3-gorilla-a', 'm3-gorilla-b',
   'm3-cat-a', 'm3-cat-b', 'm3-snake-a', 'm3-snake-b', 'm4-circle-a', 'm4-circle-b', 'm4-toe-a', 'm4-toe-b', 'm4-hug-a', 'm4-hug-b',
-  'm4-lunge-a', 'm4-lunge-b', 'm4-plank-a', 'm4-plank-b', 'm4-crab-a', 'm4-crab-b', 'm4-spin-a', 'm4-spin-b', 'm4-feetStack', 'm4-feetUp']);
+  'm4-lunge-a', 'm4-lunge-b', 'm4-plank-a', 'm4-plank-b', 'm4-crab-a', 'm4-crab-b', 'm4-spin-a', 'm4-spin-b', 'm4-feetStack', 'm4-feetUp',
+  // khans 3 and 4 (lessons 6-8), cut from the six pose sheets
+  'm6-green', 'm6-palm', 'm6-red', 'm6-tree', 'm6-walk', 'm6-win', 'm7-balloon', 'm7-bend', 'm7-cobra', 'm7-dog', 'm7-dog3', 'm7-fold', 'm7-hips', 'm7-reach', 'm7-seatfold', 'm7-straddle', 'm7-tri', 'm7-warrior', 'm8-chestA', 'm8-chestB', 'm8-clap', 'm8-cup', 'm8-push', 'm8-sidestep', 'm8-stamp', 'm8-thighA', 'm8-thighB']);
 const READY_BOY = new Set([      // the same for the boy (m1-armF is never shown)
   'm4-circle-a', 'm4-circle-b', 'm4-toe-a', 'm4-toe-b', 'm4-hug-a', 'm4-hug-b', 'm4-lunge-a', 'm4-lunge-b',
   'm4-plank-a', 'm4-plank-b', 'm4-crab-a', 'm4-crab-b', 'm4-spin-a', 'm4-spin-b', 'm4-feetStack', 'm4-feetUp',
@@ -27,10 +29,11 @@ const READY_BOY = new Set([      // the same for the boy (m1-armF is never shown
   'm1-hitHand', 'm1-hitKnee', 'm1-hitFoot', 'm1-hitAll', 'm1-squat', 'm1-nose', 'm2-stick', 'm2-stickBook', 'm2-stickKick', 'm2-standOk',
   'm2-standBad', 'm2-sitOk', 'm2-sitBad', 'm2-bagOk', 'm2-bagBad', 'm2-writeOk', 'm2-writeBad', 'm3-walkA', 'm3-walkB', 'm3-runA',
   'm3-runB', 'm3-roo-a', 'm3-roo-b', 'm3-frog-a', 'm3-frog-b', 'm3-hen-a', 'm3-hen-b', 'm3-gorilla-a', 'm3-gorilla-b', 'm3-cat-a',
-  'm3-cat-b', 'm3-snake-a', 'm3-snake-b']);
+  'm3-cat-b', 'm3-snake-a', 'm3-snake-b',
+  'm6-green', 'm6-palm', 'm6-red', 'm6-tree', 'm6-walk', 'm6-win', 'm7-balloon', 'm7-bend', 'm7-cobra', 'm7-dog', 'm7-dog3', 'm7-fold', 'm7-hips', 'm7-reach', 'm7-seatfold', 'm7-straddle', 'm7-tri', 'm7-warrior', 'm8-chestA', 'm8-chestB', 'm8-clap', 'm8-cup', 'm8-push', 'm8-sidestep', 'm8-stamp', 'm8-thighA', 'm8-thighB']);
 const READY_ART = new Set([       // other img/ names: story characters, animals, Yuzi's new poses
   'story-mom','story-aunt','story-rabbit','story-frog','story-uncle','animal-gorilla','animal-hen','animal-kangaroo','animal-snake',
-  'yuzi-1-careful','yuzi-1-rules','yuzi-1-drink','yuzi-1-listen','yuzi-1-warmup','yuzi-1-tidy']);
+  'yuzi-1-careful','yuzi-1-rules','yuzi-1-drink','yuzi-1-listen','yuzi-1-warmup','yuzi-1-tidy','yuzi-1-cheer']);
 
 /* stand-in figures: a stick child in the hero's colours, one pose per frame name */
 const B = {h:[60,22],n:[60,34],s1:[49,39],s2:[71,39],e1:[45,58],e2:[75,58],w1:[44,76],w2:[76,76],p1:[53,80],p2:[67,80],k1:[53,109],k2:[67,109],f1:[52,140],f2:[68,140]};
@@ -341,12 +344,108 @@ const LESSONS = {
       intro:'اشیای سبک را کنار هم بگذارید: عروسک، توپ‌های پارچه‌ای، جوراب یا لباسِ گلوله‌شده. همه با تکیه بر دست‌ها و پاهای صاف روی زمین دورِ اشیا حلقه بزنید. با پخشِ آهنگ، هر کس با پاهایش اشیا را یکی‌یکی برمی‌دارد و با کمکِ دست‌ها بالای سرش می‌گذارد. آهنگ که تمام شد، کسی که بیشترین شیء را بالای سر گذاشته تشویق می‌شود.'},
     star:{kind:'timer', title:'خرچنگی راه برو', src:'ص ۳۱', fig:['m4-crab-a','m4-crab-b'],
       t:'به شکل نگاه کن. در طول هفته، هرروز مثل او خرچنگی راه برو، هر بار که بیشتر خرچنگی راه رفتی، یکی از ستاره‌ها را رنگ کن.'}
+  },
+  /* ------------------------------------------------ khan 3, lesson 6 (lesson 5 keeps its own screens in index.html) */
+  6: {n:6, khan:2, title:'زندگی فعال', pages:'۳۹ تا ۴۳', word:'پیاده‌روی', count:3,
+    story:{name:'تاپ‌تاپک و تاپ‌تاپو', src:'ص ۴۰', pages:[
+      {who:'تاپ‌تاپو', art:['story-mom','kid:m6-red'],
+       t:'تاپ‌تاپک، تاپ‌تاپو، مامان و بابا می‌خواستند با ماشین به بازار بروند. ولی ماشین بابا پنچر شده بود. تاپ‌تاپو با ناراحتی گفت: <q>حالا چه‌کار کنیم؟</q> مامان و بابا گفتند: <q>این‌که ناراحتی ندارد، <b>پیاده‌روی</b> می‌کنیم.</q>'},
+      {who:'مامان', art:['story-mom','kid:m6-walk'],
+       t:'تاپ‌تاپک گفت: <q>خسته می‌شویم.</q> مامان گفت: <q>از صبح توی خانه نشسته بودیم. توی ماشین هم باید می‌نشستیم. حالا راه می‌رویم. <b>پیاده‌روی</b> خیلی خوب است.</q> همه با هم راه افتادند.',
+       task:{type:'reps', det:'walk', goal:20, unit:'قدم', title:'تو هم با خانواده‌ی تاپ‌تاپو راه بیفت', figs:['m3-walkA','m3-walkB'], tip:'درجا راه برو؛ زانوها کمی بالا، دست‌ها تاب بخورند.'}},
+      {who:'پایانِ قصه', art:['story-mom','kid:m6-win'],
+       t:'تاپ‌تاپک و تاپ‌تاپو توی راه خیلی‌ها را دیدند که مثل آن‌ها پیاده بودند یا با دوچرخه می‌رفتند. از پارک گذشتند. کسانی را دیدند که ورزش می‌کردند. تاپ‌تاپک گفت: <q>خوش گذشت. کاش همیشه ماشین بابا پنچر باشد تا <b>پیاده‌روی</b> کنیم.</q> تاپ‌تاپک، تاپ‌تاپو، مامان و بابا خندیدند و به بازار رسیدند.'}],
+      asks:['بگو تاپ‌تاپک و تاپ‌تاپو با مامان و بابا چطوری به بازار رفتند؟','تاپ‌تاپک و تاپ‌تاپو توی راه چه کسانی را دیدند؟','تاپ‌تاپک و تاپ‌تاپو توی پارک چه کسانی را دیدند؟','چرا به تاپ‌تاپک و تاپ‌تاپو خوش گذشت؟']},
+    play:{src:'ص ۴۱', rule:'با کشیدن یک خط پیوسته از میان مارپیچ، به این دختر کمک کن تا بعد از بازی، خوردنی‌های مفید بخورد. روی رفتارهای پرخطر در بازی خط قرمز بکش.', pick:1,
+      need:'جای خلوت برای پیاده‌روی؛ بقیه روی صفحه است', yuzi:['careful','من در جای امن بازی می‌کنم.'],
+      games:[
+        {name:'پیاده‌رویِ درجا', t:'مثلِ خانواده‌ی تاپ‌تاپو راه برو: درجا، با زانوهای بالا و دست‌هایی که تاب می‌خورند.', kind:'reps', det:'walk', goal:30, unit:'قدم', figs:['m3-walkA','m3-walkB'],
+          easy:{t:'روی صندلی بنشین و درجا راه برو: یک زانو بالا، بعد زانوی دیگر.'}},
+        {name:'خوراکی‌های مفید', t:'بعد از بازی، دختر گرسنه است. خوراکی‌های مفید را پیدا کن و رویشان بزن تا به سفره‌ی مادربزرگ برسند.', kind:'quiz', goal:4, unit:'خوراکی', figs:['m6-win','m6-win'],
+          items:[['🥪','ساندویچ',1],['🥛','شیر',1],['🥜','گردو و بادام',1],['🍎','میوه',1],['🥤','نوشابه',0,'نوشابه قند زیادی دارد'],['🍫','شکلات',0,'شکلات خوراکیِ گاه‌به‌گاه است'],['🍟','چیپس',0,'چیپس شور و چرب است'],['🍬','آب‌نبات',0,'آب‌نبات دندان را خراب می‌کند'],['🍕','پیتزا',0,'پیتزا برای بعد از بازی سنگین است']]},
+        {name:'بازیِ پرخطر را پیدا کن', t:'به این بازی‌ها نگاه کن. روی بازی‌هایی که خطر دارند بزن تا رویشان خطِ قرمز بکشی.', kind:'quiz', mark:'cross', goal:3, unit:'بازیِ پرخطر', figs:['m6-red','m6-red'],
+          items:[['🏃🪵','دویدن با چوب پشتِ سرِ دوست',1],['⚽🕰️','توپ‌بازی در خانه، کنارِ ساعتِ دیواری',1],['⚽🪴','توپ‌بازی در خانه، کنارِ گلدان',1],
+                 ['⚽🌳','توپ‌بازیِ دو دوست در حیاط',0,'در حیاط جا برای توپ‌بازی هست'],['fig:m6-tree','حرکتِ درخت روی زیرانداز، در جای خلوت',0,'جای خلوت و زیرانداز؛ بی‌خطر است'],['img:yuzi-1-tidy','جمع کردنِ توپ‌ها در جعبه',0,'جمع کردنِ وسایل کارِ خوبی است']]}]},
+    family:{kind:'rules', title:'توافق‌های سبز و قرمز', src:'ص ۴۲', yuzi:['rules','من نوبت بازی را رعایت می‌کنم.'],
+      intro:'اعضای خانواده با هم‌فکری، درباره‌ی چند توصیه‌ی بهداشتی، تغذیه‌ای و ایمنی برای بازی در خانه توافق می‌کنند. سپس همگی دور هم روی زمین می‌نشینند؛ جلوی هر نفر یک توپِ <b>سبز</b> (رفتارِ درست) و یک توپِ <b>قرمز</b> (رفتارِ غلط) است. بازی‌گردان دستورهای حرکتی می‌دهد و همه انجام می‌دهند؛ گاهی هم یکی از توافق‌ها را درست یا غلط می‌گوید. هر کس زودتر توپِ هم‌رنگ را بالا ببرد، بازی‌گردانِ دورِ بعد می‌شود؛ هر کس توپِ غیرِهم‌رنگ را بالا ببرد، یک حرکتِ نمایشی یا شیرین‌کاری انجام می‌دهد.',
+      elder:'پدربزرگ و مادربزرگ نشسته بازی کنند؛ بازی‌گردان شدن برایشان عالی است.',
+      rules:[['وقتی کسی خواب است، بازی نمی‌کنیم.','وقتی کسی خواب است، بازی می‌کنیم.'],['در آشپزخانه بازی نمی‌کنیم.','در آشپزخانه بازی می‌کنیم.'],['روی پله‌ها بازی نمی‌کنیم.','روی پله‌ها بازی می‌کنیم.'],
+             ['بعد از بازی آب می‌خوریم.','بعد از بازی نوشابه می‌خوریم.'],['بعد از بازی دست‌ها را می‌شوییم.','بعد از بازی دست‌ها را نمی‌شوییم.'],['بعد از بازی وسایل را جمع می‌کنیم.','بعد از بازی وسایل را وسطِ اتاق رها می‌کنیم.'],['با چوب و وسیله‌ی تیز نمی‌دویم.','با چوب و وسیله‌ی تیز می‌دویم.']],
+      cmds:[['دست بزنید!','m8-clap'],['دست‌ها را به پاها بکوبید!','m8-thighA'],['بدن را بلرزانید!','m6-win'],['پا بکوبید!','m8-stamp'],['دست‌ها بالا!','m1-armU']]},
+    star:{kind:'cards', title:'رفتارهای درست', src:'ص ۴۳',
+      t:'به رفتارهای درست در شکل نگاه کن. در طول هفته، هر بار که یکی از آن‌ها را انجام دادی، یک ستاره را رنگ کن.',
+      cards:[['homehelp','در کارهای خانه کمک کردم'],['sickrest','وقتی بیمار بودم، استراحت کردم'],['space','در جای خلوت و امن بازی کردم'],['stairs','به‌جای پله‌برقی از پله رفتم'],['snack','خوراکیِ مفید خوردم'],['walkfam','با خانواده پیاده‌روی کردم']]}
+  },
+  /* ------------------------------------------------ khan 4: lessons 7 and 8 */
+  7: {n:7, khan:3, title:'بدن نرم', pages:'۴۵ تا ۴۹', word:'نرم', count:3,
+    story:{name:'ماهی پولکی', src:'ص ۴۶', pages:[
+      {who:'مامانِ تاپ‌تاپو', art:['story-mom','kid:m7-hips'],
+       t:'مامان، قصه‌ی ماهی پولکی را برای تاپ‌تاپو تعریف کرد. ماهی پولکی که دوست داشت به دریا برود، بدنش را آرام خم و صاف کرد و <b>نرم</b> توی رودخانه شنا کرد. رفت و رفت تا به دریا رسید.'},
+      {who:'تاپ‌تاپو', art:['kid:m7-hips','kid:m7-bend'],
+       t:'تاپ‌تاپو چشم‌هایش را بست. فکر کرد کاش من هم مثل ماهی، <b>نرم</b> شنا می‌کردم. بعد بدن خودش را آرام خم و صاف کرد و توی خیالش مثل ماهی‌ها، <b>نرم</b> شنا کرد تا به دریا برسد.',
+       task:{type:'seq', reps:8, title:'مانند تاپ‌تاپو هر حرکت را انجام بده و تا هشت بار تکرار کن', figs:['m7-hips','m7-bend'],
+         steps:[['upright','دست‌ها روی کمر، صاف'],['bendL','یک دست بالا، خم به چپ'],['upright','صاف'],['bendR','دستِ دیگر بالا، خم به راست']],
+         note:'آرام خم شو و آرام صاف شو، مثلِ ماهی؛ تند نکن.'}}],
+      asks:['ماهی پولکی دوست داشت کجا برود؟','تاپ‌تاپو وقتی چشم‌هایش را بست به چه چیز فکر می‌کرد؟']},
+    play:{src:'ص ۴۷', rule:'به شکل بازی‌ها نگاه کن. یک روز در میان سه‌تا از آن‌ها را انجام بده.', pick:3,
+      need:'یک زیرانداز یا تشک، و جای خلوت', yuzi:['warmup','من قبل از بازی، بدنم را گرم می‌کنم.'],
+      games:[
+        {name:'مثلث', t:'پاها را خیلی باز کن، یک دست پایین کنارِ پا، دستِ دیگر صاف بالا. بمان و بشمار.', kind:'hold', check:'tri', goal:10, unit:'ثانیه', figs:['m7-tri','m7-tri'],
+          easy:{t:'پاها کمی باز، یک دست روی ران، دستِ دیگر بالا؛ کمی به پهلو خم شو و بمان.', check:'bend'}},
+        {name:'جنگجو', t:'پاها را خیلی باز کن، زانوی جلو را خم کن و دست‌ها را دو طرف صاف نگه دار. بمان و بشمار.', kind:'hold', check:'warrior', goal:10, unit:'ثانیه', figs:['m7-warrior','m7-warrior'],
+          easy:{t:'دست به پشتیِ صندلی؛ یک پا جلو، زانو کمی خم، دستِ دیگر باز. بمان و بشمار.', check:null}},
+        {name:'نشستن با پاهای باز', t:'روی زمین بنشین، پاها را صاف و باز کن، کمر صاف، دست‌ها روی زمین. بمان و بشمار.', kind:'hold', check:'straddle', goal:10, unit:'ثانیه', figs:['m7-straddle','m7-straddle'],
+          easy:{t:'روی صندلی بنشین، پاها کمی باز؛ آرام به جلو خم شو و دست‌ها را به طرفِ پاها ببر.', check:null}},
+        {name:'سگِ رو به پایین', t:'دست‌ها و پاها روی زمین، پاها صاف، باسن بالا؛ مثلِ یک کوه. بمان و بشمار.', kind:'hold', goal:10, unit:'ثانیه', figs:['m7-dog','m7-dog'],
+          easy:{t:'دست‌ها روی میز، چند قدم عقب برو تا کمرت صاف شود. بمان و بشمار.'}},
+        {name:'خم به جلو', t:'بایست، پاها کمی باز؛ آرام از کمر خم شو و مچ‌های پا را بگیر. بمان و بشمار.', kind:'hold', goal:10, unit:'ثانیه', figs:['m7-fold','m7-fold'],
+          easy:{t:'روی صندلی بنشین و آرام به جلو خم شو؛ دست‌ها به طرفِ زانوها.'}},
+        {name:'سگِ سه‌پا', t:'مثلِ سگِ رو به پایین؛ حالا یک پا را صاف بالا ببر. بمان، بعد پا را عوض کن.', kind:'hold', goal:10, unit:'ثانیه', figs:['m7-dog3','m7-dog3'],
+          easy:{t:'دست به پشتیِ صندلی؛ یک پا را آرام پشتِ سر ببر و برگردان.'}},
+        {name:'کبرا', t:'روی شکم دراز بکش، دست‌ها زیرِ شانه‌ها؛ سینه را آرام بالا بیاور. بمان و بشمار.', kind:'hold', goal:10, unit:'ثانیه', figs:['m7-cobra','m7-cobra'],
+          easy:{t:'روبه‌روی دیوار بایست، دست‌ها روی دیوار؛ سینه را آرام جلو ببر و بالا را نگاه کن.'}},
+        {name:'خم به جلو نشسته', t:'روی زمین بنشین، پاها صاف و کنارِ هم؛ به جلو خم شو و پنجه‌ها را بگیر. بمان و بشمار.', kind:'hold', goal:10, unit:'ثانیه', figs:['m7-seatfold','m7-seatfold'],
+          easy:{t:'روی صندلی بنشین، یک پا را صاف جلو بگذار و آرام به طرفش خم شو.'}}]},
+    family:{kind:'ring', title:'حلقه‌ی پاها و بادکنک', src:'ص ۴۸', yuzi:['careful','من موقع بازی کردن مواظب وسایل بازی هستم.'],
+      intro:'اعضای خانواده با فاصله‌ی مناسب از یکدیگر روی زمین می‌نشینند. پاهای خود را باز می‌کنند و با چسباندن کفِ پاها به کفِ پای یکدیگر، یک <b>حلقه</b> می‌سازند. با پخشِ آهنگ، بدونِ آن‌که پاها از هم جدا شوند، با دست‌ها، سر و شانه‌ها به یک بادکنک ضربه می‌زنند تا روی زمین نیفتد.',
+      elder:'پدربزرگ و مادربزرگ روی صندلی، کنارِ حلقه بنشینند و با دست بادکنک را برگردانند.'},
+    star:{kind:'reach', title:'عروسک را دورتر بگذار', src:'ص ۴۹', fig:['m7-straddle','m7-reach'], yuzi:['listen','من گاهی در بازی از بزرگ‌ترها کمک می‌گیرم.'],
+      t:'به شکل نگاه کن. در طول هفته، هر بار که عروسک را دورتر روی زمین گذاشتی، یکی از ستاره‌ها را رنگ کن.'}
+  },
+  8: {n:8, khan:3, title:'هماهنگی', pages:'۵۱ تا ۵۵', word:'هماهنگ', count:3,
+    story:{name:'قطارِ مدادی', src:'ص ۵۲', pages:[
+      {who:'مامانِ تاپ‌تاپک', art:['story-mom','kid:m8-thighA'],
+       t:'تاپ‌تاپک مدادهایش را پشت‌سرهم ردیف کرده بود. مامان تاپ‌تاپک گفت: <q>چی درست کرده‌ای؟</q> تاپ‌تاپک گفت: <q>قطار.</q> مامان گفت: <q>قطار بی‌صدا نمی‌شود! بیا تا با هم برای قطارت صدا درست کنیم.</q> مامان تاپ‌تاپک با کفِ دست‌هایش یکی‌یکی روی پاهایش کوبید و <b>هماهنگ</b> گفت: <q>هوهو!</q>',
+       task:{type:'reps', det:'patT', goal:8, unit:'بار', title:'روی صندلی بنشین و یکی‌یکی روی پاهایت بکوب: هوهو!', figs:['m8-thighA','m8-thighB'], tip:'روی صندلی، روبه‌روی دوربین؛ یک دست روی پا، بعد دستِ دیگر.'}},
+      {who:'مامانِ تاپ‌تاپک', art:['story-mom','kid:m8-chestA'],
+       t:'بعد با کفِ دست‌هایش یکی‌یکی به سینه کوبید و <b>هماهنگ</b> گفت: <q>چی‌چی!</q>',
+       task:{type:'reps', det:'patC', goal:8, unit:'بار', title:'یکی‌یکی به سینه‌ات بکوب: چی‌چی!', figs:['m8-chestA','m8-chestB'], tip:'آرام بکوب؛ یک دست روی سینه، بعد دستِ دیگر.'}},
+      {who:'تاپ‌تاپک و مامان', art:['story-mom','kid:m8-thighB'],
+       t:'بعد تاپ‌تاپک و مامان، تندتند این حرکات <b>هماهنگ</b> را تکرار کردند. <q>هوهو، چی‌چی، هوهو، چی‌چی!</q> تاپ‌تاپک به قطارِ مدادی نگاه کرد و خندید. حالا صدای قطارش اتاق را پر کرده بود.',
+       task:{type:'seq', reps:6, title:'مثل تاپ‌تاپک حرکات را چند بار پشت‌سرهم انجام بده و صدای قطار بساز', figs:['m8-thighA','m8-chestA'],
+         steps:[['thigh','هوهو (روی پا)'],['chest','چی‌چی (روی سینه)']], note:'بلند بگو: هوهو، چی‌چی!'}}],
+      asks:['تاپ‌تاپک با چه چیزی قطار درست کرد؟','مامان تاپ‌تاپک صدای قطار را چطور درست کرد؟']},
+    play:{src:'ص ۵۳', rule:'به شکل بازی‌ها نگاه کن. یک روز در میان یکی از آن‌ها را انجام بده. حرکات را پشت سر هم و به تعدادِ دایره‌های زیرِ آن، انجام بده و بشمار.', pick:1,
+      need:'یک دیوار (با دوربین: کفِ دست‌ها رو به صفحه)', yuzi:['listen','من با آهنگ و هماهنگ حرکت می‌کنم.'],
+      games:[
+        {name:'بدن‌کوبه‌ی شماره‌ی یک', t:'پا بکوب ۴ بار، کف بزن ۲ بار، کفِ دست‌ها را به دیوار بزن ۲ بار. پشت‌سرهم!', kind:'rhythm', beats:[['stamp',4],['clap',2],['push',2]], goal:5, unit:'دور', figs:['m8-stamp','m8-clap']},
+        {name:'بدن‌کوبه‌ی شماره‌ی دو', t:'پا بکوب ۴ بار، کف بزن، دستِ راست به دیوار، کف بزن، دستِ چپ به دیوار. پشت‌سرهم!', kind:'rhythm', beats:[['stamp',4],['clap',1],['pushR',1],['clap',1],['pushL',1]], goal:5, unit:'دور', figs:['m8-stamp','m8-push']}]},
+    family:{kind:'cups', title:'بازیِ لیوان‌ها', src:'ص ۵۴', yuzi:['cheer','من هم‌بازی‌هایم را تشویق می‌کنم.'],
+      intro:'اعضای خانواده کنارِ هم می‌نشینند و <b>حلقه</b> می‌زنند. جلوی هر نفر یک لیوانِ پلاستیکی است. با پخشِ آهنگ، این حرکات را <b>هماهنگ</b> انجام می‌دهند: سه بار دست زدن و شمردنِ ۱، ۲، ۳؛ گذاشتنِ دستِ راست روی لیوان و شمردنِ ۱؛ گذاشتنِ لیوان جلوی هم‌بازیِ سمتِ راست و شمردنِ ۲؛ و دوباره از اول.',
+      elder:'اگر نشستن روی زمین سخت است، دورِ یک میز بنشینید؛ بازی همان است.'},
+    star:{kind:'grid', title:'خانه‌های بعلاوه', src:'ص ۵۵', fig:['m8-stamp','m8-sidestep'],
+      t:'به شکل نگاه کن. هر بار که پشت سر هم در همه‌ی خانه‌ها حرکت کردی، یکی از ستاره‌ها را رنگ کن.',
+      rules:['در خانه‌ی وسط ۴ بار پا بکوب، به ترتیبِ شماره به یکی از خانه‌ها برو.','در هر خانه دو بار پا بکوب و بشمار ۱، ۲.','به خانه‌ی وسط برگرد، دو بار پا بکوب و بشمار ۳، ۴.','به خانه‌ی بعدی برو و حرکات را تکرار کن.']}
   }
 };
 const KHAN_INFO = [
   {lessons:[1,2], name:'حیاطِ خروس', ord:'اول', guard:'rooster', text:'من <b>خروسِ سحر</b>م! هر صبح همه را بیدار می‌کنم. بیا بدنت را بیدار کنیم و یاد بگیریم درست بایستیم و درست بنشینیم.'},
-  {lessons:[3,4], name:'دشتِ تیزپاها', ord:'دوم', guard:'gazelle', text:'من <b>آهوی تیزپا</b>م! بیا راه رفتن، دویدن و پریدن را یاد بگیریم و بدنت را قوی کنیم.'}
+  {lessons:[3,4], name:'دشتِ تیزپاها', ord:'دوم', guard:'gazelle', text:'من <b>آهوی تیزپا</b>م! بیا راه رفتن، دویدن و پریدن را یاد بگیریم و بدنت را قوی کنیم.'},
+  /* khan 3 has its own page in index.html (lesson 5); this entry serves lesson 6's rewards */
+  {lessons:[5,6], name:'پلِ لرزان', ord:'سوم', guard:'stork', text:'من <b>لک‌لکِ نگهبانِ پل</b>ام. اگر تعادل یاد بگیری و فعال زندگی کنی، از پل رد می‌شوی.'},
+  {lessons:[7,8], name:'بیشهٔ بید', ord:'چهارم', guard:'cat', text:'من <b>گربهٔ ایرانی</b>م! ببین بدنم چقدر نرم است. بیا بدنت را مثلِ من نرم کنیم و حرکت‌هایت را هماهنگ.'}
 ];
+const titleOf = n => LESSONS[n] ? LESSONS[n].title : n === 5 ? 'تعادل' : '';
 
 /* ===================================================================== the body, measured
    Every threshold is in body units (shoulder width sw, torso height, leg length), so it works near or far
@@ -419,8 +518,37 @@ const PRED = {
   henUp: b => b.eL.y < b.sh.y + .35*b.sw && b.eR.y < b.sh.y + .35*b.sw && b.wL.y > b.nose.y && b.wR.y > b.nose.y,
   henDown: b => b.eL.y > b.sh.y + .45*b.sw && b.eR.y > b.sh.y + .45*b.sw,
   drum: b => [b.wL, b.wR].some(w => w.y > b.sh.y - .15*b.sw && w.y < b.sh.y + .7*b.torso && w.x > Math.min(b.shL.x, b.shR.x) - .1*b.sw && w.x < Math.max(b.shL.x, b.shR.x) + .1*b.sw),
-  armsOut: b => Math.abs(b.wL.x - b.wR.x) > 1.8*b.sw && near(b.wL.y, b.sh.y, 1.1*b.sw) && near(b.wR.y, b.sh.y, 1.1*b.sw)
+  armsOut: b => Math.abs(b.wL.x - b.wR.x) > 1.8*b.sw && near(b.wL.y, b.sh.y, 1.1*b.sw) && near(b.wR.y, b.sh.y, 1.1*b.sw),
+  /* lesson 7: the side bend of the scaly fish (book p.46) — the shoulders travel sideways over the hips, one arm over the head */
+  upright: b => Math.abs(leanOf(b).x) < .1 && Math.abs(b.shL.y - b.shR.y) < .2*b.sw,
+  bendL: b => { const l = leanOf(b); return l.x > .16 && l.t > .12 && armOver(b); },
+  bendR: b => { const l = leanOf(b); return l.x < -.16 && l.t < -.12 && armOver(b); },
+  bend: b => PRED.bendL(b) || PRED.bendR(b),
+  /* the three stretches of p.47 that face the camera: wide feet, and the arms say which one */
+  tri: b => b.feet && Math.abs(b.aL.x - b.aR.x) > 1.9*b.sw && Math.min(b.wL.y, b.wR.y) < b.sh.y - .3*b.sw && Math.max(b.wL.y, b.wR.y) > b.hip.y - .1*b.torso,
+  warrior: b => b.legs && Math.abs(b.aL.x - b.aR.x) > 2.1*b.sw && PRED.armsOut(b) && Math.min(b.angL, b.angR) < 158,
+  straddle: b => b.feet && Math.abs(b.aL.x - b.aR.x) > 2.4*b.sw && Math.max(b.aL.y, b.aR.y) - b.hip.y < .55*b.torso && Math.abs(leanOf(b).x) < .3,
+  /* lesson 8: body percussion. One hand on the thigh (or chest) while the other is lifted for the next pat */
+  thigh: b => patSide(b, 'T') !== null,
+  chest: b => patSide(b, 'C') !== null,
+  clap: b => dist(b.wL, b.wR) < .5*b.sw && b.wL.y > b.sh.y - .6*b.sw && b.wL.y < b.hip.y,
+  /* «کف دست‌ها را به دیوار بزن»: from the front, the wall is the screen — palms pushed forward at shoulder height, apart */
+  push: b => near(b.wL.y, b.sh.y, .75*b.sw) && near(b.wR.y, b.sh.y, .75*b.sw) && Math.abs(b.wL.x - b.wR.x) > .75*b.sw && Math.abs(b.wL.x - b.wR.x) < 2*b.sw,
+  pushR: b => near(b.wR.y, b.sh.y, .75*b.sw) && b.wL.y > b.sh.y + .9*b.sw,
+  pushL: b => near(b.wL.y, b.sh.y, .75*b.sw) && b.wR.y > b.sh.y + .9*b.sw,
+  stamp: b => PRED.legL(b) || PRED.legR(b) || (b.feet && !!BASE.floor && Math.abs(b.aL.y - b.aR.y) > .07*b.leg && (BASE.floor - Math.min(b.aL.y, b.aR.y))/b.leg > .07)
 };
+/* lean toward the child's own left is positive, whichever way the picture is mirrored; t: the left shoulder dropping */
+function leanOf(b){ const s = Math.sign(b.shL.x - b.shR.x) || 1; return {x:(b.sh.x - b.hip.x)/b.torso*s, t:(b.shL.y - b.shR.y)/b.sw}; }
+const armOver = b => Math.min(b.wL.y, b.wR.y) < b.sh.y - .45*b.sw;
+/* which hand is patting: on the thigh (T) or the chest (C), with the other hand clearly off it */
+function patSide(b, where){
+  const on = w => where === 'T' ? w.y > b.hip.y - .25*b.torso && w.y < b.hip.y + .6*b.torso
+    : w.y > b.sh.y - .05*b.torso && w.y < b.sh.y + .65*b.torso && w.x > Math.min(b.shL.x, b.shR.x) - .15*b.sw && w.x < Math.max(b.shL.x, b.shR.x) + .15*b.sw;
+  if(on(b.wL) && b.wR.y < b.wL.y - .35*b.sw) return 'L';
+  if(on(b.wR) && b.wL.y < b.wR.y - .35*b.sw) return 'R';
+  return null;
+}
 /* a repetition is "first this, then that", each held for a moment */
 function runner(first, then, hold=180){
   return {first, then, armed:false, t0:0, cur:null,
@@ -463,6 +591,8 @@ function detector(det, opt = {}){
       if(y > this.m + .1*b.sw) this.low = true;
       else if(this.low && y < this.m - .1*b.sw){ this.low = false; return true; }
       return false; } };
+  if(det === 'patT' || det === 'patC') return {last:null, step(b){ const sd = patSide(b, det[3]);   // each pat is one hand after the other
+      if(sd && sd !== this.last){ this.last = sd; return true; } return false; } };
   if(det === 'freeMove'){
     const moved = b => PRED.legL(b) || PRED.legR(b) || PRED.squat(b) || Math.abs(b.shL.y - b.shR.y) > .35*b.sw || (BASE.sw0 && b.sw < .6*BASE.sw0);
     return Object.assign(runner(b => { if(PRED.stand(b) && !moved(b)) BASE.sw0 = BASE.sw0 ? BASE.sw0*.95 + b.sw*.05 : b.sw; return PRED.stand(b) && !moved(b); }, moved, 220), {});
@@ -520,7 +650,7 @@ function openKhan(i){ G.khan = i; const first = KHAN_INFO[i].lessons.find(n => !
   S().cur = first; H.save(); H.go('gkhan'); }
 function renderKhan(){
   const K = KHAN_INFO[G.khan], passed = K.lessons.every(H.lessonDone);
-  $('#gkTitle').innerHTML = `خوانِ ${K.ord}: ${K.name}<small>منزل ${K.lessons.map(fa).join(' و ')} کتاب، ${K.lessons.map(n=>LESSONS[n].title).join('، ')}</small>`;
+  $('#gkTitle').innerHTML = `خوانِ ${K.ord}: ${K.name}<small>منزل ${K.lessons.map(fa).join(' و ')} کتاب، ${K.lessons.map(titleOf).join('، ')}</small>`;
   $('#gkGuard').src = `img/${K.guard}-${passed ? 'proud' : 'greet'}.webp`; $('#gkGuard').alt = H.GUARD_NAMES[K.guard];
   $('#gkBubble').innerHTML = passed ? `آفرین ${esc(H.kidName())}! از خوانِ <b>${K.name}</b> گذشتی. من به تو افتخار می‌کنم.` : K.text;
   $('#gkBody').innerHTML = K.lessons.map(n => manzilHTML(n)).join('');
@@ -536,12 +666,12 @@ function renderKhan(){
 function manzilHTML(n){
   const Ld = LESSONS[n], st = LS(n), d = doneDays(n), open = H.lessonOpen(n);
   if(!open) return `<div class="manzil locked-manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
-    <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ «${LESSONS[n-1].title}» روشن شود، این منزل باز می‌شود.</div></div>`;
+    <div class="lock-note"><svg viewBox="0 0 24 24" fill="none" stroke="#5d4f72" stroke-width="2.4" stroke-linecap="round"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>وقتی سه مشعلِ «${titleOf(n-1)}» روشن شود، این منزل باز می‌شود.</div></div>`;
   const rest = !canPlay(n), today = practicedToday(n), resting = restDay(n);
   const title = d>=3 ? 'هر سه مشعل روشن است' : today ? 'بازی امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
   const sub = d>=3 ? 'این منزل را گذراندی. بازی آزاد و سطح‌های سخت‌تر همیشه باز است.' : today ? 'مشعلِ امروز روشن شد؛ مشعلِ بعدی پس‌فردا. تا آن موقع بازی آزاد باز است.'
     : resting ? 'دیروز بازی کردی؛ مشعلِ بعدی فردا. امروز بازی آزاد باز است.'
-    : `${Ld.play.pick===2 ? 'دو تا از شش حرکت را انتخاب کن' : 'یکی از سه بازی را انتخاب کن'}، روزِ ${DAYW[d]}`;
+    : `${pickText(Ld.play)}، روزِ ${DAYW[d]}`;
   const ic = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : H.ICON.play();
   const starSub = LS(n).stars ? `ستاره ${fa(LS(n).stars)} از ۷` : starIntro(n);
   return `<div class="manzil" id="mz${n}"><h3>منزل ${fa(n)}: ${Ld.title} <span class="tag">کتاب، ص ${Ld.pages}</span></h3>
@@ -557,13 +687,19 @@ function manzilHTML(n){
         <span style="display:flex;flex-direction:column;gap:2px"><b>${Ld.star.title}</b><small>${starSub}</small></span></span></button>
     </div></div>`;
 }
-const starIntro = n => ({cards:'هر کارِ درست یک ستاره', posture:'هر روزی که همه را درست انجام دادی، یک ستاره', jump:'بیشتر از دفعهٔ قبل بپر، ستاره بگیر', timer:'بیشتر از دفعهٔ قبل خرچنگی برو، ستاره بگیر'})[LESSONS[n].star.kind];
+const starIntro = n => ({cards:'هر کارِ درست یک ستاره', posture:'هر روزی که همه را درست انجام دادی، یک ستاره', jump:'بیشتر از دفعهٔ قبل بپر، ستاره بگیر', timer:'بیشتر از دفعهٔ قبل خرچنگی برو، ستاره بگیر', reach:'عروسک را دورتر بگذار، ستاره بگیر', grid:'هر دورِ کامل در خانه‌ها یک ستاره'})[LESSONS[n].star.kind];
+const NUMW = {1:'یک', 2:'دو', 3:'سه', 4:'چهار', 5:'پنج', 6:'شش', 7:'هفت', 8:'هشت'};
+const ORDW = ['اول','دوم','سوم','چهارم'];
+const pickText = pl => pl.pick === 1 ? `یکی از ${NUMW[pl.games.length]} بازی را انتخاب کن` : `${NUMW[pl.pick]} تا از ${NUMW[pl.games.length]} حرکت را انتخاب کن`;
+/* what each kind of game asks of the camera: counted by Yuzi, judged on screen, or confirmed by a grown-up */
+const camable = g => g.kind === 'reps' || g.kind === 'balloon' || g.kind === 'rhythm' || (g.kind === 'hold' && !!g.check);
+const eyeText = g => g.kind === 'quiz' ? 'روی صفحه بازی می‌شود' : camable(g) ? (g.kind === 'hold' ? 'یوزی با دوربین ثانیه‌ها را می‌شمارد' : 'یوزی با دوربین می‌شمارد') : 'بزرگ‌تر تأیید می‌کند';
 
 /* ===================================================================== choose today's game */
 let picked = [];
 function renderChoose(){
   const n = G.n = S().cur, Ld = LESSONS[n], pl = Ld.play; picked = [];
-  $('#gcTitle').innerHTML = `${pl.pick===2 ? 'دو حرکتِ امروز را انتخاب کن' : 'بازی امروز را انتخاب کن'}<small>برویم بازی!، منزل ${fa(n)}، کتاب، ${pl.src}</small>`;
+  $('#gcTitle').innerHTML = `${pl.pick>1 ? `${NUMW[pl.pick]} حرکتِ امروز را انتخاب کن` : 'بازی امروز را انتخاب کن'}<small>برویم بازی!، منزل ${fa(n)}، کتاب، ${pl.src}</small>`;
   H.syncPlayers(); if(!H.PLAYERS.some(p => p.k === X.who)) X.who = 'kid';
   const kidFree = !canPlay(n) && X.who === 'kid';
   $('#gcRule').innerHTML = `کتاب می‌گوید: «${pl.rule}»<br><small style="color:var(--ink-soft)">وسیله: ${pl.need}</small>`
@@ -573,18 +709,19 @@ function renderChoose(){
   $('#gcChoices').innerHTML = pl.games.map((g0,i)=>{ const dd = did(i), g = effGame(n, i, X.who);
     return `<button class="choice" data-g="${i}"><img src="${figSrc(g.figs[0])}" alt=""><span><b>${g.name} <span class="lv">سطحِ ${fa(g.lv)}: ${fa(g.goal)} ${g.unit}</span></b><small>${g.t}</small>
       ${dd>=0?`<em class="did" style="font-style:normal">روزِ ${DAYW[dd]} بازی کردی</em>`:''}
-<em class="eye ${g.kind==='manual'?'hand':''}" style="font-style:normal">${g.kind==='manual' ? 'بزرگ‌تر تأیید می‌کند' : 'یوزی با دوربین می‌شمارد'}</em></span></button>`; }).join('');
-  $('#gcGo').innerHTML = pl.pick===2 ? `<button class="cta gold" id="gcStart" style="width:100%;margin-top:14px;opacity:.5" disabled>دو حرکت را انتخاب کن</button>` : '';
+<em class="eye ${camable(g)?'':'hand'}" style="font-style:normal">${eyeText(g)}</em></span></button>`; }).join('');
+  $('#gcGo').innerHTML = pl.pick>1 ? `<button class="cta gold" id="gcStart" style="width:100%;margin-top:14px;opacity:.5" disabled>${NUMW[pl.pick]} حرکت را انتخاب کن</button>` : '';
   $$('#gcRule .tm[data-who]').forEach(b => b.addEventListener('click', ()=>{ X.who = b.dataset.who; sfx('click'); renderChoose(); }));
   $$('#gcChoices .choice').forEach(b => b.addEventListener('click', ()=>{
     const gi = +b.dataset.g; sfx('click');
     if(pl.pick === 1){ picked = [gi]; H.go('gex'); return; }
-    picked = picked.includes(gi) ? picked.filter(x=>x!==gi) : picked.concat(gi).slice(-2);
+    picked = picked.includes(gi) ? picked.filter(x=>x!==gi) : picked.concat(gi).slice(-pl.pick);
     $$('#gcChoices .choice').forEach(c => { const on = picked.includes(+c.dataset.g); c.classList.toggle('picked', on);
       const m = c.querySelector('.pickmark'); if(m) m.remove(); if(on) c.insertAdjacentHTML('beforeend', `<em class="pickmark" style="font-style:normal">${fa(picked.indexOf(+c.dataset.g)+1)}</em>`); });
-    const go = $('#gcStart'); const ok = picked.length === 2; go.disabled = !ok; go.style.opacity = ok ? '' : picked.length ? '.8' : '.5'; go.textContent = ok ? 'شروع کن!' : picked.length ? 'یکی دیگر هم انتخاب کن' : 'دو حرکت را انتخاب کن';
+    const go = $('#gcStart'); const ok = picked.length === pl.pick; go.disabled = !ok; go.style.opacity = ok ? '' : picked.length ? '.8' : '.5';
+    go.textContent = ok ? 'شروع کن!' : picked.length ? (pl.pick - picked.length === 1 ? 'یکی دیگر هم انتخاب کن' : `${NUMW[pl.pick - picked.length]} تای دیگر انتخاب کن`) : `${NUMW[pl.pick]} حرکت را انتخاب کن`;
   }));
-  const go = $('#gcStart'); if(go) go.addEventListener('click', ()=>{ if(picked.length===2){ sfx('click'); H.go('gex'); } });
+  const go = $('#gcStart'); if(go) go.addEventListener('click', ()=>{ if(picked.length===pl.pick){ sfx('click'); H.go('gex'); } });
 }
 
 /* ===================================================================== challenge
@@ -624,21 +761,84 @@ function startGame(){
 function startOne(){
   const g = curGame(), n = G.n; X.count = 0; X.balls = []; X.vel = null; X.velT = 0; X.best = 0; X.dropped = 0; X.lastT = 0; X.tapped = false; X.lastTap = 0; X.det = g.det ? detector(g.det) : null; resetBase();
   const best = bestOf(X.who, g.id), bestT = best && best.t;
-  $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازی آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ۲` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
+  $('#gxTitle').innerHTML = `${g.name} <span class="lv">سطحِ ${fa(g.lv)}</span><small>${X.who !== 'kid' ? `نوبتِ ${esc(whoName())}، ` : ''}${freeRun() ? 'بازی آزاد' : `منزل ${fa(n)}، روزِ ${DAYW[Math.min(2, doneDays(n))]}`}${X.q.length>1 ? `، حرکتِ ${fa(X.qi+1)} از ${fa(X.q.length)}` : ''}${bestT ? `، رکورد: ${secs(bestT)} ثانیه` : ''}</small>`;
   instr(g);
-  $('#gxCam').parentElement.hidden = g.kind === 'manual';
-  if(g.kind === 'manual' && X.camOn) gxCamOff();
+  $('#gxCam').parentElement.hidden = !camable(g);
+  if(!camable(g) && X.camOn) gxCamOff();
+  clearInterval(X.holdT); X.holdT = null; X.holdAcc = 0; X.holdLast = 0; X.beat = 0; X.beatOn = false; X.beatT0 = 0; X.beatFree = true; X.beatLast = 0;
+  $('#gxFig').hidden = g.kind === 'quiz';
   flipFigs($('#gxFig'), g.figs, 900, balloonGuide(g));
+  quizBoard(g); beatBoard(g);
   if(!g.easyOn) voice(`g${n}-${X.q[X.qi]+1}`);
   if(X.camOn){ armCam(); if(H.phoneSize() && !H.CAM.full) H.camFull(true); }   // the second move of the day: back to the mirror
   renderCount();
 }
 /* a balloon game is played with a real balloon, or — with the camera on — with the one Yuzi floats on the screen */
 function instr(g){
-  const sub = g.kind === 'manual' ? 'این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند'
+  const sub = g.kind === 'quiz' ? (g.mark === 'cross' ? 'روی هر بازیِ پرخطر بزن تا خطِ قرمز رویش کشیده شود.' : 'روی هر خوراکیِ مفید بزن.')
+    : g.kind === 'hold' ? (!g.check ? 'این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ دکمه را بزن تا ثانیه‌ها شمرده شوند، آخر بزرگترت تأیید کند'
+      : X.camOn ? 'در حالت بمان؛ تا وقتی درست ایستاده‌ای، یوزی ثانیه‌ها را می‌شمارد' : 'دکمه را بزن و در حالت بمان؛ یا دوربین را روشن کن تا یوزی خودش بشمارد')
+    : g.kind === 'rhythm' ? (X.camOn ? 'روبه‌روی دوربین بایست؛ یوزی هر ضرب را می‌بیند. دیوار نداری؟ کفِ دست‌ها را رو به صفحه بزن.' : 'با ریتم هم‌زمان انجام بده؛ هر دورِ کامل را که زدی، دکمه را بزن')
+    : g.kind === 'manual' ? 'این حرکت روی زمین است و دوربین آن را خوب نمی‌بیند؛ هر بار دکمه را بزن و آخر بزرگترت تأیید کند'
     : g.kind === 'balloon' ? (X.camOn ? 'بادکنک از بالا می‌آید؛ نگذار زمین بخورد! اگر بیفتد، از اول شمرده می‌شود. بادکنکِ واقعی لازم نیست.' : 'با بادکنکِ واقعی بازی کن و بزرگترت بشمارد؛ یا دوربین را روشن کن تا یوزی یک بادکنکِ روی صفحه بیاورد و خودش بشمارد.')
     : g.need === 'stick' ? 'چوب پشتِ شانه‌ها بماند' : 'جای بازی را خلوت کن، با دوربین، یوزی خودش می‌شمارد';
   $('#gxInstr').innerHTML = `${g.t}<small>${sub}</small>`;
+}
+/* lesson 6 (p.41): the book's two paper tasks, played by touch. The items come in a new order every time */
+const shuffle = a => { const b = a.slice(); for(let i = b.length - 1; i > 0; i--){ const k = Math.random()*(i + 1)|0; [b[i], b[k]] = [b[k], b[i]]; } return b; };
+const quizVis = v => v.startsWith('fig:') ? `<img src="${figSrc(v.slice(4))}" alt="">` : v.startsWith('img:') ? `<img src="img/${v.slice(4)}.webp" alt="">` : `<span class="emo${[...v].length > 2 ? ' two' : ''}" aria-hidden="true">${v}</span>`;
+function quizBoard(g){
+  const sc = $('#gxScene'); let qb = $('#gxQuiz'); sc.classList.toggle('quiz', g.kind === 'quiz');
+  if(g.kind !== 'quiz'){ if(qb) qb.remove(); return; }
+  if(!qb){ qb = document.createElement('div'); qb.id = 'gxQuiz'; qb.className = 'quizgrid'; sc.appendChild(qb); }
+  qb.classList.toggle('cross', g.mark === 'cross');
+  qb.innerHTML = shuffle(g.items).map(([v, t, good, why]) => `<button class="qi" data-good="${good ? 1 : 0}" data-why="${esc(why || '')}">${quizVis(v)}<small>${t}</small><i class="qmark" aria-hidden="true"></i></button>`).join('');
+  $$('#gxQuiz .qi').forEach(b => b.addEventListener('click', ()=>{
+    if(b.classList.contains('ok') || X.count >= g.goal) return;
+    if(b.dataset.good === '1'){ b.classList.add('ok'); b.setAttribute('aria-pressed', 'true'); sfx('hit'); addRep(false, true); }
+    else { sfx('miss'); b.classList.remove('no'); void b.offsetWidth; b.classList.add('no'); $('#gxHint').textContent = b.dataset.why || 'این یکی نه؛ دوباره نگاه کن'; }
+  }));
+}
+/* lesson 8 (p.53): body percussion. The pattern is a row of beats; without the camera a steady beat plays and
+   lights them one by one, with the camera Yuzi lights each beat the child actually makes */
+const BEAT = {stamp:{t:'پا بکوب', fig:'m8-stamp'}, clap:{t:'کف بزن', fig:'m8-clap'}, push:{t:'کفِ دست‌ها به دیوار', fig:'m8-push'},
+  pushR:{t:'دستِ راست به دیوار', fig:'m8-push'}, pushL:{t:'دستِ چپ به دیوار', fig:'m8-push'}};
+const beatSeq = g => g.beats.flatMap(([k, n]) => Array(n).fill(k));
+const BEAT_MS = 650;
+function beatBoard(g){
+  stopBeat(); const sc = $('#gxScene'); let bb = $('#gxBeats');
+  if(g.kind !== 'rhythm'){ if(bb) bb.remove(); return; }
+  if(!bb){ bb = document.createElement('div'); bb.id = 'gxBeats'; bb.className = 'beats'; sc.after(bb); }   // under the picture, so the figure stays whole
+  let k = 0;
+  bb.innerHTML = g.beats.map(([key, n]) => `<span class="bgrp"><b>${BEAT[key].t}</b><span>${Array.from({length:n}, () => `<i data-b="${k++}"></i>`).join('')}</span></span>`).join('')
+    + `<button class="beatbtn" id="gxBeatBtn" aria-pressed="false">ریتم</button>`;
+  $('#gxBeatBtn').addEventListener('click', ()=>{ if(X.beatOn) stopBeat(); else startBeat(); });
+  X.beat = 0; lightBeat(g, -1);
+  clearInterval(flipT); if(!X.camOn) startBeat();
+}
+function lightBeat(g, at){
+  $$('#gxBeats i').forEach(i => { const k = +i.dataset.b; i.classList.toggle('on', k === at); i.classList.toggle('ok', X.camOn && k < X.beat); });
+  const seq = beatSeq(g), key = seq[Math.max(0, at)]; const f = $('#gxFig'); if(f && key) f.src = figSrc(BEAT[key].fig);
+}
+function startBeat(){
+  const g = curGame(); if(!g || g.kind !== 'rhythm') return; stopBeat(); clearInterval(flipT);
+  X.beatOn = true; const btn = $('#gxBeatBtn'); if(btn){ btn.setAttribute('aria-pressed', 'true'); btn.textContent = 'ریتم: روشن'; }
+  const seq = beatSeq(g); let k = 0;
+  const tick = () => { if(!X.beatOn) return; lightBeat(g, k); sfx(k === 0 ? 'tap' : 'tick', 1); k = (k + 1) % seq.length; };
+  tick(); X.beatT = setInterval(tick, BEAT_MS);
+}
+function stopBeat(){ clearInterval(X.beatT); X.beatT = null; X.beatOn = false; const btn = $('#gxBeatBtn'); if(btn){ btn.setAttribute('aria-pressed', 'false'); btn.textContent = 'ریتم'; } }
+/* with the camera: each beat must be a fresh movement — the pose must be let go before the same beat counts again */
+function rhythmFrame(b, now, g){
+  const seq = beatSeq(g), want = seq[X.beat];
+  if(X.beat && now - X.beatLast > 5000){ X.beat = 0; lightBeat(g, 0); }      // a long pause: start the pattern again
+  const on = PRED[seq[X.beat]](b);
+  if(!on){ X.beatFree = true; X.beatT0 = 0; return; }
+  if(!X.beatFree) return;
+  if(!X.beatT0){ X.beatT0 = now; return; }
+  if(now - X.beatT0 < 90) return;
+  X.beatFree = false; X.beatT0 = 0; X.beatLast = now; X.lastSeen = now; X.beat++; sfx('tick', 1);
+  if(X.beat >= seq.length){ X.beat = 0; lightBeat(g, 0); addRep(true); } else lightBeat(g, X.beat);
 }
 function sceneSVG(g, c){
   let props = '';
@@ -659,18 +859,20 @@ function renderCount(){
   $('#gxNum').textContent = fa(X.count);
   $('#gxUnit').textContent = `از ${fa(g.goal)} ${g.unit}`;
   $('#gxArc').style.strokeDashoffset = 427 * (1 - X.count/g.goal);
-  $('#gxHint').textContent = X.count >= g.goal ? 'تمام شد!' : X.camOn && g.kind !== 'manual' ? (g.kind==='balloon' ? 'با بدنت به بادکنک بزن تا نیفتد' : 'حرکت کن؛ یوزی می‌شمارد')
-    : X.count === 0 ? 'هر بار یکی را انجام دادی، دکمه را بزن' : `${fa(g.goal - X.count)} تای دیگر`;
+  $('#gxHint').textContent = X.count >= g.goal ? 'تمام شد!' : g.kind === 'quiz' ? `${fa(g.goal - X.count)} تای دیگر را پیدا کن`
+    : X.camOn && camable(g) ? (g.kind==='balloon' ? 'با بدنت به بادکنک بزن تا نیفتد' : g.kind==='hold' ? 'در حالت بمان؛ یوزی می‌شمارد' : 'حرکت کن؛ یوزی می‌شمارد')
+    : g.kind === 'hold' ? (X.holdT ? `بمان… ${fa(g.goal - X.count)} ثانیهٔ دیگر` : 'دکمه را بزن و در حالت بمان')
+    : X.count === 0 ? (g.kind === 'rhythm' ? 'هر دورِ کامل را که زدی، دکمه را بزن' : 'هر بار یکی را انجام دادی، دکمه را بزن') : `${fa(g.goal - X.count)} تای دیگر`;
 }
 /* Counting by tap is the fallback when there is no camera, and it must not be a way to win standing still:
    a tap faster than the move can physically be done is refused, and a tapped game ends with a grown-up's ok. */
 const TAP_GAP = {jump:.45, frog:.9, squat:.8, hen:.45, drum:.3, run:.25, walk:.3, freeMove:.6, toe:.6};
-function addRep(byCam){
+function addRep(byCam, free=false){      // free: a quiz answer or the hold timer, not a tap claiming a movement
   const g = curGame(); if(X.count >= g.goal) return;
-  if(!byCam){ const now = performance.now(), gap = (g.kind === 'balloon' ? .45 : g.kind === 'manual' ? .8 : TAP_GAP[g.det] || .5)*1000;
+  if(!byCam && !free){ const now = performance.now(), gap = (g.kind === 'balloon' ? .45 : g.kind === 'manual' ? .8 : g.kind === 'rhythm' ? beatSeq(g).length*.4 : TAP_GAP[g.det] || .5)*1000;
     if(now - (X.lastTap || 0) < gap){ sfx('miss'); $('#gxHint').textContent = 'آرام‌تر! هر بار که حرکت را واقعاً انجام دادی، دکمه را بزن.'; return; }
     X.lastTap = now; X.tapped = true; }
-  if(byCam) bumpCam(G.n, g.kind==='balloon' ? 'balloon' : g.det);
+  if(byCam) bumpCam(G.n, g.kind==='balloon' ? 'balloon' : g.kind==='hold' ? g.check : g.kind==='rhythm' ? 'rhythm' : g.det);
   if(X.count === 0) X.t0 = performance.now();
   X.count++; renderCount(); sfx('tap', X.count); vib(12);
   const b = $('#gxTap'); b.classList.remove('pop'); void b.offsetWidth; b.classList.add('pop');
@@ -686,11 +888,13 @@ function timeRun(){
 }
 function gameDone(){
   const g = curGame(); timeRun();
-  if(g.kind === 'manual' || X.tapped){ $('#gxSeenText').textContent = `${whoName()} «${g.name}» را ${fa(g.goal)} ${g.unit} انجام داد. ${g.kind === 'manual' ? 'یوزی این حرکت را با دوربین نمی‌بیند' : 'این بار با دکمه شمرده شد، نه با دوربین'}؛ بزرگترت تأیید کند.`; $('#gxSeen').hidden = false; $('#gxSeenYes').focus(); return; }
+  clearInterval(X.holdT); X.holdT = null; stopBeat();
+  if(g.kind !== 'quiz' && (!camable(g) || X.tapped)){ $('#gxSeenText').textContent = `${whoName()} «${g.name}» را ${fa(g.goal)} ${g.unit} انجام داد. ${!camable(g) ? 'یوزی این حرکت را با دوربین نمی‌بیند' : 'این بار با دکمه شمرده شد، نه با دوربین'}؛ بزرگترت تأیید کند.`; $('#gxSeen').hidden = false; $('#gxSeenYes').focus(); return; }
   nextOrFeel();
 }
 function nextOrFeel(){
-  if(X.qi < X.q.length - 1){ X.qi++; sfx('fanfare'); startOne(); $('#gxHint').textContent = 'آفرین! حالا حرکتِ دوم'; return; }
+  if(X.qi < X.q.length - 1){ X.qi++; sfx('fanfare'); startOne(); $('#gxHint').textContent = `آفرین! حالا حرکتِ ${ORDW[X.qi]}`; return; }
+  stopBeat();
   X.camWas = X.camOn; if(X.camOn) gxCamOff();
   clearInterval(flipT);
   $('#gxFeel').hidden = false; const f = $('#gxFeel button'); f && f.focus();
@@ -699,7 +903,11 @@ $('#gxSeenYes').addEventListener('click', ()=>{ $('#gxSeen').hidden = true; bump
 $('#gxSeenNo').addEventListener('click', ()=>{ $('#gxSeen').hidden = true; X.count = Math.max(0, curGame().goal - 1); renderCount(); $('#gxHint').textContent = 'یک بارِ دیگر انجام بده تا بزرگترت ببیند'; });
 $('#gxTap').addEventListener('click', ()=>{
   const g = curGame();
-  if(X.camOn && H.CAM.stream && g.kind !== 'manual'){ sfx('miss'); $('#gxHint').textContent = g.kind==='balloon' ? 'با دوربین، بادکنک را با بدنت بزن!' : 'یوزی خودش می‌شمارد؛ فقط حرکت کن!'; return; }
+  if(g.kind === 'quiz'){ sfx('miss'); $('#gxHint').textContent = 'روی تصویرهای بالا بزن!'; return; }
+  if(X.camOn && H.CAM.stream && camable(g)){ sfx('miss'); $('#gxHint').textContent = g.kind==='balloon' ? 'با دوربین، بادکنک را با بدنت بزن!' : g.kind==='hold' ? 'یوزی خودش می‌شمارد؛ فقط در حالت بمان!' : 'یوزی خودش می‌شمارد؛ فقط حرکت کن!'; return; }
+  if(g.kind === 'hold'){      // a held stretch: one tap starts the seconds, a grown-up confirms at the end
+    if(X.holdT || X.count >= g.goal) return; X.tapped = true; sfx('start');
+    X.holdT = setInterval(()=>{ if(curGame() !== g){ clearInterval(X.holdT); X.holdT = null; return; } addRep(false, true); }, 1000); renderCount(); return; }
   addRep(false);
 });
 $$('#gxFeel [data-feel]').forEach(b => b.addEventListener('click', ()=>{
@@ -718,10 +926,11 @@ function finishDay(){
   $('#gxTorches').innerHTML = [0,1,2].map(i => H.torch(i<lit, i===lit-1 ? 'new' : '')).join('');
   $('#gxRewardImg').src = passed ? `img/${K.guard}-proud.webp` : H.yz('cheer');
   $('#gxRewardKid').src = `img/${H.kid()}-cheer.webp`;
-  const nextN = n + 1, nextName = LESSONS[nextN] ? `«${LESSONS[nextN].title}»` : '«تعادل» در خوانِ سوم';
+  const nextN = n + 1, nextName = n === 4 ? '«تعادل» در خوانِ سوم' : titleOf(nextN) ? `«${titleOf(nextN)}»` : '';
+  const left = K.lessons.filter(m => m !== n && !H.lessonDone(m));    // only when every khan is open for testing
   $('#gxRewardTitle').textContent = passed ? `از خوانِ ${K.name} گذشتی!` : doneL ? `منزلِ ${LESSONS[n].title} تمام شد!` : 'آفرین پهلوان!';
-  $('#gxRewardText').textContent = passed ? `${H.GUARD_NAMES[K.guard]} به تو افتخار می‌کند. حالا منزلِ ${nextName} منتظرت است.`
-    : doneL ? `هر سه مشعل روشن شد. منزلِ ${nextName} باز شد!`
+  $('#gxRewardText').textContent = passed ? `${H.GUARD_NAMES[K.guard]} به تو افتخار می‌کند. ${nextName ? `حالا منزلِ ${nextName} منتظرت است.` : 'خوانِ بعدی به‌زودی ساخته می‌شود.'}`
+    : doneL ? (nextName && !left.length || left.includes(nextN) ? `هر سه مشعل روشن شد. منزلِ ${nextName} باز شد!` : `هر سه مشعل روشن شد. منزلِ «${titleOf(left[0])}» را هم تمام کن تا از این خوان بگذری.`)
     : `مشعلِ روزِ ${DAYW[lit-1]} روشن شد. ${lit===2 ? 'یک روزِ دیگر' : 'دو روزِ دیگر'} تا تمام شدنِ این منزل. مشعلِ بعدی پس‌فردا؛ تا آن موقع بازی آزاد و سطح‌های سخت‌تر باز است.`;
   $('#gxRewardText').insertAdjacentHTML('beforeend', challengeLine());
   $('#gxReward').hidden = false; H.renderTop();
@@ -774,6 +983,8 @@ function gameHint(){
   if(X.count >= g.goal) return 'آفرین! تمام شد';
   if(g.need === 'stick' && X.lastB && !PRED.stick(X.lastB)) return 'چوب را پشتِ شانه‌ها بگیر';
   if(g.kind === 'balloon') return X.dropped && performance.now() - X.dropped < 1800 ? `بادکنک زمین خورد! از اول بشمار${X.best ? `؛ بهترین: ${fa(X.best)}` : ''}` : `با ${g.parts.map(p=>({head:'سر',hand:'دست',knee:'زانو',foot:'پا'})[p]).join('، ')} بزن؛ نگذار بیفتد!`;
+  if(g.kind === 'hold') return performance.now() - X.lastSeen < 400 ? 'آفرین! همین‌طور بمان' : `مثلِ شکل بایست: ${g.name}`;
+  if(g.kind === 'rhythm') return BEAT[beatSeq(g)[X.beat]].t;
   return performance.now() - X.lastSeen < 600 ? `${fa(X.count)} از ${fa(g.goal)}، آفرین!` : g.t;
 }
 function gameFrame(ctx, lm, cv){
@@ -783,6 +994,9 @@ function gameFrame(ctx, lm, cv){
   const ready = g.need !== 'stick' || PRED.stick(b);
   if(g.kind === 'balloon'){ balloonFrame(ctx, b, cv, now, g, ready); return; }
   if(!ready) return;
+  if(g.kind === 'hold'){ const dt = Math.min(250, now - (X.holdLast || now)); X.holdLast = now;
+    if(g.check && PRED[g.check](b)){ X.lastSeen = now; X.holdAcc = (X.holdAcc || 0) + dt; if(X.holdAcc >= 1000){ X.holdAcc -= 1000; addRep(true); } } return; }
+  if(g.kind === 'rhythm'){ rhythmFrame(b, now, g); return; }
   if(X.det && X.det.step(b, now)){ X.lastSeen = now; sfx('hit'); addRep(true); }
 }
 /* A real balloon. It drops once from the top and the child keeps it in the air: it is light, so it falls
@@ -872,8 +1086,10 @@ function balloonFrame(ctx, b, cv, now, g, ready=true){
 function gxCamOff(){ X.camOn = false; camOff(); $('#gxScene').classList.remove('cam'); if(curGame()) instr(curGame());
   const b = $('#gxCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent = 'یوزی با دوربین ببیند'; }
 $('#gxCam').addEventListener('click', async ()=>{
-  if(X.camOn){ gxCamOff(); renderCount(); return; }
+  const g0 = curGame();
+  if(X.camOn){ gxCamOff(); renderCount(); if(g0 && g0.kind === 'rhythm') startBeat(); return; }
   X.camOn = true; resetBase(); X.balls = []; armCam();
+  if(g0 && g0.kind === 'rhythm'){ stopBeat(); X.beat = 0; X.beatFree = true; lightBeat(g0, 0); }
   const b = $('#gxCam'); b.setAttribute('aria-pressed','true'); b.querySelector('span').textContent = 'خاموش کردنِ دوربین';
   $('#gxScene').classList.add('cam'); renderCount(); instr(curGame());
   $('#gxHint').textContent = 'جلوی دوربین بایست؛ از سر تا پا باید دیده شوی.';
@@ -1029,6 +1245,9 @@ function renderFamily(){
   if(fm.kind === 'chairs') famChairs(fm, intro);
   if(fm.kind === 'charades') famCharades(fm, intro);
   if(fm.kind === 'feet') famFeet(fm, intro);
+  if(fm.kind === 'rules') famRules(fm, intro);
+  if(fm.kind === 'ring') famRing(fm, intro);
+  if(fm.kind === 'cups') famCups(fm, intro);
   const tm = $('#gfBody .team'); if(tm) H.wireTeam(tm, ()=>{ F.tally = null; F.performer = 0; renderFamily(); });
   H.clampText($('#gfBody .fam-intro'));
 }
@@ -1158,6 +1377,103 @@ function famFeet(fm, intro){
   draw();
 }
 
+/* توافق‌های سبز و قرمز (p.42): agree on the rules first; then the phone is the leader — movement commands, and now
+   and then one of the agreements said right or wrong. Green ball for right, red for wrong; the answer comes after a pause */
+function famRules(fm, intro){
+  const st = LS(G.n); st.log.rules = st.log.rules || fm.rules.map((_, i) => i < 5);
+  const on = st.log.rules;
+  const agreed = () => fm.rules.filter((_, i) => on[i]);
+  if(!F.stage) F.stage = 'agree';
+  if(F.stage === 'agree'){
+    $('#gfBody').innerHTML = `${intro}
+      <div class="fam-ctrl">
+        <div class="callout"><b>اول با هم توافق کنید</b>کدام توصیه‌ها را در خانه‌ی شما رعایت می‌کنید؟ دست‌کم سه تا را انتخاب کنید.</div>
+        <div class="agree">${fm.rules.map((r, i) => `<button class="agr ${on[i] ? 'on' : ''}" data-i="${i}" aria-pressed="${!!on[i]}"><i aria-hidden="true"></i>${r[0]}</button>`).join('')}</div>
+        <div class="propstrip" aria-hidden="true"><img src="img/obj/ball-green.webp" alt=""><img src="img/obj/ball-red.webp" alt=""></div>
+        <button class="cta gold" id="rgGo">بازی را شروع کنید</button>
+      </div>`;
+    $$('.agr').forEach(b => b.addEventListener('click', ()=>{ const i = +b.dataset.i; on[i] = !on[i]; H.save(); sfx(on[i] ? 'hit' : 'click'); b.classList.toggle('on', on[i]); b.setAttribute('aria-pressed', on[i]); }));
+    $('#rgGo').addEventListener('click', ()=>{ if(agreed().length < 3){ sfx('miss'); $('#gfBody .callout').innerHTML = '<b>دست‌کم سه توافق</b>سه تا یا بیشتر را انتخاب کنید تا بازی شروع شود.'; return; }
+      F.stage = 'play'; F.said = 0; sfx('start'); renderFamily(); });
+    return;
+  }
+  $('#gfBody').innerHTML = `${intro}
+    <div class="fam-ctrl">
+      <div class="bigcmd" id="rgCard"><img src="${figSrc('m6-palm')}" alt=""><b>گوشی بازی‌گردان می‌شود</b><small>«دستورِ بعدی» را بزنید؛ همه زود انجام بدهند!</small></div>
+      <div class="rg-ans" id="rgAns" hidden></div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="cta gold" id="rgNext">دستورِ بعدی</button><button class="ghost" id="rgBack">توافق‌ها</button></div>
+    </div>`;
+  let lastCmd = -1;
+  const next = () => {
+    clearTimeout(F.t3); $('#rgAns').hidden = true; F.round++;
+    const card = $('#rgCard');
+    if(F.round % 3 === 0){      // every third call is an agreement, said right or wrong at random
+      const r = agreed()[Math.random()*agreed().length|0], right = Math.random() < .5;
+      card.innerHTML = `<img src="${figSrc('m6-palm')}" alt=""><b>«${right ? r[0] : r[1]}»</b><small>سبز یا قرمز؟ زود توپ را بالا ببرید!</small>`;
+      sfx('soft'); vib(20);
+      F.t3 = setTimeout(()=>{ const a = $('#rgAns'); if(!a) return; a.hidden = false; a.className = `rg-ans ${right ? 'ok' : 'no'}`;
+        a.innerHTML = `<img src="${figSrc(right ? 'm6-green' : 'm6-red')}" alt=""><span><b>${right ? 'سبز! درست است' : 'قرمز! غلط است'}</b>${right ? '' : `درستش: «${r[0]}»`}<small>هر کس توپِ غیرِهم‌رنگ را بالا برد، یک حرکتِ نمایشی یا شیرین‌کاری انجام دهد. زودترین نفر، بازی‌گردانِ دورِ بعد است.</small></span>`;
+        sfx(right ? 'star' : 'miss'); F.said++; if(F.said >= 2) famDone(); }, 3200);
+    } else {
+      let i; do{ i = Math.random()*fm.cmds.length|0; } while(i === lastCmd && fm.cmds.length > 1); lastCmd = i; const c = fm.cmds[i];
+      card.innerHTML = `<img src="${figSrc(c[1])}" alt=""><b>${c[0]}</b><small>بازی‌گردان می‌گوید</small>`; sfx('start'); vib(15);
+    }
+  };
+  $('#rgNext').addEventListener('click', next);
+  $('#rgBack').addEventListener('click', ()=>{ F.stage = 'agree'; sfx('click'); renderFamily(); });
+}
+/* حلقه‌ی پاها و بادکنک (p.48): music plays while the family keeps one balloon up, feet joined in a ring.
+   The phone times each round; «افتاد!» ends it, and the longest round is the family's record */
+function famRing(fm, intro){
+  const st = LS(G.n), recs = st.log.ring = st.log.ring || [];
+  const draw = (msg) => {
+    const best = recs.length ? Math.max(...recs) : 0;
+    $('#gfBody').innerHTML = `${intro}
+      <div class="fam-ctrl">
+        <div class="figrow one" style="width:100%">${animFig(['m7-balloon','m7-straddle'])}</div>
+        <div class="propstrip" aria-hidden="true">${['balloon','balloon-b','balloon-g'].map(n => `<img src="img/obj/${n}.webp" alt="">`).join('')}</div>
+        <div class="watch"><div class="time" id="rnTime">۰٫۰<small>ثانیه در هوا</small></div></div>
+        <div class="callout" id="rnCall">${msg || (F.playing ? '<b>نگذارید بیفتد!</b>پاها از هم جدا نشوند؛ با دست، سر و شانه بزنید.' : best ? `<b>رکوردِ خانواده: ${secs(best)} ثانیه</b>این بار بیشتر نگهش دارید!` : '<b>کفِ پاها به هم بچسبد</b>«شروع» را بزنید و بادکنک را بالا بیندازید. هر وقت زمین خورد، «افتاد!» را بزنید.')}</div>
+        <button class="cta ${F.playing ? '' : 'gold'}" id="rnBtn">${F.playing ? 'افتاد!' : 'شروع (با آهنگ)'}</button>
+        ${recs.length ? `<p class="fam-intro" style="margin:0">دورها: ${recs.slice(-6).map(v => secs(v)).join('، ')} ثانیه</p>` : ''}
+      </div>`;
+    $('#rnBtn').addEventListener('click', ()=>{
+      if(F.playing){ const v = Math.round((performance.now() - F.start)/100)/10, best0 = recs.length ? Math.max(...recs) : 0; famStop(); recs.push(v); H.save(); famDone();
+        const rec = v > best0; sfx(rec ? 'fanfare' : 'soft'); vib([20,40,20]);
+        draw(rec ? `<b>${best0 ? 'رکوردِ تازه! ' : ''}${secs(v)} ثانیه</b>همه هم‌دیگر را تشویق کنید!` : `<b>${secs(v)} ثانیه</b>رکورد ${secs(best0)} ثانیه است. یک دورِ دیگر!`);
+        const t = $('#rnTime'); if(t) t.innerHTML = `${secs(v)}<small>ثانیه در هوا</small>`; return; }
+      F.playing = true; F.start = performance.now(); playTune('hop'); sfx('start'); draw();
+      F.t2 = setInterval(()=>{ const t = $('#rnTime'); if(t) t.innerHTML = `${secs((performance.now() - F.start)/1000)}<small>ثانیه در هوا</small>`; }, 100);
+    });
+  };
+  draw();
+}
+/* بازیِ لیوان‌ها (p.54): the phone keeps the beat and calls the five moves in turn, with the march playing under it */
+const CUP_STEPS = [['کف','۱'],['کف','۲'],['کف','۳'],['دستِ راست روی لیوان','۱'],['لیوان به راست','۲']];
+function famCups(fm, intro){
+  const draw = () => {
+    const slow = F.slow !== false;
+    $('#gfBody').innerHTML = `${intro}
+      <div class="fam-ctrl">
+        <div class="bigcmd" id="cpCard"><img src="${figSrc('m8-cup')}" alt=""><b>گوشی ضرب را نگه می‌دارد</b><small>با هم بشمارید و هماهنگ انجام بدهید</small></div>
+        <div class="cupsteps" aria-hidden="true">${CUP_STEPS.map((c, i) => `<span data-i="${i}"><b>${c[1]}</b>${c[0]}</span>`).join('')}</div>
+        <div class="modes"><button data-sp="slow" aria-pressed="${slow}">آرام</button><button data-sp="fast" aria-pressed="${!slow}">تند</button></div>
+        <button class="cta ${F.playing ? '' : 'gold'}" id="cpBtn">${F.playing ? 'توقف' : 'پخش آهنگ و شروع'}</button>
+      </div>`;
+    $$('[data-sp]').forEach(b => b.addEventListener('click', ()=>{ const was = F.playing; famStop(); F.slow = b.dataset.sp === 'slow'; sfx('click'); draw(); if(was) start(); }));
+    $('#cpBtn').addEventListener('click', ()=>{ if(F.playing){ famStop(); draw(); } else start(); });
+  };
+  const start = () => {
+    F.playing = true; draw(); playTune('march'); const r = F.slow !== false ? .8 : 1; window.HKMusic && HKMusic.rate(r);
+    const ms = 60000/108/r; let k = 0, loops = 0;
+    const tick = () => { const c = CUP_STEPS[k], card = $('#cpCard'); if(!card) return;
+      card.innerHTML = `<img src="${figSrc(k < 3 ? 'm8-clap' : 'm8-cup')}" alt=""><b>${c[0]}، ${c[1]}!</b><small>${k < 3 ? 'سه بار دست بزنید' : k === 3 ? 'دستِ راست روی لیوان' : 'لیوان را جلوی نفرِ سمتِ راست بگذارید'}</small>`;
+      $$('.cupsteps span').forEach(sp => sp.classList.toggle('on', +sp.dataset.i === k)); sfx(k === 0 ? 'tap' : 'tick', 1); vib(10);
+      k = (k + 1) % CUP_STEPS.length; if(k === 0 && ++loops >= 4) famDone(); };
+    tick(); F.t2 = setInterval(tick, ms);
+  };
+  draw();
+}
 /* ===================================================================== play and earn a star */
 const R = {watchT:null, start:0, camOn:false, mode:'feet', feet:3};
 function renderStar(){
@@ -1169,7 +1485,8 @@ function renderStar(){
   const book = `<p class="rec-msg" style="min-height:0">«${sk.t}»</p>`;
   if(sk.kind === 'cards') starCards(sk, book);
   if(sk.kind === 'posture') starPosture(sk, book);
-  if(sk.kind === 'jump' || sk.kind === 'timer') starRecord(sk, book);
+  if(sk.kind === 'jump' || sk.kind === 'timer' || sk.kind === 'reach') starRecord(sk, book);
+  if(sk.kind === 'grid') starGrid(sk, book);
 }
 function giveStar(msg){ const st = LS(G.n); if(st.stars < 7){ st.stars++; H.save(); sfx('star'); vib([20,40,20]); }
   $('#grStars').innerHTML = Array.from({length:7}, (_,k)=>H.STAR(k < st.stars)).join(''); }
@@ -1183,10 +1500,18 @@ const CARD_ICONS = {
   trash: `<path d="M20 24h24l-3 30H23z" fill="#16a39a" stroke="${C.ink}" stroke-width="2.4" stroke-linejoin="round"/><rect x="17" y="18" width="30" height="7" rx="3" fill="#0c7a73" stroke="${C.ink}" stroke-width="2.4"/><path d="M27 36l3-5 3 5M37 40l-3 5h-6" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M42 4l6 3-2 6-6-1z" fill="#fff" stroke="${C.ink}" stroke-width="1.8" stroke-linejoin="round"/><path d="M45 14q-2 4-4 2" fill="none" stroke="${C.ink}" stroke-width="1.4" stroke-dasharray="2 2"/><g transform="translate(13 40) scale(.6)">${BOYF(0,0,C.saffron)}</g>`,
   outside: `<rect width="64" height="60" rx="10" fill="#c8ecff"/><circle cx="52" cy="12" r="7" fill="#ffd45a" stroke="#f3a530" stroke-width="2"/><path d="M0 46q16-8 32 0t32 0v14H0z" fill="#8fd270"/><path d="M14 20l12-8 4 12z" fill="${C.anar}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M26 22q-2 10 6 20" fill="none" stroke="${C.ink}" stroke-width="1.4"/>${KIDF(36,36,C.fay,.85)}<g transform="translate(10 44)"><rect x="-1.5" width="3" height="8" fill="#8a5a2b"/><circle cy="-2" r="6" fill="#3fa34d" stroke="${C.ink}" stroke-width="1.6"/></g>`
 };
-const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp', trash:'img/obj/bin.webp'};
+/* lesson 6 (p.43): four drawn here, two are the hero's own poses */
+Object.assign(CARD_ICONS, {
+  homehelp: `<path d="M14 54h40" stroke="#c9b48a" stroke-width="3" stroke-linecap="round"/><path d="M46 8L30 44" stroke="#8a5a2b" stroke-width="3.4" stroke-linecap="round"/><path d="M24 42l12 4-4 10-14-4z" fill="#f3a530" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M22 50l-2 6M27 52l-1 5M31 53l-1 4" stroke="${C.ink}" stroke-width="1.4"/>${KIDF(46,22,C.fay,.9)}<circle cx="12" cy="48" r="2" fill="#c9b48a"/><circle cx="8" cy="52" r="1.6" fill="#c9b48a"/>`,
+  sickrest: `<rect x="4" y="34" width="56" height="12" rx="3" fill="#8fb8e8" stroke="${C.ink}" stroke-width="2"/><path d="M6 46v8M58 46v8" stroke="${C.ink}" stroke-width="3" stroke-linecap="round"/><rect x="4" y="22" width="8" height="24" rx="3" fill="#c98a4b" stroke="${C.ink}" stroke-width="2"/><ellipse cx="20" cy="31" rx="9" ry="5" fill="#fff" stroke="${C.ink}" stroke-width="1.6"/>${BOYF(20,24,'#3b82c4',.75)}<path d="M26 30h32v8H26z" fill="${C.anar}" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M44 8a8 6 0 1 1 10 6l-4 4 1-5a8 6 0 0 1-7-5z" fill="#fff" stroke="${C.ink}" stroke-width="1.4"/><circle cx="49" cy="9" r="2.4" fill="none" stroke="${C.ink}" stroke-width="1.2"/><path d="M45 4l8 10" stroke="${C.anar}" stroke-width="1.8"/>`,
+  stairs: `<path d="M4 56h14v-10h14v-10h14v-10h14v30z" fill="#e8d3a3" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>${KIDF(25,22,C.fay,.85)}${KIDF(40,10,'#a35bc4',.75)}<path d="M2 18l10 0" stroke="#3b82c4" stroke-width="2"/>`,
+  snack: `<circle cx="20" cy="34" r="11" fill="${C.anar}" stroke="${C.ink}" stroke-width="2"/><path d="M20 23q2-6 6-7" stroke="#4a2c1a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 20q6-4 9 0q-5 3-9 0z" fill="#5bbf4f" stroke="${C.ink}" stroke-width="1.2"/><path d="M34 40l12-12 12 12z" fill="#f3d27a" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M36 40h20" stroke="#5bbf4f" stroke-width="3"/><rect x="40" y="6" width="16" height="14" rx="3" fill="#f3a530" stroke="${C.ink}" stroke-width="1.6" opacity=".55"/><path d="M38 4l20 18M58 4L38 22" stroke="${C.anar}" stroke-width="3" stroke-linecap="round"/><path d="M6 54h52" stroke="#c9b48a" stroke-width="3" stroke-linecap="round"/>`
+});
+const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp', trash:'img/obj/bin.webp', space:'fig:m6-tree', walkfam:'fig:m6-walk'};
+const cardImg = k => { const c = CARD_IMG[k]; return c && c.startsWith('fig:') ? figSrc(c.slice(4)) : c; };
 function starCards(sk, book){
   const st = LS(G.n); st.log.cards = st.log.cards || {};
-  $('#grBody').innerHTML = `${book}<div class="cards">${sk.cards.map(([k,t])=>`<button class="card" data-k="${k}">${st.log.cards[k]?`<span class="n">${fa(st.log.cards[k])}</span>`:''}${CARD_IMG[k] ? `<img src="${CARD_IMG[k]}" alt="" class="card-img">` : `<svg viewBox="0 0 64 60">${CARD_ICONS[k]}</svg>`}${t}</button>`).join('')}</div>
+  $('#grBody').innerHTML = `${book}<div class="cards">${sk.cards.map(([k,t])=>`<button class="card" data-k="${k}">${st.log.cards[k]?`<span class="n">${fa(st.log.cards[k])}</span>`:''}${CARD_IMG[k] ? `<img src="${cardImg(k)}" alt="" class="card-img">` : `<svg viewBox="0 0 64 60">${CARD_ICONS[k]}</svg>`}${t}</button>`).join('')}</div>
     <div class="callout" id="cdAsk" style="margin:0 16px;width:auto" hidden></div>
     <p class="rec-msg" id="cdMsg">هر کارِ درستی که امروز انجام دادی را بزن؛ بزرگترت تأیید کند و یک ستاره بگیر.</p>`;
   $$('.card').forEach(b => b.addEventListener('click', ()=>{
@@ -1222,23 +1547,26 @@ function starPosture(sk, book){
   }));
 }
 function starRecord(sk, book){
-  const st = LS(G.n), jump = sk.kind === 'jump';
-  const recs = st.rec.filter(r => !jump || r.m === R.mode);
+  const st = LS(G.n), jump = sk.kind === 'jump', reach = sk.kind === 'reach', meas = jump || reach;
+  if(reach && R.mode === 'cam') R.mode = 'feet';      // the doll's distance is along the floor: a camera from the front cannot see it
+  const recs = st.rec.filter(r => !meas || r.m === R.mode);
   /* the book asks for a jump FORWARD. Counting your own foot-lengths needs no tape; the camera can only
-     see height, so it measures a different jump and is kept as a separate record */
-  const unit = jump ? (R.mode === 'feet' ? 'کفِ پا' : 'سانتی‌متر') : 'ثانیه', show = v => jump ? fa(Math.round(v)) : secs(v);
-  const off = Math.max(0, recs.length-7), last = recs.slice(off), top = Math.max(jump ? (R.mode === 'feet' ? 6 : 20) : 10, ...last.map(r=>r.v));
+     see height, so it measures a different jump and is kept as a separate record. The doll (p.49) is measured
+     the same way, in hand-spans or with the tape */
+  const small = reach ? 'وجب' : 'کفِ پا';
+  const unit = meas ? (R.mode === 'feet' ? small : 'سانتی‌متر') : 'ثانیه', show = v => meas ? fa(Math.round(v)) : secs(v);
+  const off = Math.max(0, recs.length-7), last = recs.slice(off), top = Math.max(meas ? (R.mode === 'feet' ? 6 : reach ? 60 : 20) : 10, ...last.map(r=>r.v));
   const bars = last.map((r,k)=>{ const prev = off+k>0 ? recs[off+k-1].v : null; return `<div>${show(r.v)}<i class="${prev!==null && r.v>prev ? 'up':''}" style="height:${Math.max(6, r.v/top*100)}%"></i></div>`; }).join('');
-  const fig = `<div class="rec-stage" id="rsStage"><img id="rsFig" src="" alt=""><img src="img/${jump ? 'gazelle-challenge' : 'gazelle-challenge'}.webp" alt=""></div>`;
-  const modes = jump ? `<div class="modes"><button data-m="feet" aria-pressed="${R.mode==='feet'}">با کفِ پا</button><button data-m="tape" aria-pressed="${R.mode==='tape'}">با متر</button><button data-m="cam" aria-pressed="${R.mode==='cam'}">پرشِ درجا با دوربین</button></div>` : '';
+  const fig = `<div class="rec-stage" id="rsStage"><img id="rsFig" src="" alt=""><img src="img/${KHAN_INFO[LESSONS[G.n].khan].guard}-challenge.webp" alt=""></div>`;
+  const modes = meas ? `<div class="modes"><button data-m="feet" aria-pressed="${R.mode==='feet'}">با ${small}</button><button data-m="tape" aria-pressed="${R.mode==='tape'}">با متر</button>${jump ? `<button data-m="cam" aria-pressed="${R.mode==='cam'}">پرشِ درجا با دوربین</button>` : ''}</div>` : '';
   let ctrl;
   if(jump && R.mode === 'cam') ctrl = `<div style="display:flex;justify-content:center">${camBtn('rsCam', R.camOn, 'یوزی با دوربین اندازه بگیرد', false)}</div>
       <div class="watch"><div class="time" id="rsVal">${recs.length ? show(recs[recs.length-1].v) : '۰'}<small>${unit}</small></div></div>
       <p class="rec-msg" id="rsMsg">${R.camOn ? 'جفت‌پا درجا بپر؛ یوزی بلندی پرش را اندازه می‌گیرد.' : 'دوربین را روشن کن و از سر تا پا در کادر بایست. بعد جفت‌پا بپر!'}</p>`;
-  else if(jump && R.mode === 'feet') ctrl = `<div class="watch"><div class="numin stepper"><button class="ghost" id="rsMinus" aria-label="کمتر">−</button><output id="rsFeet">${fa(R.feet)}</output><button class="ghost" id="rsPlus" aria-label="بیشتر">+</button><span style="color:var(--ink-soft);font-weight:700">کفِ پا</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
-      <p class="rec-msg" id="rsMsg">پشتِ یک خط بایست و جفت‌پا به جلو بپر. از خطِ شروع تا پاشنه‌ات، پاشنه‌به‌پنجه قدم بزن و بشمار چند کفِ پاست. متر لازم نیست!</p>`;
-  else if(jump) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ۸۵" aria-label="طولِ پرش به سانتی‌متر"><span style="color:var(--ink-soft);font-weight:700">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
-      <p class="rec-msg" id="rsMsg">مثلِ شکل جفت‌پا به جلو بپر. بزرگترت از خطِ شروع تا پاشنه را با متر اندازه بگیرد و این‌جا بنویسد.</p>`;
+  else if(meas && R.mode === 'feet') ctrl = `<div class="watch"><div class="numin stepper"><button class="ghost" id="rsMinus" aria-label="کمتر">−</button><output id="rsFeet">${fa(R.feet)}</output><button class="ghost" id="rsPlus" aria-label="بیشتر">+</button><span style="color:var(--ink-soft);font-weight:700">${small}</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
+      <p class="rec-msg" id="rsMsg">${reach ? 'با پاهای باز بنشین و عروسک را تا جایی که می‌توانی دور، روی زمین بگذار. بزرگترت از پاشنه‌ات تا عروسک را وجب کند. متر لازم نیست!' : 'پشتِ یک خط بایست و جفت‌پا به جلو بپر. از خطِ شروع تا پاشنه‌ات، پاشنه‌به‌پنجه قدم بزن و بشمار چند کفِ پاست. متر لازم نیست!'}</p>`;
+  else if(meas) ctrl = `<div class="watch"><div class="numin"><input id="rsIn" type="text" inputmode="decimal" autocomplete="off" placeholder="مثلاً ${reach ? '۴۵' : '۸۵'}" aria-label="${reach ? 'فاصله‌ی عروسک' : 'طولِ پرش'} به سانتی‌متر"><span style="color:var(--ink-soft);font-weight:700">سانتی‌متر</span></div><button class="cta gold" id="rsSave">ثبت</button></div>
+      <p class="rec-msg" id="rsMsg">${reach ? 'مثلِ شکل با پاهای باز بنشین و عروسک را دور بگذار. بزرگترت از پاشنه تا عروسک را با متر اندازه بگیرد و این‌جا بنویسد.' : 'مثلِ شکل جفت‌پا به جلو بپر. بزرگترت از خطِ شروع تا پاشنه را با متر اندازه بگیرد و این‌جا بنویسد.'}</p>`;
   else ctrl = `<div class="watch"><div class="time" id="rsVal">۰٫۰<small>ثانیه</small></div><button class="cta gold" id="rsBtn">شروع</button></div>
       <p class="rec-msg" id="rsMsg">مثلِ شکل خرچنگی راه برو. بزرگترت «شروع» را بزند و وقتی نشستی یا ایستادی، «تمام».</p>`;
   $('#grBody').innerHTML = `${book}${modes}${fig}${ctrl}<div class="bars" aria-hidden="true">${bars}</div>
@@ -1246,12 +1574,12 @@ function starRecord(sk, book){
   flipFigs($('#rsFig'), sk.fig, 1000);
   $$('.modes [data-m]').forEach(b => b.addEventListener('click', ()=>{ R.mode = b.dataset.m; if(R.camOn){ R.camOn = false; camOff(); } sfx('click'); starRecord(sk, book); }));
   const record = (v, ok) => {
-    const prevList = st.rec.filter(r => !jump || r.m === R.mode), prev = prevList.length ? prevList[prevList.length-1].v : null;
+    const prevList = st.rec.filter(r => !meas || r.m === R.mode), prev = prevList.length ? prevList[prevList.length-1].v : null;
     /* a number typed in or a stopwatch someone else ran is only a star once a grown-up has seen it */
     if(!ok && !(jump && R.mode === 'cam') && prev !== null && v > prev && st.stars < 7){
       R.pending = {v, sk, book}; sfx('soft');
       return `<b>${show(v)} ${unit}، بیشتر از دفعهٔ قبل!</b> بزرگترت دید؟<span class="seenrow"><button class="cta gold" id="rsYes">بله، دیدم</button><button class="ghost" id="rsNo">نه، دوباره</button></span>`; }
-    st.rec.push({v, m: jump ? R.mode : 't', d:H.dayNum()}); H.save();
+    st.rec.push({v, m: meas ? R.mode : 't', d:H.dayNum()}); H.save();
     let msg;
     if(prev !== null && v > prev && st.stars < 7){ giveStar(); msg = `<b>بیشتر از دفعهٔ قبل!</b> ${show(v)} ${unit}؛ یک ستارهٔ تازه گرفتی.`; }
     else if(prev === null) { sfx('soft'); msg = `<b>${show(v)} ${unit}</b>. دفعهٔ بعد بیشتر تا ستاره بگیری.`; }
@@ -1259,17 +1587,17 @@ function starRecord(sk, book){
     return msg;
   };
   if(R.confirmed != null){ const v = R.confirmed; R.confirmed = null; const m = record(v, true); starRecord(sk, book); $('#rsMsg').innerHTML = m; return; }
-  if(jump && R.mode === 'feet'){
+  if(meas && R.mode === 'feet'){
     const setF = d => { R.feet = Math.max(1, Math.min(15, R.feet + d)); $('#rsFeet').textContent = fa(R.feet); sfx('tap', R.feet); };
     $('#rsMinus').addEventListener('click', ()=>setF(-1)); $('#rsPlus').addEventListener('click', ()=>setF(1));
     $('#rsSave').addEventListener('click', ()=>{ const m = record(R.feet); starRecord(sk, book); $('#rsMsg').innerHTML = m; });
   }
-  if(jump && R.mode === 'tape'){
+  if(meas && R.mode === 'tape'){
     $('#rsSave').addEventListener('click', ()=>{ const v = parseFloat(($('#rsIn').value||'').replace(/[۰-۹]/g, d=>'۰۱۲۳۴۵۶۷۸۹'.indexOf(d)).replace(/[٠-٩]/g, d=>'٠١٢٣٤٥٦٧٨٩'.indexOf(d)).replace(/[٫,]/g,'.'));
       if(!(v > 0 && v < 400)){ sfx('miss'); $('#rsMsg').textContent = 'یک عدد بنویس، مثلاً ۸۵.'; return; }
       const m = record(v); starRecord(sk, book); $('#rsMsg').innerHTML = m; });
   }
-  if(!jump){
+  if(!meas){
     $('#rsBtn').addEventListener('click', e => {
       const b = e.currentTarget;
       if(R.watchT){ clearInterval(R.watchT); R.watchT = null; const v = Math.round((performance.now()-R.start)/100)/10; const m = record(v); starRecord(sk, book); $('#rsVal').innerHTML = `${secs(v)}<small>ثانیه</small>`; $('#rsMsg').innerHTML = m; return; }
@@ -1300,6 +1628,44 @@ function starRecord(sk, book){
   }
 }
 
+/* خانه‌های بعلاوه (p.55): a plus of five squares on the floor. The guide walks the circuit in time — four stamps in
+   the middle, then to square 1 for two stamps (1, 2), back to the middle for two (3, 4), on to square 2 … — and a
+   full circuit, seen by a grown-up, is a star */
+const GRID_AT = {0:[100,100], 1:[100,38], 2:[100,162], 3:[162,100], 4:[38,100]};
+function gridPlan(){ const p = [[0,'۱'],[0,'۲'],[0,'۳'],[0,'۴']];
+  [1,2,3,4].forEach(k => { p.push([k,'۱'],[k,'۲'],[0,'۳'],[0,'۴']); }); return p; }
+function starGrid(sk, book){
+  const st = LS(G.n); st.log.grid = st.log.grid || 0; clearInterval(R.gridT); R.gridT = null;
+  const sq = k => { const [x, y] = GRID_AT[k]; return `<g class="gsq" data-k="${k}"><rect x="${x-28}" y="${y-28}" width="56" height="56" rx="6" fill="${k ? '#fff7e6' : '#ffe1d6'}" stroke="${C.ink}" stroke-width="3"/>${k ? `<text x="${x}" y="${y+9}" text-anchor="middle" font-size="26" font-weight="800" fill="${C.ink}">${fa(k)}</text>` : `<path d="M${x-9} ${y-14}q-6 8 0 14q4 2 5-4q1-8-5-10zM${x+9} ${y-2}q-6 8 0 14q4 2 5-4q1-8-5-10z" fill="${C.anar}"/>`}</g>`; };
+  $('#grBody').innerHTML = `${book}
+    <div class="gridwrap"><svg viewBox="0 0 200 200" id="gdSvg" role="img" aria-label="پنج خانه به شکلِ بعلاوه">${[1,2,3,4,0].map(sq).join('')}
+      <g id="gdMark" style="transition:transform .35s"><circle r="15" fill="${C.saffron}" stroke="${C.ink}" stroke-width="3"/><text id="gdNum" y="7" text-anchor="middle" font-size="20" font-weight="800" fill="${C.ink}"></text></g></svg>
+      <ol class="gridrules">${sk.rules.map(r => `<li>${r}</li>`).join('')}</ol></div>
+    <p class="rec-msg" id="gdCap" style="min-height:0">«راهنما» را بزن تا یوزی مسیر را با ضرب نشانت بدهد؛ بعد خودت روی خانه‌های روی زمین برو.</p>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="ghost" id="gdGuide" aria-pressed="false">راهنما</button><button class="cta gold" id="gdDone">یک دورِ کامل رفتم</button></div>
+    <div class="callout" id="gdAsk" style="margin:12px 16px 0;width:auto" hidden></div>
+    <p class="rec-msg" id="gdMsg">${st.log.grid ? `تا حالا ${fa(st.log.grid)} دورِ کامل رفتی.` : 'خانه‌ها را با چسب یا گچ روی زمین بکش.'}</p>`;
+  const mark = $('#gdMark'), place = k => { const [x, y] = GRID_AT[k]; mark.setAttribute('transform', `translate(${x} ${y})`); };
+  place(0);
+  const stopG = () => { clearInterval(R.gridT); R.gridT = null; const b = $('#gdGuide'); if(b){ b.setAttribute('aria-pressed', 'false'); b.textContent = 'راهنما'; } };
+  $('#gdGuide').addEventListener('click', e => {
+    if(R.gridT){ stopG(); return; }
+    const plan = gridPlan(); let i = 0; e.currentTarget.setAttribute('aria-pressed', 'true'); e.currentTarget.textContent = 'توقفِ راهنما';
+    R.gridT = setInterval(()=>{
+      if(i >= plan.length){ stopG(); sfx('fanfare'); $('#gdNum').textContent = ''; $('#gdCap').textContent = 'یک دورِ کامل! حالا خودت روی زمین برو.'; return; }
+      const [k, c] = plan[i++]; place(k); $('#gdNum').textContent = c; sfx(c === '۱' ? 'tap' : 'tick', 1);
+      $$('#gdSvg .gsq').forEach(g => g.classList.toggle('on', +g.dataset.k === k));
+      $('#gdCap').textContent = k ? `خانه‌ی ${fa(k)}: پا بکوب و بشمار ${c}` : `خانه‌ی وسط: پا بکوب و بشمار ${c}`;
+    }, 650);
+  });
+  $('#gdDone').addEventListener('click', ()=>{ stopG(); sfx('click'); const ask = $('#gdAsk'); ask.hidden = false;
+    ask.innerHTML = `<b>همه‌ی خانه‌ها، پشت‌سرهم؟</b>بزرگترت دید و تأیید می‌کند؟<span class="seenrow"><button class="cta gold" id="gdYes">بله، دیدم</button><button class="ghost" id="gdNo">هنوز نه</button></span>`;
+    $('#gdYes').addEventListener('click', ()=>{ st.log.grid++; H.save(); bumpCam(G.n, 'adult'); const had = st.stars; giveStar(); starGrid(sk, book);
+      $('#gdMsg').innerHTML = had < 7 ? `<b>یک ستاره‌ی تازه!</b> ${fa(st.log.grid)} دورِ کامل.` : '<b>هر هفت ستاره را گرفتی!</b> باز هم برو.'; });
+    $('#gdNo').addEventListener('click', ()=>{ ask.hidden = true; });
+  });
+}
+
 document.addEventListener('click', e => {
   const id = e.target && e.target.id; if((id !== 'rsYes' && id !== 'rsNo') || !R.pending) return;
   const {v, sk, book} = R.pending; R.pending = null;
@@ -1310,10 +1676,11 @@ document.addEventListener('click', e => {
 let ptab = null;
 const CAM_LABELS = {balloon:'ضربه به بادکنکِ مجازی', freeMove:'حرکت با چوب پشتِ شانه', squat:'بنشین‌وپاشو با چوب', jump:'پرشِ جفت', frog:'پرشِ قورباغه', hen:'بال زدنِ مرغ', drum:'مشت به سینه مثلِ گوریل',
   'seq:legL':'دورِ کاملِ حرکتِ پاها', 'seq:headR':'دورِ کاملِ حرکتِ سر و گردن', 'seq:armU':'دورِ کاملِ حرکتِ دست‌ها', standStraight:'ثانیهٔ درست ایستادن', sitStraight:'ثانیهٔ درست نشستن',
-  run:'قدمِ دویدنِ درجا', circle:'چرخشِ دست‌ها', toe:'بالا رفتن روی پنجه', hug:'بغل کردنِ زانو', lunge:'قدمِ بلند با زانوی خم', osta:'فرمانِ درست در بازی اوستا', chairs:'نشستنِ درست در صندلی‌بازی',
+  run:'قدمِ دویدنِ درجا', walk:'قدمِ پیاده‌رویِ درجا', 'seq:upright':'دورِ کاملِ خم شدن به دو طرف', 'seq:thigh':'دورِ هوهو، چی‌چی', patT:'ضربه روی پاها (هوهو)', patC:'ضربه روی سینه (چی‌چی)',
+  tri:'ثانیه در حالتِ مثلث', warrior:'ثانیه در حالتِ جنگجو', straddle:'ثانیه نشستن با پاهای باز', bend:'ثانیه خم شدن به پهلو', rhythm:'دورِ کاملِ بدن‌کوبه', circle:'چرخشِ دست‌ها', toe:'بالا رفتن روی پنجه', hug:'بغل کردنِ زانو', lunge:'قدمِ بلند با زانوی خم', osta:'فرمانِ درست در بازی اوستا', chairs:'نشستنِ درست در صندلی‌بازی',
   adult:'حرکتی که بزرگتر تأیید کرد'};
 function renderParentsTabs(){
-  const list = [1,2,3,4,5].filter(n => n === 5 ? true : H.lessonOpen(n));
+  const list = [1,2,3,4,5,6,7,8].filter(n => n === 5 ? true : H.lessonOpen(n));
   if(!ptab || !list.includes(ptab)) ptab = S().cur;
   $('#pTabs').innerHTML = list.map(n => `<button role="tab" data-n="${n}" aria-selected="${n===ptab}">منزل ${fa(n)}</button>`).join('');
   $$('#pTabs button').forEach(b => b.addEventListener('click', ()=>{ ptab = +b.dataset.n; sfx('click'); renderParentsTabs(); }));
@@ -1328,7 +1695,9 @@ function renderParentsTabs(){
   let starLog = '';
   if(Ld.star.kind === 'cards'){ const c = st.log.cards || {}; starLog = Ld.star.cards.filter(([k])=>c[k]).map(([k,t])=>`<div class="beh"><p>${t}</p><b style="font-family:var(--f-display);font-size:20px;color:var(--lapis)">${fa(c[k])} بار</b></div>`).join('') || '<div class="beh"><p>هنوز ثبت نشده.</p></div>'; }
   else if(Ld.star.kind === 'posture') starLog = `<div class="beh"><p>${st.stars ? `${fa(st.stars)} روز هر چهار کار را درست انجام داد.` : 'هنوز روزی کامل نشده.'}</p></div>`;
-  else { const u = Ld.star.kind === 'jump' ? '' : ' ثانیه'; const sh = r => Ld.star.kind === 'jump' ? `${fa(Math.round(r.v))} سانتی‌متر${r.m==='cam'?' (دوربین)':' (متر)'}` : `${secs(r.v)}${u}`;
+  else if(Ld.star.kind === 'grid') starLog = `<div class="beh"><p>${st.log.grid ? `${fa(st.log.grid)} دورِ کامل در خانه‌ها، با تأییدِ بزرگتر.` : 'هنوز دورِ کاملی ثبت نشده.'}</p></div>`;
+  else { const meas = Ld.star.kind === 'jump' || Ld.star.kind === 'reach';
+    const sh = r => meas ? `${fa(Math.round(r.v))} ${r.m==='feet' ? (Ld.star.kind === 'reach' ? 'وجب' : 'کفِ پا') : 'سانتی‌متر'}${r.m==='cam'?' (دوربین)':''}` : `${secs(r.v)} ثانیه`;
     starLog = st.rec.length ? `<div class="beh"><p>${st.rec.map(sh).join(' ← ')}</p></div>` : '<div class="beh"><p>هنوز رکوردی ثبت نشده.</p></div>'; }
   $('#pG').innerHTML = `<div class="p-sum"><div><b>${fa(d)} از ۳</b><span>روزِ تمرینِ این هفته</span></div><div><b>${st.story ? '✓' : '—'}</b><span>قصه و پیدا کردنِ «${Ld.word}»</span></div><div><b>${fa(st.stars)} از ۷</b><span>ستاره</span></div></div>
     <div class="p-h">تقویم هفتگی</div>
@@ -1348,21 +1717,26 @@ function renderParentsTabs(){
 window.HKX = { _X: X,
   openKhan,
   enter(name){
-    if(name === 'gkhan'){ if(S().cur <= 4) G.khan = LESSONS[S().cur].khan; renderKhan();
+    if(name === 'gkhan'){ if(LESSONS[S().cur]) G.khan = LESSONS[S().cur].khan; renderKhan();
       if(!['gchoose','gex','gstory','gfam','gstar'].includes(G.at)) voice(`guard-${KHAN_INFO[G.khan].guard}`); }
     G.at = name;
     if(name === 'gchoose') renderChoose();
     if(name === 'gex') startGame();
     if(name === 'gstory'){ Y.camOn = false; renderStory(0); }
-    if(name === 'gfam'){ F.camOn = false; F.round = 0; renderFamily(); }
+    if(name === 'gfam'){ F.camOn = false; F.round = 0; F.stage = null; renderFamily(); }
     if(name === 'gstar'){ R.camOn = false; renderStar(); }
     if(name === 'parents') renderParentsTabs();
   },
   leave(name){
     clearInterval(flipT); clearInterval(Y.t); clearInterval(Y.coach); Y.auto = 0; clearInterval(R.watchT); R.watchT = null; famStop();
+    clearInterval(X.holdT); X.holdT = null; stopBeat(); clearInterval(R.gridT); R.gridT = null;
     if(name !== 'gex'){ X.camOn = false; $('#gxScene').classList.remove('cam'); const b = $('#gxCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent = 'یوزی با دوربین ببیند'; }
     const CAM = H.CAM; CAM.onFrame = null; CAM.hint = null; CAM.chipOn = null;
   },
+  /* lesson 6 lives on khan 3's own page (index.html), under lesson 5 */
+  mountManzil(n, el){ if(!el) return; el.innerHTML = manzilHTML(n); el.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', ()=>{
+    const act = b.dataset.act; S().cur = n; G.n = n; G.khan = LESSONS[n].khan; H.save(); sfx('click');
+    if(act === 'play'){ G.free = !canPlay(n); H.go('gchoose'); if(G.free) H.voiceLater('free', 300); } else H.go(act); })); },
   LESSONS, POSES, figSrc, PRED, bodyOf, detector, updateBase, resetBase, airborne, _story: {renderStory, Y}
 };
 $$('#gxFeel [data-face]').forEach(s => s.innerHTML = H.face(+s.dataset.face));
