@@ -171,10 +171,29 @@ function artSrc(name){
 /* In a story picture every drawing is the same size, so a child came out as tall as her mother. Next to a
    grown-up (or the tree) the child is drawn at about two thirds of their height. */
 const BIG_ART = /^(story-(mom|aunt|uncle|tree)|mom|dad|grandma|grandpa)$/;
+/* Which way each drawing looks, as seen on screen (read off the pictures): R right, L left. In a story picture
+   the row runs right to left, so the first figure stands on the right and must look left, the next one stands
+   on its left and must look right — then mother and child look at each other. A drawing facing the wrong way is
+   mirrored, except a move whose side matters (head to the right, left leg up), which is never mirrored. */
+const FACE = {'story-mom':'R', 'story-aunt':'R', 'story-uncle':'L', 'story-rabbit':'L', 'story-crow':'R', 'story-sparrow':'R',
+  'kid:stand':'R', 'kid:m2-standOk':'R', 'kid:m2-sitOk':'L', 'kid:m3-walkA':'R', 'kid:m3-runA':'R'};
+const SIDED = /head[RLUD]|leg[LR]|arm[SFUD]/;
+/* two frames of one child are one child moving, not two children; a right/wrong pair stays side by side, marked */
+const OKBAD = a => /Ok$|Bad$/.test(a);
 function artRow(art, src){
-  const big = art.some(a => BIG_ART.test(a));
-  return art.map(a => `<img src="${src(a)}" alt="" class="${big && a.startsWith('kid:') ? 'kid-sm' : ''}">`).join('');
+  const big = art.some(a => BIG_ART.test(a)), kids = art.filter(a => a.startsWith('kid:'));
+  if(art.length === 2 && kids.length === 2 && !art.every(OKBAD)) return animFig(kids.map(a => a.slice(4)), 'st-anim');
+  return art.map((a, i) => { const f = FACE[a], want = i === 0 && art.length > 1 ? 'L' : 'R';
+    const flip = art.length > 1 && f && f !== want && !SIDED.test(a);
+    const mark = OKBAD(a) && art.every(OKBAD) ? `<i class="okbad ${/Ok$/.test(a) ? 'ok' : 'bad'}">${/Ok$/.test(a) ? '✓' : '✗'}</i>` : '';
+    return `<span class="st-fig${big && a.startsWith('kid:') ? ' kid-sm' : ''}">${mark}<img src="${src(a)}" alt="" class="${flip ? 'flip' : ''}"></span>`; }).join('');
 }
+/* one child, two poses, alternating: the move itself, the way the book's two drawings mean it */
+function animFig(names, cls=''){ return `<img class="anim ${cls}" src="${figSrc(names[0])}" data-figs="${names.join('|')}" data-k="0" alt="">`; }
+if(!matchMedia('(prefers-reduced-motion: reduce)').matches) setInterval(()=>{
+  document.querySelectorAll('img.anim[data-figs]').forEach(im => { if(!im.offsetParent) return; const f = im.dataset.figs.split('|'), k = (+im.dataset.k + 1) % f.length;
+    im.dataset.k = k; im.src = figSrc(f[k]); }); }, 900);
+H.artRow = artRow;
 H.artRow = artRow;
 function figSrc(name){
   const boy = H.kid() === 'boy';
@@ -850,7 +869,7 @@ $('#gxCam').addEventListener('click', async ()=>{
 /* ===================================================================== story */
 const Y = {page:0, found:new Set(), camOn:false, task:null, t:null};
 function renderStory(i){
-  const n = G.n = S().cur, Ld = LESSONS[n], st = Ld.story; Y.page = i; clearInterval(Y.t); Y.task = null;
+  const n = G.n = S().cur, Ld = LESSONS[n], st = Ld.story; Y.page = i; clearInterval(Y.t); clearInterval(Y.coach); Y.auto = 0; Y.task = null;
   const H2 = H.CAM; H2.onFrame = null; H2.hint = null; H2.chipOn = null;
   $('#gsTitle').innerHTML = `قصهٔ حرکت<small>${st.name}، منزل ${fa(n)}، کتاب، ${st.src}</small>`;
   const total = st.pages.length + 1;
@@ -890,7 +909,7 @@ function renderStory(i){
 }
 function taskHTML(t){
   const cam = t.type === 'seq' || t.type === 'hold' || t.type === 'reps';
-  const figs = t.figs ? `<div class="figrow">${t.figs.map(f=>`<img src="${figSrc(f)}" alt="">`).join('')}</div>` : '';
+  const figs = t.figs ? `<div class="figrow one">${animFig(t.figs)}</div>` : '';
   let body = '';
   if(t.type === 'seq') body = `<div class="chips" id="tkChips">${t.steps.map((s,k)=>`<span data-k="${k}">${s[1]}</span>`).join('')}</div>`;
   if(t.type === 'race') body = `<div class="watch" style="padding:4px 0"><div class="time" id="tkTime" style="font-size:44px">۰<small>ثانیه</small></div>
@@ -928,6 +947,11 @@ function wireTask(t){
   const add = byCam => { if(k >= goal) return; k++; show(t.type==='hold' ? goal - k : k); if(byCam) bumpCam(n, t.type==='seq' ? `seq:${t.steps[0][0]}` : t.type==='hold' ? t.check : t.det); sfx(k < goal ? 'tick' : 'hit');
     if(k >= goal){ taskDone(); if(byCam) autoNext(); } };
   if(t.type === 'seq') markChip(t, 0);
+  const sayStep = i => voice(STEP_VOICE[t.steps[i][0]], 'step');
+  if(t.type === 'seq' && !Y.camOn){ let ci = 0;      // no camera: Yuzi calls the steps in a steady rhythm, after the story is read
+    clearInterval(Y.coach); Y.coach = setInterval(()=>{ if(k >= goal){ clearInterval(Y.coach); return; } if(H.speaking()) return;
+      sayStep(ci); markChip(t, ci); ci = (ci + 1) % t.steps.length; }, 1700); }
+  if(t.type === 'seq' && Y.camOn) sayStep(0);
   if(!Y.camOn){
     cnt.addEventListener('click', ()=>{
       if(t.type === 'hold'){ if(Y.t) return; cnt.classList.add('run'); sfx('tick'); Y.t = setInterval(()=>{ add(false); if(k >= goal){ clearInterval(Y.t); Y.t = null; cnt.classList.remove('run'); } }, 1000); return; }
@@ -954,7 +978,7 @@ function wireTask(t){
     if(!b || k >= goal) return; updateBase(b, now);
     if(t.type === 'seq'){ const key = t.steps[seqI][0];
       if(PRED[key](b)){ if(!seqT) seqT = now; if(now - seqT > 260){ seen = now; seqT = 0; seqI++; sfx('tap', seqI);
-          if(seqI >= t.steps.length){ seqI = 0; add(true); } markChip(t, seqI); } } else seqT = 0; }
+          if(seqI >= t.steps.length){ seqI = 0; add(true); } markChip(t, seqI); if(k < goal) sayStep(seqI); } } else seqT = 0; }
     if(t.type === 'hold'){ if(PRED[t.check](b)){ seen = now; holdAcc += dt; const s = Math.floor(holdAcc/1000); while(k < s && k < goal) add(true); } }
     if(t.type === 'reps' && det && det.step(b, now)){ seen = now; add(true); }
   };
@@ -968,8 +992,12 @@ function autoNext(){
   if(!(Y.camOn && nx && nx.task && ['seq','hold','reps'].includes(nx.task.type))) return;
   H.CAM.hint = () => 'آفرین! حرکتِ بعدی…';
   voice('next-move');
-  clearTimeout(Y.auto); Y.auto = setTimeout(()=>{ const b = $('#gsNext'); if(Y.page === here && b && !b.disabled && !$('#s-gstory').hidden) b.click(); }, 2600);
+  clearTimeout(Y.auto); Y.auto = 1;
+  H.whenQuiet(()=>{ if(!Y.auto) return; Y.auto = 0; const b = $('#gsNext'); if(Y.page === here && b && !b.disabled && !$('#s-gstory').hidden) b.click(); }, 7000, 1500);
 }
+/* each step of a sequence, spoken: the osta's recorded commands where they match, short new lines for the rest */
+const STEP_VOICE = {legL:'osta-legL', legR:'osta-legR', armU:'osta-armU', armS:'osta-armS', feet:'step-feet', armF:'step-armF', armD:'step-armD',
+  headR:'step-headR', headL:'step-headL', headD:'step-headD', headU:'step-headU', headC:'step-headC'};
 function markChip(t, i){ $$('#tkChips span').forEach(s => { const k = +s.dataset.k; s.classList.toggle('on', k === i); s.classList.toggle('ok', k < i); }); }
 
 /* ===================================================================== family games */
@@ -1036,7 +1064,7 @@ function famOsta(fm, intro){
 function famChairs(fm, intro){
   $('#gfBody').innerHTML = `${intro}
     <div class="fam-ctrl">
-      <div class="figrow" style="width:100%"><img src="${figSrc('m3-walkA')}" alt=""><img src="${figSrc('m2-sitOk')}" alt=""></div>
+      <div class="figrow one" style="width:100%">${animFig(['m3-walkA','m2-sitOk'])}</div>
       ${famCam('#fSlot', `یوزی نشستنِ ${esc(H.kidName())} را ببیند`)}
       <div class="callout" id="cCall"><b>گوشی آهنگ پخش می‌کند</b><small>و یک جای غافلگیرکننده قطعش می‌کند</small></div>
       <button class="cta" id="cMusic">پخش آهنگ</button>
@@ -1048,7 +1076,7 @@ function famChairs(fm, intro){
     $('#cCall').innerHTML = '<b>آرام دورِ صندلی‌ها راه بروید</b><small>گوش کنید؛ آهنگ هر لحظه ممکن است قطع شود!</small>';
     CAM.onFrame = null; CAM.chipOn = null; CAM.hint = () => 'با آهنگ راه برو';
     F.t = setTimeout(()=>{
-      famStop(); $('#cMusic').textContent = 'دور بعد'; sfx('fanfare'); vib([30,40,30]);
+      famStop(); $('#cMusic').textContent = 'دور بعد'; sfx('fanfare'); vib([30,40,30]); voice('chairs-sit');
       const tr = fm.tricks[Math.random()*fm.tricks.length|0];
       $('#cCall').innerHTML = `<b>بنشینید! درست و صاف</b>هر کس روی صندلیِ علامت‌دار نشست: ${tr}<small>پیشنهادِ گوشی است؛ خودتان هم شیرین‌کاری بسازید</small>`;
       famDone();
@@ -1096,7 +1124,7 @@ function famFeet(fm, intro){
     const best = Math.max(...F.tally);
     $('#gfBody').innerHTML = `${intro}
       <div class="fam-ctrl">
-        <div class="figrow" style="width:100%"><img src="${figSrc('m4-feetUp')}" alt=""><img src="${figSrc('m4-feetStack')}" alt=""></div>
+        <div class="figrow one" style="width:100%">${animFig(['m4-feetUp','m4-feetStack'])}</div>
         <div class="callout" id="fCall">${left!=null ? `<b>${fa(left)} ثانیه</b>با پا بردار، با دست بالای سر بگذار!` : '<b>گوشی آهنگ پخش می‌کند</b><small>تا آهنگ تمام شود، هر کس هر چه می‌تواند بالای سرش بگذارد</small>'}</div>
         <button class="cta" id="fMusic">${F.playing ? 'توقف' : 'پخش آهنگ (۳۰ ثانیه)'}</button>
         <div class="tally">${P.map((p,i)=>`<div class="${best>0 && F.tally[i]===best ? 'lead' : ''}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><b>${esc(p.n)}</b><button data-i="${i}" data-d="-1" aria-label="کم کن">−</button><output>${fa(F.tally[i])}</output><button data-i="${i}" data-d="1" aria-label="اضافه کن">+</button></div>`).join('')}</div>
@@ -1106,7 +1134,7 @@ function famFeet(fm, intro){
       if(F.playing){ famStop(); draw(); return; }
       F.tally = P.map(()=>0); F.playing = true; F.left = 30; playTune('hop'); draw(F.left);
       F.t2 = setInterval(()=>{ F.left--; const c = $('#fCall'); if(c) c.innerHTML = `<b>${fa(F.left)} ثانیه</b>با پا بردار، با دست بالای سر بگذار!`;
-        if(F.left <= 0){ famStop(); sfx('fanfare'); famDone(); draw(); const best = Math.max(...F.tally), w = P.filter((p,i)=>F.tally[i]===best && best>0).map(p=>p.n);
+        if(F.left <= 0){ famStop(); sfx('fanfare'); voice('feet-end'); famDone(); draw(); const best = Math.max(...F.tally), w = P.filter((p,i)=>F.tally[i]===best && best>0).map(p=>p.n);
           $('#fCall').innerHTML = w.length ? `<b>آفرین ${w.map(esc).join(' و ')}!</b>بیشترین شیء را بالای سر گذاشت. همه تشویقش کنید!` : '<b>آهنگ تمام شد!</b>شماره‌ها را وارد کنید و برنده را تشویق کنید.'; } }, 1000);
     });
   };
@@ -1313,7 +1341,7 @@ window.HKX = { _X: X,
     if(name === 'parents') renderParentsTabs();
   },
   leave(name){
-    clearInterval(flipT); clearInterval(Y.t); clearInterval(R.watchT); R.watchT = null; famStop();
+    clearInterval(flipT); clearInterval(Y.t); clearInterval(Y.coach); Y.auto = 0; clearInterval(R.watchT); R.watchT = null; famStop();
     if(name !== 'gex'){ X.camOn = false; $('#gxScene').classList.remove('cam'); const b = $('#gxCam'); b.setAttribute('aria-pressed','false'); b.querySelector('span').textContent = 'یوزی با دوربین ببیند'; }
     const CAM = H.CAM; CAM.onFrame = null; CAM.hint = null; CAM.chipOn = null;
   },

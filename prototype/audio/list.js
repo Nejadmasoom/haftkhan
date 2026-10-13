@@ -7,4 +7,4 @@ window.HK_AUDIO = [
   'g2-3', 'g3-1', 'g3-2', 'g3-3', 'g3-4', 'g3-5', 'g3-6', 'g4-1',
   'g4-2', 'g4-3', 'osta-squatUp', 'osta-nose', 'osta-legL', 'osta-legR', 'osta-armU', 'osta-armS',
   'find-1', 'find-2', 'find-3', 'find-4', 'guard-rooster', 'guard-gazelle'
-, 'fit-nobody', 'fit-far', 'fit-feet', 'fit-head', 'fit-closer', 'fit-ok', 'place', 'next-move', 'record', 'level-up', 'free'];
+, 'fit-nobody', 'fit-far', 'fit-feet', 'fit-head', 'fit-closer', 'fit-ok', 'place', 'next-move', 'record', 'level-up', 'free', 'step-feet', 'step-headR', 'step-headL', 'step-headD', 'step-headU', 'step-headC', 'step-armF', 'step-armD', 'chairs-sit', 'feet-end'];
