@@ -120,7 +120,7 @@ function gameOver(score, why){
    side lean turns it, and a landing more than ~60° off the slope rolls it over. Fuel runs down; cans keep
    the run going. Units: metres and seconds. */
 const HL = {};
-function terrain(x){ const amp = 1 + Math.min(6, Math.max(0, x)/140);
+function terrain(x){ const amp = 1.5 + Math.min(5.5, Math.max(0, x)/150);
   return amp*(.55*Math.sin(x/9) + .3*Math.sin(x/4.3 + 1.3) + .25*Math.sin(x/17 + 2.1)) + .4*Math.sin(x/37); }
 const slope = x => (terrain(x + .05) - terrain(x - .05))/.1;
 const curv = x => (terrain(x + .1) - 2*terrain(x) + terrain(x - .1))/.01;
@@ -169,43 +169,157 @@ function hillFrame(dt, now, live){
   }
   drawHill(gas, lean, cadence);
 }
+/* ---------------------------------------------------------------- hill climb: the picture
+   Everything is drawn in layers, back to front: sky and sun, clouds, far mountains and middle hills moving
+   slower than the road (parallax), the road's soil and grass, flags, coins and fuel, the jeep and its dust. */
+const hash = n => { const x = Math.sin(n*127.1 + 311.7)*43758.5453; return x - Math.floor(x); };
+const INK = '#2b2140';
+function rr(x, y, w, h, r){ ctx.beginPath(); ctx.moveTo(x + r, y); ctx.arcTo(x + w, y, x + w, y + h, r); ctx.arcTo(x + w, y + h, x, y + h, r); ctx.arcTo(x, y + h, x, y, r); ctx.arcTo(x, y, x + w, y, r); ctx.closePath(); }
+function cloud(x, y, s){
+  ctx.save(); ctx.translate(x, y); ctx.scale(s, s);
+  const blobs = [[0, 0, 26], [28, -10, 30], [58, 2, 24], [30, 10, 26]];
+  ctx.fillStyle = '#fff'; ctx.strokeStyle = 'rgba(43,33,64,.55)'; ctx.lineWidth = 3/s;
+  blobs.forEach(([bx, by, r]) => { ctx.beginPath(); ctx.arc(bx, by, r, 0, 7); ctx.stroke(); });
+  blobs.forEach(([bx, by, r]) => { ctx.beginPath(); ctx.arc(bx, by, r, 0, 7); ctx.fill(); });
+  ctx.fillStyle = 'rgba(160,200,235,.45)'; ctx.beginPath(); ctx.ellipse(30, 22, 52, 9, 0, 0, 7); ctx.fill();
+  ctx.restore();
+}
+function mountains(camX, PPM){
+  const off = camX*.06, yAt = px => { const wx = off + px/PPM; return Hh*.5 - Hh*.15*Math.pow(Math.abs(Math.sin(wx/9)), 2.2) - Hh*.035*Math.abs(Math.sin(wx/3.1 + 1.1)); };
+  const g = ctx.createLinearGradient(0, Hh*.25, 0, Hh*.6); g.addColorStop(0, '#8fa9d8'); g.addColorStop(1, '#b9d3f0');
+  ctx.beginPath(); ctx.moveTo(-10, Hh); for(let px = -10; px <= W + 10; px += 6) ctx.lineTo(px, yAt(px)); ctx.lineTo(W + 10, Hh); ctx.closePath();
+  ctx.fillStyle = g; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = 'rgba(43,33,64,.3)'; ctx.stroke();
+  ctx.save(); ctx.clip(); ctx.fillStyle = 'rgba(255,255,255,.9)';                       // snow on what rises above the snow line
+  ctx.beginPath(); ctx.moveTo(-10, 0); for(let px = -10; px <= W + 10; px += 6) ctx.lineTo(px, Hh*.5 - Hh*.12 + 6*Math.sin(px*.09)); ctx.lineTo(W + 10, 0); ctx.closePath(); ctx.fill(); ctx.restore();
+}
+function ridge(camX, PPM, par, base, amp1, f1, amp2, f2, fill, edge, trees){
+  const off = camX*par; ctx.beginPath(); ctx.moveTo(-10, Hh);
+  const yAt = px => { const wx = off + px/PPM; return base - amp1*Math.sin(wx/f1) - amp2*Math.sin(wx/f2 + 1.7); };
+  for(let px = -10; px <= W + 10; px += 8) ctx.lineTo(px, yAt(px));
+  ctx.lineTo(W + 10, Hh); ctx.closePath(); ctx.fillStyle = fill; ctx.fill(); ctx.lineWidth = 3; ctx.strokeStyle = edge; ctx.stroke();
+  if(trees){ const step = 5; for(let wx = Math.floor(off/step)*step; wx < off + W/PPM + step; wx += step){ if(hash(wx) < .55) continue;
+      const px = (wx - off)*PPM, y = yAt(px), h = 18 + hash(wx + 3)*14;
+      ctx.fillStyle = '#7a5230'; ctx.fillRect(px - 2, y - h*.5, 4, h*.5);
+      ctx.strokeStyle = INK; ctx.lineWidth = 2;
+      if(hash(wx + 11) < .5){ ctx.fillStyle = '#2f8a3a'; ctx.beginPath(); ctx.moveTo(px, y - h*1.25); ctx.lineTo(px + h*.36, y - h*.35); ctx.lineTo(px - h*.36, y - h*.35); ctx.closePath(); ctx.fill(); ctx.stroke(); }  // pine
+      else { ctx.fillStyle = hash(wx + 7) < .5 ? '#4fae3a' : '#3f9a35'; ctx.beginPath(); ctx.arc(px, y - h*.6, h*.42, 0, 7); ctx.fill(); ctx.stroke();
+        ctx.fillStyle = 'rgba(255,255,255,.25)'; ctx.beginPath(); ctx.arc(px - h*.14, y - h*.74, h*.15, 0, 7); ctx.fill(); } } }
+}
+function coin(x, y, r, t){
+  const sq = Math.abs(Math.cos(t*3 + x*.01)); ctx.save(); ctx.translate(x, y); ctx.scale(.35 + .65*sq, 1);
+  const g = ctx.createRadialGradient(-r*.3, -r*.3, r*.1, 0, 0, r); g.addColorStop(0, '#fff3a8'); g.addColorStop(.5, '#ffc93c'); g.addColorStop(1, '#e09a12');
+  ctx.fillStyle = g; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = '#c47d0a'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(0, 0, r*.68, 0, 7); ctx.stroke();
+  ctx.fillStyle = '#c47d0a'; ctx.beginPath(); for(let i = 0; i < 10; i++){ const a = -Math.PI/2 + i*Math.PI/5, rr2 = i % 2 ? r*.22 : r*.48; ctx.lineTo(Math.cos(a)*rr2, Math.sin(a)*rr2); } ctx.closePath(); ctx.fill();
+  ctx.restore();
+}
+function fuelCan(x, y, u){
+  ctx.save(); ctx.translate(x, y); ctx.lineJoin = 'round';
+  const g = ctx.createLinearGradient(-.45*u, 0, .45*u, 0); g.addColorStop(0, '#ff7a6b'); g.addColorStop(1, '#c9372b');
+  ctx.fillStyle = g; ctx.strokeStyle = INK; ctx.lineWidth = 3; rr(-.42*u, -1.25*u, .84*u, 1.2*u, .12*u); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = '#3d3550'; rr(-.3*u, -1.42*u, .32*u, .22*u, .06*u); ctx.fill(); ctx.stroke();               // handle
+  ctx.fillStyle = '#ffc93c'; rr(.12*u, -1.48*u, .16*u, .26*u, .05*u); ctx.fill(); ctx.stroke();              // cap
+  ctx.strokeStyle = 'rgba(255,255,255,.75)'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-.25*u, -.35*u); ctx.lineTo(.25*u, -1.0*u); ctx.moveTo(-.25*u, -1.0*u); ctx.lineTo(.25*u, -.35*u); ctx.stroke();
+  ctx.restore();
+}
+function wheel(x, y, r, spin){
+  ctx.save(); ctx.translate(x, y);
+  ctx.fillStyle = '#2f2a3a'; ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, r, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.rotate(spin); ctx.strokeStyle = '#4a4458'; ctx.lineWidth = r*.16;
+  for(let i = 0; i < 10; i++){ const a = i*Math.PI/5; ctx.beginPath(); ctx.arc(0, 0, r*.86, a, a + .22); ctx.stroke(); }   // tread
+  const g = ctx.createRadialGradient(-r*.15, -r*.15, r*.05, 0, 0, r*.55); g.addColorStop(0, '#ffffff'); g.addColorStop(1, '#a9a4b8');
+  ctx.fillStyle = g; ctx.lineWidth = 2.5; ctx.strokeStyle = INK; ctx.beginPath(); ctx.arc(0, 0, r*.52, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.strokeStyle = '#6d6880'; ctx.lineWidth = r*.09; for(let i = 0; i < 5; i++){ const a = i*Math.PI*2/5; ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(Math.cos(a)*r*.46, Math.sin(a)*r*.46); ctx.stroke(); }
+  ctx.fillStyle = '#ffc93c'; ctx.beginPath(); ctx.arc(0, 0, r*.14, 0, 7); ctx.fill(); ctx.stroke();
+  ctx.restore();
+}
+function jeep(u, spin, gas, t){
+  const bob = Math.sin(t*18)*u*.03*(gas > .05 ? 1 : 0);
+  ctx.save(); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
+  // body
+  ctx.translate(0, bob);
+  const bg = ctx.createLinearGradient(0, -1.5*u, 0, -.55*u); bg.addColorStop(0, '#ff6f5e'); bg.addColorStop(1, '#c8352a');
+  ctx.fillStyle = bg; ctx.strokeStyle = INK; ctx.lineWidth = 3.5;
+  ctx.beginPath(); ctx.moveTo(-1.7*u, -.62*u); ctx.lineTo(-1.75*u, -1.25*u); ctx.quadraticCurveTo(-1.7*u, -1.42*u, -1.45*u, -1.42*u);
+  ctx.lineTo(.55*u, -1.42*u); ctx.lineTo(1.05*u, -1.25*u); ctx.lineTo(1.65*u, -1.18*u); ctx.quadraticCurveTo(1.85*u, -1.12*u, 1.82*u, -.85*u);
+  ctx.lineTo(1.75*u, -.62*u); ctx.closePath(); ctx.fill(); ctx.stroke();
+  ctx.fillStyle = 'rgba(255,255,255,.35)'; rr(-1.55*u, -1.34*u, 2.1*u, .12*u, .06*u); ctx.fill();          // shine
+  ctx.strokeStyle = 'rgba(43,33,64,.45)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(-.2*u, -1.38*u); ctx.lineTo(-.2*u, -.7*u); ctx.stroke();   // door
+  ctx.fillStyle = '#ffe27a'; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.ellipse(1.7*u, -1.0*u, .1*u, .14*u, 0, 0, 7); ctx.fill(); ctx.stroke();  // headlight
+  ctx.fillStyle = '#3d3550'; rr(-1.95*u, -.92*u, .28*u, .12*u, .05*u); ctx.fill();                       // exhaust
+  // roll cage and windshield
+  ctx.strokeStyle = '#3d3550'; ctx.lineWidth = .11*u; ctx.beginPath(); ctx.moveTo(-1.35*u, -1.42*u); ctx.lineTo(-1.15*u, -2.35*u); ctx.lineTo(.15*u, -2.35*u); ctx.lineTo(.55*u, -1.42*u); ctx.stroke();
+  ctx.fillStyle = 'rgba(170,225,255,.55)'; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.moveTo(.42*u, -1.45*u); ctx.lineTo(.12*u, -2.2*u); ctx.lineTo(.25*u, -2.2*u); ctx.lineTo(.62*u, -1.45*u); ctx.closePath(); ctx.fill(); ctx.stroke();
+  // Yuzi at the wheel
+  const yz = A.yz || (A.yz = Object.assign(new Image(), {src:'img/yuzi-1-cheer.webp'}));
+  if(yz.complete && yz.naturalWidth){ ctx.save(); ctx.beginPath(); ctx.rect(-1.6*u, -3.4*u, 2.3*u, 2.05*u); ctx.clip(); ctx.drawImage(yz, -1.25*u, -3.25*u, 1.75*u, 1.75*u); ctx.restore(); }
+  ctx.fillStyle = '#3d3550'; rr(-1.0*u, -1.5*u, .9*u, .14*u, .06*u); ctx.fill();                          // seat edge
+  ctx.restore();
+  wheel(-1.05*u, -.42*u, .5*u, spin); wheel(1.1*u, -.42*u, .5*u, spin);
+}
+const DUST = [];
 function drawHill(gas, lean, cadence){
   if(!ctx) return;
+  const t = performance.now()/1000;
   const PPM = Math.max(16, Math.min(W/13, Hh/17)), camX = HL.x - (W*.3)/PPM;     // wide enough to see the next hill coming
   HL.camY = HL.camY == null ? HL.y : HL.camY + (HL.y - HL.camY)*.15;
   const span = (Hh*.3)/PPM; HL.camY = Math.max(HL.y - span, Math.min(HL.y + span, HL.camY));   // the jeep never leaves the screen
   const sx = x => (x - camX)*PPM, sy = y => Hh*.66 - (y - HL.camY)*PPM;
-  const sky = ctx.createLinearGradient(0, 0, 0, Hh); sky.addColorStop(0, '#8fd6ff'); sky.addColorStop(1, '#e4f7ff'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, Hh);
-  ctx.fillStyle = '#ffd34d'; ctx.beginPath(); ctx.arc(W*.82, Hh*.18, Math.min(W, Hh)*.07, 0, 7); ctx.fill();
-  ctx.fillStyle = '#b6e3a1'; ctx.beginPath(); ctx.moveTo(0, Hh);                    // far hills, slow parallax
-  for(let px = 0; px <= W + 20; px += 20){ const wx = camX*.3 + px/PPM; ctx.lineTo(px, Hh*.55 - 40*Math.sin(wx/14) - 25*Math.sin(wx/5.3)); } ctx.lineTo(W, Hh); ctx.fill();
-  ctx.beginPath(); ctx.moveTo(0, Hh);
-  for(let px = -10; px <= W + 10; px += 6) ctx.lineTo(px, sy(terrain(camX + px/PPM)));
-  ctx.lineTo(W + 10, Hh); ctx.closePath(); ctx.fillStyle = '#a8703f'; ctx.fill();
-  ctx.lineWidth = Math.max(6, PPM*.35); ctx.strokeStyle = '#6cc04a'; ctx.beginPath();
-  for(let px = -10; px <= W + 10; px += 6){ const y = sy(terrain(camX + px/PPM)); px < -5 ? ctx.moveTo(px, y) : ctx.lineTo(px, y); } ctx.stroke();
-  for(let m = Math.ceil(camX/50)*50; m < camX + W/PPM; m += 50){ const x = sx(m), y = sy(terrain(m)); ctx.fillStyle = '#fff'; ctx.strokeStyle = C.ink; ctx.lineWidth = 2;
-    ctx.fillRect(x - 1.5, y - PPM*1.6, 3, PPM*1.6); ctx.font = `800 ${Math.round(PPM*.55)}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.fillStyle = C.ink; ctx.fillText(fa(m) + 'm', x, y - PPM*1.75); }
-  HL.coinsAt.forEach(c => { if(c.got) return; const x = sx(c.x); if(x < -20 || x > W + 20) return; const y = sy(terrain(c.x) + 1.2);
-    ctx.fillStyle = '#ffc93c'; ctx.strokeStyle = C.ink; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(x, y, PPM*.32, 0, 7); ctx.fill(); ctx.stroke(); });
-  HL.cans.forEach(cx => { const x = sx(cx); if(x < -30 || x > W + 30) return; const y = sy(terrain(cx));
-    ctx.fillStyle = '#e2574c'; ctx.strokeStyle = C.ink; ctx.lineWidth = 3; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(x - PPM*.4, y - PPM*1.2, PPM*.8, PPM*1.1, 5) : ctx.rect(x - PPM*.4, y - PPM*1.2, PPM*.8, PPM*1.1); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(PPM*.5)}px sans-serif`; ctx.textAlign = 'center'; ctx.fillText('⛽', x, y - PPM*.45); });
-  // the jeep, with Yuzi at the wheel
-  ctx.save(); ctx.translate(sx(HL.x), sy(HL.y)); ctx.rotate(-HL.phi); const u = PPM;
-  ctx.lineWidth = 3; ctx.strokeStyle = C.ink;
-  ctx.fillStyle = '#3d3550'; [[-1.05, -.45], [1.05, -.45]].forEach(([wx, wy]) => { ctx.beginPath(); ctx.arc(wx*u, wy*u, .48*u, 0, 7); ctx.fill(); ctx.stroke(); ctx.fillStyle = '#bbb'; ctx.beginPath(); ctx.arc(wx*u, wy*u, .18*u, 0, 7); ctx.fill(); ctx.fillStyle = '#3d3550'; });
-  ctx.fillStyle = '#e2574c'; ctx.beginPath(); ctx.roundRect ? ctx.roundRect(-1.55*u, -1.35*u, 3.1*u, .8*u, .25*u) : ctx.rect(-1.55*u, -1.35*u, 3.1*u, .8*u); ctx.fill(); ctx.stroke();
-  ctx.fillStyle = '#ffc93c'; ctx.beginPath(); ctx.moveTo(-.9*u, -1.35*u); ctx.lineTo(-.6*u, -2.1*u); ctx.lineTo(.5*u, -2.1*u); ctx.lineTo(.8*u, -1.35*u); ctx.closePath(); ctx.fill(); ctx.stroke();
-  const yz = A.yz || (A.yz = Object.assign(new Image(), {src:'img/yuzi-1-cheer.webp'})); if(yz.complete) ctx.drawImage(yz, -.75*u, -3.05*u, 1.5*u, 1.5*u);
+  // sky, sun, clouds
+  const sky = ctx.createLinearGradient(0, 0, 0, Hh); sky.addColorStop(0, '#5ec0ff'); sky.addColorStop(.7, '#c9ecff'); sky.addColorStop(1, '#e8f8ff'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, Hh);
+  const sr = Math.min(W, Hh)*.07, sxn = W*.8, syn = Hh*.16, glow = ctx.createRadialGradient(sxn, syn, sr*.5, sxn, syn, sr*3);
+  glow.addColorStop(0, 'rgba(255,240,150,.9)'); glow.addColorStop(1, 'rgba(255,240,150,0)'); ctx.fillStyle = glow; ctx.fillRect(sxn - sr*3, syn - sr*3, sr*6, sr*6);
+  ctx.save(); ctx.translate(sxn, syn); ctx.rotate(t*.15); ctx.fillStyle = 'rgba(255,230,120,.35)';
+  for(let i = 0; i < 12; i++){ ctx.rotate(Math.PI/6); ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(sr*2.6, -sr*.32); ctx.lineTo(sr*2.6, sr*.32); ctx.closePath(); ctx.fill(); }
   ctx.restore();
+  const sg = ctx.createRadialGradient(sxn - sr*.3, syn - sr*.3, sr*.1, sxn, syn, sr); sg.addColorStop(0, '#fff7b0'); sg.addColorStop(1, '#ffc93c');
+  ctx.fillStyle = sg; ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(sxn, syn, sr, 0, 7); ctx.fill(); ctx.stroke();
+  for(let i = Math.floor(camX*.1/40) - 1; i < camX*.1/40 + W/(40*PPM)*2 + 2; i++){ const cx2 = (i*40 - camX*.1)*PPM*.5 + hash(i)*60, cy2 = Hh*(.08 + hash(i + 9)*.2);
+    if(cx2 > -150 && cx2 < W + 50) cloud(cx2, cy2, .6 + hash(i + 4)*.5); }
+  // far mountains, middle hills with trees
+  mountains(camX, PPM);
+  ridge(camX, PPM, .18, Hh*.56, 30, 8, 16, 3.4, '#9fdc7c', 'rgba(43,33,64,.4)', false);
+  ridge(camX, PPM, .35, Hh*.64, 36, 6, 18, 2.6, '#6cc04f', 'rgba(43,33,64,.55)', true);
+  // the road: soil with layers, pebbles, grass on top
+  const xs = []; for(let px = -12; px <= W + 12; px += 5) xs.push([px, sy(terrain(camX + px/PPM))]);
+  const soil = ctx.createLinearGradient(0, Hh*.4, 0, Hh); soil.addColorStop(0, '#c48745'); soil.addColorStop(1, '#7d4f25');
+  ctx.beginPath(); ctx.moveTo(-12, Hh); xs.forEach(([px, py]) => ctx.lineTo(px, py)); ctx.lineTo(W + 12, Hh); ctx.closePath(); ctx.fillStyle = soil; ctx.fill();
+  [[1.2, '#b0743a', .25], [2.9, '#975f2c', .45], [5.0, '#7c4a22', .7], [7.6, '#633818', 1.1]].forEach(([d, col, wob]) => {   // strata follow the road
+    const off = (px, py) => py + d*PPM + wob*PPM*.35*Math.sin((camX + px/PPM)/2.3 + d);
+    ctx.beginPath(); ctx.moveTo(-12, Hh); xs.forEach(([px, py]) => ctx.lineTo(px, off(px, py))); ctx.lineTo(W + 12, Hh); ctx.closePath();
+    ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = 'rgba(43,33,64,.25)'; ctx.lineWidth = 2;
+    ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, off(px, py)) : ctx.moveTo(px, off(px, py))); ctx.stroke(); });
+  for(let wx = Math.floor(camX); wx < camX + W/PPM + 1; wx += 1){ if(hash(wx*3.1) < .6) continue; const px = sx(wx + hash(wx)), py = sy(terrain(wx + hash(wx))) + (1 + hash(wx + 5)*5)*PPM;
+    ctx.fillStyle = hash(wx + 2) < .5 ? '#c9b49a' : '#a99178'; ctx.strokeStyle = 'rgba(43,33,64,.45)'; ctx.lineWidth = 1.5;
+    ctx.beginPath(); ctx.ellipse(px, py, PPM*(.14 + hash(wx + 8)*.2), PPM*(.1 + hash(wx + 4)*.06), hash(wx)*.6, 0, 7); ctx.fill(); ctx.stroke(); }
+  ctx.lineJoin = 'round'; ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py) : ctx.moveTo(px, py));
+  ctx.lineWidth = PPM*.85; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = PPM*.72; ctx.strokeStyle = '#3f9e2b'; ctx.stroke();
+  ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py - PPM*.08) : ctx.moveTo(px, py - PPM*.08)); ctx.lineWidth = PPM*.42; ctx.strokeStyle = '#62c43f'; ctx.stroke();
+  ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py - PPM*.2) : ctx.moveTo(px, py - PPM*.2)); ctx.lineWidth = PPM*.12; ctx.strokeStyle = '#a6ef74'; ctx.stroke();
+  ctx.strokeStyle = '#3f9a2c'; ctx.lineWidth = 2;
+  for(let wx = Math.floor(camX/1.3)*1.3; wx < camX + W/PPM; wx += 1.3){ const px = sx(wx), py = sy(terrain(wx)) - PPM*.18; if(hash(wx) < .4) continue;
+    ctx.beginPath(); ctx.moveTo(px - 3, py); ctx.lineTo(px - 5, py - PPM*.35); ctx.moveTo(px, py); ctx.lineTo(px, py - PPM*.45); ctx.moveTo(px + 3, py); ctx.lineTo(px + 6, py - PPM*.32); ctx.stroke(); }
+  // distance flags
+  for(let m = Math.ceil(camX/50)*50; m < camX + W/PPM; m += 50){ if(m <= 0) continue; const x = sx(m), y = sy(terrain(m));
+    ctx.strokeStyle = INK; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x, y - PPM*2.4); ctx.stroke();
+    ctx.fillStyle = m % 100 ? '#3b82c4' : '#e2574c'; ctx.beginPath(); ctx.moveTo(x, y - PPM*2.4); ctx.lineTo(x + PPM*1.5, y - PPM*2.05); ctx.lineTo(x, y - PPM*1.7); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#fff'; ctx.font = `900 ${Math.round(PPM*.42)}px Vazirmatn, sans-serif`; ctx.textAlign = 'center'; ctx.fillText(fa(m), x + PPM*.6, y - PPM*1.92); }
+  HL.coinsAt.forEach(c => { if(c.got) return; const x = sx(c.x); if(x < -20 || x > W + 20) return; coin(x, sy(terrain(c.x) + 1.35 + .12*Math.sin(t*3 + c.x)), PPM*.48, t); });
+  HL.cans.forEach(cx => { const x = sx(cx); if(x < -30 || x > W + 30) return; fuelCan(x, sy(terrain(cx)), PPM); });
+  // dust from the back wheel while the engine pulls on the ground
+  if(gas > .1 && !HL.air && Math.random() < .5 + gas*.5) DUST.push({x:HL.x - 1.4, y:HL.y + .3, vx:-1 - Math.random()*2, vy:.6 + Math.random(), life:1});
+  for(let i = DUST.length - 1; i >= 0; i--){ const d = DUST[i]; d.x += d.vx*.016; d.y += d.vy*.016; d.life -= .025; if(d.life <= 0){ DUST.splice(i, 1); continue; }
+    ctx.fillStyle = `rgba(190,150,110,${d.life*.5})`; ctx.beginPath(); ctx.arc(sx(d.x), sy(d.y), PPM*(.25 + (1 - d.life)*.5), 0, 7); ctx.fill(); }
+  // shadow under the jeep, then the jeep
+  const gy = sy(terrain(HL.x)); ctx.fillStyle = 'rgba(43,33,64,.18)'; ctx.beginPath(); ctx.ellipse(sx(HL.x), gy + 2, PPM*1.8*Math.max(.4, 1 - (HL.y - terrain(HL.x))*.15), PPM*.22, 0, 0, 7); ctx.fill();
+  HL.spin = (HL.spin || 0) + (HL.air ? 0 : HL.v*.016/.5);
+  ctx.save(); ctx.translate(sx(HL.x), sy(HL.y)); ctx.rotate(-HL.phi); jeep(PPM, HL.spin, gas, t); ctx.restore();
   // what the body is doing, so the player sees cause and effect
-  const m = Math.round(HL.far);
-  const fuel = Math.round(HL.fuel/5)*5;
-  hud(`<span>${fa(m)} <b>متر</b></span><span>🪙 ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span>رکورد ${fa(best('hill', A.who))}</span>` : ''}`,
+  const m = Math.round(HL.far), fuel = Math.round(HL.fuel/5)*5;
+  hud(`<span>🚩 ${fa(m)} <b>متر</b></span><span>🪙 ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span>🏆 ${fa(best('hill', A.who))}</span>` : ''}`,
     `<span>⛽<i class="meter" style="background:linear-gradient(90deg,${fuel < 25 ? '#e2574c' : '#2fbf71'} ${fuel}%,#fff ${fuel}%)"></i></span>`
     + (HL.air ? `<span>${Math.abs(lean) > .3 ? (lean > 0 ? 'کج به راست ↘' : 'کج به چپ ↙') : 'بدنت را کج کن!'}</span>`
-              : `<span>${gas > .05 ? `گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : 'درجا بدو!'}</span>`));
+              : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`));
 }
 
 /* ================================================================ game 2: shape walls
@@ -282,44 +396,84 @@ function poseFigure(k, c, scale, cx, groundY){
   return {head, r:c.head*s, segs:[[shL, shR], [neck, pel], [hpL, hpR], limb(shL, a1, a2, c.ua, c.fa), limb(shR, a3, a4, c.ua, c.fa), legL, legR], s};
 }
 let wallCv = null;
+/* the stage: sky, distant hills, and a tiled track that rolls toward the player while a wall is coming */
+function stage(now, moving){
+  const hz = Hh*.56, cx = W/2;
+  const sky = ctx.createLinearGradient(0, 0, 0, hz); sky.addColorStop(0, '#5ec0ff'); sky.addColorStop(1, '#d6f1ff'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, hz + 2);
+  for(let i = 0; i < 4; i++) cloud(((i*W*.37 + now*.008*(1 + i*.3)) % (W + 160)) - 120, Hh*(.07 + .09*(i % 2)), .45 + .15*(i % 3));
+  const hill = (base, amp, f, col) => { ctx.beginPath(); ctx.moveTo(0, hz + 2); for(let x = 0; x <= W + 8; x += 8) ctx.lineTo(x, base - amp*(.6 + .4*Math.sin(x/f + base))*Math.abs(Math.sin(x/(f*1.7) + 1)));
+    ctx.lineTo(W, hz + 2); ctx.closePath(); ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = 'rgba(43,33,64,.35)'; ctx.lineWidth = 2.5; ctx.stroke(); };
+  hill(hz, Hh*.1, 60, '#9fdc7c'); hill(hz + 1, Hh*.05, 37, '#6cc04f');
+  // grass on both sides, the track in the middle
+  ctx.fillStyle = '#5cb83f'; ctx.fillRect(0, hz, W, Hh - hz);
+  const zOf = z => 1/(1 + z), X = (xw, z) => cx + xw*W*.5*zOf(z), Y = z => hz + (Hh - hz)*zOf(z);
+  const lanes = [-1.3, -.78, -.26, .26, .78, 1.3], ph = moving ? (now/1000*1.6) % 1 : 0;
+  for(let n = -1; n < 40; n++){ const z1 = Math.max(0, (n - ph)*.45), z2 = Math.max(0, (n + 1 - ph)*.45); if(z2 <= 0) continue;
+    for(let m = 0; m < lanes.length - 1; m++){
+      ctx.fillStyle = (n + m) % 2 ? '#f6b04a' : '#ffc866';
+      ctx.beginPath(); ctx.moveTo(X(lanes[m], z1), Y(z1)); ctx.lineTo(X(lanes[m + 1], z1), Y(z1)); ctx.lineTo(X(lanes[m + 1], z2), Y(z2)); ctx.lineTo(X(lanes[m], z2), Y(z2)); ctx.closePath(); ctx.fill(); } }
+  ctx.strokeStyle = '#fff'; ctx.lineWidth = 4; [lanes[0], lanes[lanes.length - 1]].forEach(l => { ctx.beginPath(); ctx.moveTo(X(l, 0), Y(0)); ctx.lineTo(X(l, 60), Y(60)); ctx.stroke(); });
+  const fog = ctx.createLinearGradient(0, hz, 0, hz + (Hh - hz)*.25); fog.addColorStop(0, 'rgba(214,241,255,.5)'); fog.addColorStop(1, 'rgba(214,241,255,0)'); ctx.fillStyle = fog; ctx.fillRect(0, hz, W, (Hh - hz)*.25);
+  return hz;
+}
+const BRICK = ['#d9774b', '#cf6a40', '#e0855a', '#c96339', '#d77350'];
 function drawWall(now, c){
   if(!ctx) return;
-  const floorY = Hh*.9, g = ctx.createLinearGradient(0, 0, 0, Hh);
-  g.addColorStop(0, '#bfe8ff'); g.addColorStop(.62, '#e9f6ff'); g.addColorStop(.62, '#e8c88f'); g.addColorStop(1, '#c99a5b'); ctx.fillStyle = g; ctx.fillRect(0, 0, W, Hh);
-  ctx.strokeStyle = 'rgba(120,80,40,.35)'; ctx.lineWidth = 2; for(let i = -6; i <= 6; i++){ ctx.beginPath(); ctx.moveTo(W/2 + i*W*.02, Hh*.62); ctx.lineTo(W/2 + i*W*.16, Hh); ctx.stroke(); }
+  const floorY = Hh*.9, w = WL.wall, hz = stage(now, !!w);
   if(!c){ hud(''); return; }
   const k = (Hh*.62)/c.height, cx = W/2;
-  const w = WL.wall;
   // the player's own body, live, in the plane the wall arrives at — so they see whether they fit
   const drawSelf = () => { const b = B.b; if(!b || performance.now() - B.t > 900) return;
     const mx = p => cx + (b.hip.x - p.x)*k, my = p => floorY - (c.hipY - p.y)*k - (c.th + c.sh)*k;   // mirrored, anchored at the hips
-    ctx.save(); ctx.globalAlpha = .8; ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = WL.wall && POSES[WL.wall.k].ok(b, c) ? '#2fbf71' : '#3b82c4'; ctx.lineWidth = Math.max(5, c.sw*k*.13);
-    [[b.shL, b.shR], [b.sh, b.hip], [b.hipL, b.hipR], [b.shL, b.eL, b.wL], [b.shR, b.eR, b.wR], [b.hipL, b.kL, b.aL], [b.hipR, b.kR, b.aR]].forEach(seg => {
-      ctx.beginPath(); seg.forEach((p, i) => i ? ctx.lineTo(mx(p), my(p)) : ctx.moveTo(mx(p), my(p))); ctx.stroke(); });
-    ctx.fillStyle = ctx.strokeStyle; ctx.beginPath(); ctx.arc(mx(b.nose), my(b.nose), c.head*k*.75, 0, 7); ctx.fill(); ctx.restore(); };
+    const ok = WL.wall && POSES[WL.wall.k].ok(b, c), segs = [[b.shL, b.shR], [b.sh, b.hip], [b.hipL, b.hipR], [b.shL, b.eL, b.wL], [b.shR, b.eR, b.wR], [b.hipL, b.kL, b.aL], [b.hipR, b.kR, b.aR]];
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    [[INK, 1.6], [ok ? '#2fbf71' : '#3b82c4', 1]].forEach(([col, f]) => { ctx.strokeStyle = col; ctx.lineWidth = Math.max(5, c.sw*k*.13)*f + (f > 1 ? 3 : 0);
+      segs.forEach(seg => { ctx.beginPath(); seg.forEach((p, i) => i ? ctx.lineTo(mx(p), my(p)) : ctx.moveTo(mx(p), my(p))); ctx.stroke(); });
+      ctx.fillStyle = col; ctx.beginPath(); ctx.arc(mx(b.nose), my(b.nose), c.head*k*.75 + (f > 1 ? 3 : 0), 0, 7); ctx.fill(); });
+    ctx.restore(); };
   if(w){
-    const p = Math.min(1, (now - w.t0)/w.dur), s = .22 + .78*Math.pow(p, 1.6);
-    const ww = W*1.15*s, wh = Hh*.86*s, wx = cx - ww/2, wy = floorY - wh;
+    const p = Math.min(1, (now - w.t0)/w.dur), s = .2 + .8*Math.pow(p, 1.6);
+    const ww = Math.max(W*1.15, Hh*.95)*s, wh = Hh*.86*s, bottom = hz + (floorY - hz)*(.06 + .94*Math.pow(p, 1.6)), wx = cx - ww/2, wy = bottom - wh;
+    // shadow on the floor in front of the wall
+    ctx.fillStyle = 'rgba(43,33,64,.22)'; ctx.beginPath(); ctx.moveTo(wx, bottom); ctx.lineTo(wx + ww, bottom); ctx.lineTo(wx + ww*1.04, bottom + 14*s); ctx.lineTo(wx - ww*.04, bottom + 14*s); ctx.closePath(); ctx.fill();
     if(!wallCv) wallCv = document.createElement('canvas');
-    wallCv.width = Math.max(1, Math.round(ww)); wallCv.height = Math.max(1, Math.round(wh)); const x = wallCv.getContext('2d');
-    x.fillStyle = '#d9774b'; x.fillRect(0, 0, ww, wh);
-    x.strokeStyle = '#b85c34'; x.lineWidth = Math.max(1, 3*s); const bh = 34*s, bw = 76*s;
-    for(let r = 0; r*bh < wh; r++){ x.beginPath(); x.moveTo(0, r*bh); x.lineTo(ww, r*bh); x.stroke(); for(let q = (r % 2 ? bw/2 : 0); q < ww; q += bw){ x.beginPath(); x.moveTo(q, r*bh); x.lineTo(q, r*bh + bh); x.stroke(); } }
-    const f = poseFigure(w.k, c, k*s, ww/2, wh - (Hh - floorY)*0 - 2);
-    x.globalCompositeOperation = 'destination-out'; x.lineCap = 'round'; x.lineJoin = 'round'; x.lineWidth = c.sw*k*s*.62;
-    f.segs.forEach(seg => { x.beginPath(); seg.forEach((pt, i) => i ? x.lineTo(pt.x, pt.y) : x.moveTo(pt.x, pt.y)); x.stroke(); });
-    x.lineWidth = c.sw*k*s*.95; x.beginPath(); x.moveTo(f.segs[1][0].x, f.segs[1][0].y); x.lineTo(f.segs[1][1].x, f.segs[1][1].y); x.stroke();
-    x.beginPath(); x.arc(f.head.x, f.head.y, f.r*1.35, 0, 7); x.fill();
-    x.globalCompositeOperation = 'source-over'; x.strokeStyle = '#2b2140'; x.lineWidth = Math.max(2, 5*s); x.strokeRect(0, 0, ww, wh);
+    wallCv.width = Math.max(1, Math.round(ww*DPR)); wallCv.height = Math.max(1, Math.round(wh*DPR)); const x = wallCv.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
+    // bricks, each its own shade, with mortar and a light top edge
+    x.fillStyle = '#f0d6b4'; x.fillRect(0, 0, ww, wh);
+    const bh = 30*s, bw = 66*s, gap = Math.max(1, 3*s);
+    for(let r = 0; r*bh < wh; r++) for(let q = (r % 2 ? -bw/2 : 0); q < ww; q += bw){
+      const id = r*31 + Math.round(q/bw); x.fillStyle = BRICK[Math.floor(hash(id + w.t0 % 97)*BRICK.length)];
+      x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, bh - gap);
+      x.fillStyle = 'rgba(255,255,255,.18)'; x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, Math.max(1, 4*s));
+      x.fillStyle = 'rgba(80,30,10,.18)'; x.fillRect(q + gap/2, r*bh + bh - gap/2 - Math.max(1, 4*s), bw - gap, Math.max(1, 4*s)); }
+    // stone coping on top, and a dark plinth at the bottom
+    x.fillStyle = '#b9b2c8'; x.fillRect(0, 0, ww, 16*s); x.fillStyle = '#d9d4e4'; x.fillRect(0, 0, ww, 6*s);
+    x.fillStyle = '#8c4a2c'; x.fillRect(0, wh - 12*s, ww, 12*s);
+    const f = poseFigure(w.k, c, k*s, ww/2, wh - 2);
+    const cut = (extra, op, col) => { x.globalCompositeOperation = op; x.strokeStyle = x.fillStyle = col; x.lineCap = 'round'; x.lineJoin = 'round';
+      x.lineWidth = c.sw*k*s*.62 + extra; f.segs.forEach(seg => { x.beginPath(); seg.forEach((pt, i) => i ? x.lineTo(pt.x, pt.y) : x.moveTo(pt.x, pt.y)); x.stroke(); });
+      x.lineWidth = c.sw*k*s*.95 + extra; x.beginPath(); x.moveTo(f.segs[1][0].x, f.segs[1][0].y); x.lineTo(f.segs[1][1].x, f.segs[1][1].y); x.stroke();
+      x.beginPath(); x.arc(f.head.x, f.head.y, f.r*1.35 + extra/2, 0, 7); x.fill(); };
+    cut(Math.max(4, 16*s), 'source-over', '#6b3420');           // the broken edge around the hole
+    cut(Math.max(2, 8*s), 'source-over', '#4a2414');
+    cut(0, 'destination-out', '#000');
+    x.globalCompositeOperation = 'source-over'; x.strokeStyle = INK; x.lineWidth = Math.max(2, 5*s); x.strokeRect(0, 0, ww, wh);
     if(p > .97) drawSelf();                     // the body passes through the hole on top of the wall
-    ctx.drawImage(wallCv, wx, wy);
+    ctx.drawImage(wallCv, wx, wy, ww, wh);
     if(p > .5 && p <= .97) drawSelf();          // once the wall is near: the outline next to the hole it must fit
-    ctx.save(); ctx.direction = 'rtl'; ctx.textAlign = 'center'; ctx.font = `900 ${Math.round(Math.min(W, Hh)*.075)}px Vazirmatn, sans-serif`; ctx.lineWidth = 6; ctx.strokeStyle = '#fff'; ctx.fillStyle = C.ink;
-    const pip = $('#plCam').getBoundingClientRect(), ty = Math.max(Hh*.2, pip.bottom + 44);   // below the camera picture
-    ctx.strokeText(POSES[w.k].n + '!', cx, ty); ctx.fillText(POSES[w.k].n + '!', cx, ty); ctx.restore();
+    // the pose's name on a ribbon, below the camera picture
+    const pip = $('#plCam').getBoundingClientRect(), ty = Math.max(Hh*.2, pip.bottom + 40), name = POSES[w.k].n + '!';
+    ctx.save(); ctx.direction = 'rtl'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `900 ${Math.round(Math.min(W, Hh)*.07)}px Vazirmatn, sans-serif`;
+    const tw = ctx.measureText(name).width + 48, th = Math.min(W, Hh)*.11, pop = 1 + .12*Math.max(0, 1 - (now - w.t0)/250);
+    ctx.translate(cx, ty); ctx.scale(pop, pop);
+    ctx.fillStyle = '#c8352a'; ctx.strokeStyle = INK; ctx.lineWidth = 3;
+    [-1, 1].forEach(d => { ctx.beginPath(); ctx.moveTo(d*tw/2, -th*.32); ctx.lineTo(d*(tw/2 + th*.5), -th*.32); ctx.lineTo(d*(tw/2 + th*.3), th*.08); ctx.lineTo(d*(tw/2 + th*.5), th*.48); ctx.lineTo(d*tw/2, th*.48); ctx.closePath(); ctx.fill(); ctx.stroke(); });
+    ctx.fillStyle = '#ff6f5e'; rr(-tw/2, -th/2, tw, th, th*.22); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = 'rgba(255,255,255,.3)'; rr(-tw/2 + 6, -th/2 + 5, tw - 12, th*.22, th*.1); ctx.fill();
+    ctx.fillStyle = '#fff'; ctx.lineWidth = 5; ctx.strokeStyle = 'rgba(43,33,64,.6)'; ctx.strokeText(name, 0, 2); ctx.fillText(name, 0, 2); ctx.restore();
   } else drawSelf();
   if(WL.flash && now - WL.flash < 700){ ctx.fillStyle = WL.flashOk ? 'rgba(47,191,113,.28)' : 'rgba(226,87,76,.32)'; ctx.fillRect(0, 0, W, Hh); }
-  hud(`<span>${fa(WL.score)} <b>دیوار</b></span><span>${'❤️'.repeat(Math.max(0, WL.hearts))}${'🤍'.repeat(Math.max(0, 3 - WL.hearts))}</span>${best('wall', A.who) ? `<span>رکورد ${fa(best('wall', A.who))}</span>` : ''}`);
+  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span><span>${'❤️'.repeat(Math.max(0, WL.hearts))}${'🤍'.repeat(Math.max(0, 3 - WL.hearts))}</span>${best('wall', A.who) ? `<span>🏆 ${fa(best('wall', A.who))}</span>` : ''}`);
 }
 
 /* ================================================================ hooks */

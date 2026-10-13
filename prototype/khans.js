@@ -363,7 +363,8 @@ function bodyOf(lm, W, Hh){
     hipL:p(23), hipR:p(24), kL:p(25), kR:p(26), aL:p(27), aR:p(28), tL:p(31), tR:p(32)};
   b.sh = mid(b.shL, b.shR); b.hip = mid(b.hipL, b.hipR);
   b.sw = Math.max(1, dist(b.shL, b.shR)); b.torso = Math.max(1, b.hip.y - b.sh.y);
-  b.feet = vis(27) && vis(28); b.legs = b.feet && vis(25) && vis(26);
+  const visF = i => lm[i] && (lm[i].visibility ?? 1) > .3;           // feet: lower confidence is normal at the frame's edge
+  b.feet = visF(27) && visF(28); b.legs = b.feet && vis(25) && vis(26);
   b.leg = b.feet ? Math.max(8, Math.max(b.aL.y, b.aR.y) - b.hip.y) : b.torso * 1.4;
   b.angL = b.legs ? ang(b.hipL, b.kL, b.aL) : 180; b.angR = b.legs ? ang(b.hipR, b.kR, b.aR) : 180;
   b.face = vis(0) && vis(7) && vis(8);

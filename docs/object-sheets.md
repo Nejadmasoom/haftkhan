@@ -85,3 +85,30 @@ A single square image, pure white background, a clean 4-column by 3-row grid of 
 ```
 
 برای بچه‌های کارت‌های ۱ و ۲ در برگهٔ ۳، اگر بخواهید با شخصیت‌های خودِ بازی یکی باشند، همان دختر و پسرِ بازی را در پرامپت توصیف کنید: دختر با روسریِ فیروزه‌ای و گرمکنِ فیروزه‌ای، پسر با گرمکنِ زرد.
+
+---
+
+## برگهٔ ۴: بازی‌های متفرقه (ماشینِ تپه و دیوارِ شکل)
+
+این دو بازی الان کاملاً با کد کشیده می‌شوند و قابلِ‌قبول‌اند؛ اگر این برگه را بسازید، جای شکل‌های کدی می‌نشیند و یک‌دست‌تر می‌شود. ماشین را **از پهلو، رو به راست** و **بی‌چرخ** بخواهید، چون چرخ‌ها جدا می‌چرخند.
+
+| # | شیء | کجای بازی |
+|---|---|---|
+| 1 | بدنهٔ جیپِ کوچکِ قرمز، از پهلو رو به راست، بی‌چرخ، بی‌راننده، با میله‌های محافظ | ماشینِ تپه |
+| 2 | چرخِ ماشین از روبه‌رو (دایرهٔ کامل) با رینگِ ساده | همان |
+| 3 | سکهٔ طلاییِ براق با ستاره در وسط | سکه‌ها |
+| 4 | گالنِ بنزینِ قرمز (جری‌کن) | سوخت |
+| 5 | پرچمِ کوچکِ آبی روی میله، بی‌نوشته | نشانِ هر ۵۰ متر |
+| 6 | درختِ گردِ سرسبز کوچک | تپه‌های پشت |
+| 7 | درختِ کاجِ کوچک | تپه‌های پشت |
+| 8 | سنگِ کوچکِ خاکستری | خاکِ جاده |
+| 9 | یک تکه دیوارِ آجریِ صاف، فقط آجر (بافتِ مربعی که بشود تکرارش کرد) | دیوارِ شکل |
+| 10 | روبانِ قرمزِ پهن و خالی (بنر)، بی‌نوشته | اسمِ هر حالت |
+| 11 | قلبِ قرمزِ براق | جان‌ها |
+| 12 | جامِ طلاییِ کوچک | رکورد |
+
+**پرامپت:**
+```
+A single square image, pure white background, a clean 4-column by 3-row grid of 12 separate objects, each centered in its own cell with generous empty margin, no grid lines, no text, no labels. Bright mobile-game cartoon style like Hill Climb Racing: saturated colors, soft gradient shading with a small white shine, bold dark-purple outline (#2b2140), rounded shapes. Objects:
+1 the body of a small red off-road jeep seen exactly from the side facing right, WITHOUT wheels and without a driver, open top with a dark roll cage and a small windshield, 2 a single car wheel seen straight from the side (perfect circle) with a dark knobby tire and a simple grey rim, 3 a shiny gold coin with an embossed star in the middle, 4 a red metal fuel jerrycan, 5 a small blue pennant flag on a thin pole, blank, 6 a small round leafy green tree, 7 a small green pine tree, 8 a small grey rock, 9 a flat square patch of red-orange brick wall texture, front view, bricks only, 10 a wide blank red ribbon banner with folded ends, no text, 11 a shiny red heart, 12 a small golden trophy cup.
+```
