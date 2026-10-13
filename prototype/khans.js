@@ -741,7 +741,7 @@ const lvGoal = (goal, L) => Math.max(1, Math.round(goal * (1 + .25*(L - 1))));
 function effGame(n, gi, who){
   const base = LESSONS[n].play.games[gi], L = lvOf(who, gid(n, gi)), senior = BAND[who] === 'senior', easy = senior && base.easy;
   const g = Object.assign({}, base, easy || {}, {gi, id:gid(n, gi), lv:L, easyOn:!!easy});
-  g.goal = lvGoal(base.goal, L);
+  g.goal = base.kind === 'quiz' ? base.items.filter(it => it[2]).length : lvGoal(base.goal, L);   // a quiz has only so many right answers
   g.grav = (senior ? .8 : 1) * (1 + .1*(L - 1));     // balloons fall faster at higher levels
   return g;
 }
@@ -939,7 +939,9 @@ function finishDay(){
 }
 function challengeLine(){
   const t = X.times.map(x => `${x.name}: ${secs(x.sec)} ثانیه${x.rec ? ' (رکوردِ تازه!)' : ''}`).join('، ');
-  const nx = X.lvd > 0 ? 'دفعهٔ بعد یک سطح سخت‌تر.' : X.lvd < 0 ? 'دفعهٔ بعد یک سطح آسان‌تر.' : 'دفعهٔ بعد همین سطح.';
+  const top = X.games.every(g => g.lv >= LV_MAX), floor = X.games.every(g => g.lv <= 1);
+  const nx = X.lvd > 0 ? (top ? 'بالاترین سطح! باز هم هر چقدر دوست داری بازی کن.' : 'دفعهٔ بعد یک سطح سخت‌تر.') : X.lvd < 0 ? (floor ? 'دفعهٔ بعد همین سطحِ آسان.' : 'دفعهٔ بعد یک سطح آسان‌تر.') : 'دفعهٔ بعد همین سطح.';
+  const again = $('#gxAgain'); if(again) again.textContent = X.lvd > 0 && !top ? 'یک دورِ دیگر، سخت‌تر!' : X.lvd < 0 && !floor ? 'یک دورِ دیگر، آسان‌تر' : 'یک دورِ دیگر';
   return `<span class="chal">${t ? t + '. ' : ''}${nx}</span>`;
 }
 /* free play: no torch, but the level, the record and the movement all count */
@@ -1150,7 +1152,9 @@ function taskHTML(t){
   return `<div class="task">${figs}<div class="row">${cnt}${p}</div>${body}${cam && Y.camOn ? '<div class="camslot" id="tkSlot"></div>' : ''}</div>
     ${cam ? `<div style="display:flex;justify-content:center">${camBtn('tkCam', Y.camOn, 'یوزی با دوربین بشمارد')}</div>` : ''}`;
 }
-function taskDone(){ const nx = $('#gsNext'); if(!nx) return; nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی'; const c = $('#tkCnt'); if(c){ c.classList.add('done'); c.firstChild.nodeValue = '✓'; } sfx('done'); vib([15,30,15]); }
+function taskDone(){ const nx = $('#gsNext'); if(!nx) return; nx.disabled = false; nx.style.opacity = ''; nx.textContent = 'بعدی';
+  if(!$('#gsAgain')){ nx.insertAdjacentHTML('beforebegin', '<button class="ghost" id="gsAgain">یک بارِ دیگر</button>'); $('#gsAgain').addEventListener('click', ()=>{ sfx('start'); renderStory(Y.page); }); }   // more is always welcome
+  const c = $('#tkCnt'); if(c){ c.classList.add('done'); c.firstChild.nodeValue = '✓'; } sfx('done'); vib([15,30,15]); }
 function wireTask(t){
   const n = G.n, cnt = $('#tkCnt'); let k = 0;
   const camBtnEl = $('#tkCam');

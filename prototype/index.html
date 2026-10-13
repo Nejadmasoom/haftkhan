@@ -976,7 +976,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
           <div class="big-torches" id="bigTorches" aria-hidden="true"></div>
           <p id="rewardText">مشعل روز دوم روشن شد. یک روز دیگر تا گذشتن از پلِ لرزان.</p>
           <div class="xp"><span id="xpText">یوزی دارد بزرگ می‌شود</span><div class="bar"><i id="xpBar" style="width:40%"></i></div></div>
-          <button class="cta gold" data-go="khan">برگرد به خوان</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap;justify-content:center"><button class="cta" id="again5">یک دورِ دیگر</button><button class="cta gold" data-go="khan">برگرد به خوان</button></div>
         </div>
       </section>
 
@@ -988,6 +988,7 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
         </div>
         <div class="sheet">
           <div class="book-rule"><img src="img/yuzi-1-talk.webp" alt="">کتاب می‌گوید: «یک روز در میان یکی از بازی‌ها را انجام بده.» امروز کدام را بازی می‌کنی؟</div>
+          <p class="free-note" id="free5" hidden style="margin:0 16px 10px;text-align:center">امروز مشعل روشن نمی‌شود، ولی بازی آزاد همیشه باز است: هر چقدر دوست داری بازی کن.</p>
           <div class="choices" id="choices"></div>
         </div>
       </section>
@@ -1542,11 +1543,10 @@ function renderTorches(){
   $('#pDays').textContent = `${fa(n)} از ۳`;
   const tile = $('#playTile'), rest = !canPlay(), resting = restDay();
   tile.classList.toggle('rest', rest);
-  tile.setAttribute('aria-disabled', rest ? 'true' : 'false');
   $('#playIc').innerHTML = rest ? `<img src="img/yuzi-1-sleep.webp" alt="">` : ICON.play();
   $('#playTitle').textContent = n>=3 ? 'هر سه مشعل روشن است' : today ? 'بازی امروز تمام شد' : resting ? 'امروز روزِ استراحت است' : 'برویم بازی!';
-  $('#playSub').textContent = n>=3 ? 'منزلِ تعادل را گذراندی. آفرین! منزلِ ۶ باز است.' : today ? 'یوزی خوابید. کتاب می‌گوید یک روز در میان؛ پس‌فردا دوباره بیا.'
-    : resting ? 'دیروز بازی کردی. بدن هم استراحت لازم دارد؛ فردا مشعلِ بعدی منتظرت است.' : `یکی از سه بازی تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
+  $('#playSub').textContent = n>=3 ? 'منزلِ تعادل را گذراندی. بازی آزاد و سطح‌های سخت‌تر همیشه باز است.' : today ? 'مشعلِ امروز روشن شد؛ مشعلِ بعدی پس‌فردا. تا آن موقع بازی آزاد باز است.'
+    : resting ? 'دیروز بازی کردی؛ مشعلِ بعدی فردا. امروز بازی آزاد باز است.' : `یکی از سه بازی تعادل را انتخاب کن، روزِ ${['اول','دوم','سوم'][n]}`;
   $('#storyDone').hidden = !state.story;
   $('#familyDone').hidden = !state.family;
   const best = state.rec.length ? Math.max(...state.rec) : 0;
@@ -1554,10 +1554,10 @@ function renderTorches(){
   if(window.HKX) HKX.mountManzil(6, $('#m6'));   // lesson 6 is built by khans.js, under lesson 5 on this page
   $('#toolDay').textContent = `روزِ پیش‌نمایش: ${state.off ? `${fa(state.off)} روز بعد از امروز` : 'امروز'}`;
 }
-$('#playTile').addEventListener('click', ()=>{
-  if(!canPlay()){ sfx('sleep'); voice('sleep'); const t=$('#playTile'); t.style.animation='shake .35s'; setTimeout(()=>t.style.animation='',400); return; }
-  go('choose');
-});
+/* a rest day or a finished day never shuts the game: it opens free play — no torch, but every move counts */
+let free5 = false;
+$('#again5').addEventListener('click', ()=>{ free5 = true; sfx('start'); go('choose'); });
+$('#playTile').addEventListener('click', ()=>{ free5 = !canPlay(); go('choose'); if(free5) voiceLater('free', 300); });
 
 function meetGuardian(i){
   const k = KHANS[i], passed = khanPassed(i), soon = !passed && i >= BUILT;
@@ -1658,6 +1658,7 @@ function flip(on){ clearInterval(flipT); if(!on) return; const m = mi+1; let f =
   flipT = setInterval(()=>{ f = f==='a'?'b':'a'; fig.src = window.HKfig(`m5-${m}${f}`); }, 900); }
 let chosen = 0;
 function renderChoose(){
+  $('#free5').hidden = !free5;
   $('#choices').innerHTML = MOVES.map((m,i)=>{
     const did = state.days.findIndex(x => x && x.move === i);
     return `<button class="choice" data-move="${i}"><img src="${fig(`m5-${i+1}a`)}" alt=""><span><b>${['کیسه‌ها در سبد','لمسِ دایره‌های رنگی','چیدنِ لیوان‌ها'][i]}</b><small>${m.t}</small></span>${did>=0?`<em class="did" style="font-style:normal">روزِ ${['اول','دوم','سوم'][did]} بازی کردی</em>`:''}</button>`; }).join('');
@@ -1666,7 +1667,7 @@ function renderChoose(){
 function startExercise(){ mi = chosen; count = 0; exTapped = false; exTapAt = 0; $('#seen5').hidden = true; CAM.dot = null; $('#reward').hidden = true; $('#feel').hidden = true; renderMove(); }
 function renderMove(){
   const m = MOVES[mi];
-  $('#exTitle').innerHTML = `بازی امروز<small>تعادل، روزِ ${['اول','دوم','سوم'][doneDays()]}، کتاب، ص ۳۴</small>`;
+  $('#exTitle').innerHTML = free5 ? `بازی آزاد<small>تعادل، کتاب، ص ۳۴</small>` : `بازی امروز<small>تعادل، روزِ ${['اول','دوم','سوم'][doneDays()]}، کتاب، ص ۳۴</small>`;
   flip(true);
   voice(`move-${mi+1}`);
   $('#exInstr').innerHTML = `${m.t}<small>پای ایستاده را وسط تمرین عوض کن، جای بازی را خلوت کن</small>`;
@@ -1712,6 +1713,9 @@ $$('#feel [data-feel]').forEach(b=> b.addEventListener('click', ()=>{
 function finishDay(){
   flip(false);
   if(CAM.exOn) exCamOff();
+  if(free5){ $('#bigTorches').innerHTML = ''; $('#rewardImg').src = yz('cheer'); $('#rewardKid').src = `img/${kid()}-cheer.webp`;
+    $('#rewardTitle').textContent = `آفرین ${kidName()}!`; $('#rewardText').textContent = doneDays() < 3 ? 'این بازی آزاد بود؛ مشعل در روزِ بازی روشن می‌شود. هر چقدر دوست داری دوباره بازی کن!' : 'بازی آزاد! هر چقدر دوست داری دوباره بازی کن.';
+    $('#xpText').textContent = `یوزی دارد بزرگ می‌شود، ${fa(doneDays())} از ۳ مشعل`; $('#reward').hidden = false; sfx('fanfare'); voiceLater('cheer', 900); confetti(); return; }
   state.days[doneDays()] = {d:dayNum(), move:mi, feel:feelings[mi]};
   save(); renderTorches();
   const lit = doneDays(), doneL = lit>=3, crossed = doneL && lessonDone(6);   // the bridge is crossed once lesson 6 is done too
