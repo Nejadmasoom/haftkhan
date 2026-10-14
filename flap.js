@@ -101,7 +101,7 @@ function fFrame(dt, now, live){
   /* —— HUD —— */
   const hint = A.phase !== 'run' ? '' : F.over ? '' : !F.started ? 'پروانه بزن! دست‌ها بالا، بعد محکم پایین ⬆️⬇️' : (F.score === 0 && F.cols.length && F.t < 12) ? 'هر پروانه = یک پرش. آرام و پشتِ سرِ هم بزن!' : '';
   hud(`<span>🪶 ${fa(F.score)} <b>امتیاز</b></span>${F.combo >= 4 ? `<span style="background:#ffe1b8">🔥 ×${fa(F.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < F.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('flap', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('flap', A.who))}</span>` : ''}`,
-    (hint ? `<span>${hint}</span>` : '') + (A.phase === 'run' && F.started && !F.over ? `<span class="goal">✨ ${fa(10 - F.score % 10)} تا ${['ظهر', 'غروب', 'شب', 'صبح'][Math.floor(F.score/10) % 4]}</span>` : '')); }
+    (hint ? `<span>${hint}</span>` : '') + (A.phase === 'run' && F.started && !F.over ? api.recChip('flap', F.score, 'امتیاز') || `<span class="goal">✨ ${fa(10 - F.score % 10)} تا ${['ظهر', 'غروب', 'شب', 'صبح'][Math.floor(F.score/10) % 4]}</span>` : '')); }
 
 function hurt(g, why){
   F.hearts--; F.combo = 0; F.inv = 1.6; F.shake = 9; F.vy = -330*g.k; FAUD.hurt(); sfx('miss'); api.vib && api.vib([30, 40, 30]);

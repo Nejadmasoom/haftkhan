@@ -20,6 +20,9 @@ const GAMES = {
 const A = {game:'hill', who:'kid', raf:0, phase:'off'};
 const rec = () => { const s = S(); s.arena = s.arena || {}; Object.keys(GAMES).forEach(g => { s.arena[g] = s.arena[g] || {}; }); return s.arena; };
 const best = (g, who) => rec()[g][who] || 0;
+/* close to the record: say so, in place of the usual next goal — the most motivating goal there is */
+function recChip(g, score, unit, slack){ const b = best(g, A.who), n = Math.ceil(b - score);
+  return b > 0 && n > 0 && n <= Math.max(slack || 3, b*.15) ? `<span class="goal" style="background:#ffe1b8">🏆 فقط ${fa(n)} ${unit} تا رکورد!</span>` : ''; }
 
 /* ================================================================ the arena screen */
 function icon(g){
@@ -453,7 +456,7 @@ function drawHill(gas, lean, cadence, dt = .016){
   hud(`<span>🚩 ${fa(m)} <b>متر</b></span><span><img src="img/obj/coin.webp" alt=""> ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('hill', A.who))}</span>` : ''}`,
     `<span><img src="img/obj/jerrycan.webp" alt=""><i class="meter" style="background:linear-gradient(90deg,${fuel < 25 ? '#e2574c' : '#2fbf71'} ${fuel}%,#fff ${fuel}%)"></i></span>`
     + (HL.air ? `<span>${Math.abs(lean) > .3 ? (lean > 0 ? 'کج به راست ↘' : 'کج به چپ ↙') : 'بدنت را کج کن!'}</span>`
-              : HL.turbo ? `<span style="background:#ffe1b8">🔥 توربو!</span>` : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`) + (HL.air || A.phase !== 'run' ? '' : `<span class="goal">🗺️ ${fa(Math.max(1, Math.ceil((Math.floor(HL.far/BIOME_LEN) + 1)*BIOME_LEN - HL.far)))} متر تا ${BIOMES[(Math.floor(HL.far/BIOME_LEN) + 1) % BIOMES.length].n}</span>`));
+              : HL.turbo ? `<span style="background:#ffe1b8">🔥 توربو!</span>` : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`) + (HL.air || A.phase !== 'run' ? '' : recChip('hill', HL.far, 'متر', 30) || `<span class="goal">🗺️ ${fa(Math.max(1, Math.ceil((Math.floor(HL.far/BIOME_LEN) + 1)*BIOME_LEN - HL.far)))} متر تا ${BIOMES[(Math.floor(HL.far/BIOME_LEN) + 1) % BIOMES.length].n}</span>`));
 }
 
 /* ================================================================ game 2: shape walls
@@ -494,7 +497,7 @@ const WALLS = [{n:'آجری', f:'none'}, {n:'کاشیِ آبی', f:'hue-rotate(1
                {n:'یخی', f:'hue-rotate(170deg) saturate(.45) brightness(1.4)'}];
 const wallTheme = () => WALLS[Math.floor(WL.score/8) % WALLS.length];
 /* the next thing to look forward to, always in sight: a new move, or the next wall material */
-function wallGoal(){ if(A.phase !== 'run') return ''; const sc = WL.score, ladder = (SENIOR(A.who) ? POOL.senior : POOL.kid).map(([n]) => n).filter(n => n > sc);
+function wallGoal(){ if(A.phase !== 'run') return ''; const rc = recChip('wall', WL.score, 'دیوار'); if(rc) return rc; const sc = WL.score, ladder = (SENIOR(A.who) ? POOL.senior : POOL.kid).map(([n]) => n).filter(n => n > sc);
   const nextMove = ladder.length ? ladder[0] : Infinity, nextWall = (Math.floor(sc/8) + 1)*8, n = Math.min(nextMove, nextWall);
   return `<span class="goal">✨ ${fa(n - sc)} دیوار تا ${n === nextMove ? 'حرکتِ تازه' : 'دیوارِ ' + WALLS[(n/8) % WALLS.length].n}</span>`; }
 const WL = {};
@@ -670,7 +673,7 @@ window.HKA = {
   _A: A, _B: B, _HL: HL, _WL: WL, POSES, register,
   /* what a plug-in game may use: the drawing surface (read fresh every frame: it is re-made on resize), the player's
      body, the shared effects and the end-of-game screen */
-  api: {A, B, FX, burst, pop, drawFX, hud, msg, gameOver, best, SENIOR, vib, rr, ART, CONF, INK, leanOf, dist,
+  api: {A, B, FX, recChip, burst, pop, drawFX, hud, msg, gameOver, best, SENIOR, vib, rr, ART, CONF, INK, leanOf, dist,
         get ctx(){ return ctx; }, get W(){ return W; }, get Hh(){ return Hh; }, get cal(){ return B.cal; }}
 };
 addEventListener('resize', () => { if(A.phase !== 'off') size(); });
