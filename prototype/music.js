@@ -12,7 +12,7 @@ const hz = n => 440 * Math.pow(2, (n-69)/12);
 function parse(str){ let t = 0; const out = [];
   str.trim().split(/\s+/).forEach(tok => { const [n, d] = tok.split(':'); const len = (+d)/2; if(n !== '-') out.push([t, len, midi(n)]); t += len; });
   return {notes:out, beats:t}; }
-const CHORD = {C:[0,4,7], Dm:[2,5,9], Em:[4,7,11], F:[5,9,0], G:[7,11,2], Am:[9,0,4], D:[2,6,9], D7:[2,6,9,0], C7:[0,4,7,10], A7:[9,1,4,7], E:[4,8,11], A:[9,1,4]};
+const CHORD = {C:[0,4,7], Dm:[2,5,9], Em:[4,7,11], F:[5,9,0], G:[7,11,2], Am:[9,0,4], D:[2,6,9], D7:[2,6,9,0], C7:[0,4,7,10], A7:[9,1,4,7], Gm:[7,10,2], Bb:[10,2,5], E:[4,8,11], A:[9,1,4]};
 
 /* ---------------------------------------------------------------- the songs */
 /* William Tell overture, finale (Rossini, 1829 — public domain). The 32-beat main theme, note for note from the
@@ -44,6 +44,20 @@ const SONGS = {
     melody: parse(`G4:1 B4:1 D5:1 B4:1 G4:2 -:2  A4:1 C5:1 E5:1 C5:1 A4:2 -:2  B4:1 D5:1 G5:1 D5:1 B4:1 D5:1 G5:2  F#5:2 E5:2 D5:4
                    E5:1 E5:1 D5:1 C5:1 B4:2 C5:2  D5:1 D5:1 C5:1 B4:1 A4:4  B4:1 C5:1 D5:1 E5:1 F#5:2 A5:2  G5:4 -:2 D5:1 D5:1`).notes,
     chords: bars(4, 'G Am G D C Am D G'.split(' ')) },
+  /* original, for the archer: a calm, focused hero theme in D with the Persian "augmented second" (E♭ → F♯) in its colour */
+  bow: { title:'کمانگیر', bpm:96, key:'D', lead:'warm', groove:'stroll', beats:32,
+    melody: parse(`D5:3 Eb5:1 F#5:2 G5:2 F#5:2 Eb5:2 D5:4
+                   A4:2 D5:2 Eb5:2 F#5:2 G5:3 F#5:1 Eb5:2 -:2
+                   G5:2 A5:2 Bb5:3 A5:1 G5:2 F#5:2 Eb5:2 F#5:2
+                   G5:2 F#5:2 Eb5:2 D5:2 Eb5:2 C5:2 D5:4`).notes,
+    chords: bars(4, 'Dm A Dm Dm Gm Bb A Dm'.split(' ')) },
+  /* original, for the flying game: a light, springy tune in C — wings going up and down */
+  flap: { title:'پرواز', bpm:138, key:'C', lead:'bright', groove:'bounce', beats:32,
+    melody: parse(`E5:1 G5:1 C6:2 G5:1 E5:1 G5:2 A5:1 G5:1 E5:2 D5:2 -:2
+                   E5:1 G5:1 A5:2 C6:2 A5:2 G5:2 E5:2 D5:1 E5:1 G5:2
+                   A5:1 C6:1 D6:2 C6:1 A5:1 G5:2 E5:1 G5:1 A5:2 G5:2 -:2
+                   C6:2 A5:2 G5:2 E5:2 D5:1 E5:1 G5:1 D5:1 C5:4`).notes,
+    chords: bars(4, 'C Am F G C F G C'.split(' ')) },
   /* original: the quiet, sunny theme under the map and menus — A A′ B A″, sixteen bars so it does not tire */
   theme: { title:'سفرِ یوزی', bpm:112, key:'C', lead:'soft', groove:'stroll', beats:64,
     melody: parse(`C5:2 E5:2 G5:3 E5:1  F5:2 A5:2 G5:4  E5:2 C5:1 D5:1 E5:2 G5:2  D5:6 -:2

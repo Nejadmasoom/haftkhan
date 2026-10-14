@@ -16,11 +16,12 @@ const GAMES = {
          howSenior:'دیوار با سوراخی به شکلِ یک حالت می‌آید؛ آرام همان شکل را بساز. حالت‌های پرشی و نشستنِ عمیق برای شما نیست.'}
 };
 const A = {game:'hill', who:'kid', raf:0, phase:'off'};
-const rec = () => { const s = S(); s.arena = s.arena || {}; s.arena.hill = s.arena.hill || {}; s.arena.wall = s.arena.wall || {}; return s.arena; };
+const rec = () => { const s = S(); s.arena = s.arena || {}; Object.keys(GAMES).forEach(g => { s.arena[g] = s.arena[g] || {}; }); return s.arena; };
 const best = (g, who) => rec()[g][who] || 0;
 
 /* ================================================================ the arena screen */
 function icon(g){
+  if(GAMES[g].icon) return GAMES[g].icon();
   const O = n => `img/obj/${n}.webp`, frame = `<rect x="1.5" y="1.5" width="93" height="93" rx="20" fill="none" stroke="#2b2140" stroke-width="3"/>`;
   const sky = `<linearGradient id="sky-${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5ec0ff"/><stop offset="1" stop-color="#d6f1ff"/></linearGradient><clipPath id="cl-${g}"><rect width="96" height="96" rx="20"/></clipPath>`;
   if(g === 'hill'){
@@ -47,9 +48,9 @@ function renderArena(){
   const P = H.PLAYERS, who = P.find(p => p.k === A.who), senior = SENIOR(A.who);
   const card = g => `<button class="ar-card" data-game="${g}">${icon(g)}<span><b>${GAMES[g].name}</b><small>${senior ? GAMES[g].howSenior : GAMES[g].how}</small>
     <span class="rec">رکوردِ ${who.n}: ${best(g, A.who) ? fa(best(g, A.who)) + ' ' + GAMES[g].unit : 'هنوز نه'}</span></span></button>`;
-  const board = P.length > 1 ? `<div class="ar-board"><h4>تابلوی رکوردهای خانواده</h4><table><tr><th></th><th>${GAMES.hill.name}</th><th>${GAMES.wall.name}</th></tr>${P.map(p => `<tr><td>${p.n}</td><td>${best('hill', p.k) ? fa(best('hill', p.k)) + ' متر' : '–'}</td><td>${best('wall', p.k) ? fa(best('wall', p.k)) + ' دیوار' : '–'}</td></tr>`).join('')}</table></div>` : '';
+  const board = P.length > 1 ? `<div class="ar-board"><h4>تابلوی رکوردهای خانواده</h4><table><tr><th></th>${Object.keys(GAMES).map(g => `<th>${GAMES[g].short || GAMES[g].name}</th>`).join('')}</tr>${P.map(p => `<tr><td>${p.n}</td>${Object.keys(GAMES).map(g => `<td>${best(g, p.k) ? fa(best(g, p.k)) + ' ' + GAMES[g].unit : '–'}</td>`).join('')}</tr>`).join('')}</table></div>` : '';
   $('#arBody').innerHTML = `<div class="who" style="margin:0 0 12px"><b>چه کسی بازی می‌کند؟</b><div class="tms">${P.map(p => `<button class="tm ${p.k===A.who?'on':''}" data-who="${p.k}" aria-pressed="${p.k===A.who}"><span class="tav"><img src="img/${p.img}.webp" alt="" style="${p.kid?'transform:scale(2.1);transform-origin:50% 8%':''}"></span><small>${p.n}</small></button>`).join('')}</div></div>
-    ${card('hill')}${card('wall')}${board}
+    ${Object.keys(GAMES).map(card).join('')}${board}
     <p class="free-note" style="text-align:center">گوشی را ایستاده به چیزی تکیه بده و دو سه قدم عقب برو. جای بازی را خلوت کن.</p>`;
   $$('#arBody [data-who]').forEach(b => b.addEventListener('click', () => { A.who = b.dataset.who; sfx('click'); renderArena(); }));
   $$('#arBody [data-game]').forEach(b => b.addEventListener('click', () => { A.game = b.dataset.game; sfx('start'); H.go('play'); }));
@@ -102,13 +103,13 @@ async function startPlay(){
   const CAM = H.CAM; CAM.onFrame = onFrame; CAM.hint = null; CAM.chipOn = null; CAM.count = null; CAM.headroom = false;
   const ok = await H.camStart($('#plCam'), {solo:true});
   if(!ok){ msg(`<h3>دوربین در دسترس نیست</h3><p>این بازی‌ها فقط با دوربین بازی می‌شوند، تا یوزی ببیند واقعاً حرکت کردی.</p><div class="row"><button class="cta gold" data-go="arena">برگشت</button></div>`); A.phase = 'off'; return; }
-  if(A.game === 'hill') hillReset(); else wallReset();
+  resetGame();
   cancelAnimationFrame(A.raf); A.last = performance.now(); A.raf = requestAnimationFrame(tick);
 }
 /* each game has its tune (approved ones), and the tune follows the action: faster as the jeep speeds up or
    the walls come quicker. It steps back while the game waits for the player. */
-const MUS = {hill:'rally', wall:'walls'};     // the two original tunes, heard and approved by the owner
-function musicOn(){ if(H.muted || !window.HKMusic) return; const c = H.ac(); if(c && HKMusic.current() !== MUS[A.game]) HKMusic.play(MUS[A.game], {ctx:c, vol:.42}); }
+const MUS = {hill:'rally', wall:'walls'};      // more games add theirs when they register     // the two original tunes, heard and approved by the owner
+function musicOn(){ if(H.muted || !window.HKMusic || !MUS[A.game]) return; const c = H.ac(); if(c && HKMusic.current() !== MUS[A.game]) HKMusic.play(MUS[A.game], {ctx:c, vol:.42}); }
 function musicOff(){ if(window.HKMusic && Object.values(MUS).includes(HKMusic.current())) HKMusic.stop(); }
 function stopPlay(){ musicOff(); H.ENGINE.stop(); cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }
 function tick(now){
@@ -123,7 +124,7 @@ function tick(now){
   }
   if(A.phase === 'run' && !seen){ if(!A.paused && window.HKMusic) HKMusic.duck(true); A.paused = true; msg('<h3>یوزی تو را نمی‌بیند</h3><p>جلوی گوشی بایست؛ بازی منتظرت است.</p>'); }
   else if(A.phase === 'run' && A.paused){ A.paused = false; msg(''); if(window.HKMusic) HKMusic.duck(false); }
-  if(A.game === 'hill') hillFrame(dt, now, A.phase === 'run' && !A.paused); else wallFrame(dt, now, A.phase === 'run' && !A.paused);
+  frameGame(dt, now, A.phase === 'run' && !A.paused);
   if(A.phase !== 'off') A.raf = requestAnimationFrame(tick);
 }
 function gameOver(score, why){
@@ -133,7 +134,7 @@ function gameOver(score, why){
   const who = H.PLAYERS.find(p => p.k === A.who) || {n:''};
   msg(`${isRec ? '<img src="img/obj/medal.webp" alt="" style="height:84px;display:block;margin:0 auto 4px">' : ''}<h3>${why}</h3><p style="font-size:22px"><b>${fa(score)} ${g.unit}</b>${isRec ? `<br>رکوردِ تازهٔ ${who.n}! 🎉` : prev ? `<br>رکوردِ ${who.n}: ${fa(prev)} ${g.unit}` : ''}</p>
     <div class="row"><button class="cta gold" id="plAgain">دوباره</button><button class="ghost" data-go="arena">برگشت</button></div>`);
-  $('#plAgain').addEventListener('click', () => { sfx('start'); if(A.game === 'hill') hillReset(); else wallReset(); msg(''); A.phase = 'count'; A.countT = performance.now(); A.lastLeft = null; });
+  $('#plAgain').addEventListener('click', () => { sfx('start'); resetGame(); msg(''); A.phase = 'count'; A.countT = performance.now(); A.lastLeft = null; });
 }
 
 /* ================================================================ game 1: hill climb
@@ -617,11 +618,24 @@ function drawWall(now, c){
   hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span>${WL.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(WL.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < WL.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('wall', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('wall', A.who))}</span>` : ''}`);
 }
 
+/* ================================================================ more games plug in here
+   A game file calls HKA.register(key, {name, short, unit, how, howSenior, icon(), music, reset(), frame(dt, now, live)}) and
+   gets the shared screen: the calibration, the countdown, the camera, the records, the hearts of «gameOver», the effects. */
+const IMPL = {hill:{reset:() => hillReset(), frame:(dt, now, live) => hillFrame(dt, now, live)},
+              wall:{reset:() => wallReset(), frame:(dt, now, live) => wallFrame(dt, now, live)}};
+const resetGame = () => IMPL[A.game].reset();
+const frameGame = (dt, now, live) => IMPL[A.game].frame(dt, now, live);
+function register(key, g){ GAMES[key] = g; IMPL[key] = {reset:g.reset, frame:g.frame}; if(g.music) MUS[key] = g.music; }
+
 /* ================================================================ hooks */
 window.HKA = {
   enter(name){ if(name === 'arena') renderArena(); if(name === 'play') startPlay(); },
   leave(name){ if(name !== 'play' && A.phase !== 'off') stopPlay(); },
-  _A: A, _B: B, _HL: HL, _WL: WL, POSES
+  _A: A, _B: B, _HL: HL, _WL: WL, POSES, register,
+  /* what a plug-in game may use: the drawing surface (read fresh every frame: it is re-made on resize), the player's
+     body, the shared effects and the end-of-game screen */
+  api: {A, B, FX, burst, pop, drawFX, hud, msg, gameOver, best, SENIOR, vib, rr, ART, CONF, INK, leanOf, dist,
+        get ctx(){ return ctx; }, get W(){ return W; }, get Hh(){ return Hh; }, get cal(){ return B.cal; }}
 };
 addEventListener('resize', () => { if(A.phase !== 'off') size(); });
 })();
