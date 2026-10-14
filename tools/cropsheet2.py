@@ -4,6 +4,7 @@ import sys, numpy as np
 from PIL import Image
 from collections import deque
 src, out, names = sys.argv[1], sys.argv[2], sys.argv[3].split(',')
+COLS, ROWS = (int(x) for x in (sys.argv[4] if len(sys.argv) > 4 else '4x3').split('x'))      # grid of the sheet, columns x rows
 im = np.array(Image.open(src).convert('RGB')).astype(int); H, W = im.shape[:2]
 white = (im.min(axis=2) > 232) & ((im.max(axis=2) - im.min(axis=2)) < 18)
 bg = np.zeros((H, W), bool); q = deque()
@@ -30,7 +31,7 @@ for y0 in range(H):
                 if 0 <= ny < H and 0 <= nx < W and fg[ny, nx] and not lab[ny, nx]: lab[ny, nx] = n; q.append((ny, nx))
         if len(pts) < 12: owner[n] = -1; continue                       # specks
         cy = sum(p[0] for p in pts)/len(pts); cx = sum(p[1] for p in pts)/len(pts)
-        owner[n] = min(2, int(cy*3/H))*4 + min(3, int(cx*4/W))
+        owner[n] = min(ROWS - 1, int(cy*ROWS/H))*COLS + min(COLS - 1, int(cx*COLS/W))
 lum = im.mean(axis=2)
 for k, name in enumerate(names):
     ids = [i for i, o in owner.items() if o == k]

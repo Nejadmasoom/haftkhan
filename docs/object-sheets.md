@@ -213,3 +213,67 @@ Objects, left to right, top to bottom:
 11 a wooden park bench,
 12 a small round speaker with three musical notes floating above it.
 ```
+
+
+---
+
+## برگهٔ ترکیبیِ ۳ و ۷ (۲۴ شیء در یک صفحه)
+
+به‌جای دو برگهٔ جدا (برگهٔ ۳ و برگهٔ ۷)، همه‌ی این ۲۴ چیز در **یک صفحهٔ افقی ۶×۴** ساخته می‌شود. بریدنش مثلِ قبل است (`tools/cropsheet2.py` با ستون و ردیفِ ۶×۴).
+
+| # | شیء | کجا |
+|---|---|---|
+| 1 | دو بچه در صف، منتظرِ سرسره | کارتِ رفتار و تزئینِ نقشه |
+| 2 | بچه‌ای دستِ دوستِ زمین‌خورده‌اش را می‌گیرد | کارتِ رفتار و تزئینِ نقشه |
+| 3 | درخت و خورشید و توپ روی چمن | کارتِ رفتار و تزئینِ نقشه |
+| 4 | جعبهٔ اسباب‌بازیِ مرتب | کارتِ رفتار و تزئینِ نقشه |
+| 5 | درختِ گردِ سرسبز | کارتِ رفتار و تزئینِ نقشه |
+| 6 | ابرِ پف‌دار | کارتِ رفتار و تزئینِ نقشه |
+| 7 | کوهِ کوچکِ برفی | کارتِ رفتار و تزئینِ نقشه |
+| 8 | بوتهٔ گل | کارتِ رفتار و تزئینِ نقشه |
+| 9 | خورشیدِ خندان | کارتِ رفتار و تزئینِ نقشه |
+| 10 | تابلوی چوبیِ خالی | کارتِ رفتار و تزئینِ نقشه |
+| 11 | پلِ چوبیِ کوچک | کارتِ رفتار و تزئینِ نقشه |
+| 12 | قفلِ طلاییِ بسته | کارتِ رفتار و تزئینِ نقشه |
+| 13 | جاروبرقی | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 14 | تخت با پتو و بالش | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 15 | کاسهٔ سوپ | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 16 | پله‌های کوتاه | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 17 | پله‌برقی | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 18 | دوچرخه با کلاه‌ایمنی | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 19 | دروازهٔ فوتبال | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 20 | مخروطِ نارنجی | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 21 | دو بچه‌گربه | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 22 | کنارِ رودخانه با سنگ‌ریزه | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 23 | نیمکتِ پارک | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+| 24 | بلندگوی کوچک با نُت | کارت‌های درس ۶ و قصه‌ها و بازی‌های درس ۹ تا ۱۲ |
+
+**پرامپت:**
+```
+A single high-resolution landscape image (3:2), pure white background, a clean invisible 6-column by 4-row grid = exactly 24 separate illustrations, each one centered in its own cell with generous empty white margin, nothing touching or crossing into another cell. Cute children's-game cartoon style: flat bright colors, soft simple shading, bold dark-purple outline (#2b2140), rounded friendly shapes. NO text, NO letters, NO numbers, NO logos, NO grid lines, NO labels anywhere. Only a tiny soft shadow under each item, inside its own cell. The two small children in cells 1 and 2 wear: a turquoise hijab hood and turquoise jacket (girl) and a saffron jacket (boy).
+Items, left to right, top to bottom:
+1 two small children standing one behind the other in a queue waiting for a slide,
+2 a child helping a friend who fell get up by holding hands,
+3 a small tree, a smiling sun and a ball on grass,
+4 a tidy toy box with a few toys neatly inside,
+5 a round leafy green tree,
+6 a fluffy white cloud,
+7 a small mountain with a snowy peak,
+8 a colorful flower bush,
+9 a smiling sun,
+10 a small blank wooden signpost (no writing),
+11 a small wooden footbridge,
+12 a closed golden padlock,
+13 a small cute upright vacuum cleaner,
+14 a child's bed with a puffy blanket and a pillow, seen from the side,
+15 a bowl of warm soup with a spoon and a little steam,
+16 a short staircase of four steps seen from the side,
+17 a short escalator seen from the side,
+18 a small bicycle with a helmet hanging on the handlebar,
+19 a small football goal with a white net,
+20 an orange training cone,
+21 two fluffy cute kittens sitting side by side, one grey and one ginger,
+22 a small piece of riverbank: blue water on one side and a few round grey pebbles on sandy ground,
+23 a wooden park bench,
+24 a small round speaker with three musical notes floating above it.
+```
