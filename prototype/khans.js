@@ -25,6 +25,8 @@ const READY = new Set([          // girl move frames, without the "girl-" prefix
   'm3-runA', 'm3-runB', 'm3-roo-a', 'm3-roo-b', 'm3-frog-a', 'm3-frog-b', 'm3-hen-a', 'm3-hen-b', 'm3-gorilla-a', 'm3-gorilla-b',
   'm3-cat-a', 'm3-cat-b', 'm3-snake-a', 'm3-snake-b', 'm4-circle-a', 'm4-circle-b', 'm4-toe-a', 'm4-toe-b', 'm4-hug-a', 'm4-hug-b',
   'm4-lunge-a', 'm4-lunge-b', 'm4-plank-a', 'm4-plank-b', 'm4-crab-a', 'm4-crab-b', 'm4-spin-a', 'm4-spin-b', 'm4-feetStack', 'm4-feetUp',
+  // lessons 9-12 (khans 5-7), girl
+  'm10-dribble', 'm10-keep-a', 'm10-keep-b', 'm10-lie-a', 'm10-lie-b', 'm10-str-a', 'm10-str-b', 'm10-tapL', 'm10-tapR', 'm11-basket', 'm11-tap', 'm12-cheer', 'm12-hide', 'm12-pat', 'm12-sit', 'm12-slap-a', 'm12-slap-b', 'm12-think', 'm9-arm-a', 'm9-arm-b', 'm9-catch', 'm9-chest', 'm9-clap', 'm9-over-a', 'm9-over-b', 'm9-pass', 'm9-roll', 'm9-throw-low', 'm9-toss',
   // khans 3 and 4 (lessons 6-8), cut from the six pose sheets
   'm6-green', 'm6-palm', 'm6-red', 'm6-tree', 'm6-walk', 'm6-win', 'm7-balloon', 'm7-bend', 'm7-cobra', 'm7-dog', 'm7-dog3', 'm7-fold', 'm7-hips', 'm7-reach', 'm7-seatfold', 'm7-straddle', 'm7-tri', 'm7-warrior', 'm8-chestA', 'm8-chestB', 'm8-clap', 'm8-cup', 'm8-push', 'm8-sidestep', 'm8-stamp', 'm8-thighA', 'm8-thighB']);
 const READY_BOY = new Set([      // the same for the boy (m1-armF is never shown)
@@ -35,8 +37,8 @@ const READY_BOY = new Set([      // the same for the boy (m1-armF is never shown
   'm2-standBad', 'm2-sitOk', 'm2-sitBad', 'm2-bagOk', 'm2-bagBad', 'm2-writeOk', 'm2-writeBad', 'm3-walkA', 'm3-walkB', 'm3-runA',
   'm3-runB', 'm3-roo-a', 'm3-roo-b', 'm3-frog-a', 'm3-frog-b', 'm3-hen-a', 'm3-hen-b', 'm3-gorilla-a', 'm3-gorilla-b', 'm3-cat-a',
   'm3-cat-b', 'm3-snake-a', 'm3-snake-b',
-  // lessons 9-12: the boy's sheets arrived first; the girl's frames show a stick figure until hers do
-  'm10-dribble', 'm10-keep-a', 'm10-keep-b', 'm10-kick-a', 'm10-kick-b', 'm10-str-a', 'm10-str-b', 'm10-tapL', 'm10-tapR', 'm11-carry', 'm11-drop', 'm11-in', 'm11-march-a', 'm11-march-b', 'm11-out', 'm11-step-a', 'm11-step-b', 'm11-step-c', 'm12-back-a', 'm12-back-b', 'm12-catch', 'm12-fists', 'm12-toss', 'm9-arm-a', 'm9-arm-b', 'm9-catch', 'm9-chest', 'm9-clap', 'm9-over-a', 'm9-over-b', 'm9-pass', 'm9-toss',
+  // lessons 9-12, boy
+  'm10-dribble', 'm10-keep-a', 'm10-keep-b', 'm10-kick-a', 'm10-kick-b', 'm10-lie-a', 'm10-lie-b', 'm10-str-a', 'm10-str-b', 'm10-tapL', 'm10-tapR', 'm11-basket', 'm11-carry', 'm11-drop', 'm11-in', 'm11-march-a', 'm11-march-b', 'm11-out', 'm11-step-a', 'm11-step-b', 'm11-step-c', 'm11-tap', 'm12-back-a', 'm12-back-b', 'm12-catch', 'm12-cheer', 'm12-fists', 'm12-hide', 'm12-pat', 'm12-sit', 'm12-slap-a', 'm12-slap-b', 'm12-think', 'm12-toss', 'm9-arm-a', 'm9-arm-b', 'm9-catch', 'm9-chest', 'm9-clap', 'm9-over-a', 'm9-over-b', 'm9-pass', 'm9-roll', 'm9-throw-low', 'm9-toss',
   'm6-green', 'm6-palm', 'm6-red', 'm6-tree', 'm6-walk', 'm6-win', 'm7-balloon', 'm7-bend', 'm7-cobra', 'm7-dog', 'm7-dog3', 'm7-fold', 'm7-hips', 'm7-reach', 'm7-seatfold', 'm7-straddle', 'm7-tri', 'm7-warrior', 'm8-chestA', 'm8-chestB', 'm8-clap', 'm8-cup', 'm8-push', 'm8-sidestep', 'm8-stamp', 'm8-thighA', 'm8-thighB']);
 const READY_ART = new Set([       // other img/ names: story characters, animals, Yuzi's new poses
   'story-mom','story-aunt','story-rabbit','story-frog','story-uncle','animal-gorilla','animal-hen','animal-kangaroo','animal-snake',
