@@ -166,7 +166,7 @@ function cancelDraw(){ AUD.drawOff(); AR.state = 'idle'; AR.hist.length = 0; AR.
 let BG = null;
 /* the day moves on with every eight arrows that hit: morning, noon, sunset, a starry night, and morning again */
 const DAY = [{n:'صبح', sky:['#5fb8f5', '#a9defa', '#fff0cf']}, {n:'ظهر', sky:['#3d9ee8', '#8fd0f7', '#e6f6ff']},
-             {n:'غروب', sky:['#5b4fa8', '#f08a6a', '#ffd59a'], tint:'rgba(255,170,120,.38)'}, {n:'شب', sky:['#0d1a4f', '#28377f', '#5d6cb8'], tint:'rgba(40,52,130,.62)', night:true}];
+             {n:'غروب', sky:['#5b4fa8', '#f08a6a', '#ffd59a'], tint:'rgba(255,150,105,.5)'}, {n:'شب', sky:['#0d1a4f', '#28377f', '#5d6cb8'], tint:'rgba(40,52,130,.62)', night:true}];
 const dayOf = () => Math.floor(AR.hits/8) % DAY.length;
 function scene(g){
   const ph = dayOf(), D = DAY[ph], key = g.W + 'x' + g.Hh + 'x' + (window.devicePixelRatio || 1) + 'x' + ph;
@@ -203,14 +203,17 @@ function scene(g){
   // flowers dotted on the grass
   for(let i = 0; i < 18; i++){ const px = (i*97.1 + 20)%W, py = G + 14 + ((i*61.7)%(Hh - G - 22)); x.fillStyle = ['#fff', '#ffd93d', '#ff8fb1'][i%3]; x.beginPath(); x.arc(px, py, 2.6, 0, 7); x.fill(); }
   // late in the day the whole land takes the light's colour; at night, stars and a moon come out
-  if(D.tint){ x.globalCompositeOperation = 'multiply'; x.fillStyle = D.tint; x.fillRect(0, G*.2, W, Hh - G*.2); x.globalCompositeOperation = 'source-over'; }
+  if(D.tint){ x.globalCompositeOperation = 'multiply'; x.fillStyle = D.tint; x.fillRect(0, G*.2, W, Hh - G*.2);
+    if(!D.night){ const gl = x.createLinearGradient(0, G*.35, 0, G*1.05); gl.addColorStop(0, 'rgba(255,150,70,0)'); gl.addColorStop(1, 'rgba(255,150,70,.45)');   // the low sun warms the land
+      x.globalCompositeOperation = 'screen'; x.fillStyle = gl; x.fillRect(0, 0, W, Hh); }
+    x.globalCompositeOperation = 'source-over'; }
   if(D.night){ x.fillStyle = '#fff'; for(let i = 0; i < 46; i++){ x.globalAlpha = .4 + (i % 5)*.12; x.beginPath(); x.arc((i*97.3) % W, (i*53.1) % (G*.55), .8 + (i % 3)*.6, 0, 7); x.fill(); } x.globalAlpha = 1;
     x.fillStyle = '#fff6d0'; x.strokeStyle = INK; x.lineWidth = 2.5; x.beginPath(); x.arc(W*.8, G*.26, u*.05, 0, 7); x.fill(); x.stroke(); }
   BG = {key, cv}; return cv; }
 
 function clouds(g, t){
   const ctx = api.ctx; [[.12, .08, 1], [.55, .15, .8], [.85, .06, .65]].forEach(([fx, fy, s], i) => {
-    const cx = ((fx*g.W + t*(6 + i*3)) % (g.W + 160)) - 80, cy = g.G*(fy + .06), r = g.u*.05*s; ctx.fillStyle = 'rgba(255,255,255,.92)'; ctx.strokeStyle = 'rgba(43,33,64,.35)'; ctx.lineWidth = 2;
+    const cx = ((fx*g.W + t*(6 + i*3)) % (g.W + 160)) - 80, cy = g.G*(fy + .06), r = g.u*.05*s; ctx.fillStyle = ['rgba(255,255,255,.92)', 'rgba(255,255,255,.95)', 'rgba(255,214,190,.9)', 'rgba(140,152,205,.55)'][dayOf()]; ctx.strokeStyle = 'rgba(43,33,64,.35)'; ctx.lineWidth = 2;
     ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.arc(cx + r*1.1, cy - r*.4, r*1.1, 0, 7); ctx.arc(cx + r*2.3, cy, r*.9, 0, 7); ctx.rect(cx, cy, r*2.3, r*.9); ctx.fill(); }); }
 function birds(g, t){
   const ctx = api.ctx; ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.lineCap = 'round';
