@@ -82,6 +82,7 @@ function endShot(arrow, kind, ring, py){
     if(AR.combo >= 3) pop(g.W/2, g.Hh*.2, `پشتِ سرِ هم ×${fa(AR.combo)}`, '#ffb4d0', 28);
     if(AR.combo % 5 === 0 && AR.hearts < 3){ AR.hearts++; AR.heartFlash = 1; pop(g.W/2, g.Hh*.28, 'یک قلب برگشت! 💛', '#ff9eb5', 34); sfx('fuel'); }
     const rb = AR.bestRec; if(rb > 0 && !AR.recDone && AR.score > rb){ AR.recDone = true; sfx('cheer'); pop(g.W/2, g.Hh*.12, 'رکورد را شکستی! 🏆', '#ffd93d', 36); }
+    if(AR.hits % 8 === 0){ sfx('fanfare'); pop(g.W/2, g.Hh*.34, `${DAY[dayOf()].n} شد! ✨`, '#fff', 34); }
     T.gone = true; T.fall = 0; AR.nextAt = AR.t + 1.15;
   } else {
     AR.combo = 0; AR.hearts--; AR.heartFlash = -1; AR.shake = Math.max(AR.shake, 7); AUD.thud(); sfx('miss');
@@ -163,13 +164,17 @@ function cancelDraw(){ AUD.drawOff(); AR.state = 'idle'; AR.hist.length = 0; AR.
 
 /* ================================================================ drawing: the scene */
 let BG = null;
+/* the day moves on with every eight arrows that hit: morning, noon, sunset, a starry night, and morning again */
+const DAY = [{n:'صبح', sky:['#5fb8f5', '#a9defa', '#fff0cf']}, {n:'ظهر', sky:['#3d9ee8', '#8fd0f7', '#e6f6ff']},
+             {n:'غروب', sky:['#5b4fa8', '#f08a6a', '#ffd59a'], tint:'rgba(255,170,120,.38)'}, {n:'شب', sky:['#0d1a4f', '#28377f', '#5d6cb8'], tint:'rgba(40,52,130,.62)', night:true}];
+const dayOf = () => Math.floor(AR.hits/8) % DAY.length;
 function scene(g){
-  const key = g.W + 'x' + g.Hh + 'x' + (window.devicePixelRatio || 1);
+  const ph = dayOf(), D = DAY[ph], key = g.W + 'x' + g.Hh + 'x' + (window.devicePixelRatio || 1) + 'x' + ph;
   if(BG && BG.key === key) return BG.cv;
   const dpr = Math.min(2, window.devicePixelRatio || 1), cv = document.createElement('canvas'); cv.width = Math.round(g.W*dpr); cv.height = Math.round(g.Hh*dpr);
   const x = cv.getContext('2d'); x.scale(dpr, dpr); const {W, Hh, G, u} = g;
   // sky: a clear morning that warms to cream at the horizon
-  let sk = x.createLinearGradient(0, 0, 0, G); sk.addColorStop(0, '#5fb8f5'); sk.addColorStop(.55, '#a9defa'); sk.addColorStop(1, '#fff0cf');
+  let sk = x.createLinearGradient(0, 0, 0, G); sk.addColorStop(0, D.sky[0]); sk.addColorStop(.55, D.sky[1]); sk.addColorStop(1, D.sky[2]);
   x.fillStyle = sk; x.fillRect(0, 0, W, Hh);
   // the sun with a soft halo
   const sx = W*.8, sy = G*.26, sg = x.createRadialGradient(sx, sy, 4, sx, sy, u*.45); sg.addColorStop(0, 'rgba(255,244,190,.95)'); sg.addColorStop(.35, 'rgba(255,230,150,.35)'); sg.addColorStop(1, 'rgba(255,230,150,0)');
@@ -197,6 +202,10 @@ function scene(g){
   x.strokeStyle = '#2f8a3a'; x.lineWidth = 2; x.lineCap = 'round'; for(let i = 0; i < 80; i++){ const px = (i*53.7)%W, py = G + 6 + ((i*37.3)%(Hh - G - 10)); x.beginPath(); x.moveTo(px, py); x.lineTo(px - 2, py - 7); x.moveTo(px, py); x.lineTo(px + 3, py - 8); x.stroke(); }
   // flowers dotted on the grass
   for(let i = 0; i < 18; i++){ const px = (i*97.1 + 20)%W, py = G + 14 + ((i*61.7)%(Hh - G - 22)); x.fillStyle = ['#fff', '#ffd93d', '#ff8fb1'][i%3]; x.beginPath(); x.arc(px, py, 2.6, 0, 7); x.fill(); }
+  // late in the day the whole land takes the light's colour; at night, stars and a moon come out
+  if(D.tint){ x.globalCompositeOperation = 'multiply'; x.fillStyle = D.tint; x.fillRect(0, G*.2, W, Hh - G*.2); x.globalCompositeOperation = 'source-over'; }
+  if(D.night){ x.fillStyle = '#fff'; for(let i = 0; i < 46; i++){ x.globalAlpha = .4 + (i % 5)*.12; x.beginPath(); x.arc((i*97.3) % W, (i*53.1) % (G*.55), .8 + (i % 3)*.6, 0, 7); x.fill(); } x.globalAlpha = 1;
+    x.fillStyle = '#fff6d0'; x.strokeStyle = INK; x.lineWidth = 2.5; x.beginPath(); x.arc(W*.8, G*.26, u*.05, 0, 7); x.fill(); x.stroke(); }
   BG = {key, cv}; return cv; }
 
 function clouds(g, t){
@@ -442,7 +451,7 @@ function arFrame(dt, now, live){
   const w = AR.wind, wTxt = w === 0 ? '' : `<span style="background:#dff3ff">${w > 0 ? '→' : '←'} باد ${fa(Math.round(Math.abs(w)*100))}</span>`;
   const hint = A.phase !== 'run' ? '' : AR.hintT > 0 ? AR.hint : AR.state === 'draw' ? (AR.pull > .78 ? 'کامل کشیدی! رهایش کن 🎯' : 'بکش، بالا و پایین ببر تا نشانه بگیری') : AR.over ? '' : 'روبه‌روی گوشی: یک دست صاف کنارِ بدن، با دستِ دیگر زه را تا شانه بکش';
   hud(`<span>🎯 ${fa(AR.score)} <b>امتیاز</b></span>${AR.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(AR.combo)}</span>` : ''}${wTxt}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < AR.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('arash', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('arash', A.who))}</span>` : ''}`,
-    hint ? `<span>${hint}</span>` : ''); }
+    (hint ? `<span>${hint}</span>` : '') + (A.phase === 'run' && !AR.over ? `<span class="goal">🎯 ${fa(8 - AR.hits % 8)} تیر تا ${DAY[(dayOf() + 1) % DAY.length].n}</span>` : '')); }
 
 /* the card icon: a bow with an arrow, the target, and the same turquoise or saffron hero */
 function arIcon(){

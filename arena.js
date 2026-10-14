@@ -453,7 +453,7 @@ function drawHill(gas, lean, cadence, dt = .016){
   hud(`<span>🚩 ${fa(m)} <b>متر</b></span><span><img src="img/obj/coin.webp" alt=""> ${fa(HL.coins)}</span>${best('hill', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('hill', A.who))}</span>` : ''}`,
     `<span><img src="img/obj/jerrycan.webp" alt=""><i class="meter" style="background:linear-gradient(90deg,${fuel < 25 ? '#e2574c' : '#2fbf71'} ${fuel}%,#fff ${fuel}%)"></i></span>`
     + (HL.air ? `<span>${Math.abs(lean) > .3 ? (lean > 0 ? 'کج به راست ↘' : 'کج به چپ ↙') : 'بدنت را کج کن!'}</span>`
-              : HL.turbo ? `<span style="background:#ffe1b8">🔥 توربو!</span>` : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`));
+              : HL.turbo ? `<span style="background:#ffe1b8">🔥 توربو!</span>` : `<span>${gas > .05 ? `🏃 گاز <i class="meter" style="background:linear-gradient(90deg,#f3a530 ${Math.round(gas*10)*10}%,#fff ${Math.round(gas*10)*10}%)"></i>` : '🏃 درجا بدو!'}</span>`) + (HL.air || A.phase !== 'run' ? '' : `<span class="goal">🗺️ ${fa(Math.max(1, Math.ceil((Math.floor(HL.far/BIOME_LEN) + 1)*BIOME_LEN - HL.far)))} متر تا ${BIOMES[(Math.floor(HL.far/BIOME_LEN) + 1) % BIOMES.length].n}</span>`));
 }
 
 /* ================================================================ game 2: shape walls
@@ -493,6 +493,10 @@ const poolFor = (who, score) => (SENIOR(who) ? POOL.senior : POOL.kid).filter(([
 const WALLS = [{n:'آجری', f:'none'}, {n:'کاشیِ آبی', f:'hue-rotate(185deg) saturate(1.25)'}, {n:'سنگِ کویر', f:'sepia(.55) saturate(1.3) hue-rotate(-12deg) brightness(1.08)'},
                {n:'یخی', f:'hue-rotate(170deg) saturate(.45) brightness(1.4)'}];
 const wallTheme = () => WALLS[Math.floor(WL.score/8) % WALLS.length];
+/* the next thing to look forward to, always in sight: a new move, or the next wall material */
+function wallGoal(){ if(A.phase !== 'run') return ''; const sc = WL.score, ladder = (SENIOR(A.who) ? POOL.senior : POOL.kid).map(([n]) => n).filter(n => n > sc);
+  const nextMove = ladder.length ? ladder[0] : Infinity, nextWall = (Math.floor(sc/8) + 1)*8, n = Math.min(nextMove, nextWall);
+  return `<span class="goal">✨ ${fa(n - sc)} دیوار تا ${n === nextMove ? 'حرکتِ تازه' : 'دیوارِ ' + WALLS[(n/8) % WALLS.length].n}</span>`; }
 const WL = {};
 function wallReset(){ Object.assign(WL, {score:0, hearts:3, wall:null, gapT:0, flash:0, flashOk:false, combo:0, shake:0}); FX.length = 0; }
 function newWall(now){
@@ -647,7 +651,7 @@ function drawWall(now, c){
   if(WL.flash && now - WL.flash < 700){ ctx.fillStyle = WL.flashOk ? 'rgba(47,191,113,.28)' : 'rgba(226,87,76,.32)'; ctx.fillRect(0, 0, W, Hh); }
   drawFX(dt);
   ctx.restore();
-  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span>${WL.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(WL.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < WL.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('wall', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('wall', A.who))}</span>` : ''}`);
+  hud(`<span>🧱 ${fa(WL.score)} <b>دیوار</b></span>${WL.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(WL.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < WL.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('wall', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('wall', A.who))}</span>` : ''}`, wallGoal());
 }
 
 /* ================================================================ more games plug in here
