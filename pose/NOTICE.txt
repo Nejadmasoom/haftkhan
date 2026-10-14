@@ -1,0 +1,11 @@
+MediaPipe Tasks Vision 0.10.14 and the Pose Landmarker (lite) model
+Copyright Google LLC — Apache License 2.0 (https://www.apache.org/licenses/LICENSE-2.0)
+https://github.com/google-ai-edge/mediapipe
+
+vision.js   — vision_bundle.mjs with its ES export turned into window.HKVision
+loader.js   — wasm/vision_wasm_internal.js, unchanged, as a string
+wasm.js     — wasm/vision_wasm_internal.wasm as base64
+model.js    — pose_landmarker_lite.task as base64
+
+The binaries are wrapped as scripts because a page opened by double-click
+(file://) may load classic scripts but may not fetch files.
