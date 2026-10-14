@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<title>راهنمای گذاشتنِ هفت‌خوانِ حرکت روی هاست</title>
+<style>
+@font-face { font-family: 'V'; font-weight: 100 900; src: url(Vazirmatn-arabic.woff2) format('woff2'); unicode-range: U+0600-06FF, U+0750-077F, U+200C-200F, U+FB50-FDFF, U+FE70-FEFF; }
+@font-face { font-family: 'V'; font-weight: 100 900; src: url(Vazirmatn-latin.woff2) format('woff2'); unicode-range: U+0000-00FF, U+2010-205F, U+20AC, U+2122; }
+@page { size: A4; margin: 0; }
+:root { --ink:#2b2140; --soft:#5d5470; --tq:#16a39a; --tq-l:#d9f4f1; --lapis:#22327a; --gold:#f3a530; --gold-l:#fff3d6; --red:#d6404c; --red-l:#fde6e8; --cream:#fbf6ec; --line:#e9e1d2; }
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body { font-family: 'V', Tahoma, sans-serif; color: var(--ink); background: #fff; font-size: 11pt; line-height: 1.75; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+.page { width: 210mm; height: 297mm; padding: 16mm 17mm 20mm; position: relative; overflow: hidden; page-break-after: always; background: #fff; }
+.page:last-child { page-break-after: auto; }
+.folio { position: absolute; bottom: 9mm; left: 18mm; right: 18mm; display: flex; justify-content: space-between; font-size: 8.5pt; color: #9a91aa; border-top: 1px solid var(--line); padding-top: 3mm; }
+h1, h2, h3 { margin: 0; line-height: 1.35; }
+h2 { font-size: 20pt; font-weight: 900; display: flex; align-items: center; gap: 10px; margin-bottom: 4mm; }
+h2 .tag { font-size: 9.5pt; font-weight: 700; background: var(--tq-l); color: var(--tq); padding: 2px 10px; border-radius: 99px; }
+h3 { font-size: 13pt; font-weight: 800; margin-bottom: 1.5mm; }
+p { margin: 0 0 3mm; }
+.lead { font-size: 12.5pt; color: var(--soft); margin-bottom: 6mm; }
+code, .path { font-family: 'V', monospace; direction: ltr; unicode-bidi: isolate; display: inline-block; background: #f1ecf6; color: var(--lapis); border-radius: 6px; padding: 0 7px; font-weight: 700; font-size: 10.5pt; }
+b { font-weight: 800; }
+
+/* cover */
+.cover { padding: 0; background: linear-gradient(160deg, #16a39a 0%, #1b7f9b 45%, #22327a 100%); color: #fff; }
+.cover .top { padding: 26mm 20mm 0; position: relative; z-index: 2; }
+.cover .logo { width: 30mm; height: 30mm; border-radius: 9mm; box-shadow: 0 6px 0 rgba(0,0,0,.18); }
+.cover h1 { font-size: 34pt; font-weight: 900; margin: 9mm 0 3mm; line-height: 1.3; }
+.cover .sub { font-size: 15pt; font-weight: 500; opacity: .95; }
+.cover .pill { display: inline-block; margin-top: 7mm; background: var(--gold); color: var(--ink); font-weight: 800; padding: 3mm 7mm; border-radius: 99px; font-size: 12pt; box-shadow: 0 4px 0 rgba(0,0,0,.2); }
+.phones { position: relative; z-index: 2; margin-top: 16mm; display: flex; justify-content: center; align-items: flex-start; gap: 7mm; }
+.phone { width: 52mm; border-radius: 9mm; background: #13122a; padding: 2.6mm; box-shadow: 0 14px 30px rgba(0,0,0,.35); }
+.phone img { width: 100%; display: block; border-radius: 6.5mm; }
+.phone.mid { width: 60mm; }
+.phone.side { margin-top: 16mm; }
+.cover .dots { position: absolute; inset: 0; background-image: radial-gradient(rgba(255,255,255,.12) 1.4px, transparent 1.6px); background-size: 9mm 9mm; z-index: 1; }
+
+/* boxes */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 5mm; }
+.card { border: 1.6px solid var(--line); border-radius: 5mm; padding: 5mm 6mm; background: var(--cream); }
+.card .ic { width: 11mm; height: 11mm; border-radius: 3.5mm; display: grid; place-items: center; font-size: 17pt; margin-bottom: 2mm; }
+.ic.tq { background: var(--tq-l); } .ic.gold { background: var(--gold-l); } .ic.red { background: var(--red-l); } .ic.lap { background: #e3e7fb; }
+.note { border-radius: 5mm; padding: 4.5mm 6mm; margin: 4mm 0; display: flex; gap: 4mm; align-items: flex-start; }
+.note .em { font-size: 18pt; line-height: 1.2; }
+.note.warn { background: var(--red-l); border: 1.6px solid #f3b8bf; }
+.note.tip { background: var(--gold-l); border: 1.6px solid #f6d48f; }
+.note.ok { background: var(--tq-l); border: 1.6px solid #a6e2db; }
+.note h3 { margin-bottom: 1mm; }
+.note p:last-child { margin: 0; }
+
+/* steps */
+.steps { counter-reset: s; display: flex; flex-direction: column; gap: 3mm; }
+.step { display: flex; gap: 5mm; align-items: flex-start; border: 1.6px solid var(--line); border-radius: 5mm; padding: 3.4mm 5mm; background: #fff; break-inside: avoid; }
+.step .n { flex: 0 0 auto; width: 11mm; height: 11mm; border-radius: 50%; background: var(--tq); color: #fff; font-weight: 900; font-size: 14pt; display: grid; place-items: center; box-shadow: 0 3px 0 #0e7a73; }
+.step .n.gold { background: var(--gold); color: var(--ink); box-shadow: 0 3px 0 #c98410; }
+.step .body { flex: 1; }
+.step .body p { margin: 0 0 1.5mm; }
+.step .body p:last-child { margin: 0; }
+.click { display: inline-block; background: var(--ink); color: #fff; border-radius: 6px; padding: 0 8px; font-weight: 700; font-size: 10pt; direction: ltr; unicode-bidi: isolate; }
+.arrow { color: var(--soft); font-weight: 800; padding: 0 3px; }
+
+/* folder picture */
+.tree { direction: ltr; text-align: left; background: #1f1b33; color: #e8e4f2; border-radius: 5mm; padding: 5mm 7mm; font-size: 10.5pt; line-height: 1.9; font-family: 'V', monospace; }
+.tree .d { color: #ffd166; font-weight: 700; } .tree .f { color: #8fe3d9; } .tree .c { color: #9a91aa; }
+.flow { display: flex; align-items: center; justify-content: center; gap: 4mm; margin: 5mm 0 2mm; }
+.flow .b { background: #fff; border: 2px solid var(--ink); border-radius: 4mm; padding: 3mm 5mm; text-align: center; font-weight: 800; box-shadow: 0 3px 0 var(--ink); min-width: 34mm; }
+.flow .b small { display: block; font-weight: 500; color: var(--soft); font-size: 9pt; }
+.flow .to { font-size: 18pt; font-weight: 900; color: var(--tq); }
+
+table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1.6px solid var(--line); border-radius: 5mm; overflow: hidden; font-size: 10.5pt; }
+th { background: var(--ink); color: #fff; font-weight: 800; text-align: right; padding: 3mm 4mm; }
+td { padding: 3mm 4mm; border-top: 1.2px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: var(--cream); }
+td:first-child { font-weight: 800; width: 34%; }
+.check { list-style: none; padding: 0; margin: 0; }
+.check li { padding: 1.8mm 0 1.8mm; display: flex; gap: 3mm; align-items: flex-start; border-bottom: 1px dashed var(--line); }
+.check li::before { content: ''; flex: 0 0 auto; width: 5.5mm; height: 5.5mm; border: 2px solid var(--tq); border-radius: 1.6mm; margin-top: 1.4mm; }
+</style>
+</head>
+<body>
+
+<!-- ======================== cover -->
+<section class="page cover">
+  <div class="dots"></div>
+  <div class="top">
+    <img class="logo" src="icon.png" alt="">
+    <h1>گذاشتنِ «هفت‌خوانِ حرکت»<br>روی هاستِ خودتان</h1>
+    <div class="sub">راهنمای گام‌به‌گام، به زبانِ ساده — بدونِ نیاز به دانشِ فنی</div>
+    <div class="pill">حدودِ ۱۵ دقیقه کار</div>
+  </div>
+  <div class="phones">
+    <div class="phone side"><img src="s-hello.png" alt=""></div>
+    <div class="phone mid"><img src="s-map.png" alt=""></div>
+    <div class="phone side"><img src="s-arena.png" alt=""></div>
+  </div>
+</section>
+
+<!-- ======================== before you start -->
+<section class="page">
+  <h2>پیش از شروع <span class="tag">۱</span></h2>
+  <p class="lead">بازی یک وب‌سایتِ سادهٔ آماده است: نه پایگاهِ داده لازم دارد، نه برنامه‌نویسی و نه نصب. فقط باید فایل‌هایش را در هاست بگذارید.</p>
+
+  <div class="grid2">
+    <div class="card"><div class="ic tq">📦</div><h3>آنچه در دست دارید</h3>
+      <p>فایلِ <code>haftkhan-host.zip</code> (حدودِ ۳۴ مگابایت). همه‌چیزِ بازی داخلِ همین فایل است و هیچ فایلِ اضافه‌ای ندارد.</p></div>
+    <div class="card"><div class="ic gold">🖥️</div><h3>آنچه لازم دارید</h3>
+      <p>یک هاستِ ساده با کنترل‌پنل (<b>سی‌پنل</b> یا <b>دایرکت‌ادمین</b>)، یک دامنه یا زیردامنه، و حدودِ <b>۵۰ مگابایت</b> فضای خالی.</p></div>
+  </div>
+
+  <div class="note warn"><div class="em">🔒</div><div>
+    <h3>مهم‌ترین نکته: آدرس باید با https باز شود</h3>
+    <p>مرورگرها فقط به سایت‌های امن اجازهٔ روشن کردنِ دوربین می‌دهند. اگر سایت با <code>http://</code> (بدونِ قفل) باز شود، دوربین روشن نمی‌شود و بچه نمی‌تواند بازی کند. بیشترِ هاست‌ها گواهیِ امنیتیِ رایگان (SSL) دارند؛ در گامِ ۲ نشان داده‌ایم چطور روشنش کنید.</p></div></div>
+
+  <h3 style="margin-top:7mm">بازی را کجای سایت بگذاریم؟ یکی را انتخاب کنید</h3>
+  <table>
+    <tr><th>اگر می‌خواهید آدرس این باشد</th><th>فایل‌ها را کجا بگذارید</th></tr>
+    <tr><td><span class="path">yourdomain.ir</span></td><td>مستقیم داخلِ پوشهٔ <span class="path">public_html</span> (اگر سایتِ دیگری روی این دامنه نیست).</td></tr>
+    <tr><td><span class="path">yourdomain.ir/game</span></td><td>یک پوشهٔ تازه به نامِ <span class="path">game</span> داخلِ <span class="path">public_html</span> بسازید و فایل‌ها را آن‌جا بگذارید. <b>پیشنهادِ ما همین است</b>، چون به سایتِ فعلی‌تان دست نمی‌زند.</td></tr>
+    <tr><td><span class="path">game.yourdomain.ir</span></td><td>در کنترل‌پنل یک زیردامنه (Subdomain) بسازید؛ پوشه‌اش را خودِ کنترل‌پنل می‌سازد. فایل‌ها را در همان پوشه بگذارید.</td></tr>
+  </table>
+
+  <div class="note ok"><div class="em">🛡️</div><div><p><b>حریمِ خصوصی:</b> تصویرِ دوربین فقط داخلِ گوشیِ خودِ بچه بررسی می‌شود و به هیچ‌جا، حتی به هاستِ شما، فرستاده نمی‌شود. بازی هیچ اطلاعاتی برای کسی نمی‌فرستد؛ رکوردها و پیشرفتِ بچه فقط در مرورگرِ همان گوشی ذخیره می‌شود.</p></div></div>
+  <div class="folio"><span>هفت‌خوانِ حرکت — راهنمای هاست</span><span>۲</span></div>
+</section>
+
+<!-- ======================== cPanel steps -->
+<section class="page">
+  <h2>گام‌به‌گام در سی‌پنل (cPanel) <span class="tag">۲</span></h2>
+  <p class="lead">اگر کنترل‌پنلِ شما دایرکت‌ادمین است، به صفحهٔ بعد بروید؛ مراحل تقریباً همین است.</p>
+  <div class="steps">
+    <div class="step"><div class="n">۱</div><div class="body"><h3>واردِ سی‌پنل شوید</h3>
+      <p>با نام‌کاربری و رمزی که شرکتِ هاست برایتان فرستاده واردِ سی‌پنل شوید. (معمولاً آدرسش <span class="path">yourdomain.ir/cpanel</span> است.)</p></div></div>
+    <div class="step"><div class="n">۲</div><div class="body"><h3>گواهیِ امنیتی (SSL) را روشن کنید</h3>
+      <p>در سی‌پنل دنبالِ <span class="click">SSL/TLS Status</span> بگردید، دامنه را تیک بزنید و <span class="click">Run AutoSSL</span> را بزنید. اگر این گزینه نبود، دنبالِ <span class="click">Let's Encrypt</span> بگردید. چند دقیقه بعد، کنارِ آدرسِ سایت در مرورگر قفل 🔒 دیده می‌شود.</p>
+      <p style="color:var(--soft)">اگر هیچ‌کدام را پیدا نکردید، از پشتیبانیِ هاست بخواهید «SSL رایگان» را برایتان فعال کند.</p></div></div>
+    <div class="step"><div class="n">۳</div><div class="body"><h3>مدیرِ فایل را باز کنید</h3>
+      <p><span class="click">File Manager</span> را باز کنید و واردِ پوشهٔ <span class="path">public_html</span> شوید. اگر آدرسِ <span class="path">/game</span> را انتخاب کرده‌اید، بالای صفحه <span class="click">+ Folder</span> را بزنید، نامش را <span class="path">game</span> بگذارید و واردش شوید.</p></div></div>
+    <div class="step"><div class="n">۴</div><div class="body"><h3>فایلِ zip را بفرستید</h3>
+      <p>بالای صفحه <span class="click">Upload</span> را بزنید و فایلِ <code>haftkhan-host.zip</code> را انتخاب کنید. صبر کنید تا نوارِ پیشرفت به <b>۱۰۰٪</b> برسد و سبز شود؛ بعد به مدیرِ فایل برگردید.</p></div></div>
+    <div class="step"><div class="n">۵</div><div class="body"><h3>فایل را باز کنید (Extract)</h3>
+      <p>روی <code>haftkhan-host.zip</code> راست‌کلیک کنید و <span class="click">Extract</span> را بزنید. در پنجره‌ای که باز می‌شود، مسیر را همان پوشهٔ فعلی بگذارید و <span class="click">Extract File(s)</span> را بزنید.</p></div></div>
+    <div class="step"><div class="n">۶</div><div class="body"><h3>فایلِ zip را پاک کنید</h3>
+      <p>بعد از باز شدن دیگر به خودِ فایلِ zip نیازی نیست. انتخابش کنید و <span class="click">Delete</span> را بزنید تا فضای هاست آزاد شود.</p></div></div>
+    <div class="step"><div class="n gold">✓</div><div class="body"><h3>بازی را باز کنید</h3>
+      <p>در گوشی آدرس را <b>با https</b> باز کنید، مثلاً <span class="path">https://yourdomain.ir/game</span>. وقتی بازی اجازهٔ دوربین خواست، <b>«اجازه دادن»</b> را بزنید. تمام!</p></div></div>
+  </div>
+  <div class="folio"><span>هفت‌خوانِ حرکت — راهنمای هاست</span><span>۳</span></div>
+</section>
+
+<!-- ======================== check + DirectAdmin -->
+<section class="page">
+  <h2>فایل‌ها درست سرِ جایشان هستند؟ <span class="tag">۳</span></h2>
+  <p class="lead">رایج‌ترین اشتباه این است که فایل‌ها داخلِ یک پوشهٔ اضافه بروند. بعد از گامِ ۵، داخلِ پوشه باید دقیقاً این را ببینید:</p>
+  <div class="tree">
+<span class="d">public_html/game/</span>   <span class="c">← یا هر پوشه‌ای که انتخاب کردید</span><br>
+&nbsp;&nbsp;├─ <span class="f">index.html</span>   <span class="c">← صفحهٔ اصلیِ بازی؛ باید همین‌جا باشد</span><br>
+&nbsp;&nbsp;├─ <span class="f">.htaccess</span>   <span class="c">← تنظیمِ هاست (پنهان است؛ پایین را ببینید)</span><br>
+&nbsp;&nbsp;├─ <span class="f">icon.png · khans.js · arena.js · …</span><br>
+&nbsp;&nbsp;├─ <span class="d">audio/</span>   <span class="c">صداها</span><br>
+&nbsp;&nbsp;├─ <span class="d">img/</span>   <span class="c">تصویرها</span><br>
+&nbsp;&nbsp;├─ <span class="d">fonts/</span>   <span class="c">قلم‌ها</span><br>
+&nbsp;&nbsp;└─ <span class="d">pose/</span>   <span class="c">موتورِ تشخیصِ حرکتِ بدن</span>
+  </div>
+  <div class="note tip"><div class="em">💡</div><div><p><b>فایلِ <code>.htaccess</code> را نمی‌بینید؟</b> فایل‌هایی که نامشان با نقطه شروع می‌شود پنهان‌اند. در سی‌پنل بالا-راستِ مدیرِ فایل <span class="click">Settings</span> را بزنید و <span class="click">Show Hidden Files</span> را تیک بزنید. این فایل به هاست می‌گوید سایت را همیشه با https باز کند و فایل‌های موتورِ دوربین را درست بفرستد.</p></div></div>
+  <div class="note warn"><div class="em">📁</div><div><p>اگر به‌جای این‌ها فقط یک پوشه دیدید به نامِ <span class="path">haftkhan-host</span>، واردش شوید، همه را انتخاب کنید (<span class="click">Select All</span>)، با <span class="click">Move</span> آن‌ها را یک پوشه بالاتر ببرید و پوشهٔ خالی را پاک کنید.</p></div></div>
+
+  <h2 style="margin-top:9mm">اگر کنترل‌پنلِ شما دایرکت‌ادمین است <span class="tag">DirectAdmin</span></h2>
+  <div class="steps">
+    <div class="step"><div class="n">۱</div><div class="body"><p><b>SSL:</b> در <span class="click">SSL Certificates</span> گزینهٔ <span class="click">Free & automatic certificate from Let's Encrypt</span> را بزنید و <span class="click">Save</span> کنید.</p></div></div>
+    <div class="step"><div class="n">۲</div><div class="body"><p><b>فایل‌ها:</b> <span class="click">File Manager</span> را باز کنید و به <span class="path">domains/yourdomain.ir/public_html</span> بروید. اگر آدرسِ <span class="path">/game</span> را می‌خواهید، پوشهٔ <span class="path">game</span> را بسازید و واردش شوید.</p></div></div>
+    <div class="step"><div class="n">۳</div><div class="body"><p><span class="click">Upload files</span> را بزنید، فایلِ zip را بفرستید، روی آن کلیک کنید و <span class="click">Extract</span> را بزنید. بعد فایلِ zip را پاک کنید.</p></div></div>
+  </div>
+  <div class="folio"><span>هفت‌خوانِ حرکت — راهنمای هاست</span><span>۴</span></div>
+</section>
+
+<!-- ======================== test, update, troubleshooting -->
+<section class="page">
+  <h2>آزمایش با گوشی <span class="tag">۴</span></h2>
+  <ul class="check">
+    <li>آدرس با <b>https</b> باز می‌شود و کنارش قفل 🔒 هست.</li>
+    <li>صفحهٔ «اسمت چیه؟» می‌آید؛ اسم را بنویسید و وارد شوید.</li>
+    <li>نقشهٔ هفت‌خوان با حیوان‌ها دیده می‌شود.</li>
+    <li>با یک لمس، صدای یوزی و آهنگ پخش می‌شود (مرورگرها صدا را فقط بعد از اولین لمس پخش می‌کنند).</li>
+    <li>در «میدان» یک بازی را بزنید، اجازهٔ دوربین بدهید و دو سه قدم عقب بروید: یوزی بدن را اندازه می‌گیرد و بازی شروع می‌شود. بارِ اول ممکن است چند ثانیه طول بکشد تا موتورِ دوربین (حدودِ ۱۵ مگابایت) بارگذاری شود.</li>
+  </ul>
+
+  <h2 style="margin-top:8mm">نسخه‌های بعدی را چطور بگذاریم؟ <span class="tag">۵</span></h2>
+  <div class="flow">
+    <div class="b">zipِ تازه<small>را بفرستید</small></div><div class="to">←</div>
+    <div class="b">Extract<small>در همان پوشه</small></div><div class="to">←</div>
+    <div class="b">«بله، جایگزین کن»<small>Overwrite</small></div>
+  </div>
+  <p style="text-align:center;color:var(--soft)">رکوردها و پیشرفتِ بچه‌ها پاک نمی‌شود، چون در گوشیِ خودشان ذخیره است، نه در هاست.</p>
+
+  <div class="note ok" style="margin-top:6mm"><div class="em">🐆</div><div><p>همین! از این به بعد هر کسی آدرس را داشته باشد، می‌تواند با گوشی هفت‌خوان را بازی کند. نصبِ برنامه هم لازم نیست؛ در گوشی می‌توانید از منوی مرورگر «افزودن به صفحهٔ اصلی» را بزنید تا آیکونِ یوزی کنارِ برنامه‌های دیگر بیاید.</p></div></div>
+  <div class="folio"><span>هفت‌خوانِ حرکت — راهنمای هاست</span><span>۵</span></div>
+</section>
+
+<section class="page">
+  <h2 >اگر چیزی درست کار نکرد <span class="tag">۶</span></h2>
+  <table>
+    <tr><th>مشکل</th><th>چه کنیم</th></tr>
+    <tr><td>دوربین روشن نمی‌شود</td><td>آدرس را با <span class="path">https://</span> باز کنید. اگر قبلاً «اجازه ندادن» را زده‌اید، روی قفلِ کنارِ آدرس بزنید و دوربین را «مجاز» کنید.</td></tr>
+    <tr><td>صفحهٔ خالی یا «Index of» یا خطای ۴۰۴</td><td>فایلِ <code>index.html</code> باید مستقیم داخلِ پوشه باشد، نه داخلِ یک پوشهٔ دیگر (صفحهٔ ۴ را ببینید).</td></tr>
+    <tr><td>صدا پخش نمی‌شود</td><td>یک بار روی صفحه بزنید. کلیدِ بی‌صدای گوشی و دکمه‌های صدای بالای نقشه را هم ببینید.</td></tr>
+    <tr><td>بعد از به‌روزرسانی، نسخهٔ قبلی دیده می‌شود</td><td>صفحه را یک بار تازه کنید (کشیدنِ صفحه به پایین). اگر نشد، تاریخچهٔ مرورگرِ گوشی را برای همین سایت پاک کنید.</td></tr>
+    <tr><td>هاست اجازهٔ فرستادنِ فایلِ ۳۴ مگابایتی را نمی‌دهد</td><td>از پشتیبانیِ هاست بخواهید سقفِ آپلود را بیشتر کند، یا فایل را با یک برنامهٔ FTP مثلِ FileZilla بفرستید.</td></tr>
+    <tr><td>بازی کُند است</td><td>گوشی را به شارژ بزنید، برنامه‌های دیگر را ببندید و در نورِ خوب بازی کنید. دوربینِ جلوی گوشی کافی است.</td></tr>
+  </table>
+  <div class="folio"><span>هفت‌خوانِ حرکت — راهنمای هاست</span><span>۶</span></div>
+</section>
+</body>
+</html>

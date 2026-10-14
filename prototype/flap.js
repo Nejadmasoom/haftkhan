@@ -48,7 +48,9 @@ function control(dt, now, live){
   F.uS += (clamp(F.u, -1.2, 1.2) - F.uS)*Math.min(1, dt*14);
   // spoken coaching when the bird is sinking and no stroke has come for a while: "hands up!" then "hands down!"
   if(live && A.phase === 'run' && !F.over && now - (F.lastFlap || 0) > 1800 && now - (F.coachT || 0) > 6000 && (!F.started || F.vy > 0)){
-    F.coachT = now; H.voice('osta-armU', 'step'); setTimeout(() => { if(A.phase === 'run') H.voice('step-armD', 'step'); }, 1100); } }
+    F.coachT = now; const has = id => (window.HK_AUDIO || []).includes(id);
+    if(has('ar-flap')) H.voice(F.started && has('ar-flap-more') && (F.coachN = (F.coachN || 0) + 1) % 2 === 0 ? 'ar-flap-more' : 'ar-flap', 'step');      // Yuzi's own line once it is recorded
+    else { H.voice('osta-armU', 'step'); setTimeout(() => { if(A.phase === 'run') H.voice('step-armD', 'step'); }, 1100); } } }
 
 function newColumn(g){
   const n = F.spawnN++, gap = Math.max(.215, .345 - n*.0065)*g.Hh, lo = gap/2 + g.Hh*.1, hi = g.gy - gap/2 - g.Hh*.1;

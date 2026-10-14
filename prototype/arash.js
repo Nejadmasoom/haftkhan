@@ -15,6 +15,7 @@ const AUD = window.HKS.BOW;
 /* ================================================================ the game */
 const AR = {};
 const NAME = () => H.kidName();
+const HAS = id => (window.HK_AUDIO || []).includes(id);      // a recorded line exists (tools/voice/arena_lines.py)
 const POWER_MIN = .3;            // a draw shorter than this is only a test pull: no arrow leaves
 const G_ACC = 1.7, VMAX = 1.62;  // scene units per second²; the fastest an arrow can leave (a full draw)
 
@@ -141,7 +142,7 @@ function control(dt, now, live){
     const last3 = AR.hist.slice(-3).map(h => h.p).sort((x, y) => x - y), med = last3.length ? last3[last3.length >> 1] : 0;
     // releasing looks at the middle of five: even two bad frames in a row (a hand hidden for a moment) cannot fire
     const last5 = AR.hist.slice(-5).map(h => h.p).sort((x, y) => x - y), med5 = last5.length ? last5[last5.length >> 1] : 0;
-    if(AR.state === 'idle' && AR.cool <= 0 && good && med > .26){ AR.state = 'draw'; AR.side = rd.side; AR.peak = med; AR.drawT = now; AR.peakT = now; AR.relN = 0; AR.lostT = 0; AUD.drawOn(); }
+    if(AR.state === 'idle' && AR.cool <= 0 && good && med > .26){ AR.state = 'draw'; AR.side = rd.side; AR.peak = med; AR.drawT = now; AR.peakT = now; if(AR.shots < 2 && HAS('ar-bow-draw') && now - (AR.teachT || 0) > 6000){ AR.teachT = now; H.voice('ar-bow-draw', 'step'); } AR.relN = 0; AR.lostT = 0; AUD.drawOn(); }
     else if(AR.state === 'draw' && !good && !flickRelease){
       // the bow arm sagged or a hand went out of sight: wait; if it lasts, put the arrow down without shooting
       AR.lostT = AR.lostT || now;
@@ -165,11 +166,11 @@ function control(dt, now, live){
   AR.speed = (AR.pull - old)/Math.max(dt, .001);
   if(live && A.phase === 'run' && AR.state === 'idle' && !AR.arrow && !AR.over){
     AR.idleT = (AR.idleT || 0) + dt;
-    if(AR.idleT > 5 && now - (AR.coachT || 0) > 9000){ AR.coachT = now; H.voice('osta-armS', 'step'); AR.hint = 'روبه‌روی گوشی بایست و یک دستت را صاف کنارِ بدن ببر'; AR.hintT = 3; } }
+    if(AR.idleT > 5 && now - (AR.coachT || 0) > 9000){ AR.coachT = now; H.voice(HAS('ar-bow-stand') ? 'ar-bow-stand' : 'osta-armS', 'step'); AR.hint = 'روبه‌روی گوشی بایست و یک دستت را صاف کنارِ بدن ببر'; AR.hintT = 3; } }
   else AR.idleT = 0;
   if(AR.state === 'draw' && live){
     AUD.drawSet(AR.pull, AR.speed);
-    if(AR.pull > .78 && !AR.readyTick){ AR.readyTick = true; AUD.ready(); }
+    if(AR.pull > .78 && !AR.readyTick){ AR.readyTick = true; AUD.ready(); if(AR.shots < 3 && HAS('ar-bow-shoot')) H.voice('ar-bow-shoot', 'cmd'); }
     if(AR.pull < .6) AR.readyTick = false; }
   else AUD.drawOff(); }
 function cancelDraw(){ AUD.drawOff(); AR.state = 'idle'; AR.hist.length = 0; AR.pullRaw = 0; AR.relN = 0; AR.lostT = 0; }
