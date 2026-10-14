@@ -143,8 +143,18 @@ function gameOver(score, why){
    side lean turns it, and a landing more than ~60° off the slope rolls it over. Fuel runs down; cans keep
    the run going. Units: metres and seconds. */
 const HL = {};
+/* the road changes country every 300 m, with a soft blend between them, so a long drive keeps showing something new */
+const BIOMES = [
+  {n:'چمنزار', sky:['#5ec0ff', '#c9ecff', '#e8f8ff'], ridge:['#9fdc7c', '#6cc04f'], soil:['#c48745', '#7d4f25'], grass:['#3f9e2b', '#62c43f', '#a6ef74']},
+  {n:'بیابان', sky:['#6fc0f0', '#fde3b0', '#fff2d2'], ridge:['#f0c97a', '#dea458'], soil:['#e0ae66', '#a8743a'], grass:['#c08a35', '#e0b25a', '#f6d98a']},
+  {n:'کوهِ برفی', sky:['#7fa8de', '#d9e6f5', '#f4f8fc'], ridge:['#eef4fb', '#c9d8ec'], soil:['#9aa6b8', '#5d6678'], grass:['#a9bfdc', '#dfe9f6', '#ffffff']},
+  {n:'غروبِ جنگل', sky:['#5b4fa8', '#f2906a', '#ffd59a'], ridge:['#5f9a5a', '#3f7a45'], soil:['#b4764a', '#6d4428'], grass:['#2f7a2b', '#4f9e3a', '#8fcf5c']}];
+const BIOME_LEN = 300;
+const hexMix = (a, b, t) => { const p = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), x = p(a), y = p(b); return '#' + x.map((v, i) => Math.round(v + (y[i] - v)*t).toString(16).padStart(2, '0')).join(''); };
+function biomeAt(x){ const f = Math.max(0, x)/BIOME_LEN, i = Math.floor(f), blend = Math.max(0, Math.min(1, (f - i - .85)/.15)), A_ = BIOMES[i % BIOMES.length], B_ = BIOMES[(i + 1) % BIOMES.length];
+  const m = k => A_[k].map((c, j) => hexMix(c, B_[k][j], blend)); return {i, sky:m('sky'), ridge:m('ridge'), soil:m('soil'), grass:m('grass')}; }
 /* hills start gentle and grow slowly; the steepest stays climbable at full gas */
-function terrain(x){ const amp = 1.2 + Math.min(4.2, Math.max(0, x)/220);
+function terrain(x){ const amp = 1.0 + Math.min(4.2, Math.max(0, x)/330);      // the first few hundred metres stay friendly
   return amp*(.55*Math.sin(x/9) + .3*Math.sin(x/4.3 + 1.3) + .25*Math.sin(x/17 + 2.1)) + .4*Math.sin(x/37); }
 const slope = x => (terrain(x + .05) - terrain(x - .05))/.1;
 const curv = x => (terrain(x + .1) - 2*terrain(x) + terrain(x - .1))/.01;
@@ -230,6 +240,7 @@ function hillFrame(dt, now, live){
       }
     }
     HL.far = Math.max(HL.far, HL.x);
+    { const bi = Math.floor(HL.far/BIOME_LEN); if(bi > (HL.biome || 0)){ HL.biome = bi; sfx('fanfare'); pop(W/2, Hh*.22, `به ${BIOMES[bi % BIOMES.length].n} رسیدی!`, '#fff', 34); burst(W/2, Hh*.3, 30, CONF, 380, 1.3, 'star'); } }
     HL.fuel = Math.max(0, HL.fuel - dt*(senior ? 2.2 : 3)*(gas > 0 ? 1 : .4));
     if(HL.fuel < 20 && HL.fuel > 0 && now - HL.lowBeep > 1800){ HL.lowBeep = now; tone2(); }
     HL.cans = HL.cans.filter(cx => { if(Math.abs(cx - HL.x) < 1.8 && Math.abs(terrain(cx) - HL.y) < 2.5){ HL.fuel = 100; sfx('fuel'); const p = scr(cx, terrain(cx) + 1);
@@ -364,7 +375,7 @@ function drawHill(gas, lean, cadence, dt = .016){
   const span = (Hh*.3)/PPM; HL.camY = Math.max(HL.y - span, Math.min(HL.y + span, HL.camY));   // the jeep never leaves the screen
   const sx = x => (x - camX)*PPM, sy = y => Hh*.66 - (y - HL.camY)*PPM;
   // sky, sun, clouds
-  const sky = ctx.createLinearGradient(0, 0, 0, Hh); sky.addColorStop(0, '#5ec0ff'); sky.addColorStop(.7, '#c9ecff'); sky.addColorStop(1, '#e8f8ff'); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, Hh);
+  const BI = biomeAt(camX + W/PPM*.3); const sky = ctx.createLinearGradient(0, 0, 0, Hh); sky.addColorStop(0, BI.sky[0]); sky.addColorStop(.7, BI.sky[1]); sky.addColorStop(1, BI.sky[2]); ctx.fillStyle = sky; ctx.fillRect(0, 0, W, Hh);
   const sr = Math.min(W, Hh)*.07, sxn = W*.8, syn = Hh*.16, glow = ctx.createRadialGradient(sxn, syn, sr*.5, sxn, syn, sr*3);
   glow.addColorStop(0, 'rgba(255,240,150,.9)'); glow.addColorStop(1, 'rgba(255,240,150,0)'); ctx.fillStyle = glow; ctx.fillRect(sxn - sr*3, syn - sr*3, sr*6, sr*6);
   ctx.save(); ctx.translate(sxn, syn); ctx.rotate(t*.15); ctx.fillStyle = 'rgba(255,230,120,.35)';
@@ -376,13 +387,13 @@ function drawHill(gas, lean, cadence, dt = .016){
     if(cx2 > -150 && cx2 < W + 50) cloud(cx2, cy2, .6 + hash(i + 4)*.5); }
   // far mountains, middle hills with trees
   mountains(camX, PPM);
-  ridge(camX, PPM, .18, Hh*.56, 30, 8, 16, 3.4, '#9fdc7c', 'rgba(43,33,64,.4)', false);
-  ridge(camX, PPM, .35, Hh*.64, 36, 6, 18, 2.6, '#6cc04f', 'rgba(43,33,64,.55)', true);
+  ridge(camX, PPM, .18, Hh*.56, 30, 8, 16, 3.4, BI.ridge[0], 'rgba(43,33,64,.4)', false);
+  ridge(camX, PPM, .35, Hh*.64, 36, 6, 18, 2.6, BI.ridge[1], 'rgba(43,33,64,.55)', true);
   // the road: soil with layers, pebbles, grass on top
   const xs = []; for(let px = -12; px <= W + 12; px += 5) xs.push([px, sy(terrain(camX + px/PPM))]);
-  const soil = ctx.createLinearGradient(0, Hh*.4, 0, Hh); soil.addColorStop(0, '#c48745'); soil.addColorStop(1, '#7d4f25');
+  const soil = ctx.createLinearGradient(0, Hh*.4, 0, Hh); soil.addColorStop(0, BI.soil[0]); soil.addColorStop(1, BI.soil[1]);
   ctx.beginPath(); ctx.moveTo(-12, Hh); xs.forEach(([px, py]) => ctx.lineTo(px, py)); ctx.lineTo(W + 12, Hh); ctx.closePath(); ctx.fillStyle = soil; ctx.fill();
-  [[1.2, '#b0743a', .25], [2.9, '#975f2c', .45], [5.0, '#7c4a22', .7], [7.6, '#633818', 1.1]].forEach(([d, col, wob]) => {   // strata follow the road
+  [[1.2, .3, .25], [2.9, .5, .45], [5.0, .72, .7], [7.6, .95, 1.1]].map(([d, f, w]) => [d, hexMix(BI.soil[0], hexMix(BI.soil[1], '#2b2140', .25), f), w]).forEach(([d, col, wob]) => {   // strata in the country's own earth   // strata follow the road
     const off = (px, py) => py + d*PPM + wob*PPM*.35*Math.sin((camX + px/PPM)/2.3 + d);
     ctx.beginPath(); ctx.moveTo(-12, Hh); xs.forEach(([px, py]) => ctx.lineTo(px, off(px, py))); ctx.lineTo(W + 12, Hh); ctx.closePath();
     ctx.fillStyle = col; ctx.fill(); ctx.strokeStyle = 'rgba(43,33,64,.25)'; ctx.lineWidth = 2;
@@ -391,9 +402,9 @@ function drawHill(gas, lean, cadence, dt = .016){
     ctx.fillStyle = hash(wx + 2) < .5 ? '#c9b49a' : '#a99178'; ctx.strokeStyle = 'rgba(43,33,64,.45)'; ctx.lineWidth = 1.5;
     ctx.beginPath(); ctx.ellipse(px, py, PPM*(.14 + hash(wx + 8)*.2), PPM*(.1 + hash(wx + 4)*.06), hash(wx)*.6, 0, 7); ctx.fill(); ctx.stroke(); }
   ctx.lineJoin = 'round'; ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py) : ctx.moveTo(px, py));
-  ctx.lineWidth = PPM*.85; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = PPM*.72; ctx.strokeStyle = '#3f9e2b'; ctx.stroke();
-  ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py - PPM*.08) : ctx.moveTo(px, py - PPM*.08)); ctx.lineWidth = PPM*.42; ctx.strokeStyle = '#62c43f'; ctx.stroke();
-  ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py - PPM*.2) : ctx.moveTo(px, py - PPM*.2)); ctx.lineWidth = PPM*.12; ctx.strokeStyle = '#a6ef74'; ctx.stroke();
+  ctx.lineWidth = PPM*.85; ctx.strokeStyle = INK; ctx.stroke(); ctx.lineWidth = PPM*.72; ctx.strokeStyle = BI.grass[0]; ctx.stroke();
+  ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py - PPM*.08) : ctx.moveTo(px, py - PPM*.08)); ctx.lineWidth = PPM*.42; ctx.strokeStyle = BI.grass[1]; ctx.stroke();
+  ctx.beginPath(); xs.forEach(([px, py], i) => i ? ctx.lineTo(px, py - PPM*.2) : ctx.moveTo(px, py - PPM*.2)); ctx.lineWidth = PPM*.12; ctx.strokeStyle = BI.grass[2]; ctx.stroke();
   ctx.strokeStyle = '#3f9a2c'; ctx.lineWidth = 2;
   for(let wx = Math.floor(camX/1.3)*1.3; wx < camX + W/PPM; wx += 1.3){ const px = sx(wx), py = sy(terrain(wx)) - PPM*.18; if(hash(wx) < .4) continue;
     ctx.beginPath(); ctx.moveTo(px - 3, py); ctx.lineTo(px - 5, py - PPM*.35); ctx.moveTo(px, py); ctx.lineTo(px, py - PPM*.45); ctx.moveTo(px + 3, py); ctx.lineTo(px + 6, py - PPM*.32); ctx.stroke(); }
@@ -447,35 +458,46 @@ function drawHill(gas, lean, cadence, dt = .016){
    A wall comes with a hole in the shape of a pose, drawn from the player's own proportions. The pose must be
    held for a moment as the wall arrives. Faster walls as the score climbs; three hearts. */
 const POSES = {
+  /* every test is a little kinder than the picture: a child who is clearly making the shape must get through.
+     (The first versions asked for hands close together above the head and arms dead level; children raise a V,
+     and hold their arms a bit high or low, and kept hitting walls they had in fact matched.) */
   up:    {n:'دست‌ها بالا', v:'osta-armU', arms:[-162, -172, 162, 172], legs:[0, 0, 0, 0],
-          ok:(b) => b.wL.y < b.nose.y && b.wR.y < b.nose.y && Math.abs(b.wL.x - b.wR.x) < 1.7*b.sw},
-  wings: {n:'بال', v:'osta-armS', arms:[-90, -90, 90, 90], legs:[0, 0, 0, 0], ok:(b) => X.PRED.armS(b)},
+          ok:(b) => b.wL.y < b.sh.y - .35*b.torso && b.wR.y < b.sh.y - .35*b.torso},
+  wings: {n:'بال', v:'osta-armS', arms:[-90, -90, 90, 90], legs:[0, 0, 0, 0],
+          ok:(b) => Math.abs(b.wL.x - b.wR.x) > 1.7*b.sw && Math.abs(b.wL.y - b.sh.y) < 1.2*b.sw && Math.abs(b.wR.y - b.sh.y) < 1.2*b.sw},
   star:  {n:'ستاره', arms:[-140, -140, 140, 140], legs:[-24, -24, 24, 24],
-          ok:(b) => b.wL.y < b.sh.y && b.wR.y < b.sh.y && Math.abs(b.wL.x - b.wR.x) > 1.9*b.sw && b.feet && Math.abs(b.aL.x - b.aR.x) > 1.3*b.sw},
+          ok:(b) => b.wL.y < b.sh.y + .2*b.sw && b.wR.y < b.sh.y + .2*b.sw && Math.abs(b.wL.x - b.wR.x) > 1.6*b.sw && b.feet && Math.abs(b.aL.x - b.aR.x) > 1.0*b.sw},
   squat: {n:'بنشین', arms:[-90, -90, 90, 90], legs:[-55, 10, 55, -10], drop:.32,
-          ok:(b, c) => b.hip.y - c.hipY > .2*c.leg && b.legs && b.angL < 145 && b.angR < 145},
+          ok:(b, c) => b.hip.y - c.hipY > .15*c.leg || (b.legs && b.angL < 135 && b.angR < 135)},
   half:  {n:'نیم‌نشسته', arms:[-90, -90, 90, 90], legs:[-30, 8, 30, -8], drop:.14,
-          ok:(b, c) => b.hip.y - c.hipY > .09*c.leg},
+          ok:(b, c) => b.hip.y - c.hipY > .06*c.leg},
   storkL:{n:'لک‌لک: پای چپ', v:'osta-legL', arms:[-90, -90, 90, 90], legs:[-120, 0, 0, 0], short:'L',
-          ok:(b, c) => b.feet && liftedSide(b, c) === 'L' && X.PRED.armsOut(b)},
+          ok:(b, c) => b.feet && !!liftedSide(b, c)},       // either leg: six-year-olds mix left and right in a mirror
   storkR:{n:'لک‌لک: پای راست', v:'osta-legR', arms:[-90, -90, 90, 90], legs:[0, 0, 120, 0], short:'R',
-          ok:(b, c) => b.feet && liftedSide(b, c) === 'R' && X.PRED.armsOut(b)},
+          ok:(b, c) => b.feet && !!liftedSide(b, c)},
   leanL: {n:'کج به چپ', arms:[-160, -170, -160, -170], legs:[0, 0, 0, 0], lean:-.42,
-          ok:(b) => leanOf(b) < -.2 && Math.min(b.wL.y, b.wR.y) < b.nose.y},
+          ok:(b) => leanOf(b) < -.14 && Math.min(b.wL.y, b.wR.y) < b.sh.y},
   leanR: {n:'کج به راست', arms:[160, 170, 160, 170], legs:[0, 0, 0, 0], lean:.42,
-          ok:(b) => leanOf(b) > .2 && Math.min(b.wL.y, b.wR.y) < b.nose.y}
+          ok:(b) => leanOf(b) > .14 && Math.min(b.wL.y, b.wR.y) < b.sh.y}
 };
 /* which foot is lifted, as the player sees it on screen (a mirror: the child's left foot is on the left) */
-function liftedSide(b, c){ if(Math.abs(b.aL.y - b.aR.y) < .2*c.leg) return null; const up = b.aL.y < b.aR.y ? b.aL : b.aR, down = up === b.aL ? b.aR : b.aL;
+function liftedSide(b, c){ if(Math.abs(b.aL.y - b.aR.y) < .14*c.leg) return null; const up = b.aL.y < b.aR.y ? b.aL : b.aR, down = up === b.aL ? b.aR : b.aL;
   return up.x > down.x ? 'L' : 'R'; }
-const POOL = {kid:['up', 'wings', 'star', 'squat', 'storkL', 'storkR', 'leanL', 'leanR'], senior:['up', 'wings', 'half', 'leanL', 'leanR']};
+/* a ladder: the first walls ask only for the easy shapes; harder ones join as the score climbs */
+const POOL = {kid:[[0, ['up', 'wings', 'leanL', 'leanR']], [4, ['star', 'half']], [8, ['squat']], [12, ['storkL', 'storkR']]],
+              senior:[[0, ['up', 'wings', 'leanL', 'leanR']], [6, ['half']]]};
+const poolFor = (who, score) => (SENIOR(who) ? POOL.senior : POOL.kid).filter(([n]) => score >= n).flatMap(([, ks]) => ks);
+/* every eight walls the wall is built of something new */
+const WALLS = [{n:'آجری', f:'none'}, {n:'کاشیِ آبی', f:'hue-rotate(185deg) saturate(1.25)'}, {n:'سنگِ کویر', f:'sepia(.55) saturate(1.3) hue-rotate(-12deg) brightness(1.08)'},
+               {n:'یخی', f:'hue-rotate(170deg) saturate(.45) brightness(1.4)'}];
+const wallTheme = () => WALLS[Math.floor(WL.score/8) % WALLS.length];
 const WL = {};
 function wallReset(){ Object.assign(WL, {score:0, hearts:3, wall:null, gapT:0, flash:0, flashOk:false, combo:0, shake:0}); FX.length = 0; }
 function newWall(now){
-  const pool = SENIOR(A.who) ? POOL.senior : POOL.kid; let k;
+  const pool = poolFor(A.who, WL.score); let k;
   do { k = pool[Math.random()*pool.length|0]; } while(WL.last === k && pool.length > 1);
-  // the first walls come slowly; they speed up a little with every wall passed
-  WL.last = k; const dur = SENIOR(A.who) ? Math.max(4.5, 8 - .12*WL.score) : Math.max(3.2, 6.6 - .13*WL.score);
+  // the first walls come slowly; they speed up gently, a tenth of a second per wall, over thirty walls or more
+  WL.last = k; const dur = SENIOR(A.who) ? Math.max(4.6, 8.2 - .09*WL.score) : Math.max(3.4, 7.0 - .1*WL.score);
   WL.wall = {k, t0:now, dur:dur*1000, held:0, lastOk:0};
   sfx('wall', dur*.9);
   if(POSES[k].v) voice(POSES[k].v, 'step');
@@ -491,13 +513,14 @@ function wallFrame(dt, now, live){
       const p = (now - w.t0)/w.dur, okNow = !!(B.b && c && POSES[w.k].ok(B.b, c));
       w.okNow = okNow;
       if(p > .78 && now - (w.tickT || 0) > (p > .9 ? 160 : 300)){ w.tickT = now; sfx('tick'); }          // tick-tick-tick as it arrives
-      if(p > .4 && okNow){ if(!w.held) sfx('tap', 3); w.held += dt*1000; w.lastOk = now; }
+      if(p > .3 && okNow){ if(!w.held) sfx('tap', 3); w.held += dt*1000; w.lastOk = now; }
       if(p >= 1){
-        const pass = w.held >= 250 && now - w.lastOk < 900;
+        const pass = w.held >= 150 && now - w.lastOk < 1200;        // a moment in the shape, and still in it (or just now) when the wall arrives
         WL.flash = now; WL.flashOk = pass;
         if(pass){ WL.score++; WL.combo++; sfx('pass'); burst(W/2, Hh*.55, 30, CONF, 420, 1.2, 'star');
           const rb = best('wall', A.who); if(rb > 0 && WL.score === rb + 1){ sfx('cheer'); pop(W/2, Hh*.28, 'رکورد را شکستی! 🏆', '#ffd93d', 36); }
-          else if(WL.score % 5 === 0){ sfx('fanfare'); pop(W/2, Hh*.28, 'تندتر! ⚡', '#7cd3ff', 42); }
+          else if(WL.score % 8 === 0){ sfx('fanfare'); pop(W/2, Hh*.28, `دیوارِ ${wallTheme().n}! ✨`, '#7cd3ff', 40); }
+          else if(WL.score === 4 || WL.score === 8 || WL.score === 12){ sfx('star'); pop(W/2, Hh*.28, 'حرکتِ تازه! 🌟', '#ffd93d', 38); }
           if(window.HKMusic) HKMusic.rate(1 + Math.min(.3, WL.score*.03));
           pop(W/2, Hh*.4, WL.combo >= 3 ? `عالی! ×${fa(WL.combo)}` : ['آفرین!', 'عالی!', 'رد شدی!'][WL.score % 3], '#ffd93d', 40); }
         else { WL.hearts--; WL.combo = 0; WL.shake = 16; sfx('smash'); vib([50, 30, 70]); burst(W/2, Hh*.5, 26, ['#d9774b', '#cf6a40', '#e0855a', '#f0d6b4'], 380, 1.4, 'brick');
@@ -558,10 +581,10 @@ function drawWall(now, c){
   if(!c){ ctx.restore(); hud(''); return; }
   const k = (Hh*.62)/c.height, cx = W/2;
   // the player's own body, live, in the plane the wall arrives at — so they see whether they fit
-  const drawSelf = () => { const b = B.b; if(!b || performance.now() - B.t > 900) return;
+  const drawSelf = () => { const b = B.b, age = performance.now() - B.t; if(!b || age > 2500) return;
     const mx = p => cx + (b.hip.x - p.x)*k, my = p => floorY - (c.hipY - p.y)*k - (c.th + c.sh)*k;   // mirrored, anchored at the hips
     const ok = WL.wall && POSES[WL.wall.k].ok(b, c), segs = [[b.shL, b.shR], [b.sh, b.hip], [b.hipL, b.hipR], [b.shL, b.eL, b.wL], [b.shR, b.eR, b.wR], [b.hipL, b.kL, b.aL], [b.hipR, b.kR, b.aR]];
-    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.save(); ctx.lineCap = 'round'; ctx.lineJoin = 'round'; if(age > 600) ctx.globalAlpha = Math.max(.25, 1 - (age - 600)/1900);
     [[INK, 1.6], [ok ? '#2fbf71' : '#3b82c4', 1]].forEach(([col, f]) => { ctx.strokeStyle = col; ctx.lineWidth = Math.max(5, c.sw*k*.13)*f + (f > 1 ? 3 : 0);
       segs.forEach(seg => { ctx.beginPath(); seg.forEach((p, i) => i ? ctx.lineTo(mx(p), my(p)) : ctx.moveTo(mx(p), my(p))); ctx.stroke(); });
       ctx.fillStyle = col; ctx.beginPath(); ctx.arc(mx(b.nose), my(b.nose), c.head*k*.75 + (f > 1 ? 3 : 0), 0, 7); ctx.fill(); });
@@ -596,8 +619,8 @@ function drawWall(now, c){
     cut(0, 'destination-out', '#000');
     x.globalCompositeOperation = 'source-over'; x.strokeStyle = INK; x.lineWidth = Math.max(2, 5*s); x.strokeRect(0, 0, ww, wh);
     if(p > .97) drawSelf();                     // the body passes through the hole on top of the wall
-    ctx.drawImage(wallCv, wx, wy, ww, wh);
-    if(p > .5 && p <= .97) drawSelf();          // once the wall is near: the outline next to the hole it must fit
+    const th_ = wallTheme(); if(th_.f !== 'none') ctx.filter = th_.f; ctx.drawImage(wallCv, wx, wy, ww, wh); ctx.filter = 'none';
+    if(p <= .97) drawSelf();                    // the player's own figure is always on screen, beside the hole it must fit
     // the pose's name on a ribbon, below the camera picture
     const pip = $('#plCam').getBoundingClientRect(), ty = Math.max(Hh*.2, pip.bottom + 40), name = POSES[w.k].n + '!';
     ctx.save(); ctx.direction = 'rtl'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.font = `900 ${Math.round(Math.min(W, Hh)*.07)}px Vazirmatn, sans-serif`;
