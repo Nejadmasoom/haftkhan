@@ -57,6 +57,12 @@ ok(AR2.shots >= 3, `archery, draw + release: ${AR2.shots} arrows shot (score ${A
 const r3 = await play('arash', 14, `st.pulls=[.12]; st.angs=[0]; ` + ARCH.replace("const want = st.pulls ? st.pulls[n % st.pulls.length] : 0.9, ang = st.angs ? st.angs[n % st.angs.length] : 0;", "const want = st.pulls[0], ang = st.angs[0];"));
 const AR3 = await p.evaluate(() => ({shots:HKA_AR.AR.shots, hearts:HKA_AR.AR.hearts}));
 ok(AR3.shots === 0 && AR3.hearts === 3, `archery, a feeble pull: ${AR3.shots} arrows, hearts ${AR3.hearts}`);
+// ---------- holding a full draw with a shaky camera and odd glitchy frames must never fire by itself
+const HOLD = `st.jit = .008; const pull = Math.min(.9, Math.max(0, (t - .6)/.8)*.9), span = (.62 + .95*pull)*.1845, glitch = t > 2 && Math.floor(t*30) % 21 === 0;
+  return {13:[.70,.30],15:[.76,.30],19:[.77,.30], 14:[.62,.34], 16:[glitch ? .70 : .76 - span, .32], 20:[.76 - span, .32]};`;
+await play('arash', 12, HOLD);
+const AR4 = await p.evaluate(() => ({shots:HKA_AR.AR.shots, state:HKA_AR.AR.state, pull:+HKA_AR.AR.pull.toFixed(2)}));
+ok(AR4.shots === 0 && AR4.state === 'draw', `archery, holding a full draw 10 s with a shaky camera and glitches: ${AR4.shots} arrows, still ${AR4.state} at ${AR4.pull}`);
 // ---------- flap
 const FLAP = `
   const f = st.hz || 1.9, ph = (t*f) % 1, tri = ph < .5 ? ph*2 : (1 - ph)*2;   // 0 → 1 → 0

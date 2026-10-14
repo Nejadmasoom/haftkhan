@@ -16,7 +16,7 @@ const out = await p.evaluate(async () => {
     let bestC = null, T = AR.target;
     for(let pw = .45; pw <= 1.001; pw += .05) for(let an = 3; an <= 64; an += 1){ const y = HKA_AR.yAtTarget(pw, an); if(y == null) continue; const d = Math.abs(y - T.y)/T.R; if(!bestC || d < bestC.d) bestC = {pw, an, d}; }
     const miss = round % 4 === 3;                      // every fourth shot: deliberately far off
-    const s0 = AR.score, h0 = AR.hearts; HKA_AR.fire(miss ? .35 : bestC.pw, miss ? 5 : bestC.an);
+    const s0 = AR.score, h0 = AR.hearts; HKA_AR.fire(miss ? 1 : bestC.pw, miss ? 62 : bestC.an);      // a deliberate miss: full power, far too high
     while(AR.arrow) await wait(50); await wait(200);
     log.push({round, ring:bestC && +bestC.d.toFixed(2), miss, dscore:AR.score - s0, dhearts:AR.hearts - h0, wind:+AR.wind.toFixed(2), n:AR.hits});
   }

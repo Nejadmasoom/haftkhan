@@ -54,9 +54,11 @@ function readBody(now){
   // arms hanging at the sides, or a wave, must never look like a drawn bow
   const out_ = Math.abs(bw.x - bs.x)/A_len, level = (sh.y - bw.y)/A_len, dlevel = (sh.y - dw.y)/A_len;
   const span = dist(bw, dw)/A_len, posed = out_ > .6 && level > -.3 && level < 1.1 && dlevel > -.55 && dlevel < 1;
-  let pull = clamp((span - .62)/.95, 0, 1); if(!posed) pull = 0;
+  const pull = clamp((span - .62)/.95, 0, 1);
+  // the camera is unsure of a hand it half-sees (a hand by the face often is): such frames neither draw nor release
+  const lm = B.lm, vis = i => !lm || !lm[i] || (lm[i].visibility ?? 1) > .5, seen = vis(15) && vis(16);
   const ang = clamp(24 + (sh.y - bw.y)/A_len*62, 2, 64);
-  return {side, pull, ang, out:out_, span};
+  return {side, pull:posed ? pull : 0, rawPull:pull, posed, seen, ang, out:out_, span, dw:{x:dw.x/A_len, y:dw.y/A_len}};
 }
 
 const launch = g => AR._bow ? {x:AR._bow.x, y:AR._bow.y} : {x:g.bowX, y:g.bowY};
@@ -117,15 +119,33 @@ function control(dt, now, live){
   const newFrame = B.t !== AR.lastT; if(newFrame) AR.lastT = B.t;
   if(!rd){ if(AR.state === 'draw' && (!live || !B.b || now - B.t > 400)) cancelDraw(); AR.pullRaw *= .85; }
   else if(newFrame){
-    AR.pullRaw = rd.pull; AR.angRaw = rd.ang;
-    AR.hist.push({t:now, p:rd.pull, a:rd.ang}); while(AR.hist.length && now - AR.hist[0].t > 600) AR.hist.shift();
-    if(AR.state === 'idle' && AR.cool <= 0 && rd.pull > .26){ AR.state = 'draw'; AR.side = rd.side; AR.peak = rd.pull; AR.drawT = now; AUD.drawOn(); }
+    const good = rd.posed && rd.seen;
+    // how fast the drawing hand is moving (arm-lengths a second): a quick flick after a held draw is a release too,
+    // the way a real archer's hand flies back when the fingers let go
+    AR.dwH = (AR.dwH || []).concat({t:now, x:rd.dw.x, y:rd.dw.y}).filter(h => now - h.t < 330);
+    // compare the middle of the last three positions with the middle of three positions a moment earlier: one glitchy
+    // frame moves neither middle, a real flick moves both of the newest frames
+    const mid3 = a => { const xs = a.map(h => h.x).sort((p, q) => p - q), ys = a.map(h => h.y).sort((p, q) => p - q); return {x:xs[xs.length >> 1], y:ys[ys.length >> 1], t:a[a.length >> 1].t}; };
+    const nH = AR.dwH.length, flick = nH >= 6 ? (m1 => (m0 => Math.hypot(m1.x - m0.x, m1.y - m0.y)/Math.max(.05, (m1.t - m0.t)/1000))(mid3(AR.dwH.slice(0, 3))))(mid3(AR.dwH.slice(-3))) : 0;
+    const flickRelease = AR.state === 'draw' && now - AR.drawT > 500 && now - (AR.peakT || 0) > 250 && AR.peak >= POWER_MIN && flick > 2.4 && rd.seen;   // only once the string has stopped coming back
+    if(good || AR.state !== 'draw'){ AR.pullRaw = rd.pull; AR.angRaw = rd.ang; }
+    if(good){ AR.hist.push({t:now, p:rd.pull, a:rd.ang}); while(AR.hist.length && now - AR.hist[0].t > 600) AR.hist.shift(); }
+    // the last three good readings, by their middle value: one jumpy frame cannot fire an arrow
+    const last3 = AR.hist.slice(-3).map(h => h.p).sort((x, y) => x - y), med = last3.length ? last3[last3.length >> 1] : 0;
+    if(AR.state === 'idle' && AR.cool <= 0 && good && med > .26){ AR.state = 'draw'; AR.side = rd.side; AR.peak = med; AR.drawT = now; AR.peakT = now; AR.relN = 0; AR.lostT = 0; AUD.drawOn(); }
+    else if(AR.state === 'draw' && !good && !flickRelease){
+      // the bow arm sagged or a hand went out of sight: wait; if it lasts, put the arrow down without shooting
+      AR.lostT = AR.lostT || now;
+      if(now - AR.lostT > 800){ cancelDraw(); AR.hint = 'دستِ کمان را کنارِ بدن صاف نگه دار'; AR.hintT = 1.8; } }
     else if(AR.state === 'draw'){
-      AR.peak = Math.max(AR.peak, rd.pull);
-      const drop = AR.peak - rd.pull;
-      if(rd.pull < .12 || (drop > .2 && rd.pull < AR.peak*.74)){           // the hand opened: release
+      AR.lostT = 0; if(med > AR.peak + .02) AR.peakT = now; AR.peak = Math.max(AR.peak, med);
+      const drop = AR.peak - med;
+      // a release is the drawing hand coming back toward the bow, clearly and for two frames running, after the
+      // string has been held a moment
+      AR.relN = drop > .22 && med < AR.peak*.7 && now - AR.drawT > 400 ? (AR.relN || 0) + 1 : 0;
+      if(AR.relN >= 2 || flickRelease){                                                    // the hand opened: release
         // read the draw and the aim from a moment before the hand moved away, not from the springing-back frames
-        const win = AR.hist.filter(h => now - h.t > 70 && now - h.t < 360); let pw = 0, an = AR.ang;
+        const win = AR.hist.filter(h => now - h.t > 50); let pw = 0, an = AR.ang;
         win.forEach(h => { if(h.p >= pw){ pw = h.p; an = h.a; } });
         const smooth = win.slice(-4).map(h => h.a).sort((x, y) => x - y); if(smooth.length) an = smooth[smooth.length >> 1];
         AUD.drawOff(); AR.state = 'idle'; AR.hist.length = 0; AR.readyTick = false;
@@ -139,7 +159,7 @@ function control(dt, now, live){
     if(AR.pull > .78 && !AR.readyTick){ AR.readyTick = true; AUD.ready(); }
     if(AR.pull < .6) AR.readyTick = false; }
   else AUD.drawOff(); }
-function cancelDraw(){ AUD.drawOff(); AR.state = 'idle'; AR.hist.length = 0; AR.pullRaw = 0; }
+function cancelDraw(){ AUD.drawOff(); AR.state = 'idle'; AR.hist.length = 0; AR.pullRaw = 0; AR.relN = 0; AR.lostT = 0; }
 
 /* ================================================================ drawing: the scene */
 let BG = null;
@@ -420,7 +440,7 @@ function arFrame(dt, now, live){
   ctx.restore();
   /* —— HUD —— */
   const w = AR.wind, wTxt = w === 0 ? '' : `<span style="background:#dff3ff">${w > 0 ? '→' : '←'} باد ${fa(Math.round(Math.abs(w)*100))}</span>`;
-  const hint = A.phase !== 'run' ? '' : AR.hintT > 0 ? AR.hint : AR.state === 'draw' ? (AR.pull > .78 ? 'کامل کشیدی! رهایش کن 🎯' : 'بکش، بالا و پایین ببر تا نشانه بگیری') : AR.over ? '' : 'یک دستت را دراز کن، با دستِ دیگر زه را بکش';
+  const hint = A.phase !== 'run' ? '' : AR.hintT > 0 ? AR.hint : AR.state === 'draw' ? (AR.pull > .78 ? 'کامل کشیدی! رهایش کن 🎯' : 'بکش، بالا و پایین ببر تا نشانه بگیری') : AR.over ? '' : 'روبه‌روی گوشی: یک دست صاف کنارِ بدن، با دستِ دیگر زه را تا شانه بکش';
   hud(`<span>🎯 ${fa(AR.score)} <b>امتیاز</b></span>${AR.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(AR.combo)}</span>` : ''}${wTxt}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < AR.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('arash', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('arash', A.who))}</span>` : ''}`,
     hint ? `<span>${hint}</span>` : ''); }
 
@@ -441,7 +461,7 @@ function arIcon(){
 
 A_.register('arash', {
   get name(){ const n = NAME(); return `${n}${/[اوآ]$/.test(n) ? 'ی' : 'ِ'} کمانگیر`; }, short:'کمان', unit:'امتیاز', music:'bow', icon:arIcon,
-  how:'یک دستت را دراز کن، با دستِ دیگر زه را بکش. دستت را بالا و پایین ببر تا نشانه بگیری، رها کن تا تیر برود. به وسط هدف بزن!',
+  how:'روبه‌روی گوشی بایست. یک دستت را صاف کنارِ بدنت دراز کن؛ این کمان است. با دستِ دیگر زه را تا شانه‌ات بکش و نگه دار. دستِ کمان را بالا و پایین ببر تا نشانه بگیری، بعد دستِ زه را سریع به طرفِ کمان باز کن تا تیر برود!',
   howSenior:'یک دست را دراز کنید و با دستِ دیگر آرام زه را بکشید. بازو را کمی بالا و پایین ببرید تا نشانه بگیرید و بعد رها کنید.',
   reset:arReset, frame:arFrame });
 /* for the tests: where would an arrow with this draw and angle cross the target's plane? */

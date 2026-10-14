@@ -14,6 +14,12 @@ const SCENES = {
     for(let t = .1; t < 3.2; t += 1/60){ const u = Math.min(1, Math.max(0, (t - .2)/2.4)), pull = u; const sp = (pull - last)*60; at(t, () => S.drawSet(pull, sp)); last = pull; }
     at(3.2, () => S.drawOff()); return 3.6;`,
   'target-hits': `const S = HKS.BOW; at(.2, () => S.thunk(1)); at(1.3, () => S.thunk(2)); at(2.4, () => S.thunk(3)); at(3.6, () => S.thunk(4)); at(5.2, () => S.thud()); return 6.2;`,
+  // the jeep: idle, then running harder and faster, a jump and a landing, and finally rolling over
+  'jeep': `const C = HKS.CAR; at(.05, () => C.start()); for(let t = .05; t < 5.2; t += 1/30){ const g = t < 1 ? 0 : t < 3.4 ? Math.min(1, (t - 1)/1.2) : .3, v = t < 1 ? 0 : Math.min(18, (t - 1)*7);
+      at(t, () => C.set(g, v)); }
+    at(3.6, () => C.land(true)); at(4.4, () => C.land(false)); at(5.2, () => C.stop()); at(5.6, () => C.crash()); return 7.2;`,
+  // the wall: a wall coming for three seconds, slipping through the hole; another one, and bricks bursting
+  'wall': `const W = HKS.WALL; at(.1, () => W.rumble(3)); at(3.1, () => W.through()); at(3.8, () => W.rumble(2.5)); at(6.3, () => W.smash()); return 7.6;`,
   'wings': `const W = HKS.WING; [.2, .7, 1.15, 1.6, 2.0, 2.4].forEach((t, i) => at(t, () => W.beat([.4, .7, 1, 1, .8, .6][i]))); at(3.0, () => W.chime(1)); at(3.4, () => W.chime(2)); at(4.1, () => W.hurt()); return 5.0;`
 };
 for(const [name, src] of Object.entries(SCENES)){
