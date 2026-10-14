@@ -113,7 +113,7 @@ function musicOn(){ if(H.muted || !window.HKMusic || !MUS[A.game]) return; const
 function musicOff(){ if(window.HKMusic && Object.values(MUS).includes(HKMusic.current())) HKMusic.stop(); }
 function stopPlay(){ musicOff(); H.ENGINE.stop(); cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }
 function tick(now){
-  const dt = Math.min(.05, (now - A.last)/1000); A.last = now;
+  const dt = Math.max(0, Math.min(.05, (now - A.last)/1000)); A.last = Math.max(A.last, now);   // a frame stamped before the last one must not run time backwards
   if(cv().clientWidth !== W || cv().clientHeight !== Hh) size();
   const seen = B.b && now - B.t < 900;
   if(A.phase === 'count'){

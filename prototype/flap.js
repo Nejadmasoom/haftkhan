@@ -113,7 +113,7 @@ function fFrame(dt, now, live){
   } else { control(dt, now, false); }
   // the sky follows the score
   const phase = (F.score/10) % 4; F.sky += (phase - F.sky)*Math.min(1, dt*(Math.abs(phase - F.sky) > 2 ? 40 : 1.2));
-  draw(g, ctx, bx, br);
+  draw(g, ctx, bx, br, dt);
   /* —— HUD —— */
   const hint = A.phase !== 'run' ? '' : F.over ? '' : !F.started ? 'بازوهایت را مثل بال، از بالا به پایین بیاور!' : (F.score === 0 && F.cols.length && F.t < 12) ? 'هر بار که دست‌ها پایین می‌آیند، بالا می‌روی' : '';
   hud(`<span>🪶 ${fa(F.score)} <b>امتیاز</b></span>${F.combo >= 4 ? `<span style="background:#ffe1b8">🔥 ×${fa(F.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < F.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('flap', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('flap', A.who))}</span>` : ''}`,
@@ -132,7 +132,7 @@ function skyGrad(ctx, g){
   gr.addColorStop(0, mix(A_[0], B_[0], e)); gr.addColorStop(.6, mix(A_[1], B_[1], e)); gr.addColorStop(1, mix(A_[2], B_[2], e));
   ctx.fillStyle = gr; ctx.fillRect(0, 0, g.W, g.Hh); return lerp(PAL[i][1], PAL[j][1], e); }
 
-function draw(g, ctx, bx, br){
+function draw(g, ctx, bx, br, dt){
   const {W, Hh, k, kw, gy} = g, t = F.t, d = F.dist;
   ctx.save(); if(F.shake > .2) ctx.translate((Math.random() - .5)*F.shake, (Math.random() - .5)*F.shake);
   const night = skyGrad(ctx, g);
@@ -143,6 +143,7 @@ function draw(g, ctx, bx, br){
     ctx.fillStyle = '#ffe27a'; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.beginPath(); ctx.arc(sx, sy, 24*k, 0, 7); ctx.fill(); ctx.stroke(); ctx.globalAlpha = 1; }
   // clouds drift slowly, mountains parallax
   const cl = (i, fx, fy, sc) => { const cx = (((fx*W - d*.18*kw*1.0 - t*6*(1 + i*.3)) % (W + 200)) + W + 200) % (W + 200) - 100, cy = gy*fy, r = 22*k*sc;
+    const cim = sim('cloud'); if(cim){ const cw = r*4.4, ch = cw*cim.naturalHeight/cim.naturalWidth; ctx.globalAlpha = 1 - night*.45; ctx.drawImage(cim, cx - r*.6, cy - ch*.6, cw, ch); ctx.globalAlpha = 1; return; }
     ctx.fillStyle = mix('#ffffff', '#6270b8', night*.8); ctx.strokeStyle = 'rgba(43,33,64,.35)'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(cx, cy, r, 0, 7); ctx.arc(cx + r*1.1, cy - r*.45, r*1.15, 0, 7); ctx.arc(cx + r*2.3, cy, r*.9, 0, 7); ctx.rect(cx, cy, r*2.3, r*.9); ctx.fill(); };
   cl(0, .1, .16, 1); cl(1, .55, .3, .8); cl(2, .85, .1, .7);
   const mt = (off, col, hgt, sp, pk) => { ctx.fillStyle = col; ctx.beginPath(); ctx.moveTo(0, gy); const sh = (d*sp) % pk; for(let x = -pk; x <= W + pk; x += pk/2){ const i = Math.round((x + sh)/(pk/2)); ctx.lineTo(x - sh + pk/2, gy - hgt*(i % 2 ? .55 : 1)*(0.8 + .2*Math.sin(i*1.7))); } ctx.lineTo(W + pk, gy); ctx.closePath(); ctx.fill(); };
@@ -156,15 +157,28 @@ function draw(g, ctx, bx, br){
   // golden feathers waiting in the gaps
   F.cols.forEach(c => { if(c.ft && !c.ft.got){ const fx = c.x + c.w/2, fy = c.ft.y + Math.sin(t*3 + c.ft.ph)*5*k; ctx.save(); ctx.translate(fx, fy); ctx.rotate(Math.sin(t*2 + c.ft.ph)*.3 - .5);
       const gl = ctx.createRadialGradient(0, 0, 2, 0, 0, 26*k); gl.addColorStop(0, 'rgba(255,230,120,.6)'); gl.addColorStop(1, 'rgba(255,230,120,0)'); ctx.fillStyle = gl; ctx.fillRect(-28*k, -28*k, 56*k, 56*k);
+      const fim = sim('feather'); if(fim){ const fh = 40*k, fw = fh*fim.naturalWidth/fim.naturalHeight; ctx.rotate(.5); ctx.drawImage(fim, -fw/2, -fh/2, fw, fh); ctx.restore(); return; }
       ctx.fillStyle = '#ffd93d'; ctx.strokeStyle = INK; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(0, 14*k); ctx.bezierCurveTo(-11*k, 4*k, -9*k, -10*k, 0, -16*k); ctx.bezierCurveTo(9*k, -10*k, 11*k, 4*k, 0, 14*k); ctx.fill(); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(0, 16*k); ctx.lineTo(0, -12*k); ctx.stroke(); ctx.restore(); } });
   drawBird(ctx, g, bx, F.y, t);
-  drawFX(1/60);
+  drawFX(dt);
   ctx.restore();
   if(F.flash > 0){ ctx.fillStyle = `rgba(255,255,255,${F.flash*.35})`; ctx.fillRect(0, 0, W, Hh); } }
 
+function drawColumnImg(ctx, g, c, night){
+  const top = sim('col-top'), bot = sim('col-bot'); if(!top || !bot) return false;
+  const {gy} = g, w = c.w*1.3, x = c.x + c.w/2 - w/2, s = w/top.naturalWidth, gT = c.gy - c.gap/2, gB = c.gy + c.gap/2;
+  if(night > .02) ctx.filter = `brightness(${(1 - night*.45).toFixed(2)}) saturate(${(1 - night*.3).toFixed(2)})`;
+  // three slices: [y0, y1) of the piece drawn into [d0, d1) on the screen
+  const slice = (im, y0, y1, d0, d1) => { if(d1 - d0 < 1) return; ctx.drawImage(im, 0, y0, im.naturalWidth, y1 - y0, x, d0, w, d1 - d0); };
+  const th = top.naturalHeight, capT = th*.37, slabT = th*.1;          // hanging pillar: plain slab on top, shaft, scrolled capital facing the gap
+  slice(top, th - capT, th, gT - capT*s, gT); slice(top, slabT, th - capT, -4, gT - capT*s); 
+  const bh = bot.naturalHeight, capB = bh*.37, baseB = bh*.16;         // standing pillar: capital facing the gap, shaft, base on the ground
+  slice(bot, 0, capB, gB, gB + capB*s); slice(bot, capB, bh - baseB, gB + capB*s, gy - baseB*s); slice(bot, bh - baseB, bh, gy - baseB*s, gy);
+  ctx.filter = 'none'; return true; }
 /* a Persepolis column: fluted sandstone shaft, a stepped capital with scrolls, a square base */
 function drawColumn(ctx, g, c, night){
+  if(drawColumnImg(ctx, g, c, night)) return;
   const {gy, k} = g, x = c.x, w = c.w, top = c.gy - c.gap/2, bot = c.gy + c.gap/2, capH = 30*k;
   const sand = ctx.createLinearGradient(x, 0, x + w, 0); sand.addColorStop(0, mix('#d8b878', '#4b4f86', night*.7)); sand.addColorStop(.35, mix('#f3dfb0', '#7378b4', night*.7)); sand.addColorStop(1, mix('#c4a062', '#3a3e74', night*.7));
   const shaft = (y0, y1) => { const sw = w*.74, sx = x + (w - sw)/2; ctx.fillStyle = sand; ctx.strokeStyle = INK; ctx.lineWidth = 2.5; ctx.fillRect(sx, y0, sw, y1 - y0); ctx.strokeRect(sx, y0, sw, y1 - y0);
@@ -180,9 +194,33 @@ function drawColumn(ctx, g, c, night){
   block(x - w*.12, gy - capH*.45, w*1.24, capH*.45);
   ctx.fillStyle = 'rgba(255,255,255,.22)'; ctx.fillRect(x + w*.18, -10, 4, top - capH + 10); ctx.fillRect(x + w*.18, bot + capH, 4, gy - bot - capH); }
 
+/* hand-painted pieces (img/sim/*.webp). Each drawing below falls back to the code-drawn version until they load. */
+const SIMG = {};
+const sim = n => { let im = SIMG[n]; if(!im){ im = SIMG[n] = new Image(); im.src = `img/sim/${n}.webp`; } return im.complete && im.naturalWidth ? im : null; };
+['head', 'body', 'tail1', 'tail2', 'wing-near', 'wing-far', 'col-top', 'col-bot', 'feather', 'cloud'].forEach(sim);
+/* joints on the pieces, in their own pixels */
+const SJ = {body:[109, 92], neck:[178, 30], headNeck:[80, 196], tail:[14, 108], shoulder:[118, 74], farShoulder:[132, 70],
+  wingNear:[14, 66], wingFar:[14, 60], tail1:[12, 34], tail2:[10, 26]};
+function drawBirdImg(ctx, g, x, y, t){
+  const P = ['head', 'body', 'tail1', 'tail2', 'wing-near', 'wing-far'].map(sim); if(P.some(p => !p)) return false;
+  const [hd, bd, t1, t2, wn, wf] = P, sc = .27*g.k, wingA = clamp(F.uS, -1, 1);
+  const B = (px, py) => ({x:(px - SJ.body[0])*sc, y:(py - SJ.body[1])*sc});          // a point on the body, in the bird's own frame
+  const put = (im, jx, jy, at, ang, flip) => { ctx.save(); ctx.translate(at.x, at.y); ctx.rotate(ang); if(flip) ctx.scale(-1, 1); ctx.drawImage(im, -jx*sc, -jy*sc, im.naturalWidth*sc, im.naturalHeight*sc); ctx.restore(); };
+  ctx.save(); ctx.translate(x, y); ctx.rotate(F.tilt*.55);
+  const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 60*g.k); gl.addColorStop(0, 'rgba(255,238,150,.42)'); gl.addColorStop(1, 'rgba(255,238,150,0)'); ctx.fillStyle = gl; ctx.fillRect(-70*g.k, -70*g.k, 140*g.k, 140*g.k);
+  // far wing a beat behind the near one, then the two long plumes, the body, the head, the near wing
+  put(wf, SJ.wingFar[0], SJ.wingFar[1], B(...SJ.farShoulder), wingA*.85 + .15, true);
+  const tw = Math.sin(t*5)*.12 - F.tilt*.3;
+  put(t2, SJ.tail2[0], SJ.tail2[1], B(SJ.tail[0] + 6, SJ.tail[1] - 6), -.25 + tw*.8, true);
+  put(t1, SJ.tail1[0], SJ.tail1[1], B(...SJ.tail), .12 + tw, true);
+  put(bd, SJ.body[0], SJ.body[1], {x:0, y:0}, 0);
+  put(hd, SJ.headNeck[0], SJ.headNeck[1], B(...SJ.neck), Math.sin(t*2.2)*.04 + F.tilt*-.25);
+  put(wn, SJ.wingNear[0], SJ.wingNear[1], B(...SJ.shoulder), wingA*.95 + .08, true);
+  ctx.restore(); return true; }
 /* the Simorgh: turquoise body, a golden crest, long tail plumes, and wings that copy the child's arms */
 function drawBird(ctx, g, x, y, t){
   const {k} = g, s = k*1.0; if(F.inv > 0 && F.hearts > 0 && Math.floor(t*14) % 2) return;
+  if(drawBirdImg(ctx, g, x, y, t)) return;
   ctx.save(); ctx.translate(x, y); ctx.rotate(F.tilt*.55); ctx.lineJoin = 'round'; ctx.lineCap = 'round';
   const gl = ctx.createRadialGradient(0, 0, 4, 0, 0, 52*s); gl.addColorStop(0, 'rgba(255,238,150,.45)'); gl.addColorStop(1, 'rgba(255,238,150,0)'); ctx.fillStyle = gl; ctx.fillRect(-60*s, -60*s, 120*s, 120*s);
   const wingA = clamp(F.uS, -1, 1), fly = F.started ? 1 : .6;
