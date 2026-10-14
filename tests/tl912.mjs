@@ -98,4 +98,18 @@ const act = async (n, a) => { await toLesson(n); await p.click(`#mz${n} [data-ac
   ok(lit === 3 && /گذشتی|تمام/.test(title), `L12 third torch: «${title}», torches ${lit}`);
   await p.evaluate(() => HK.go('parents')); await p.waitForTimeout(300); const tabs = await p.$$eval('#pTabs button', a => a.length);
   ok(tabs === 12, `parents page has a tab for every lesson (${tabs})`); }
+// 9. the balloon games of lessons 10 and 11 (foot and knee, hand) run through the camera loop without errors,
+//    and a body standing still never scores
+for(const [n, i] of [[10, 1], [11, 0]]){
+  await act(n, 'play'); await p.click(`#gcChoices .choice >> nth=${i}`); await p.waitForTimeout(300); await p.click('#gxCam'); await p.waitForTimeout(3500);
+  const r = await p.evaluate(async () => {
+    const CAM = HK.CAM, X = HKX._X, keep = CAM.stream; CAM.stream = null; await new Promise(r => setTimeout(r, 120));
+    const W = 640, H = 480, cv = {width:W, height:H}, ctx = new OffscreenCanvas(W, H).getContext('2d');
+    const base = {0:[.5,.2],7:[.53,.19],8:[.47,.19],11:[.58,.3],12:[.42,.3],13:[.6,.42],14:[.4,.42],15:[.6,.52],16:[.4,.52],19:[.6,.54],20:[.4,.54],23:[.55,.55],24:[.45,.55],25:[.55,.72],26:[.45,.72],27:[.55,.9],28:[.45,.9],29:[.55,.91],30:[.45,.91],31:[.56,.93],32:[.44,.93]};
+    const t0 = performance.now(); let seed = 9; const rnd = () => { seed = (seed*16807) % 2147483647; return seed/2147483647; };
+    while(performance.now() - t0 < 9000){ const lm = []; for(let i = 0; i < 33; i++){ const v = base[i] || [.5, .5]; lm[i] = {x:v[0] + .004*(rnd() - .5), y:v[1] + .004*(rnd() - .5), visibility:.95}; }
+      CAM.onFrame && CAM.onFrame(ctx, lm, cv); await new Promise(r => setTimeout(r, 33)); }
+    CAM.stream = keep; return {count:X.count, balls:X.balls.length}; });
+  ok(r.count === 0 && r.balls === 1, `L${n} balloon game through the camera: a still body scores ${r.count}, balloons ${r.balls}`);
+}
 console.log(res.join('\n')); console.log('errors', errs); await b.close();
