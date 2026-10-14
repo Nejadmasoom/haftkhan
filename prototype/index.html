@@ -2176,8 +2176,9 @@ function loop(){
   const vid = CAM.video, cv = CAM.canvas;
   if(!CAM.stream) return;
   // the screen refreshes about twice as often as the camera gives a new picture: look for the body only in a new one
-  if(vid.readyState >= 2 && vid.currentTime === CAM.lastVT){ CAM.raf = requestAnimationFrame(loop); return; }
-  if(vid.readyState >= 2){ CAM.lastVT = vid.currentTime;
+  // (if a browser does not advance currentTime for a live camera, still look at least every 50 ms, so nothing ever stalls)
+  if(vid.readyState >= 2 && vid.currentTime === CAM.lastVT && performance.now() - (CAM.lastDet || 0) < 50){ CAM.raf = requestAnimationFrame(loop); return; }
+  if(vid.readyState >= 2){ CAM.lastVT = vid.currentTime; CAM.lastDet = performance.now();
     if(cv.width !== vid.videoWidth){ cv.width = vid.videoWidth; cv.height = vid.videoHeight; }
     const res = CAM.pose.detectForVideo(vid, performance.now());
     const lm = res.landmarks && res.landmarks[0];

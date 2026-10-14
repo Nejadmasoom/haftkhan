@@ -58,7 +58,7 @@ function readBody(now){
   // the camera is unsure of a hand it half-sees (a hand by the face often is): such frames neither draw nor release
   const lm = B.lm, vis = i => !lm || !lm[i] || (lm[i].visibility ?? 1) > .5, seen = vis(15) && vis(16);
   const ang = clamp(24 + (sh.y - bw.y)/A_len*62, 2, 64);
-  return {side, pull:posed ? pull : 0, rawPull:pull, posed, seen, ang, out:out_, span, dw:{x:dw.x/A_len, y:dw.y/A_len}};
+  return {side, pull:posed ? pull : 0, rawPull:pull, posed, seen, ang, out:out_, span, dw:{x:dw.x/A_len, y:dw.y/A_len}, bw:{x:bw.x/A_len, y:bw.y/A_len}, bowOk:out_ > .6 && level > -.3 && level < 1.1};
 }
 
 const launch = g => AR._bow ? {x:AR._bow.x, y:AR._bow.y} : {x:g.bowX, y:g.bowY};
@@ -127,12 +127,20 @@ function control(dt, now, live){
     // compare the middle of the last three positions with the middle of three positions a moment earlier: one glitchy
     // frame moves neither middle, a real flick moves both of the newest frames
     const mid3 = a => { const xs = a.map(h => h.x).sort((p, q) => p - q), ys = a.map(h => h.y).sort((p, q) => p - q); return {x:xs[xs.length >> 1], y:ys[ys.length >> 1], t:a[a.length >> 1].t}; };
-    const nH = AR.dwH.length, flick = nH >= 6 ? (m1 => (m0 => Math.hypot(m1.x - m0.x, m1.y - m0.y)/Math.max(.05, (m1.t - m0.t)/1000))(mid3(AR.dwH.slice(0, 3))))(mid3(AR.dwH.slice(-3))) : 0;
-    const flickRelease = AR.state === 'draw' && now - AR.drawT > 500 && now - (AR.peakT || 0) > 250 && AR.peak >= POWER_MIN && flick > 2.4 && rd.seen;   // only once the string has stopped coming back
+    const nH = AR.dwH.length, m1 = nH >= 6 ? mid3(AR.dwH.slice(-3)) : null, m0 = nH >= 6 ? mid3(AR.dwH.slice(0, 3)) : null;
+    // only a flick *away* from the bow counts (back past the face, or down): a hand that jumps toward the bow is the
+    // other kind of release, judged by the string's length instead
+    const away = m1 && ((m1.x - m0.x)*(m1.x - rd.bw.x) + (m1.y - m0.y)*(m1.y - rd.bw.y)) > 0;
+    const flick = m1 && away ? Math.hypot(m1.x - m0.x, m1.y - m0.y)/Math.max(.05, (m1.t - m0.t)/1000) : 0;
+    AR.flickN = flick > 2.0 ? (AR.flickN || 0) + 1 : 0;           // and it must last three frames: a hand that flicks stays moved, a glitch comes back
+    if(window.HKA_DBG) (AR.dbg = AR.dbg || []).push({t:Math.round(now), p:+rd.pull.toFixed(2), good, st:AR.state, flick:+flick.toFixed(1), fN:AR.flickN, pk:+(AR.peak || 0).toFixed(2), pkT:Math.round(now - (AR.peakT || 0))});
+    const flickRelease = AR.state === 'draw' && now - AR.drawT > 500 && now - (AR.peakT || 0) > 250 && AR.peak >= POWER_MIN && AR.flickN >= 3 && rd.seen && rd.bowOk;   // only once the string has stopped coming back
     if(good || AR.state !== 'draw'){ AR.pullRaw = rd.pull; AR.angRaw = rd.ang; }
     if(good){ AR.hist.push({t:now, p:rd.pull, a:rd.ang}); while(AR.hist.length && now - AR.hist[0].t > 600) AR.hist.shift(); }
     // the last three good readings, by their middle value: one jumpy frame cannot fire an arrow
     const last3 = AR.hist.slice(-3).map(h => h.p).sort((x, y) => x - y), med = last3.length ? last3[last3.length >> 1] : 0;
+    // releasing looks at the middle of five: even two bad frames in a row (a hand hidden for a moment) cannot fire
+    const last5 = AR.hist.slice(-5).map(h => h.p).sort((x, y) => x - y), med5 = last5.length ? last5[last5.length >> 1] : 0;
     if(AR.state === 'idle' && AR.cool <= 0 && good && med > .26){ AR.state = 'draw'; AR.side = rd.side; AR.peak = med; AR.drawT = now; AR.peakT = now; AR.relN = 0; AR.lostT = 0; AUD.drawOn(); }
     else if(AR.state === 'draw' && !good && !flickRelease){
       // the bow arm sagged or a hand went out of sight: wait; if it lasts, put the arrow down without shooting
@@ -143,8 +151,8 @@ function control(dt, now, live){
       const drop = AR.peak - med;
       // a release is the drawing hand coming back toward the bow, clearly and for two frames running, after the
       // string has been held a moment
-      AR.relN = drop > .22 && med < AR.peak*.7 && now - AR.drawT > 400 ? (AR.relN || 0) + 1 : 0;
-      if(AR.relN >= 2 || flickRelease){                                                    // the hand opened: release
+      AR.relN = AR.peak - med5 > .22 && med5 < AR.peak*.7 && now - AR.drawT > 400 ? (AR.relN || 0) + 1 : 0;
+      if(AR.relN >= 2 || flickRelease){ AR.why = {by:flickRelease ? 'flick' : 'span', med5:+med5.toFixed(2), peak:+AR.peak.toFixed(2), flick:+flick.toFixed(2), flickN:AR.flickN, n:AR.dwH.length};                                                    // the hand opened: release
         // read the draw and the aim from a moment before the hand moved away, not from the springing-back frames
         const win = AR.hist.filter(h => now - h.t > 50); let pw = 0, an = AR.ang;
         win.forEach(h => { if(h.p >= pw){ pw = h.p; an = h.a; } });
@@ -155,6 +163,10 @@ function control(dt, now, live){
   // smooth what is drawn on the screen
   const old = AR.pull; AR.pull += (AR.pullRaw - AR.pull)*Math.min(1, dt*16); AR.ang += (AR.angRaw - AR.ang)*Math.min(1, dt*12);
   AR.speed = (AR.pull - old)/Math.max(dt, .001);
+  if(live && A.phase === 'run' && AR.state === 'idle' && !AR.arrow && !AR.over){
+    AR.idleT = (AR.idleT || 0) + dt;
+    if(AR.idleT > 5 && now - (AR.coachT || 0) > 9000){ AR.coachT = now; H.voice('osta-armS', 'step'); AR.hint = 'روبه‌روی گوشی بایست و یک دستت را صاف کنارِ بدن ببر'; AR.hintT = 3; } }
+  else AR.idleT = 0;
   if(AR.state === 'draw' && live){
     AUD.drawSet(AR.pull, AR.speed);
     if(AR.pull > .78 && !AR.readyTick){ AR.readyTick = true; AUD.ready(); }
@@ -454,7 +466,7 @@ function arFrame(dt, now, live){
   const w = AR.wind, wTxt = w === 0 ? '' : `<span style="background:#dff3ff">${w > 0 ? '→' : '←'} باد ${fa(Math.round(Math.abs(w)*100))}</span>`;
   const hint = A.phase !== 'run' ? '' : AR.hintT > 0 ? AR.hint : AR.state === 'draw' ? (AR.pull > .78 ? 'کامل کشیدی! رهایش کن 🎯' : 'بکش، بالا و پایین ببر تا نشانه بگیری') : AR.over ? '' : 'روبه‌روی گوشی: یک دست صاف کنارِ بدن، با دستِ دیگر زه را تا شانه بکش';
   hud(`<span>🎯 ${fa(AR.score)} <b>امتیاز</b></span>${AR.combo >= 3 ? `<span style="background:#ffe1b8">🔥 ×${fa(AR.combo)}</span>` : ''}${wTxt}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < AR.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('arash', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('arash', A.who))}</span>` : ''}`,
-    (hint ? `<span>${hint}</span>` : '') + (A.phase === 'run' && !AR.over ? `<span class="goal">🎯 ${fa(8 - AR.hits % 8)} تیر تا ${DAY[(dayOf() + 1) % DAY.length].n}</span>` : '')); }
+    (hint ? `<span>${hint}</span>` : '') + (A.phase === 'run' && !AR.over ? api.recChip('arash', AR.score, 'امتیاز', 10) || `<span class="goal">🎯 ${fa(8 - AR.hits % 8)} تیر تا ${DAY[(dayOf() + 1) % DAY.length].n}</span>` : '')); }
 
 /* the card icon: a bow with an arrow, the target, and the same turquoise or saffron hero */
 function arIcon(){
