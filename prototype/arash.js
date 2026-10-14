@@ -299,7 +299,7 @@ function drawTarget(g, T, now){
 /* ---- the hero as a cut-out puppet: pieces painted by hand (img/rig/<girl|boy>-*.webp), turned at their joints.
    All numbers are in the pieces' own pixels (the 1024-pixel sheet). Until a set has loaded, the drawn hero above is used. */
 const RIG_PARTS = ['head', 'head-aim', 'head-happy', 'torso', 'legs', 'upper', 'fa-fist', 'fa-pinch', 'bow', 'arrow', 'cap'];
-const RIG_HAS = {girl:true, boy:false};                        // which children have their pieces yet
+const RIG_HAS = {girl:true, boy:true};                        // which children have their pieces yet
 const RIG = {};
 function rigOf(who){
   if(!RIG_HAS[who]) return null;
@@ -308,7 +308,8 @@ function rigOf(who){
 const ARROW_IMG = () => { const r = rigOf('girl') || rigOf('boy'); return r && r.arrow; };
 /* joints, measured on the pieces */
 const J = {legsHip:[93, 2], torsoNeck:[116, 0], torsoHem:229, headNeck:[77, 215], shFront:[140, 34], shBack:[96, 30],
-  upA:[26, 26], upB:[127, 26], faA:[27, 32], fist:[152, 30], pinch:[168, 24], bowGrip:[50, 160], bowTop:[5, 7], bowBot:[7, 235], arrowLen:222, arrowY:20};
+  upA:[26, 26], upB:[127, 26], faA:[27, 32], fist:[152, 30], pinch:[168, 24], bowGrip:[52, 155], bowTop:[15, 2], bowBot:[15, 238], arrowLen:222, arrowY:20};
+const JW = {girl:{}, boy:{headNeck:[123, 197], legsHip:[103, 2]}};       // where the two children's pieces differ
 const LU = J.upB[0] - J.upA[0], LF_FIST = J.fist[0] - J.faA[0], LF_PINCH = J.pinch[0] - J.faA[0];
 function drawRig(g, t){
   const who = H.kid() === 'boy' ? 'boy' : 'girl', R = rigOf(who); if(!R) return false;
@@ -323,7 +324,8 @@ function drawRig(g, t){
   ctx.fillStyle = 'rgba(30,60,30,.28)'; ctx.beginPath(); ctx.ellipse(x0, G + 2, 120*sc, 22*sc, 0, 0, 7); ctx.fill();
   // body: legs, torso leaning a little into the shot, head
   const hip = P(0, -236), lean = (drawn ? -.05 : 0) - (AR.ang - 25)*.001 - AR.recoil*.02;
-  put(R.legs, J.legsHip[0], J.legsHip[1], P(0, -238));
+  const JJ = Object.assign({}, J, JW[who]);
+  put(R.legs, JJ.legsHip[0], JJ.legsHip[1], P(0, -238));
   const torsoTop = {x:hip.x + 8*sc, y:hip.y + (70 - J.torsoHem)*sc + breath*.3*sc};      // the hem overlaps the skirt by 70
   const T = (px, py) => { const dx = (px - J.torsoNeck[0])*sc, dy = (py - J.torsoNeck[1])*sc; return {x:torsoTop.x + dx*Math.cos(lean) - dy*Math.sin(lean), y:torsoTop.y + dx*Math.sin(lean) + dy*Math.cos(lean)}; };
   const S1 = T(...J.shFront), S2 = T(...J.shBack);
@@ -333,7 +335,7 @@ function drawRig(g, t){
   const grip = {x:S1.x + d.x*((LU + LF_FIST)*sc - rec), y:S1.y + d.y*((LU + LF_FIST)*sc - rec)};
   put(R.torso, J.torsoNeck[0], J.torsoNeck[1], torsoTop, lean);
   const head = drawn && AR.pull > .45 ? R['head-aim'] : AR.flash > .2 ? R['head-happy'] : R.head;
-  put(head, J.headNeck[0], J.headNeck[1], T(J.torsoNeck[0] - 4, J.torsoNeck[1] + 46), lean*.6);
+  put(head, JJ.headNeck[0], JJ.headNeck[1], T(J.torsoNeck[0] - 4, J.torsoNeck[1] + 46), lean*.6);
   // the bow: two limbs that bend back toward the archer as the string comes back
   const bend = AR.pull*.2, bowAng = -a;
   const bw = R.bow, gx = J.bowGrip[0], gy = J.bowGrip[1];
