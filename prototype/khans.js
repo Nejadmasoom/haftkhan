@@ -30,6 +30,8 @@ const READY_BOY = new Set([      // the same for the boy (m1-armF is never shown
   'm2-standBad', 'm2-sitOk', 'm2-sitBad', 'm2-bagOk', 'm2-bagBad', 'm2-writeOk', 'm2-writeBad', 'm3-walkA', 'm3-walkB', 'm3-runA',
   'm3-runB', 'm3-roo-a', 'm3-roo-b', 'm3-frog-a', 'm3-frog-b', 'm3-hen-a', 'm3-hen-b', 'm3-gorilla-a', 'm3-gorilla-b', 'm3-cat-a',
   'm3-cat-b', 'm3-snake-a', 'm3-snake-b',
+  // lessons 9-12: the boy's sheets arrived first; the girl's frames show a stick figure until hers do
+  'm10-dribble', 'm10-keep-a', 'm10-keep-b', 'm10-kick-a', 'm10-kick-b', 'm10-str-a', 'm10-str-b', 'm10-tapL', 'm10-tapR', 'm11-carry', 'm11-drop', 'm11-in', 'm11-march-a', 'm11-march-b', 'm11-out', 'm11-step-a', 'm11-step-b', 'm11-step-c', 'm12-back-a', 'm12-back-b', 'm12-catch', 'm12-fists', 'm12-toss', 'm9-arm-a', 'm9-arm-b', 'm9-catch', 'm9-chest', 'm9-clap', 'm9-over-a', 'm9-over-b', 'm9-pass', 'm9-toss',
   'm6-green', 'm6-palm', 'm6-red', 'm6-tree', 'm6-walk', 'm6-win', 'm7-balloon', 'm7-bend', 'm7-cobra', 'm7-dog', 'm7-dog3', 'm7-fold', 'm7-hips', 'm7-reach', 'm7-seatfold', 'm7-straddle', 'm7-tri', 'm7-warrior', 'm8-chestA', 'm8-chestB', 'm8-clap', 'm8-cup', 'm8-push', 'm8-sidestep', 'm8-stamp', 'm8-thighA', 'm8-thighB']);
 const READY_ART = new Set([       // other img/ names: story characters, animals, Yuzi's new poses
   'story-mom','story-aunt','story-rabbit','story-frog','story-uncle','animal-gorilla','animal-hen','animal-kangaroo','animal-snake',
@@ -500,7 +502,7 @@ const LESSONS = {
       {who:'مامانِ تاپ‌تاپو', art:['story-mom','kid:m11-march-a'],
        t:'تاپ‌تاپو کمی دوید، نفس‌نفس زد و خسته شد. تاپ‌تاپو همه‌چیز را برای مامان تعریف کرد. مامان تاپ‌تاپو گفت: <q>برای اینکه موقع <b>دویدن</b> زود خسته نشوی، باید بیشتر بازی و فعالیت کنی.</q>',
        task:{type:'reps', det:'walk', goal:20, unit:'قدم', title:'مثل تاپ‌تاپو درجا قدم بزن', figs:['m11-march-a','m11-march-b'], tip:'درجا راه برو؛ زانوها بالا، دست‌ها تاب بخورند.'}},
-      {who:'تاپ‌تاپو', art:['story-mom','kid:cheer'],
+      {who:'تاپ‌تاپو', art:['obj/kittens','kid:cheer'],
        t:'تاپ‌تاپو تمرین کرد و دیگر موقع <b>دویدن</b> خسته نمی‌شد. تاپ‌تاپو با گربه‌ی پشمالو دوید و پیشی‌هایش را دید.',
        task:{type:'reps', det:'run', goal:20, unit:'قدم', title:'حالا مثل تاپ‌تاپو درجا بدو', figs:['m3-runA','m3-runB'], tip:'درجا بدو؛ زانوها بالا. اگر خسته شدی، آرام‌تر!'}}],
       asks:['بگو تاپ‌تاپو و گربه‌ی پشمالو درباره‌ی چه چیزی حرف زدند؟','مامان به تاپ‌تاپو چه گفت؟']},
@@ -524,7 +526,7 @@ const LESSONS = {
   },
   12: {n:12, khan:6, title:'بازی‌های بومی‌محلی', pages:'۷۵ تا ۷۹', word:'یک قل دو قل', phrase:'یک[\\s‌]*قل[،,]?\\s*دو[\\s‌]*قل', wordShow:'یک قل، دو قل', count:2,
     story:{name:'یک قل، دو قل', src:'ص ۷۶', pages:[
-      {who:'مامانی', art:['story-mom','kid:m12-sit'],
+      {who:'مامانی', art:['obj/riverbank','kid:m12-sit'],
        t:'تاپ‌تاپو با مامانی لب رودخانه نشسته بودند. تاپ‌تاپو دوست داشت بازی کند ولی یادش رفته بود توپ بیاورد. مامان تاپ‌تاپو چند تا سنگ کوچولو و قلقلی از کنار رودخانه برداشت. آن‌ها را به تاپ‌تاپو نشان داد و گفت: <q>بیا بازی کنیم.</q>'},
       {who:'مامانی', art:['kid:m12-toss','kid:m12-catch'],
        t:'تاپ‌تاپو با تعجب گفت: <q>با این سنگ‌های قلقلی؟</q> مامان تاپ‌تاپو گفت: <q>بله. وقتی اندازه‌ی تو بودم با این سنگ‌های قلقلی، <b>یک قل، دو قل</b> بازی می‌کردیم.</q> مامانی اول یک سنگ را کمی بالا انداخت و با دستش آن را گرفت. بعد دوتا سنگ، بعد سه‌تا، بعد چهارتا. مامان تاپ‌تاپو توانست هر پنج‌تا سنگ را بگیرد.',
@@ -1743,7 +1745,8 @@ Object.assign(CARD_ICONS, {
   stairs: `<path d="M4 56h14v-10h14v-10h14v-10h14v30z" fill="#e8d3a3" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/>${KIDF(25,22,C.fay,.85)}${KIDF(40,10,'#a35bc4',.75)}<path d="M2 18l10 0" stroke="#3b82c4" stroke-width="2"/>`,
   snack: `<circle cx="20" cy="34" r="11" fill="${C.anar}" stroke="${C.ink}" stroke-width="2"/><path d="M20 23q2-6 6-7" stroke="#4a2c1a" stroke-width="2" fill="none" stroke-linecap="round"/><path d="M22 20q6-4 9 0q-5 3-9 0z" fill="#5bbf4f" stroke="${C.ink}" stroke-width="1.2"/><path d="M34 40l12-12 12 12z" fill="#f3d27a" stroke="${C.ink}" stroke-width="2" stroke-linejoin="round"/><path d="M36 40h20" stroke="#5bbf4f" stroke-width="3"/><rect x="40" y="6" width="16" height="14" rx="3" fill="#f3a530" stroke="${C.ink}" stroke-width="1.6" opacity=".55"/><path d="M38 4l20 18M58 4L38 22" stroke="${C.anar}" stroke-width="3" stroke-linecap="round"/><path d="M6 54h52" stroke="#c9b48a" stroke-width="3" stroke-linecap="round"/>`
 });
-const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp', trash:'img/obj/bin.webp', space:'fig:m6-tree', walkfam:'fig:m6-walk'};
+const CARD_IMG = {water:'img/yuzi-1-drink.webp', tidy:'img/yuzi-1-tidy.webp', trash:'img/obj/bin.webp', space:'fig:m6-tree', walkfam:'fig:m6-walk',
+  turn:'img/obj/q-queue.webp', help:'img/obj/q-help.webp', outside:'img/obj/q-outside.webp', homehelp:'img/obj/vacuum.webp', sickrest:'img/obj/bed.webp', stairs:'img/obj/stairs.webp', snack:'img/obj/fruit.webp'};
 const cardImg = k => { const c = CARD_IMG[k]; return c && c.startsWith('fig:') ? figSrc(c.slice(4)) : c; };
 function starCards(sk, book){
   const st = LS(G.n); st.log.cards = st.log.cards || {};

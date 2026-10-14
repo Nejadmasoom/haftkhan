@@ -5,6 +5,8 @@ import sys, numpy as np
 from PIL import Image
 from collections import deque
 src, outdir, prefix, names = sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4].split(',')
+import os
+COLS, ROWS = (int(x) for x in os.environ.get('GRID', '3x3').split('x'))     # GRID=4x4 for the bigger sheets; a name of '-' skips a cell
 im = Image.open(src).convert('RGB'); a = np.array(im).astype(int); H, W = a.shape[:2]
 white = (a.min(2) > 232) & ((a.max(2) - a.min(2)) < 18)
 bg = np.zeros((H, W), bool); q = deque()
@@ -43,14 +45,29 @@ for y0 in range(H):
                 ny, nx = y+dy, x+dx
                 if 0 <= ny < H and 0 <= nx < W and fg[ny, nx] and not lab[ny, nx]: lab[ny, nx] = n; q.append((ny, nx))
         info[n] = (cnt, sy/cnt, sx/cnt)
-cell = W//3; out = []
+def owner(v): return min(ROWS - 1, int(v[1]*ROWS/H))*COLS + min(COLS - 1, int(v[2]*COLS/W))
+def shape_of(k):
+    mine = [(i, v) for i, v in info.items() if v[0] > 200 and owner(v) == k]
+    if not mine: return None
+    big = max(v[0] for _, v in mine); return mine, [i for i, v in mine if v[0] >= .02*big]
+# one square canvas for the whole sheet, so every pose keeps the sheet's own scale (a 3x3 sheet: one column wide;
+# a bigger sheet: the largest pose plus a margin)
+if (COLS, ROWS) == (3, 3): cell = W//3
+else:
+    ext = []
+    for k in range(COLS*ROWS):
+        r_ = shape_of(k)
+        if r_: ys_, xs_ = np.where(np.isin(lab, r_[1])); ext.append(max(ys_.max()-ys_.min(), xs_.max()-xs_.min()))
+    cell = int(os.environ.get('SIDE', int(max(ext)*1.12)))      # SIDE=300: the same canvas for every sheet of one set, so the scale matches across sheets
+out = []
 for k, name in enumerate(names):
-    r, c = divmod(k, 3)
-    mine = [(i, v) for i, v in info.items() if v[0] > 200 and min(2, int(v[1]*3/H))*3 + min(2, int(v[2]*3/W)) == k]
-    if not mine: print('EMPTY', name); continue
-    big = max(v[0] for _, v in mine); keep = [i for i, v in mine if v[0] >= .02*big]
-    mask = np.isin(lab, keep); ys, xs = np.where(mask); cx = (xs.min()+xs.max())//2; bottom = ys.max() + int(.04*cell)
-    side = cell; x0 = cx - side//2; y0 = bottom - side
+    if name == '-': continue
+    got = shape_of(k)
+    if not got: print('EMPTY', name); continue
+    mine, keep = got
+    mask = np.isin(lab, keep); ys, xs = np.where(mask); cx = (xs.min()+xs.max())//2
+    side = max(cell, int(max(ys.max()-ys.min(), xs.max()-xs.min())*1.08)); bottom = ys.max() + int(.04*side)   # a very wide pose (child + ball + hoop) gets a bigger canvas instead of being cut
+    x0 = cx - side//2; y0 = bottom - side
     rgba = np.zeros((side, side, 4), np.uint8)
     for yy in range(side):
         sy_ = y0 + yy

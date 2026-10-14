@@ -31,7 +31,10 @@ for y0 in range(H):
                 if 0 <= ny < H and 0 <= nx < W and fg[ny, nx] and not lab[ny, nx]: lab[ny, nx] = n; q.append((ny, nx))
         if len(pts) < 12: owner[n] = -1; continue                       # specks
         cy = sum(p[0] for p in pts)/len(pts); cx = sum(p[1] for p in pts)/len(pts)
-        owner[n] = min(ROWS - 1, int(cy*ROWS/H))*COLS + min(COLS - 1, int(cx*COLS/W))
+        import bisect, os
+        brk = [int(v) for v in os.environ['ROWBREAKS'].split(',')] if os.environ.get('ROWBREAKS') else None      # ROWBREAKS=250,420,...: y of the lines between rows, when the rows are not evenly spaced
+        row = bisect.bisect(brk, cy) if brk else min(ROWS - 1, int(cy*ROWS/H))
+        owner[n] = row*COLS + min(COLS - 1, int(cx*COLS/W))
 lum = im.mean(axis=2)
 for k, name in enumerate(names):
     ids = [i for i, o in owner.items() if o == k]
