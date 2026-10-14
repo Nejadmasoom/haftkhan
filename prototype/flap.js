@@ -8,32 +8,8 @@ const H = window.HK, A_ = window.HKA; if(!H || !A_ || !A_.api) return;
 const {fa, sfx} = H, api = A_.api, {A, B, burst, pop, drawFX, hud, INK} = api, FX = api.FX, best = api.best;
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v)), lerp = (a, b, t) => a + (b - a)*t, rnd = (a, b) => a + Math.random()*(b - a);
 
-/* ---- the sound of wings and little rewards (made of noise, like the bow) */
-const FAUD = (() => {
-  let c = null, out = null, nb = null;
-  const ctxOf = () => { if(H.muted) return null; const a = H.ac(); if(!a) return null;
-    if(c !== a){ c = a; out = null; nb = null; }
-    if(!out){ const comp = c.createDynamicsCompressor(); comp.threshold.value = -10; comp.ratio.value = 4; out = c.createGain(); out.gain.value = .95; out.connect(comp).connect(c.destination); }
-    if(!nb){ nb = c.createBuffer(1, c.sampleRate, c.sampleRate); const d = nb.getChannelData(0); let l = 0; for(let i = 0; i < d.length; i++){ l = .5*l + .5*(Math.random()*2 - 1); d[i] = l*1.4; } }
-    return c; };
-  const env = (g, t, a, peak, dec) => { g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(Math.max(.0002, peak), t + a); g.gain.exponentialRampToValueAtTime(.0001, t + a + dec); };
-  return {
-    /* a wing-beat: air pushed down — a soft filtered whoosh that opens upward, with a small low "flup" under it */
-    wing(power){
-      if(!ctxOf()) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = nb; s.loop = true; s.start(t, Math.random()*.8); s.stop(t + .3);
-      const f = c.createBiquadFilter(); f.type = 'bandpass'; f.Q.value = 1.1; f.frequency.setValueAtTime(260 + Math.random()*60, t); f.frequency.exponentialRampToValueAtTime(900 + power*600, t + .15);
-      const g = c.createGain(); env(g, t, .035, .06 + power*.1, .15); s.connect(f).connect(g).connect(out);
-      const o = c.createOscillator(), og = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(170, t); o.frequency.exponentialRampToValueAtTime(95, t + .1); env(og, t, .008, .05 + power*.05, .09); o.connect(og).connect(out); o.start(t); o.stop(t + .2);
-      const s2 = c.createBufferSource(); s2.buffer = nb; s2.loop = true; s2.start(t, Math.random()*.8); s2.stop(t + .12);                                            // a flutter of feathers
-      const f2 = c.createBiquadFilter(); f2.type = 'highpass'; f2.frequency.value = 5200; const g2 = c.createGain(); env(g2, t + .02, .01, .025 + power*.03, .07); s2.connect(f2).connect(g2).connect(out); },
-    chime(n){ if(!ctxOf()) return; const t = c.currentTime, base = 1046.5*Math.pow(2, ((n || 0) % 4)/12*2);
-      [1, 1.5, 2].forEach((m, i) => { const o = c.createOscillator(), g = c.createGain(); o.type = 'sine'; o.frequency.value = base*m; env(g, t + i*.06, .006, .09/(i + 1), .45); o.connect(g).connect(out); o.start(t + i*.06); o.stop(t + 1); }); },
-    hurt(){ if(!ctxOf()) return; const t = c.currentTime, s = c.createBufferSource(); s.buffer = nb; s.loop = true; s.start(t, 0); s.stop(t + .3); const f = c.createBiquadFilter(); f.type = 'lowpass'; f.frequency.value = 700;
-      const g = c.createGain(); env(g, t, .004, .3, .16); s.connect(f).connect(g).connect(out);
-      const o = c.createOscillator(), og = c.createGain(); o.type = 'sine'; o.frequency.setValueAtTime(190, t); o.frequency.exponentialRampToValueAtTime(60, t + .22); env(og, t, .004, .3, .25); o.connect(og).connect(out); o.start(t); o.stop(t + .4); },
-    feather(n){ sfx('coin', n); }
-  };
-})();
+/* the sound of the wings lives in sfxkit.js (HKS.WING) */
+const FAUD = {wing:p => HKS.WING.beat(p), chime:n => HKS.WING.chime(n), hurt:() => HKS.WING.hurt(), feather:n => sfx('coin', n)};
 
 const F = {}, BIRD_X = .42;       // clear of the camera picture in the top-left corner
 const PAL = [[['#4aa8f0', '#a8dcfa', '#ffe9c4'], 0],                      // dawn → morning
