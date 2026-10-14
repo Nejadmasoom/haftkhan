@@ -107,7 +107,7 @@ async function startPlay(){
 }
 /* each game has its tune (approved ones), and the tune follows the action: faster as the jeep speeds up or
    the walls come quicker. It steps back while the game waits for the player. */
-const MUS = {hill:'galop', wall:'hop'};
+const MUS = {hill:'rally', wall:'walls'};     // the two original tunes, heard and approved by the owner
 function musicOn(){ if(H.muted || !window.HKMusic) return; const c = H.ac(); if(c && HKMusic.current() !== MUS[A.game]) HKMusic.play(MUS[A.game], {ctx:c, vol:.42}); }
 function musicOff(){ if(window.HKMusic && Object.values(MUS).includes(HKMusic.current())) HKMusic.stop(); }
 function stopPlay(){ musicOff(); H.ENGINE.stop(); cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }

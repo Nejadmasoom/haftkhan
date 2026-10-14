@@ -34,12 +34,12 @@ const SONGS = {
     melody: parse(`G4:2 G4:1 A4:1 B4:2 G4:2  C5:2 B4:2 A4:4  A4:2 A4:1 B4:1 C5:2 A4:2  D5:2 C5:2 B4:4
                    E5:2 D5:1 C5:1 B4:2 A4:2  G4:2 A4:2 B4:2 G4:2  A4:2 D5:2 C5:2 A4:2  G4:6 -:2`).notes,
     beats: 32, chords: bars(4, 'G C D G C G D G'.split(' ')) },
-  /* original, for the hill race (awaiting the user's listen): a revving "da-da-da-DUM" up the D major chord */
+  /* original, for the hill race (approved): a revving "da-da-da-DUM" up the D major chord */
   rally: { title:'مسابقهٔ تپه', bpm:132, key:'D', lead:'bright', groove:'bounce', beats:32,
     melody: parse(`D5:1 D5:1 F#5:1 A5:1 D6:2 A5:2  B5:1 A5:1 G5:1 F#5:1 E5:4  D5:1 D5:1 F#5:1 A5:1 D6:2 A5:2  B5:1 C#6:1 D6:2 A5:4
                    G5:2 B5:2 A5:2 F#5:2  E5:1 F#5:1 G5:1 A5:1 B5:4  A5:2 F#5:2 G5:2 E5:2  D5:4 -:2 A5:1 A5:1`).notes,
     chords: bars(4, 'D A D D G G A D'.split(' ')) },
-  /* original, for the shape walls (awaiting the user's listen): a stepping tune that climbs as a wall comes */
+  /* original, for the shape walls (approved): a stepping tune that climbs as a wall comes */
   walls: { title:'دیوارهای شکل', bpm:120, key:'G', lead:'bright', groove:'march', beats:32,
     melody: parse(`G4:1 B4:1 D5:1 B4:1 G4:2 -:2  A4:1 C5:1 E5:1 C5:1 A4:2 -:2  B4:1 D5:1 G5:1 D5:1 B4:1 D5:1 G5:2  F#5:2 E5:2 D5:4
                    E5:1 E5:1 D5:1 C5:1 B4:2 C5:2  D5:1 D5:1 C5:1 B4:1 A4:4  B4:1 C5:1 D5:1 E5:1 F#5:2 A5:2  G5:4 -:2 D5:1 D5:1`).notes,
