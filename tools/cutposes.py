@@ -47,9 +47,9 @@ for y0 in range(H):
         info[n] = (cnt, sy/cnt, sx/cnt)
 def owner(v): return min(ROWS - 1, int(v[1]*ROWS/H))*COLS + min(COLS - 1, int(v[2]*COLS/W))
 def shape_of(k):
-    mine = [(i, v) for i, v in info.items() if v[0] > 200 and owner(v) == k]
+    mine = [(i, v) for i, v in info.items() if v[0] > int(os.environ.get('MINPIX', 200)) and owner(v) == k]
     if not mine: return None
-    big = max(v[0] for _, v in mine); return mine, [i for i, v in mine if v[0] >= .02*big]
+    big = max(v[0] for _, v in mine); return mine, [i for i, v in mine if v[0] >= float(os.environ.get('MINFRAC', .02))*big]   # MINFRAC=.002 MINPIX=40 keeps small props such as pebbles
 # one square canvas for the whole sheet, so every pose keeps the sheet's own scale (a 3x3 sheet: one column wide;
 # a bigger sheet: the largest pose plus a margin)
 if (COLS, ROWS) == (3, 3): cell = W//3
