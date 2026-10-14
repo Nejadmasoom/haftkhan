@@ -1091,6 +1091,7 @@ function finishDay(){
   const nextN = n + 1, nextName = n === 4 ? '«تعادل» در خوانِ سوم' : titleOf(nextN) ? `«${titleOf(nextN)}»` : '';
   const left = K.lessons.filter(m => m !== n && !H.lessonDone(m));    // only when every khan is open for testing
   const all = KHAN_INFO.every(k => k.lessons.every(H.lessonDone));      // the whole journey, seven khans
+  if(all) H.voiceLater('end-all', 1200);
   $('#gxRewardTitle').textContent = all ? 'هفت‌خوان را گذراندی!' : passed ? `از خوانِ ${K.name} گذشتی!` : doneL ? `منزلِ ${LESSONS[n].title} تمام شد!` : 'آفرین پهلوان!';
   $('#gxRewardText').textContent = all ? 'همهٔ نگهبان‌ها، از خروسِ سحر تا سیمرغ، به تو افتخار می‌کنند. یوزی بزرگ شد و جشن شروع شد! بازی آزاد و سطح‌های سخت‌تر همیشه باز است.' : passed ? `${H.GUARD_NAMES[K.guard]} به تو افتخار می‌کند. ${nextName ? `حالا منزلِ ${nextName} منتظرت است.` : 'خوانِ بعدی به‌زودی ساخته می‌شود.'}`
     : doneL ? (nextName && !left.length || left.includes(nextN) ? `هر سه مشعل روشن شد. منزلِ ${nextName} باز شد!` : `هر سه مشعل روشن شد. منزلِ «${titleOf(left[0])}» را هم تمام کن تا از این خوان بگذری.`)
@@ -1396,7 +1397,8 @@ function autoNext(){
 }
 /* each step of a sequence, spoken: the osta's recorded commands where they match, short new lines for the rest */
 const STEP_VOICE = {legL:'osta-legL', legR:'osta-legR', armU:'osta-armU', armS:'osta-armS', feet:'step-feet', armF:'step-armF', armD:'step-armD',
-  headR:'step-headR', headL:'step-headL', headD:'step-headD', headU:'step-headU', headC:'step-headC'};
+  headR:'step-headR', headL:'step-headL', headD:'step-headD', headU:'step-headU', headC:'step-headC',
+  upright:'step-upright', bendL:'step-bendL', bendR:'step-bendR', thigh:'step-thigh', chest:'step-chest'};
 function markChip(t, i){ $$('#tkChips span').forEach(s => { const k = +s.dataset.k; s.classList.toggle('on', k === i); s.classList.toggle('ok', k < i); }); }
 
 /* ===================================================================== family games */
@@ -1567,7 +1569,7 @@ function famPotato(fm, intro){
     if(go) go.addEventListener('click', ()=>{
       if(state === 'play'){ famStop(); draw('idle'); return; }
       F.playing = true; playTune('hop'); window.HKMusic && HKMusic.rate(1.3); sfx('start'); draw('play');
-      F.t = setTimeout(()=>{ if(!F.playing) return; famStop(); sfx('fanfare'); vib([30,40,30]); draw('stop', '<b>آهنگ قطع شد!</b><small>هر کس توپ دستش است، آن را در سبد بیندازد!</small>'); }, 6000 + Math.random()*8000);
+      F.t = setTimeout(()=>{ if(!F.playing) return; famStop(); sfx('fanfare'); voice('potato-stop'); vib([30,40,30]); draw('stop', '<b>آهنگ قطع شد!</b><small>هر کس توپ دستش است، آن را در سبد بیندازد!</small>'); }, 6000 + Math.random()*8000);
     });
     const done = txt => { sfx(txt.ok ? 'star' : 'soft'); F.round++; if(F.round >= 2) famDone(); draw('result', txt.html); };
     const inn = $('#ptIn'); if(inn) inn.addEventListener('click', ()=>done({ok:true, html:'<b>آفرین! توی سبد رفت</b><small>بازی مثلِ قبل ادامه دارد. همه تشویقش کنید!</small>'}));
@@ -1644,7 +1646,7 @@ function famRules(fm, intro){
     if(F.round % 3 === 0){      // every third call is an agreement, said right or wrong at random
       const r = agreed()[Math.random()*agreed().length|0], right = Math.random() < .5;
       card.innerHTML = `<img src="${figSrc('m6-palm')}" alt=""><b>«${right ? r[0] : r[1]}»</b><small>سبز یا قرمز؟ زود توپ را بالا ببرید!</small>`;
-      sfx('soft'); vib(20);
+      sfx('soft'); voice('rules-go'); vib(20);
       F.t3 = setTimeout(()=>{ const a = $('#rgAns'); if(!a) return; a.hidden = false; a.className = `rg-ans ${right ? 'ok' : 'no'}`;
         a.innerHTML = `<img src="${figSrc(right ? 'm6-green' : 'm6-red')}" alt=""><span><b>${right ? 'سبز! درست است' : 'قرمز! غلط است'}</b>${right ? '' : `درستش: «${r[0]}»`}<small>هر کس توپِ غیرِهم‌رنگ را بالا برد، یک حرکتِ نمایشی یا شیرین‌کاری انجام دهد. زودترین نفر، بازی‌گردانِ دورِ بعد است.</small></span>`;
         sfx(right ? 'star' : 'miss'); F.said++; if(F.said >= 2) famDone(); }, 3200);
