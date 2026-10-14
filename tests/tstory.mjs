@@ -25,6 +25,7 @@ const run = (mode, task, secs) => p.evaluate(async ({mode, task, secs}) => {
   const REPS = {
     run:[[P.legL, 260], [P.legR, 260]],
     walk:[[P.legL, 450], [P.legR, 450]],
+    throw:[[{15:[.58,.12],16:[.42,.12],13:[.58,.2],14:[.42,.2],19:[.58,.1],20:[.42,.1]}, 700], [{}, 700]],
     patT:[[{15:[.57,.6],19:[.57,.61],16:[.4,.3],20:[.4,.29],14:[.38,.38]}, 400], [{16:[.43,.6],20:[.43,.61],15:[.6,.3],19:[.6,.29],13:[.62,.38]}, 400]],
     patC:[[{15:[.53,.38],19:[.53,.38],16:[.4,.2],20:[.4,.19],14:[.38,.3]}, 400], [{16:[.47,.38],20:[.47,.38],15:[.6,.2],19:[.6,.19],13:[.62,.3]}, 400]],
     circle:[[{...out, ...outLo}, 400], [{...out, ...outHi}, 400]],
@@ -55,7 +56,7 @@ const run = (mode, task, secs) => p.evaluate(async ({mode, task, secs}) => {
 const res = []; let seqDbg; const ONLYT = process.env.T ? new RegExp(process.env.T) : null;
 for(const t of tasks){
   if(ONLYT && !ONLYT.test(`L${t.n} p${t.i}`)) continue;
-  const open = async () => { await p.evaluate(() => HK.go('map')); await p.click(`.khan >> nth=${t.n <= 2 ? 0 : t.n <= 4 ? 1 : t.n <= 6 ? 2 : 3}`); await p.click(`#mz${t.n} [data-act="gstory"]`); await p.waitForTimeout(250);
+  const open = async () => { await p.evaluate(() => HK.go('map')); await p.click(`.khan >> nth=${t.n <= 2 ? 0 : t.n <= 4 ? 1 : t.n <= 6 ? 2 : t.n <= 8 ? 3 : t.n <= 10 ? 4 : t.n === 11 ? 5 : 6}`); await p.click(`#mz${t.n} [data-act="gstory"]`); await p.waitForTimeout(250);
     await p.evaluate(i => HKX._story.renderStory(i), t.i); await p.waitForTimeout(250); await p.click('#tkCam'); await p.waitForTimeout(3500); };
   await open(); const still = await run('still', t, 8);
   await open(); const play = await run('play', t, t.type === 'seq' ? 32 : 14);

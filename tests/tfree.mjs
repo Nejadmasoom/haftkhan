@@ -7,7 +7,7 @@ const b = await chromium.launch({executablePath:'/opt/pw-browsers/chromium'});
 const p = await (await b.newContext({viewport:{width:390,height:844}})).newPage(); const errs = []; p.on('pageerror', e => errs.push(e.message)); p.setDefaultTimeout(8000);
 await p.goto('file:///home/user/haftkhan/prototype/index.html'); await p.fill('#kidName','سارا'); await p.click('#helloGo'); await p.waitForTimeout(400);
 const res = []; const ok = (c, msg) => res.push(`${c ? 'OK  ' : 'FAIL'} ${msg}`);
-const khanOf = n => n <= 2 ? 0 : n <= 4 ? 1 : n <= 6 ? 2 : 3;
+const khanOf = n => n <= 2 ? 0 : n <= 4 ? 1 : n <= 6 ? 2 : n <= 8 ? 3 : n <= 10 ? 4 : n === 11 ? 5 : 6;
 // set a lesson's days: 'today' (played today), 'rest' (played yesterday), 'done' (three torches)
 const setDays = (n, kind) => p.evaluate(({n, kind}) => { const d = HK.dayNum(), days = n === 5 ? HK.state.days : HK.state.L[n].days;
   days.splice(0, 3, null, null, null);
@@ -23,13 +23,14 @@ async function finishGame(){
     if(await p.isVisible('#gxSeen')){ await p.click('#gxSeenYes'); await p.waitForTimeout(150); continue; }
     if(await p.isVisible('#gxFeel')){ await p.click('#gxFeel [data-feel="2"]'); await p.waitForTimeout(400); continue; }
     const g = await p.evaluate(() => { const X = HKX._X, g = X.games[X.qi]; return {kind:g.kind, goal:g.goal}; });
+    if(g.kind === 'guess'){ for(let k = 0; k < g.goal + 2 && !(await p.isVisible('#gxFeel')); k++){ const sec = await p.evaluate(() => HKX._X.secret); await p.click(`#gxQuiz .fist >> nth=${sec}`); await p.waitForTimeout(1150); } continue; }
     if(g.kind === 'quiz'){ for(const x of await p.$$('#gxQuiz .qi[data-good="1"]')) await x.click(); await p.waitForTimeout(700); continue; }
     await p.evaluate(() => { const X = HKX._X; X.count = X.games[X.qi].goal - 1; X.lastTap = 0; });   // skip to the last repetition
     await p.waitForTimeout(1300); await p.click('#gxTap'); await p.waitForTimeout(g.kind === 'hold' ? 1600 : 800);
   }
   return p.isVisible('#gxReward');
 }
-for(const n of [1, 2, 3, 4, 6, 7, 8]){
+for(const n of [1, 2, 3, 4, 6, 7, 8, 9, 10, 11, 12]){
   for(const kind of ['today', 'rest', 'done']){
     await setDays(n, kind); const before = await torches(n);
     await p.evaluate(() => HK.go('map')); await p.click(`.khan >> nth=${khanOf(n)}`); await p.waitForTimeout(200);

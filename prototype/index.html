@@ -819,6 +819,11 @@ html.play .app{border-radius:0;padding-top:env(safe-area-inset-top);padding-bott
 .quizgrid .qi img{height:56px;width:auto;max-width:100%;object-fit:contain}
 .quizgrid .emo.two{font-size:30px;letter-spacing:-4px}
 .quizgrid .emo{white-space:nowrap;direction:ltr;font-size:40px;line-height:56px;height:56px;font-family:"Noto Color Emoji","Apple Color Emoji","Segoe UI Emoji",sans-serif}
+.quizgrid.guessrow{grid-template-columns:repeat(2,minmax(0,1fr))}
+.guessrow .fist{border:3px solid var(--ink);border-radius:20px;background:#fff;color:var(--ink);font:inherit;cursor:pointer;min-height:130px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;box-shadow:0 5px 0 var(--ink)}
+.guessrow .fist .emo{font-size:64px;line-height:76px;height:76px}
+.guessrow .fist small{font-size:14px;font-weight:800}
+.guessrow .fist.gol{background:#fff3c4}.guessrow .fist.right{background:#e4f7dc}.guessrow .fist.wrong{background:#ffe4e1;animation:shake .35s}
 .quizgrid .pair{display:flex;align-items:flex-end;justify-content:center;gap:0;height:56px}
 .quizgrid .pair img{height:50px;max-width:50%}
 .quizgrid .qi small{font-size:12px;font-weight:700;line-height:1.4;text-align:center}
@@ -1368,7 +1373,7 @@ const KHANS = [
   {name:'چشمهٔ دل', lessons:['قلب قوی'], icon:'heart', guard:'rakhsh'},
   {name:'جشنِ سرزمین', lessons:['بازی‌های بومی‌محلی'], icon:'flag', guard:'simorgh'}
 ];
-const BUILT = 4; // khans 1..4 have playable lessons; the rest are on the map but not built yet
+const BUILT = 7; // khans 1..7 have playable lessons; the rest are on the map but not built yet
 const MOVES = [
   {t:'روی یک پا بایست و با پای دیگر کیسه‌های شن را داخل سبد بگذار.', goal:5, unit:'کیسه', prop:'bags'},
   {t:'روی یک پا بایست و با پای دیگر دایره‌های رنگی را لمس کن.', goal:4, unit:'دایره', prop:'dots'},
@@ -1450,15 +1455,15 @@ function save(){ store.set(SKEY, state); }
 if(!state.cam) state.cam = {dots:0, bags:0, cups:0, oneLegReps:0, poseSec:0, recs:0, family:0};
 /* lessons 1-4 (khans 1 and 2) — the engine for them lives in khans.js */
 const newLesson = () => ({days:[null,null,null], story:false, family:false, stars:0, rec:[], log:{}, cam:{}});
-const LESSONS_BUILT = [1,2,3,4,6,7,8];   // lesson 5 (balance) keeps its own screens below
+const LESSONS_BUILT = [1,2,3,4,6,7,8,9,10,11,12];   // lesson 5 (balance) keeps its own screens below
 const fillLessons = () => { state.L = state.L || {}; LESSONS_BUILT.forEach(n => { if(!state.L[n]) state.L[n] = newLesson(); }); };
 fillLessons();
 /* while the game is being tested, every built khan is open; the parents page can turn the real order back on */
 if(!state.cur) state.cur = 1;
 const daysOf = n => n === 5 ? state.days : state.L[n].days;
 const lessonDone = n => daysOf(n).filter(Boolean).length >= 3;
-const LESSON_KHAN = {1:0, 2:0, 3:1, 4:1, 5:2, 6:2, 7:3, 8:3};
-const KHAN_LESSONS = [[1,2],[3,4],[5,6],[7,8]];
+const LESSON_KHAN = {1:0, 2:0, 3:1, 4:1, 5:2, 6:2, 7:3, 8:3, 9:4, 10:4, 11:5, 12:6};
+const KHAN_LESSONS = [[1,2],[3,4],[5,6],[7,8],[9,10],[11],[12]];
 const khanPassed = i => i < BUILT && KHAN_LESSONS[i].every(lessonDone);
 /* every built khan and lesson is open from the start: the child plays as much, and in whatever order, they like.
    Torches still record the book's own rhythm, one game every other day. */

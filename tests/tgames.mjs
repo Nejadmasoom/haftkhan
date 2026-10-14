@@ -7,7 +7,7 @@ await p.goto('file:///home/user/haftkhan/prototype/index.html'); await p.fill('#
 const ONLYG = process.env.G ? new RegExp(process.env.G) : null;
 let games = await p.evaluate(() => Object.entries(HKX.LESSONS).flatMap(([n, L]) => (L.play.games || []).map((g, i) => ({n:+n, i, name:g.name, kind:g.kind, det:g.det || null, stick:g.need === 'stick'})).filter(g => g.kind === 'reps' && g.det)));
 if(ONLYG) games = games.filter(g => ONLYG.test(`L${g.n}#${g.i}`));
-const khanOf = n => n <= 2 ? 0 : n <= 4 ? 1 : n <= 6 ? 2 : 3;
+const khanOf = n => n <= 2 ? 0 : n <= 4 ? 1 : n <= 6 ? 2 : n <= 8 ? 3 : n <= 10 ? 4 : n === 11 ? 5 : 6;
 const feed = (mode, det, secs, stick) => p.evaluate(async ({mode, det, secs, stick}) => {
   const CAM = HK.CAM, X = HKX._X, keep = CAM.stream; CAM.stream = null; await new Promise(r => setTimeout(r, 120));
   const W = 640, H = 480, cv = {width:W, height:H}, ctx = new OffscreenCanvas(W, H).getContext('2d');
@@ -26,7 +26,13 @@ const feed = (mode, det, secs, stick) => p.evaluate(async ({mode, det, secs, sti
     drum: [[{15:[.53,.36],16:[.47,.36]}, 500], [{}, 500]],
     toe: [[shift(-.03, [31, 32]), 700], [{}, 700]],
     run: [[legL, 260], [legR, 260]],
-    walk: [[legL, 450], [legR, 450]]
+    walk: [[legL, 450], [legR, 450]],
+    throw: [[{15:[.58,.12],16:[.42,.12],13:[.58,.2],14:[.42,.2],19:[.58,.1],20:[.42,.1]}, 700], [{}, 700]],
+    throw1: [[{15:[.58,.12],13:[.58,.2],19:[.58,.1]}, 700], [{}, 700]],
+    tossclap: [[{15:[.58,.12],16:[.42,.12],13:[.58,.2],14:[.42,.2],19:[.58,.1],20:[.42,.1]}, 600], [{15:[.51,.4],16:[.49,.4],19:[.51,.39],20:[.49,.39],13:[.57,.45],14:[.43,.45]}, 600], [{}, 500]],
+    kick: [[legL, 500], [{}, 500], [legR, 500], [{}, 500]],
+    inout: [[{27:[.72,.9],28:[.28,.9],29:[.72,.91],30:[.28,.91],31:[.73,.93],32:[.27,.93],25:[.63,.72],26:[.37,.72]}, 500], [{}, 500]],
+    stepup: [[shift(-.07), 900], [{}, 900]]
   };
   let seed = 7; const rnd = () => { seed = (seed*16807) % 2147483647; return seed/2147483647; }; const g = () => { let u = 0; for(let i = 0; i < 6; i++) u += rnd(); return (u - 3)/1.2; };
   const J = mode === 'still' ? .01 : .003, seq = SEQ[det] || [[{}, 1000]], t0 = performance.now(); let reps = 0, last = X.count;

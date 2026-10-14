@@ -34,7 +34,7 @@ for(const [W, H] of VPS){
   await shot('hello');
   await p.fill('#kidName','سارا'); await p.click('#helloGo'); await p.waitForTimeout(500);
   await shot('map');
-  for(const [k, lessons] of [[0, [1, 2]], [1, [3, 4]], [2, [6]], [3, [7, 8]]]){
+  for(const [k, lessons] of [[0, [1, 2]], [1, [3, 4]], [2, [6]], [3, [7, 8]], [4, [9, 10]], [5, [11]], [6, [12]]]){
     await khan(k); await shot(`gkhan${k}`);
     for(const n of lessons){
       for(const act of ['gstory', 'gfam', 'gstar']){ await khan(k); try { await p.click(`#mz${n} [data-act="${act}"]`); await p.waitForTimeout(300); await shot(`L${n}-${act}`); } catch(e){ report[`${vp} L${n}-${act}`] = {fail: e.message.slice(0, 80)}; } }
