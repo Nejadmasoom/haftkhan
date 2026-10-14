@@ -8,6 +8,8 @@
 const H = window.HK, X = window.HKX; if(!H || !X) return;
 const {fa, $, $$, sfx, voice, C} = H;
 const S = () => H.state;
+/* the natural sounds of sfxkit.js when present (engine, landing, crash, the wall's rumble and bricks), else the simple ones */
+const SX = window.HKS, ENG = SX ? SX.CAR : H.ENGINE;
 const SENIOR = k => k === 'grandma' || k === 'grandpa';
 const GAMES = {
   hill: {name:'تپه‌نوردی یوزی', unit:'متر', how:'درجا بدو تا ماشین برود؛ هر چه تندتر، تندتر! روی تپه که پرید، بدنت را کج کن تا صاف فرود بیاید.',
@@ -89,7 +91,7 @@ const leanOf = b => (b.hip.x - b.sh.x)/b.torso;
 /* ================================================================ the play screen */
 const cv = () => $('#plCanvas');
 let ctx = null, W = 0, Hh = 0, DPR = 1;
-function size(){ const c = cv(), r = c.getBoundingClientRect(); DPR = Math.min(2, window.devicePixelRatio || 1);
+function size(){ const c = cv(), r = c.getBoundingClientRect(); DPR = Math.min(1.5, window.devicePixelRatio || 1);    // sharp enough on a phone, and far fewer pixels to paint each frame
   W = r.width; Hh = r.height; c.width = Math.round(W*DPR); c.height = Math.round(Hh*DPR); ctx = c.getContext('2d'); ctx.setTransform(DPR, 0, 0, DPR, 0, 0); }
 function msg(html){ const m = $('#plMsg'); if(!html){ m.hidden = true; return; } m.innerHTML = html; m.hidden = false; }
 function hud(html, bot=''){ const h = $('#plHud'), b = $('#plBot'); if(h.innerHTML !== html) h.innerHTML = html; if(b.innerHTML !== bot) b.innerHTML = bot; }
@@ -111,7 +113,7 @@ async function startPlay(){
 const MUS = {hill:'rally', wall:'walls'};      // more games add theirs when they register     // the two original tunes, heard and approved by the owner
 function musicOn(){ if(H.muted || !window.HKMusic || !MUS[A.game]) return; const c = H.ac(); if(c && HKMusic.current() !== MUS[A.game]) HKMusic.play(MUS[A.game], {ctx:c, vol:.42}); }
 function musicOff(){ if(window.HKMusic && Object.values(MUS).includes(HKMusic.current())) HKMusic.stop(); }
-function stopPlay(){ musicOff(); H.ENGINE.stop(); cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }
+function stopPlay(){ musicOff(); ENG.stop(); cancelAnimationFrame(A.raf); A.raf = 0; A.phase = 'off'; const CAM = H.CAM; CAM.onFrame = null; msg(''); }
 function tick(now){
   const dt = Math.max(0, Math.min(.05, (now - A.last)/1000)); A.last = Math.max(A.last, now);   // a frame stamped before the last one must not run time backwards
   if(cv().clientWidth !== W || cv().clientHeight !== Hh) size();
@@ -128,7 +130,7 @@ function tick(now){
   if(A.phase !== 'off') A.raf = requestAnimationFrame(tick);
 }
 function gameOver(score, why){
-  H.ENGINE.stop(); musicOff(); A.phase = 'over'; const g = GAMES[A.game], prev = best(A.game, A.who), isRec = score > prev;
+  ENG.stop(); musicOff(); A.phase = 'over'; const g = GAMES[A.game], prev = best(A.game, A.who), isRec = score > prev;
   if(isRec){ rec()[A.game][A.who] = score; H.save(); }
   sfx(isRec ? 'fanfare' : 'soft', isRec); if(isRec) H.voiceLater('record', 600);
   const who = H.PLAYERS.find(p => p.k === A.who) || {n:''};
@@ -208,8 +210,8 @@ function hillFrame(dt, now, live){
   if(window.HKMusic && A.phase === 'run') HKMusic.rate(.85 + .3*Math.min(1, Math.abs(HL.v)/16) + (HL.turbo ? .1 : 0));
   const lean = live && B.b ? Math.max(-1, Math.min(1, leanOf(B.b)/.22)) : 0;
   if(A.phase === 'run' && !HL.dead){
-    if(live) H.ENGINE.start(); else H.ENGINE.stop();
-    H.ENGINE.set(gas, HL.v);
+    if(live) ENG.start(); else ENG.stop();
+    ENG.set(gas, HL.v);
     const G = 9.8, steps = 3, h = dt/steps;
     for(let i = 0; i < steps; i++){
       if(!HL.air){
@@ -230,11 +232,11 @@ function hillFrame(dt, now, live){
         const ground = terrain(HL.x);
         if(HL.y <= ground){ const th = Math.atan(slope(HL.x)); let d = HL.phi - th; d = Math.atan2(Math.sin(d), Math.cos(d));
           HL.y = ground; HL.air = false; HL.flew = false; const hang = (now - HL.airT)/1000, fall = -HL.vy;
-          if(Math.abs(d) > 1.3){ HL.dead = true; HL.shake = 18; H.ENGINE.stop(); sfx('crash'); vib([60, 40, 90]);
+          if(Math.abs(d) > 1.3){ HL.dead = true; HL.shake = 18; ENG.stop(); SX ? SX.CAR.crash() : sfx('crash'); vib([60, 40, 90]);
             const p = scr(HL.x, HL.y); burst(p.x, p.y - 20, 22, ['#c8352a', '#3d3550', '#a9a4b8', '#c48745'], 300, 1.2, 'brick');
             gameOver(Math.round(HL.far), 'ماشین وارونه شد!'); return; }
           HL.v = Math.min(18, Math.hypot(HL.vx, HL.vy)*Math.max(.5, Math.cos(d)))*(HL.vx >= 0 ? 1 : -1); HL.phi = th;
-          const p = scr(HL.x, HL.y); sfx('land', fall > 6); HL.shake = Math.min(12, fall*1.2);
+          const p = scr(HL.x, HL.y); SX ? SX.CAR.land(fall > 6) : sfx('land', fall > 6); HL.shake = Math.min(12, fall*1.2);
           burst(p.x, p.y, 10, ['rgba(190,150,110,.9)', 'rgba(160,120,80,.9)'], 160, .6);
           if(Math.abs(d) < .25 && hang > .5){ HL.coins += 2; sfx('flag'); pop(p.x, p.y - 90, 'فرودِ عالی! +۲', '#ffd93d', 26); burst(p.x, p.y - 60, 14, CONF, 260, 1, 'star'); } }
       }
@@ -253,7 +255,7 @@ function hillFrame(dt, now, live){
     if(HL.coinsAt.length && HL.coinsAt[HL.coinsAt.length - 1].x < HL.x + 200){ const lx = HL.coinsAt[HL.coinsAt.length - 1].x; for(let x = lx + 10; x < lx + 400; x += 9 + Math.random()*7) HL.coinsAt.push({x, got:false}); }
     if(HL.best > 20 && !HL.recDone && HL.far > HL.best){ HL.recDone = true; sfx('cheer'); sfx('fanfare', true); burst(W/2, Hh*.35, 40, CONF, 460, 1.6, 'star'); pop(W/2, Hh*.34, 'رکورد را شکستی! 🏆', '#ffd93d', 38); }
     if(HL.far >= HL.flagAt){ const p = scr(HL.flagAt, terrain(HL.flagAt)); sfx('flag'); if(HL.flagAt % 100 === 0) sfx('cheer'); burst(p.x, p.y - 60, 18, CONF, 280, 1.1, 'star'); pop(W/2, Hh*.32, `${fa(HL.flagAt)} متر!`, '#fff', 34); HL.flagAt += 50; }
-    if(HL.fuel <= 0 && Math.abs(HL.v) < .3 && !HL.air){ HL.emptyT = HL.emptyT || now; if(now - HL.emptyT > 1500){ HL.dead = true; H.ENGINE.stop(); gameOver(Math.round(HL.far), 'بنزین تمام شد!'); return; } } else HL.emptyT = 0;
+    if(HL.fuel <= 0 && Math.abs(HL.v) < .3 && !HL.air){ HL.emptyT = HL.emptyT || now; if(now - HL.emptyT > 1500){ HL.dead = true; ENG.stop(); gameOver(Math.round(HL.far), 'بنزین تمام شد!'); return; } } else HL.emptyT = 0;
   }
   drawHill(gas, lean, cadence, dt);
 }
@@ -499,7 +501,7 @@ function newWall(now){
   // the first walls come slowly; they speed up gently, a tenth of a second per wall, over thirty walls or more
   WL.last = k; const dur = SENIOR(A.who) ? Math.max(4.6, 8.2 - .09*WL.score) : Math.max(3.4, 7.0 - .1*WL.score);
   WL.wall = {k, t0:now, dur:dur*1000, held:0, lastOk:0};
-  sfx('wall', dur*.9);
+  SX ? SX.WALL.rumble(dur*.95) : sfx('wall', dur*.9);
   if(POSES[k].v) voice(POSES[k].v, 'step');
 }
 function wallFrame(dt, now, live){
@@ -517,13 +519,13 @@ function wallFrame(dt, now, live){
       if(p >= 1){
         const pass = w.held >= 150 && now - w.lastOk < 1200;        // a moment in the shape, and still in it (or just now) when the wall arrives
         WL.flash = now; WL.flashOk = pass;
-        if(pass){ WL.score++; WL.combo++; sfx('pass'); burst(W/2, Hh*.55, 30, CONF, 420, 1.2, 'star');
+        if(pass){ WL.score++; WL.combo++; sfx('pass'); if(SX) SX.WALL.through(); burst(W/2, Hh*.55, 30, CONF, 420, 1.2, 'star');
           const rb = best('wall', A.who); if(rb > 0 && WL.score === rb + 1){ sfx('cheer'); pop(W/2, Hh*.28, 'رکورد را شکستی! 🏆', '#ffd93d', 36); }
           else if(WL.score % 8 === 0){ sfx('fanfare'); pop(W/2, Hh*.28, `دیوارِ ${wallTheme().n}! ✨`, '#7cd3ff', 40); }
           else if(WL.score === 4 || WL.score === 8 || WL.score === 12){ sfx('star'); pop(W/2, Hh*.28, 'حرکتِ تازه! 🌟', '#ffd93d', 38); }
           if(window.HKMusic) HKMusic.rate(1 + Math.min(.3, WL.score*.03));
           pop(W/2, Hh*.4, WL.combo >= 3 ? `عالی! ×${fa(WL.combo)}` : ['آفرین!', 'عالی!', 'رد شدی!'][WL.score % 3], '#ffd93d', 40); }
-        else { WL.hearts--; WL.combo = 0; WL.shake = 16; sfx('smash'); vib([50, 30, 70]); burst(W/2, Hh*.5, 26, ['#d9774b', '#cf6a40', '#e0855a', '#f0d6b4'], 380, 1.4, 'brick');
+        else { WL.hearts--; WL.combo = 0; WL.shake = 16; SX ? SX.WALL.smash() : sfx('smash'); vib([50, 30, 70]); burst(W/2, Hh*.5, 26, ['#d9774b', '#cf6a40', '#e0855a', '#f0d6b4'], 380, 1.4, 'brick');
           pop(W/2, Hh*.4, 'اوه! دیوار خورد', '#ff8a7a', 32); }
         WL.wall = null; WL.gapT = now + 1100;
         if(WL.hearts <= 0){ gameOver(WL.score, 'دیوار به تو خورد!'); }
@@ -594,32 +596,39 @@ function drawWall(now, c){
     const ww = Math.max(W*1.15, Hh*.95)*s, wh = Hh*.86*s, bottom = hz + (floorY - hz)*(.06 + .94*Math.pow(p, 1.6)), wx = cx - ww/2, wy = bottom - wh;
     // shadow on the floor in front of the wall
     ctx.fillStyle = 'rgba(43,33,64,.22)'; ctx.beginPath(); ctx.moveTo(wx, bottom); ctx.lineTo(wx + ww, bottom); ctx.lineTo(wx + ww*1.04, bottom + 14*s); ctx.lineTo(wx - ww*.04, bottom + 14*s); ctx.closePath(); ctx.fill();
-    if(!wallCv) wallCv = document.createElement('canvas');
-    wallCv.width = Math.max(1, Math.round(ww*DPR)); wallCv.height = Math.max(1, Math.round(wh*DPR)); const x = wallCv.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
-    // bricks, each its own shade, with mortar and a light top edge
-    x.fillStyle = '#f0d6b4'; x.fillRect(0, 0, ww, wh);
-    const bh = 30*s, bw = 66*s, gap = Math.max(1, 3*s), tile = ART('brick-tile');
-    let pat = null; if(tile){ try { pat = x.createPattern(tile, 'repeat'); pat.setTransform(new DOMMatrix().scale(.62*s)); } catch(e){ pat = null; } }
-    if(pat){ x.fillStyle = pat; x.fillRect(0, 0, ww, wh); }
-    else for(let r = 0; r*bh < wh; r++) for(let q = (r % 2 ? -bw/2 : 0); q < ww; q += bw){
-      const id = r*31 + Math.round(q/bw); x.fillStyle = BRICK[Math.floor(hash(id + w.t0 % 97)*BRICK.length)];
-      x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, bh - gap);
-      x.fillStyle = 'rgba(255,255,255,.18)'; x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, Math.max(1, 4*s));
-      x.fillStyle = 'rgba(80,30,10,.18)'; x.fillRect(q + gap/2, r*bh + bh - gap/2 - Math.max(1, 4*s), bw - gap, Math.max(1, 4*s)); }
-    // stone coping on top, and a dark plinth at the bottom
-    x.fillStyle = '#b9b2c8'; x.fillRect(0, 0, ww, 16*s); x.fillStyle = '#d9d4e4'; x.fillRect(0, 0, ww, 6*s);
-    x.fillStyle = '#8c4a2c'; x.fillRect(0, wh - 12*s, ww, 12*s);
-    const f = poseFigure(w.k, c, k*s, ww/2, wh - 2);
-    const cut = (extra, op, col) => { x.globalCompositeOperation = op; x.strokeStyle = x.fillStyle = col; x.lineCap = 'round'; x.lineJoin = 'round';
-      x.lineWidth = c.sw*k*s*.62 + extra; f.segs.forEach(seg => { x.beginPath(); seg.forEach((pt, i) => i ? x.lineTo(pt.x, pt.y) : x.moveTo(pt.x, pt.y)); x.stroke(); });
-      x.lineWidth = c.sw*k*s*.95 + extra; x.beginPath(); x.moveTo(f.segs[1][0].x, f.segs[1][0].y); x.lineTo(f.segs[1][1].x, f.segs[1][1].y); x.stroke();
-      x.beginPath(); x.arc(f.head.x, f.head.y, f.r*1.35 + extra/2, 0, 7); x.fill(); };
-    cut(Math.max(4, 16*s), 'source-over', '#6b3420');           // the broken edge around the hole
-    cut(Math.max(2, 8*s), 'source-over', '#4a2414');
-    cut(0, 'destination-out', '#000');
-    x.globalCompositeOperation = 'source-over'; x.strokeStyle = INK; x.lineWidth = Math.max(2, 5*s); x.strokeRect(0, 0, ww, wh);
+    /* the wall is painted once, at its full size, the moment it appears; each frame only scales that picture
+       (painting bricks and cutting the hole every frame made the game stutter on phones) */
+    const ww1 = ww/s, wh1 = wh/s, key = [w.t0, Math.round(ww1), Math.round(wh1), WL.score >> 3, DPR, c.sw].join();
+    if(!w.cv || w.cvKey !== key){ w.cvKey = key;
+      if(!w.cv) w.cv = document.createElement('canvas');
+      w.cv.width = Math.max(1, Math.round(ww1*DPR)); w.cv.height = Math.max(1, Math.round(wh1*DPR)); const x = w.cv.getContext('2d'); x.setTransform(DPR, 0, 0, DPR, 0, 0);
+      // bricks, each its own shade, with mortar and a light top edge (in this stretch's material)
+      const thm = wallTheme(); if(thm.f !== 'none') x.filter = thm.f;
+      x.fillStyle = '#f0d6b4'; x.fillRect(0, 0, ww1, wh1);
+      const bh = 30*1, bw = 66*1, gap = Math.max(1, 3*1), tile = ART('brick-tile');
+      let pat = null; if(tile){ try { pat = x.createPattern(tile, 'repeat'); pat.setTransform(new DOMMatrix().scale(.62*1)); } catch(e){ pat = null; } }
+      if(pat){ x.fillStyle = pat; x.fillRect(0, 0, ww1, wh1); }
+      else for(let r = 0; r*bh < wh1; r++) for(let q = (r % 2 ? -bw/2 : 0); q < ww1; q += bw){
+        const id = r*31 + Math.round(q/bw); x.fillStyle = BRICK[Math.floor(hash(id + w.t0 % 97)*BRICK.length)];
+        x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, bh - gap);
+        x.fillStyle = 'rgba(255,255,255,.18)'; x.fillRect(q + gap/2, r*bh + gap/2, bw - gap, Math.max(1, 4*1));
+        x.fillStyle = 'rgba(80,30,10,.18)'; x.fillRect(q + gap/2, r*bh + bh - gap/2 - Math.max(1, 4*1), bw - gap, Math.max(1, 4*1)); }
+      // stone coping on top, and a dark plinth at the bottom
+      x.fillStyle = '#b9b2c8'; x.fillRect(0, 0, ww1, 16*1); x.fillStyle = '#d9d4e4'; x.fillRect(0, 0, ww1, 6*1);
+      x.fillStyle = '#8c4a2c'; x.fillRect(0, wh1 - 12*1, ww1, 12*1);
+      x.filter = 'none';
+      const f = poseFigure(w.k, c, k*1, ww1/2, wh1 - 2);
+      const cut = (extra, op, col) => { x.globalCompositeOperation = op; x.strokeStyle = x.fillStyle = col; x.lineCap = 'round'; x.lineJoin = 'round';
+        x.lineWidth = c.sw*k*1*.62 + extra; f.segs.forEach(seg => { x.beginPath(); seg.forEach((pt, i) => i ? x.lineTo(pt.x, pt.y) : x.moveTo(pt.x, pt.y)); x.stroke(); });
+        x.lineWidth = c.sw*k*1*.95 + extra; x.beginPath(); x.moveTo(f.segs[1][0].x, f.segs[1][0].y); x.lineTo(f.segs[1][1].x, f.segs[1][1].y); x.stroke();
+        x.beginPath(); x.arc(f.head.x, f.head.y, f.r*1.35 + extra/2, 0, 7); x.fill(); };
+      cut(Math.max(4, 16*1), 'source-over', '#6b3420');           // the broken edge around the hole
+      cut(Math.max(2, 8*1), 'source-over', '#4a2414');
+      cut(0, 'destination-out', '#000');
+      x.globalCompositeOperation = 'source-over'; x.strokeStyle = INK; x.lineWidth = Math.max(2, 5*1); x.strokeRect(0, 0, ww1, wh1);
+    }
     if(p > .97) drawSelf();                     // the body passes through the hole on top of the wall
-    const th_ = wallTheme(); if(th_.f !== 'none') ctx.filter = th_.f; ctx.drawImage(wallCv, wx, wy, ww, wh); ctx.filter = 'none';
+    ctx.drawImage(w.cv, wx, wy, ww, wh);
     if(p <= .97) drawSelf();                    // the player's own figure is always on screen, beside the hole it must fit
     // the pose's name on a ribbon, below the camera picture
     const pip = $('#plCam').getBoundingClientRect(), ty = Math.max(Hh*.2, pip.bottom + 40), name = POSES[w.k].n + '!';

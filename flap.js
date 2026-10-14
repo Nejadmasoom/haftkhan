@@ -26,21 +26,29 @@ function fReset(){
     beat:0, flapCd:0, t:0, shake:0, tilt:0, spawnN:0, lastGap:g.Hh*.42, combo:0, glide:0, bestRec:best('flap', A.who), recDone:false, wingA:0, hintT:0, idle:0, sky:0, skyN:0, flash:0});
   FX.length = 0; }
 
+/* A flap is one butterfly stroke: the hands go up, then come down by a clear amount. Each stroke is one event that
+   throws the Simorgh upward — bigger strokes throw higher — exactly like a tap in Flappy Bird, so a slow, calm
+   butterfly (about one a second) keeps it level and quicker strokes climb. Counting strokes rather than measuring
+   arm speed every frame makes it work the same on a slow phone camera and a fast one. */
 function control(dt, now, live){
-  const b = B.b, c = B.cal; let fl = 0;
+  const b = B.b, c = B.cal; let stroke = 0;
   if(live && b && c && now - B.t < 400 && B.t !== F.lastT){
-    const dtc = clamp((B.t - F.lastT)/1000, .012, .12); F.lastT = B.t; const A_len = c.ua + c.fa, u = (b.sh.y - (b.wL.y + b.wR.y)/2)/A_len;
+    F.lastT = B.t; const A_len = c.ua + c.fa, u = (b.sh.y - (b.wL.y + b.wR.y)/2)/A_len;
     F.u = u; F.spread = Math.abs(b.wL.x - b.wR.x)/(2*A_len);
-    // a flap is a fast downstroke: the hands must fall faster than the camera's own wobble (about 1.5 body-arms a second)
-    F.ue = F.ue == null ? u : F.ue + (u - F.ue)*.55;
-    F.h = (F.h || []).concat(F.ue).slice(-4);                                        // the last four smoothed readings
-    if(F.prevU != null){ const dd = F.prevU - F.ue, drop = F.h[0] - F.ue; if(dd > .01 && drop > .13 && dd/dtc > 1.2) fl = Math.min(.5, dd); }
-    F.prevU = F.ue; }
-  else if(!live || !b || now - B.t > 400){ F.prevU = null; F.ue = null; F.h = []; }
-  if(fl > 0){ const k = geoF().k; F.vy -= fl*720*k; F.since = 0; F.pend += fl; F.idle = 0;
-    if(!F.started){ F.started = true; F.vy = Math.min(F.vy, -260*k); }
-    if(F.flapCd <= 0 && fl > .03){ F.flapCd = .16; FAUD.wing(clamp(fl*3, .2, 1)); burst(geoF().W*BIRD_X - 20, F.y + 6, 3, ['#ffd93d', '#8ff0e0', '#fff'], 90, .45); } }
-  F.uS += (clamp(F.u, -1.2, 1.2) - F.uS)*Math.min(1, dt*14); }
+    F.ue = F.ue == null ? u : F.ue + (u - F.ue)*.6;                  // a little smoothing against camera wobble
+    if(F.hi == null){ F.hi = F.ue; F.lo = F.ue; F.armed = true; }
+    if(F.armed){ F.hi = Math.max(F.hi, F.ue);
+      if(F.hi - F.ue > .28){ stroke = Math.min(1.4, F.hi - F.ue); F.armed = false; F.lo = F.ue; } }   // the hands came down: one flap
+    else { F.lo = Math.min(F.lo, F.ue); if(F.ue - F.lo > .15){ F.armed = true; F.hi = F.ue; } } }        // and went back up: ready for the next
+  else if(!live || !b || now - B.t > 400){ F.ue = null; F.hi = null; }
+  if(stroke > 0){ const k = geoF().k, p = clamp(stroke/1.1, .35, 1);
+    F.vy = Math.min(F.vy, -(330 + 250*p)*k); F.since = 0; F.idle = 0; F.flaps = (F.flaps || 0) + 1; F.lastFlap = now;
+    if(!F.started) F.started = true;
+    FAUD.wing(p); burst(geoF().W*BIRD_X - 20, F.y + 6, 4, ['#ffd93d', '#8ff0e0', '#fff'], 100, .45); }
+  F.uS += (clamp(F.u, -1.2, 1.2) - F.uS)*Math.min(1, dt*14);
+  // spoken coaching when the bird is sinking and no stroke has come for a while: "hands up!" then "hands down!"
+  if(live && A.phase === 'run' && !F.over && now - (F.lastFlap || 0) > 1800 && now - (F.coachT || 0) > 6000 && (!F.started || F.vy > 0)){
+    F.coachT = now; H.voice('osta-armU', 'step'); setTimeout(() => { if(A.phase === 'run') H.voice('step-armD', 'step'); }, 1100); } }
 
 function newColumn(g){
   const n = F.spawnN++, gap = Math.max(.215, .345 - n*.0065)*g.Hh, lo = gap/2 + g.Hh*.1, hi = g.gy - gap/2 - g.Hh*.1;
@@ -60,7 +68,7 @@ function fFrame(dt, now, live){
       F.since = (F.since == null ? 9 : F.since) + dt;
       const glide = F.started && F.spread > .65 && Math.abs(F.uS) < .3 && F.since > .4;           // arms held out straight, like a glider
       F.glide += ((glide ? 1 : 0) - F.glide)*Math.min(1, dt*6);
-      if(F.started){ F.vy += 1000*k*(1 - .5*F.glide)*dt; F.vy *= 1 - Math.min(.5, 2.3*dt); F.vy = clamp(F.vy, -680*k, lerp(720, 250, F.glide)*k);
+      if(F.started){ F.vy += 950*k*(1 - .45*F.glide)*dt; F.vy = clamp(F.vy, -620*k, lerp(560, 230, F.glide)*k);
         F.idle += dt; }
       else F.vy = Math.sin(F.t*2.4)*18*k;
       F.y += F.vy*dt;
@@ -91,7 +99,7 @@ function fFrame(dt, now, live){
   const phase = (F.score/10) % 4; F.sky += (phase - F.sky)*Math.min(1, dt*(Math.abs(phase - F.sky) > 2 ? 40 : 1.2));
   draw(g, ctx, bx, br, dt);
   /* —— HUD —— */
-  const hint = A.phase !== 'run' ? '' : F.over ? '' : !F.started ? 'بازوهایت را مثل بال، از بالا به پایین بیاور!' : (F.score === 0 && F.cols.length && F.t < 12) ? 'هر بار که دست‌ها پایین می‌آیند، بالا می‌روی' : '';
+  const hint = A.phase !== 'run' ? '' : F.over ? '' : !F.started ? 'پروانه بزن! دست‌ها بالا، بعد محکم پایین ⬆️⬇️' : (F.score === 0 && F.cols.length && F.t < 12) ? 'هر پروانه = یک پرش. آرام و پشتِ سرِ هم بزن!' : '';
   hud(`<span>🪶 ${fa(F.score)} <b>امتیاز</b></span>${F.combo >= 4 ? `<span style="background:#ffe1b8">🔥 ×${fa(F.combo)}</span>` : ''}<span class="hearts">${[0,1,2].map(i => `<img src="img/obj/heart.webp" alt=""${i < F.hearts ? '' : ' class="lost"'}>`).join('')}</span>${best('flap', A.who) ? `<span><img src="img/obj/trophy.webp" alt=""> ${fa(best('flap', A.who))}</span>` : ''}`,
     hint ? `<span>${hint}</span>` : ''); }
 
@@ -246,7 +254,7 @@ function fIcon(){
 
 A_.register('flap', {
   name:'پرواز سیمرغ', short:'پرواز', unit:'امتیاز', music:'flap', icon:fIcon,
-  how:'بازوهایت را مثل بال از بالا به پایین بیاور تا سیمرغ بالا برود. از میانِ ستون‌ها بگذر و پرهای طلایی را بردار!',
+  how:'پروانه بزن: دست‌ها را از دو طرف بالا ببر و محکم پایین بیاور. هر پروانه سیمرغ را یک پرش بالا می‌برد؛ آرام و پشتِ سرِ هم بزن تا از میانِ ستون‌ها بگذری و پرهای طلایی را برداری!',
   howSenior:'بازوها را آرام مثل بال بالا و پایین ببرید تا سیمرغ بالا برود. دست‌ها را باز نگه دارید تا آرام پایین بیاید.',
   reset:fReset, frame:fFrame });
 window.HKA_FL = {F, FAUD, geoF};

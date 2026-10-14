@@ -120,5 +120,71 @@ const WING = {
     tone(t, 'sine', 210, 70, .003, .45, .22); burst(t, [filt('bandpass', 700, 1.5)], .002, .4, .12); burst(t, [filt('lowpass', 250, .7)], .002, .5, .18);
     for(let i = 0; i < 14; i++) burst(t + .03 + Math.random()*.3, [filt('bandpass', 3000 + Math.random()*5000, 2)], .002, .03 + Math.random()*.04, .02 + Math.random()*.04); }
 };
-window.HKS = {X, BOW, WING, ctx};
+
+/* ================================================================ the jeep
+   An engine is a row of small explosions: an impulse train at the firing rate (two a turn for four cylinders)
+   through the resonances of the body and the exhaust, slightly overdriven. Under it, gravel crunching under the
+   tyres at a loudness that follows the speed. */
+let E = null;
+const shaper = amt => { const ws = c.createWaveShaper(), n = 1024, cu = new Float32Array(n); for(let i = 0; i < n; i++){ const x = i/(n - 1)*2 - 1; cu[i] = Math.tanh(x*amt)/Math.tanh(amt); } ws.curve = cu; return ws; };
+const CAR = {
+  start(){
+    if(!ctx() || E) return; const t = now();
+    const pulse = c.createOscillator(); pulse.setPeriodicWave(pw); pulse.frequency.value = 30;
+    const sub = c.createOscillator(); sub.type = 'sine'; sub.frequency.value = 15;
+    const drive = c.createGain(); drive.gain.value = 6; const sh = shaper(2.2);
+    const lp = filt('lowpass', 700, .8), body = filt('peaking', 140, 1.8, 9), pipe = filt('peaking', 420, 3, 6);
+    const eng = c.createGain(); eng.gain.value = 0;
+    pulse.connect(drive).connect(sh).connect(lp).connect(body).connect(pipe).connect(eng);
+    const sg = c.createGain(); sg.gain.value = .25; sub.connect(sg).connect(eng);
+    // gravel: low noise, roughened by a fast random tremble
+    const gr = c.createBufferSource(); gr.buffer = nb; gr.loop = true; gr.start(t, Math.random());
+    const gf = filt('bandpass', 700, .7), gg = c.createGain(); gg.gain.value = 0; gr.connect(gf).connect(gg);
+    const master = c.createGain(); master.gain.setValueAtTime(.0001, t); master.gain.exponentialRampToValueAtTime(1, t + .25);
+    eng.connect(master); gg.connect(master); master.connect(out); pulse.start(t); sub.start(t);
+    E = {pulse, sub, lp, eng, gr, gf, gg, master}; },
+  set(gas, speed){
+    if(!E || !c) return; const t = now(), v = Math.abs(speed), g = clamp(gas, 0, 1);
+    const rpm = 850 + Math.min(v, 22)*120 + g*1500, f = rpm/60*2*(1 + (Math.random() - .5)*.02);
+    E.pulse.frequency.setTargetAtTime(f, t, .09); E.sub.frequency.setTargetAtTime(f/2, t, .09);
+    E.lp.frequency.setTargetAtTime(500 + g*1600 + v*35, t, .08);
+    E.eng.gain.setTargetAtTime(.12 + g*.16 + v*.004, t, .1);
+    E.gg.gain.setTargetAtTime(Math.min(.12, v*.007)*(.7 + .3*Math.random()), t, .05); E.gf.frequency.setTargetAtTime(400 + v*40, t, .1); },
+  stop(){ if(!E || !c) return; const e = E, t = now(); E = null; e.master.gain.setTargetAtTime(.0001, t, .08); try{ e.pulse.stop(t + .5); e.sub.stop(t + .5); e.gr.stop(t + .5); }catch(err){} },
+  /* back on the ground: the suspension takes it, and the body rattles a little */
+  land(hard){ if(!ctx()) return; const t = now(), k = hard ? 1 : .6;
+    tone(t, 'sine', 95, 42, .004, .45*k, .2); burst(t, [filt('lowpass', 260, .8)], .003, .4*k, .14);
+    for(let i = 0; i < (hard ? 6 : 3); i++) burst(t + .02 + Math.random()*.12, [filt('bandpass', 1800 + Math.random()*2200, 4)], .001, .05*k, .02 + Math.random()*.03); },
+  /* over on its roof: a crunch of metal, a few clanging panels, glass tinkling, a heavy thump */
+  crash(){ if(!ctx()) return; const t = now();
+    tone(t, 'sine', 80, 35, .005, .55, .5); burst(t, [filt('lowpass', 400, .7)], .004, .5, .35);
+    const s = noise(t, .7), f = filt('bandpass', 2200, 1.2), g = c.createGain(); f.frequency.setValueAtTime(2400, t); f.frequency.exponentialRampToValueAtTime(380, t + .55); env(g, t, .006, .38, .55); s.connect(f).connect(g).connect(out);
+    [[523, 0], [1187, .06], [1781, .13], [733, .22], [2210, .3]].forEach(([fr, d]) => tone(t + d, 'triangle', fr, fr*.97, .002, .07, .5));
+    for(let i = 0; i < 16; i++) tone(t + .15 + Math.random()*.6, 'sine', 3500 + Math.random()*4000, null, .001, .025, .08 + Math.random()*.1); }
+};
+
+/* ================================================================ the walls */
+const WALL = {
+  /* a stone wall sliding toward the player: a low grinding that grows as it comes, with pebbles skittering */
+  rumble(dur){
+    if(!ctx()) return; const t = now(), d = clamp(dur || 2, .5, 8);
+    const s = noise(t, d), f = filt('lowpass', 160, .9), g = c.createGain(), am = c.createGain(), lfo = c.createOscillator(), lg = c.createGain();
+    lfo.frequency.value = 7; lg.gain.value = .4; am.gain.value = .6; lfo.connect(lg).connect(am.gain); lfo.start(t); lfo.stop(t + d + .05);
+    f.frequency.setValueAtTime(110, t); f.frequency.linearRampToValueAtTime(260, t + d);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.18, t + d*.4); g.gain.exponentialRampToValueAtTime(.55, t + d*.98); g.gain.exponentialRampToValueAtTime(.0001, t + d + .05);
+    s.connect(f).connect(am).connect(g).connect(out);
+    for(let i = 0; i < Math.round(d*5); i++){ const at = t + Math.random()*d; burst(at, [filt('bandpass', 900 + Math.random()*1800, 5)], .001, .02 + .06*(at - t)/d, .015 + Math.random()*.02); } },
+  /* bricks bursting: a heavy thump, then dozens of chunks of every size falling, and dust */
+  smash(){
+    if(!ctx()) return; const t = now();
+    tone(t, 'sine', 90, 38, .004, .6, .35); burst(t, [filt('lowpass', 500, .8)], .003, .55, .25);
+    for(let i = 0; i < 34; i++){ const at = t + .02 + Math.pow(Math.random(), 1.6)*.75, f0 = 250 + Math.random()*1600;
+      burst(at, [filt('bandpass', f0, 3 + Math.random()*4)], .001, .05 + Math.random()*.12, .02 + Math.random()*.06); }
+    burst(t + .05, [filt('highpass', 3000, .6)], .05, .05, .7); },
+  /* slipping through the hole: air rushing past */
+  through(){ if(!ctx()) return; const t = now(), s = noise(t, .45), f = filt('bandpass', 600, 1.2), g = c.createGain();
+    f.frequency.setValueAtTime(500, t); f.frequency.exponentialRampToValueAtTime(3200, t + .25); f.frequency.exponentialRampToValueAtTime(900, t + .42);
+    g.gain.setValueAtTime(.0001, t); g.gain.exponentialRampToValueAtTime(.22, t + .18); g.gain.exponentialRampToValueAtTime(.0001, t + .44); s.connect(f).connect(g).connect(out); }
+};
+window.HKS = {X, BOW, WING, CAR, WALL, ctx};
 })();
