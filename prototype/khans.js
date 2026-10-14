@@ -8,6 +8,11 @@ const {fa, secs, $, $$, sfx, voice, C} = H;
 const S = () => H.state;
 const LS = n => S().L[n];
 const DAYW = ['اول','دوم','سوم'];
+/* a picture that fails to load (a file not shipped yet, a lighter copy of the game) must never show as a broken icon:
+   Yuzi's older-stage pose falls back to the first stage; a hero's pose falls back to the hero standing */
+document.addEventListener('error', e => { const i = e.target; if(!i || i.tagName !== 'IMG' || i.dataset.fb) return; i.dataset.fb = '1';
+  const y = i.src.match(/img\/yuzi-[23]-([a-zA-Z]+)\.webp/); if(y){ i.src = `img/yuzi-1-${y[1]}.webp`; return; }
+  if(/img\/(boy|girl)-m\d+-/.test(i.src)) i.src = `img/${H.kid()}-idle.webp`; }, true);
 const esc = t => String(t).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ===================================================================== art
