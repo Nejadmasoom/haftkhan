@@ -137,3 +137,79 @@ A single square image, pure white background, a clean 4-column by 3-row grid of 
 A single square image, pure white background, a clean 4-column by 3-row grid of 12 separate objects, each centered in its own cell with generous empty margin, no grid lines, no text, no labels. Bright mobile-game cartoon style like Hill Climb Racing: saturated colors, soft gradient shading with a small white shine, bold dark-purple outline (#2b2140), rounded shapes. Objects:
 1 the body of a small red off-road jeep seen exactly from the side facing right, WITHOUT wheels and without a driver, open top with a dark roll cage and a small windshield, 2 a single car wheel seen straight from the side (perfect circle) with a dark knobby tire and a simple grey rim, 3 a shiny gold coin with an embossed star in the middle, 4 a red metal fuel jerrycan, 5 a small blue pennant flag on a thin pole, blank, 6 a small round leafy green tree, 7 a small green pine tree, 8 a small grey rock, 9 a flat square patch of red-orange brick wall texture, front view, bricks only, 10 a wide blank red ribbon banner with folded ends, no text, 11 a shiny red heart, 12 a small golden trophy cup.
 ```
+
+---
+
+## برگهٔ ۶: خوراکی‌ها و وسایلِ خانه (درس ۶)
+
+برای دو بازیِ لمسیِ درس ۶ که الان شکلک (ایموجی) دارند. صحنه‌های «بازیِ پرخطر» را خودم از همین اشیا و ژست‌های قهرمان می‌سازم (مثلاً بچهٔ در حالِ دویدن + چوب، توپ + ساعت).
+
+| # | شیء | کجای بازی |
+|---|---|---|
+| 1 | ساندویچ | خوراکیِ مفید |
+| 2 | لیوانِ شیر | خوراکیِ مفید |
+| 3 | کاسهٔ کوچکِ گردو و بادام | خوراکیِ مفید |
+| 4 | سیب و موز و پرتقال کنارِ هم | خوراکیِ مفید |
+| 5 | قوطیِ نوشابه، بی‌مارک | خوراکیِ کم‌فایده |
+| 6 | شکلاتِ تخته‌ای، بی‌مارک | خوراکیِ کم‌فایده |
+| 7 | پاکتِ چیپس، بی‌مارک | خوراکیِ کم‌فایده |
+| 8 | آب‌نبات‌های رنگی | خوراکیِ کم‌فایده |
+| 9 | یک برشِ پیتزا | خوراکیِ کم‌فایده |
+| 10 | ساعتِ دیواریِ گرد | صحنهٔ توپ‌بازی کنارِ ساعت |
+| 11 | گلدانِ گیاهِ سبز | صحنهٔ توپ‌بازی کنارِ گلدان |
+| 12 | جعبهٔ اسباب‌بازیِ باز با چند توپِ رنگی | صحنهٔ جمع کردنِ وسایل |
+
+**پرامپت:**
+```
+A single square image, pure white background, a clean invisible 4-column by 3-row grid = exactly 12 separate objects, each object centered in its own cell with generous empty white margin, nothing touching or crossing into another cell. Cute children's-game cartoon style: flat bright colors, soft simple shading, bold dark-purple outline (#2b2140), rounded friendly shapes. Every object is a plain generic object: NO brand names, NO logos, NO letters, NO numbers, NO text anywhere, NO grid lines, NO labels, NO faces on the food. Only a tiny soft shadow under each object, inside its own cell.
+Objects, left to right, top to bottom:
+1 a simple sandwich of bread with lettuce, cheese and tomato,
+2 a clear glass full of white milk,
+3 a small wooden bowl of walnuts and almonds,
+4 a red apple, a yellow banana and an orange side by side,
+5 a plain red soda can with no writing,
+6 a chocolate bar half unwrapped, plain wrapper with no writing,
+7 a plain yellow bag of potato chips with no writing, a few chips beside it,
+8 three colorful wrapped hard candies,
+9 one triangle slice of pizza,
+10 a round wall clock with a white face and simple hands, no numbers,
+11 a green leafy plant in a terracotta pot,
+12 an open wooden toy box with three colorful balls inside.
+```
+
+---
+
+## برگهٔ ۷: کارت‌های رفتارِ درس ۶ و وسایلِ درس‌های ۹ تا ۱۲
+
+| # | شیء | کجای بازی |
+|---|---|---|
+| 1 | جاروبرقیِ کوچک | کارتِ «در کارهای خانه کمک کردم» |
+| 2 | تختِ بچه با پتو و بالش | کارتِ «وقتی بیمار بودم، استراحت کردم» |
+| 3 | کاسهٔ سوپِ گرم با قاشق | همان کارت |
+| 4 | پله‌های کوتاه (چهار پله) | کارتِ «از پله رفتم» |
+| 5 | پله‌برقی | همان کارت (خط‌خورده) |
+| 6 | دوچرخهٔ کوچک با کلاه‌ایمنی | قصهٔ درس ۶ |
+| 7 | دروازهٔ کوچکِ فوتبال با تور | بازی‌های پای درس ۱۰ |
+| 8 | مخروطِ نارنجیِ تمرین | مسیرِ دویدنِ درس ۱۱ |
+| 9 | دو بچه‌گربهٔ پشمالو کنارِ هم | قصهٔ «گربهٔ پشمالو»، درس ۱۱ |
+| 10 | کنارِ رودخانه: آبِ آبی و چند سنگِ گرد | قصهٔ «یک قل دو قل»، درس ۱۲ |
+| 11 | نیمکتِ پارک | قصهٔ درس ۶ |
+| 12 | بلندگوی کوچک با نُت‌های موسیقی | دکمهٔ آهنگِ بازی‌های خانوادگی |
+
+**پرامپت:**
+```
+A single square image, pure white background, a clean invisible 4-column by 3-row grid = exactly 12 separate objects, each object centered in its own cell with generous empty white margin, nothing touching or crossing into another cell. Cute children's-game cartoon style: flat bright colors, soft simple shading, bold dark-purple outline (#2b2140), rounded friendly shapes. NO people, NO text, NO letters, NO numbers, NO logos, NO grid lines, NO labels. Only a tiny soft shadow under each object, inside its own cell.
+Objects, left to right, top to bottom:
+1 a small cute upright vacuum cleaner,
+2 a child's bed with a puffy blanket and a pillow, seen from the side,
+3 a bowl of warm soup with a spoon and a little steam,
+4 a short staircase of four steps seen from the side,
+5 a short escalator seen from the side,
+6 a small bicycle with a helmet hanging on the handlebar,
+7 a small football goal with a white net,
+8 an orange training cone,
+9 two fluffy cute kittens sitting side by side, one grey and one ginger,
+10 a small piece of riverbank: blue water on one side and a few round grey pebbles on sandy ground,
+11 a wooden park bench,
+12 a small round speaker with three musical notes floating above it.
+```
