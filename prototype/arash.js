@@ -144,9 +144,10 @@ function readBody(now){
   return {side, pull, ang, out:out_, span};
 }
 
+const launch = g => AR._bow ? {x:AR._bow.x, y:AR._bow.y} : {x:g.bowX, y:g.bowY};
 function fire(power, ang, now){
   const g = geo(), v = VMAX*(.30 + .70*power), a = ang*Math.PI/180;
-  AR.arrow = {x:g.bowX, y:g.bowY - Math.sin(a)*g.u*.02, vx:Math.cos(a)*v*g.u, vy:-Math.sin(a)*v*g.u, tr:[], t:0, done:false, ang:a, power, wob:0};
+  const L0 = launch(g); AR.arrow = {x:L0.x, y:L0.y, vx:Math.cos(a)*v*g.u, vy:-Math.sin(a)*v*g.u, tr:[], t:0, done:false, ang:a, power, wob:0};
   AR.shots++; AR.vib = 0; AR.vibAmp = power; AR.recoil = 1; AR.shake = Math.max(AR.shake, power*5); AR.cool = .55;
   AUD.twang(power); AUD.whoosh(2*v*Math.sin(a)/G_ACC, power); api.vib && api.vib(12);
   burst(g.bowX + 8, g.bowY, 6, ['#fff', '#fde9a6'], 90, .35); }
@@ -188,7 +189,7 @@ function stepArrow(dt){
 
 /* the dotted guide that shows the first half of the flight (wind included), so aiming is learnable */
 function preview(power, ang){
-  const g = geo(), v = VMAX*(.30 + .70*power)*g.u, a = ang*Math.PI/180; let x = g.bowX, y = g.bowY, vx = Math.cos(a)*v, vy = -Math.sin(a)*v; const pts = [];
+  const g = geo(), v = VMAX*(.30 + .70*power)*g.u, a = ang*Math.PI/180, L0 = launch(g); let x = L0.x, y = L0.y, vx = Math.cos(a)*v, vy = -Math.sin(a)*v; const pts = [];
   const flight = 2*Math.sin(a)*v/(G_ACC*g.u); const tmax = Math.max(.25, flight*.52);
   for(let t = 0, k = 0; t < tmax; t += .02){ vy += G_ACC*g.u*.02; vx += AR.wind*g.u*.02; x += vx*.02; y += vy*.02; if(++k % 3 === 0) pts.push({x, y, t}); if(y > g.G) break; }
   return {pts, tmax}; }
@@ -295,7 +296,87 @@ function drawTarget(g, T, now){
   ctx.restore(); }
 
 /* ---- the hero. Side view, facing the target, built from the child's own proportions of the game. */
+/* ---- the hero as a cut-out puppet: pieces painted by hand (img/rig/<girl|boy>-*.webp), turned at their joints.
+   All numbers are in the pieces' own pixels (the 1024-pixel sheet). Until a set has loaded, the drawn hero above is used. */
+const RIG_PARTS = ['head', 'head-aim', 'head-happy', 'torso', 'legs', 'upper', 'fa-fist', 'fa-pinch', 'bow', 'arrow', 'cap'];
+const RIG_HAS = {girl:true, boy:false};                        // which children have their pieces yet
+const RIG = {};
+function rigOf(who){
+  if(!RIG_HAS[who]) return null;
+  if(!RIG[who]){ RIG[who] = {}; RIG_PARTS.forEach(n => { const im = new Image(); im.src = `img/rig/${who}-${n}.webp`; RIG[who][n] = im; }); }
+  const r = RIG[who]; return RIG_PARTS.every(n => r[n].complete && r[n].naturalWidth) ? r : null; }
+const ARROW_IMG = () => { const r = rigOf('girl') || rigOf('boy'); return r && r.arrow; };
+/* joints, measured on the pieces */
+const J = {legsHip:[93, 2], torsoNeck:[116, 0], torsoHem:229, headNeck:[77, 215], shFront:[140, 34], shBack:[96, 30],
+  upA:[26, 26], upB:[127, 26], faA:[27, 32], fist:[152, 30], pinch:[168, 24], bowGrip:[50, 160], bowTop:[5, 7], bowBot:[7, 235], arrowLen:222, arrowY:20};
+const LU = J.upB[0] - J.upA[0], LF_FIST = J.fist[0] - J.faA[0], LF_PINCH = J.pinch[0] - J.faA[0];
+function drawRig(g, t){
+  const who = H.kid() === 'boy' ? 'boy' : 'girl', R = rigOf(who); if(!R) return false;
+  const ctx = api.ctx, sc = g.ah/560, x0 = g.x0, G = g.G;
+  const P = (x, y) => ({x:x0 + x*sc, y:G + y*sc});
+  const a = AR.ang*Math.PI/180, d = {x:Math.cos(a), y:-Math.sin(a)};
+  const breath = Math.sin(t*2.1)*1.5, drawn = AR.state === 'draw' || AR.pull > .05;
+  // place a piece so that its point (px, py) lands at screen point s, turned by ang
+  const put = (im, px, py, s, ang = 0, sx = 1, sy = 1) => { ctx.save(); ctx.translate(s.x, s.y); if(ang) ctx.rotate(ang); ctx.scale(sx, sy);
+    ctx.drawImage(im, -px*sc, -py*sc, im.naturalWidth*sc, im.naturalHeight*sc); ctx.restore(); };
+  ctx.save();
+  ctx.fillStyle = 'rgba(30,60,30,.28)'; ctx.beginPath(); ctx.ellipse(x0, G + 2, 120*sc, 22*sc, 0, 0, 7); ctx.fill();
+  // body: legs, torso leaning a little into the shot, head
+  const hip = P(0, -236), lean = (drawn ? -.05 : 0) - (AR.ang - 25)*.001 - AR.recoil*.02;
+  put(R.legs, J.legsHip[0], J.legsHip[1], P(0, -238));
+  const torsoTop = {x:hip.x + 8*sc, y:hip.y + (70 - J.torsoHem)*sc + breath*.3*sc};      // the hem overlaps the skirt by 70
+  const T = (px, py) => { const dx = (px - J.torsoNeck[0])*sc, dy = (py - J.torsoNeck[1])*sc; return {x:torsoTop.x + dx*Math.cos(lean) - dy*Math.sin(lean), y:torsoTop.y + dx*Math.sin(lean) + dy*Math.cos(lean)}; };
+  const S1 = T(...J.shFront), S2 = T(...J.shBack);
+  // the bow arm goes behind the body: straight along the aim
+  const rec = AR.recoil*10*sc, elb1 = {x:S1.x + d.x*LU*sc, y:S1.y + d.y*LU*sc};
+  put(R.upper, J.upA[0], J.upA[1], S1, -a); put(R['fa-fist'], J.faA[0], J.faA[1], elb1, -a);
+  const grip = {x:S1.x + d.x*((LU + LF_FIST)*sc - rec), y:S1.y + d.y*((LU + LF_FIST)*sc - rec)};
+  put(R.torso, J.torsoNeck[0], J.torsoNeck[1], torsoTop, lean);
+  const head = drawn && AR.pull > .45 ? R['head-aim'] : AR.flash > .2 ? R['head-happy'] : R.head;
+  put(head, J.headNeck[0], J.headNeck[1], T(J.torsoNeck[0] - 4, J.torsoNeck[1] + 46), lean*.6);
+  // the bow: two limbs that bend back toward the archer as the string comes back
+  const bend = AR.pull*.2, bowAng = -a;
+  const bw = R.bow, gx = J.bowGrip[0], gy = J.bowGrip[1];
+  const bs = sc*1.35;                                                       // a bow a little grander than life
+  const limb = (y0, y1, ang) => { ctx.save(); ctx.translate(grip.x, grip.y); ctx.rotate(bowAng + ang); ctx.beginPath(); ctx.rect(-gx*bs - 4, (y0 - gy)*bs, bw.naturalWidth*bs + 8, (y1 - y0)*bs); ctx.clip();
+    ctx.drawImage(bw, -gx*bs, -gy*bs, bw.naturalWidth*bs, bw.naturalHeight*bs); ctx.restore(); };
+  limb(0, gy, -bend); limb(gy, bw.naturalHeight, bend);
+  const tip = (px, py, ang) => { const lx = (px - gx)*bs, ly = (py - gy)*bs, r = bowAng + ang; return {x:grip.x + lx*Math.cos(r) - ly*Math.sin(r), y:grip.y + lx*Math.sin(r) + ly*Math.cos(r)}; };
+  const tTop = tip(...J.bowTop, -bend), tBot = tip(...J.bowBot, bend);
+  // where the string is: drawn back to the hand, or quivering after a shot
+  const brace = (gx - J.bowTop[0])*bs, L = brace + 175*sc*AR.pull;
+  const vibr = AR.vibAmp > 0 ? Math.sin(AR.vib*60)*AR.vibAmp*14*sc*Math.exp(-AR.vib*7) : 0;
+  const loaded = !AR.arrow && !AR.over && AR.cool <= .5;
+  const nock = {x:grip.x - d.x*(loaded ? L : brace + vibr), y:grip.y - d.y*(loaded ? L : brace + vibr)};
+  ctx.strokeStyle = '#fff8e0'; ctx.lineWidth = Math.max(1.4, 5*sc); ctx.lineCap = 'round';
+  ctx.beginPath(); ctx.moveTo(tTop.x, tTop.y); ctx.lineTo(nock.x, nock.y); ctx.lineTo(tBot.x, tBot.y); ctx.stroke();
+  ctx.strokeStyle = 'rgba(43,33,64,.55)'; ctx.lineWidth = Math.max(.6, 1.6*sc); ctx.stroke();
+  if(loaded){
+    // the arrow on the string, a fifth longer than the piece so its head stays in front of the bow at a full draw
+    const len = J.arrowLen*1.2*sc; ctx.save(); ctx.translate(nock.x, nock.y); ctx.rotate(-a); ctx.drawImage(R.arrow, 0, -J.arrowY*sc, len, R.arrow.naturalHeight*sc); ctx.restore();
+    // draw arm: shoulder → elbow → the pinching hand on the string (two bones; the elbow folds up and back)
+    const dx = nock.x - S2.x, dy = nock.y - S2.y, dd = Math.min(Math.hypot(dx, dy), (LU + LF_PINCH)*sc*.999), ux = dx/(Math.hypot(dx, dy) || 1), uy = dy/(Math.hypot(dx, dy) || 1);
+    const l1 = LU*sc, l2 = LF_PINCH*sc, ca = clamp((l1*l1 + dd*dd - l2*l2)/(2*l1*dd || 1), -1, 1), th = Math.acos(ca);
+    const base = Math.atan2(uy, ux), e1 = {x:S2.x + Math.cos(base - th)*l1, y:S2.y + Math.sin(base - th)*l1}, e2 = {x:S2.x + Math.cos(base + th)*l1, y:S2.y + Math.sin(base + th)*l1};
+    const elb = e1.y < e2.y ? e1 : e2;                                      // the elbow stays high
+    const hand = {x:S2.x + ux*dd, y:S2.y + uy*dd};
+    put(R.upper, J.upA[0], J.upA[1], S2, Math.atan2(elb.y - S2.y, elb.x - S2.x));
+    const fa = Math.atan2(hand.y - elb.y, hand.x - elb.x), flip = Math.cos(fa) < 0;
+    put(R['fa-pinch'], J.faA[0], J.faA[1], elb, fa, 1, flip ? -1 : 1);
+  } else {
+    // the hand drops after the shot
+    const el = {x:S2.x - 12*sc, y:S2.y + LU*sc*.95}; put(R.upper, J.upA[0], J.upA[1], S2, Math.atan2(el.y - S2.y, el.x - S2.x));
+    put(R['fa-pinch'], J.faA[0], J.faA[1], el, Math.PI*.42); }
+  put(R.cap, 40, 31, S2, lean);
+  ctx.restore();
+  AR._bow = {x:grip.x, y:grip.y, d, a, k:sc*5.6, nock};
+  return true; }
+function drawArrowImg(tip, ang, len, alpha){
+  const im = ARROW_IMG(); if(!im) return false; const h = len*im.naturalHeight/im.naturalWidth;
+  const ctx = api.ctx; ctx.save(); ctx.globalAlpha = alpha == null ? 1 : alpha; ctx.translate(tip.x, tip.y); ctx.rotate(-ang); ctx.drawImage(im, -len, -h/2, len, h); ctx.restore(); return true; }
+
 function drawArcher(g, t){
+  if(drawRig(g, t)) return;
   const ctx = api.ctx, k = g.ah/100, girl = H.kid() !== 'boy', x0 = g.x0, G = g.G;
   const jacket = girl ? '#16a394' : '#f0a21a', jacketD = girl ? '#0f7d72' : '#c97d0a', trs = girl ? '#37426f' : '#3b3a63', skin = girl ? '#f3c19a' : '#e8b184';
   const P = (px, py) => ({x:x0 + px*k, y:G + py*k});                   // figure space → screen
@@ -410,11 +491,11 @@ function arFrame(dt, now, live){
   const nowP = performance.now();
   AR.stuck.forEach(s => { const age = (nowP - s.born)/1000; const al = s.tgt ? (s.tgt.gone ? clamp(1 - (s.tgt.fall - .5)/.6, 0, 1) : 1) : clamp(1 - (age - 3)/1.5, 0, 1); if(al <= 0) return;
     const k = g.ah/100; const sy = s.tgt ? s.tgt.y + s.dy : s.y; const bx = s.x, off = s.tgt && s.tgt.gone ? Math.min(1, s.tgt.fall*1.2)*g.u*.04 : 0; const a = s.ground ? Math.PI*1.06 - s.a*.3 : Math.PI*.98;
-    const len = 20*k; drawArrowShape({x:bx - Math.cos(a)*len*-1, y:sy + off - Math.sin(a)*len*0 - 0}, {x:bx, y:sy + off}, Math.PI - .05, k*.8, al); });
+    const len = 20*k; if(!drawArrowImg({x:bx + 6*k, y:sy + off}, s.ground ? -(Math.PI/2 - .5) + 0 : -.04 + 0, g.ah*.5, al)) drawArrowShape({x:bx - Math.cos(a)*len*-1, y:sy + off - Math.sin(a)*len*0 - 0}, {x:bx, y:sy + off}, Math.PI - .05, k*.8, al); });
   // the arrow in flight, with a soft streak
   const ar = AR.arrow; if(ar){
     ar.tr.forEach((p, i) => { ctx.globalAlpha = i/ar.tr.length*.45; ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(p.x, p.y, 1.2 + i*.12, 0, 7); ctx.fill(); }); ctx.globalAlpha = 1;
-    const k = g.ah/100, len = 30*k, d = {x:Math.cos(ar.ang), y:-Math.sin(ar.ang)}; drawArrowShape({x:ar.x - d.x*len, y:ar.y - d.y*len}, {x:ar.x, y:ar.y}, ar.ang, k, 1);
+    const k = g.ah/100, len = 30*k, d = {x:Math.cos(ar.ang), y:-Math.sin(ar.ang)}; if(!drawArrowImg({x:ar.x, y:ar.y}, ar.ang, g.ah*.5, 1)) drawArrowShape({x:ar.x - d.x*len, y:ar.y - d.y*len}, {x:ar.x, y:ar.y}, ar.ang, k, 1);
     if(ar.t < .4 && Math.random() < .5) burst(ar.x - d.x*len, ar.y - d.y*len, 1, ['#fff'], 40, .3); }
   drawFX(dt);
   // hint banner
@@ -447,7 +528,7 @@ A_.register('arash', {
   howSenior:'یک دست را دراز کنید و با دستِ دیگر آرام زه را بکشید. بازو را کمی بالا و پایین ببرید تا نشانه بگیرید و بعد رها کنید.',
   reset:arReset, frame:arFrame });
 /* for the tests: where would an arrow with this draw and angle cross the target's plane? */
-function yAtTarget(power, ang){ const g = geo(), T = AR.target; let v = VMAX*(.30 + .70*power)*g.u, a = ang*Math.PI/180, x = g.bowX, y = g.bowY, vx = Math.cos(a)*v, vy = -Math.sin(a)*v;
+function yAtTarget(power, ang){ const g = geo(), T = AR.target; let v = VMAX*(.30 + .70*power)*g.u, a = ang*Math.PI/180, L0 = launch(g), x = L0.x, y = L0.y, vx = Math.cos(a)*v, vy = -Math.sin(a)*v;
   for(let i = 0; i < 4000; i++){ const ox = x, oy = y; vy += G_ACC*g.u*.002; vx += AR.wind*g.u*.002; x += vx*.002; y += vy*.002; if(x >= T.x) return oy + (y - oy)*(T.x - ox)/(x - ox || 1); if(y > g.G) return null; } return null; }
 window.HKA_AR = {AR, AUD, geo, readBody, preview, yAtTarget, fire:(p, a) => fire(p, a, performance.now())};
 })();
